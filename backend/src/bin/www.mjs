@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-import app from "../app.js";
+import app from "../../app.js";
 import debug from "debug";
 const log = debug("backend:server");
 import http from "http";
