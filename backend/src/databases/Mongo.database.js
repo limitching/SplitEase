@@ -29,7 +29,7 @@ const ExpenseSchema = new mongoose.Schema({
         ],
         required: true,
     },
-    attached_group_id: { type: Number, default: null },
+    attached_group_id: { type: Number, default: null }, // index key
     involved_users: {
         type: Map,
         of: Number, // MAP<user_id:debt>
