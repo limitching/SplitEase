@@ -17,7 +17,6 @@ const ExpenseSchema = new mongoose.Schema({
     cost: {
         type: Number,
     },
-    expense_bundle: { type: Map, of: Number }, // MAP<user_id:paying_amount>
     split_method: {
         type: String,
         enum: [
@@ -32,7 +31,9 @@ const ExpenseSchema = new mongoose.Schema({
     attached_group_id: { type: Number, default: null }, // index key
     involved_users: {
         type: Map,
-        of: Number, // MAP<user_id:debt>
+        of: Number, // MAP<user_id:balance>
+        // People who will receive money from others. They have a positive balance.
+        // People who will pay money to others. They have a negative balance.
     },
     comments: {},
     date: { type: Date, default: Date.now },
