@@ -16,6 +16,6 @@ const getGroupMembers = async (req, res, next) => {
     // Use memberIds to query user details
     const requirement = { uid: memberIds };
     const memberUsers = await getUsers(requirement);
-    return res.status(200).json({ data: memberUsers });
+    return res.status(200).json(memberUsers);
 };
 export { getGroupInformation, getGroupMembers };
