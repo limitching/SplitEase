@@ -6,6 +6,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Checkbox from "@mui/material/Checkbox";
 import Avatar from "@mui/material/Avatar";
+import { Container } from "react-bootstrap";
 import { api } from "../../../utils/api";
 
 export default function CheckboxListSecondary({
@@ -32,41 +33,48 @@ export default function CheckboxListSecondary({
     );
 
     return (
-        <List
-            dense
-            sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
-        >
-            {members.map((member) => {
-                const labelId = `checkbox-list-secondary-label-${member.id}`;
-                return (
-                    <ListItem
-                        key={member.id}
-                        secondaryAction={
-                            <Checkbox
-                                edge="end"
-                                onChange={handleToggle(member)}
-                                checked={checked.indexOf(member) !== -1}
-                                inputProps={{ "aria-labelledby": labelId }}
-                            />
-                        }
-                        disablePadding
-                    >
-                        <ListItemButton>
-                            <ListItemAvatar>
-                                <Avatar
-                                    alt={`${member.name}`}
-                                    src={`${member.image}.jpg`}
+        <Container className="debtor-list">
+            <p>For whom</p>
+            <List
+                dense
+                sx={{
+                    width: "100%",
+                    maxWidth: 360,
+                    bgcolor: "background.paper",
+                }}
+            >
+                {members.map((member) => {
+                    const labelId = `checkbox-list-secondary-label-${member.id}`;
+                    return (
+                        <ListItem
+                            key={member.id}
+                            secondaryAction={
+                                <Checkbox
+                                    edge="end"
+                                    onChange={handleToggle(member)}
+                                    checked={checked.indexOf(member) !== -1}
+                                    inputProps={{ "aria-labelledby": labelId }}
                                 />
-                            </ListItemAvatar>
-                            <ListItemText
-                                id={labelId}
-                                primary={`${member.name}`}
-                                secondary={`${selectedCurrencyObj.symbol}`}
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                );
-            })}
-        </List>
+                            }
+                            disablePadding
+                        >
+                            <ListItemButton>
+                                <ListItemAvatar>
+                                    <Avatar
+                                        alt={`${member.name}`}
+                                        src={`${member.image}.jpg`}
+                                    />
+                                </ListItemAvatar>
+                                <ListItemText
+                                    id={labelId}
+                                    primary={`${member.name}`}
+                                    secondary={`${selectedCurrencyObj.symbol}`}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
+            </List>
+        </Container>
     );
 }

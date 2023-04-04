@@ -1,15 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { api } from "../../../utils/api";
-import {
-    Alert,
-    Container,
-    Modal,
-    Button,
-    Form,
-    InputGroup,
-    NavDropdown,
-} from "react-bootstrap";
-import { Avatar } from "@mui/material";
+import { Container, Modal, Button, Form, InputGroup } from "react-bootstrap";
 import DebtorList from "./DebtorList";
 
 const TransactionCategory = () => {
@@ -21,18 +12,31 @@ const TransactionCategory = () => {
         </Form.Select>
     );
 };
-const UserSelection = ({ members }) => {
+const Creditor = ({ members, currencies, handleCurrencyOptionChange }) => {
     if (members === null) {
         return <div>Loading...</div>;
     }
     return (
-        <Form.Select aria-label="Default select example">
-            {members.map((member) => (
-                <option key={member.id} value={member.id}>
-                    {member.name}
+        <Container className="who-paid">
+            <p>Who paid</p>
+            <Form.Select aria-label="Default select example">
+                {members.map((member) => (
+                    <option key={member.id} value={member.id}>
+                        {member.name}
+                    </option>
+                ))}
+                <option key="multi" value="multi">
+                    Multiple Payer
                 </option>
-            ))}
-        </Form.Select>
+            </Form.Select>
+            <InputGroup>
+                <input type="text" />
+                <CurrencySelection
+                    currencies={currencies}
+                    handleCurrencyOptionChange={handleCurrencyOptionChange}
+                />
+            </InputGroup>
+        </Container>
     );
 };
 
@@ -101,28 +105,20 @@ const Transaction = ({ members, currencies }) => {
                     </Container>
                 </Modal.Header>
                 <Modal.Body>
-                    <Container className="who-paid">
-                        <p>Who paid</p>
-                        <UserSelection members={members} />
-                        <InputGroup>
-                            <input type="text" />
-                            <CurrencySelection
-                                currencies={currencies}
-                                handleCurrencyOptionChange={
-                                    handleCurrencyOptionChange
-                                }
-                            />
-                        </InputGroup>
-                    </Container>
+                    <Creditor
+                        members={members}
+                        currencies={currencies}
+                        handleCurrencyOptionChange={handleCurrencyOptionChange}
+                    />
+
                     <hr />
-                    <Container className="debtor-list">
-                        <p>For whom</p>
-                        <DebtorList
-                            members={members}
-                            currencies={currencies}
-                            selectedCurrency={selectedCurrency}
-                        ></DebtorList>
-                    </Container>
+
+                    <DebtorList
+                        members={members}
+                        currencies={currencies}
+                        selectedCurrency={selectedCurrency}
+                    ></DebtorList>
+
                     <Container className="description">
                         <p>Description</p>
                         <input type="text" />
