@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -6,9 +6,25 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Checkbox from "@mui/material/Checkbox";
 import Avatar from "@mui/material/Avatar";
+import { api } from "../../../utils/api";
 
 export default function CheckboxListSecondary() {
-    const [checked, setChecked] = React.useState([1]);
+    const [members, setMembers] = useState([]);
+    const [checked, setChecked] = useState([1]);
+
+    async function fetchMembers(gid) {
+        try {
+            const data = await api.getMembers(gid);
+            setMembers(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(() => {
+        const gid = "backendawesome";
+        fetchMembers(gid);
+    }, []);
 
     const handleToggle = (value: number) => () => {
         const currentIndex = checked.indexOf(value);
@@ -28,16 +44,16 @@ export default function CheckboxListSecondary() {
             dense
             sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
         >
-            {[0, 1, 2, 3].map((value) => {
-                const labelId = `checkbox-list-secondary-label-${value}`;
+            {members.map((member) => {
+                const labelId = `checkbox-list-secondary-label-${member.id}`;
                 return (
                     <ListItem
-                        key={value}
+                        key={member.id}
                         secondaryAction={
                             <Checkbox
                                 edge="end"
-                                onChange={handleToggle(value)}
-                                checked={checked.indexOf(value) !== -1}
+                                onChange={handleToggle(member)}
+                                checked={checked.indexOf(member) !== -1}
                                 inputProps={{ "aria-labelledby": labelId }}
                             />
                         }
@@ -46,15 +62,14 @@ export default function CheckboxListSecondary() {
                         <ListItemButton>
                             <ListItemAvatar>
                                 <Avatar
-                                    alt={`Avatar n°${value + 1}`}
-                                    src={`/static/images/avatar/${
-                                        value + 1
-                                    }.jpg`}
+                                    alt={`${member.name}`}
+                                    src={`${member.image}.jpg`}
                                 />
                             </ListItemAvatar>
                             <ListItemText
                                 id={labelId}
-                                primary={`Line item ${value + 1}`}
+                                primary={`${member.name}`}
+                                secondary="NT$"
                             />
                         </ListItemButton>
                     </ListItem>

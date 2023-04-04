@@ -43,20 +43,24 @@ const UserSelection = () => {
 
 const currencies = [
     {
-        value: "USD",
-        label: "$",
+        value: "NT$",
+        label: "NTD",
     },
     {
-        value: "EUR",
-        label: "€",
+        value: "$",
+        label: "USD",
     },
     {
-        value: "BTC",
-        label: "฿",
+        value: "€",
+        label: "EUR",
     },
     {
-        value: "JPY",
-        label: "¥",
+        value: "¥",
+        label: "JPY",
+    },
+    {
+        value: "฿",
+        label: "BTC",
     },
 ];
 
