@@ -15,9 +15,7 @@ import DebtorList from "./DebtorList";
 const TransactionCategory = () => {
     return (
         <Form.Select aria-label="Default select example">
-            <option value="1" selected>
-                New Expense
-            </option>
+            <option value="1">New Expense</option>
             <option value="2">New Income</option>
             <option value="3">New Settle up</option>
         </Form.Select>
@@ -30,7 +28,9 @@ const UserSelection = ({ members }) => {
     return (
         <Form.Select aria-label="Default select example">
             {members.map((member) => (
-                <option value="1">{member.name}</option>
+                <option key={member.id} value={member.id}>
+                    {member.name}
+                </option>
             ))}
         </Form.Select>
     );
@@ -47,7 +47,9 @@ const CurrencySelection = ({ currencies, handleCurrencyOptionChange }) => {
             onChange={handleChange}
         >
             {currencies.map((option) => (
-                <option value={option.id}>{option.abbreviation}</option>
+                <option key={option.id} value={option.id}>
+                    {option.abbreviation}
+                </option>
             ))}
         </Form.Select>
     );
