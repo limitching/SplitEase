@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { api } from "../../../utils/api";
 import {
     Alert,
     Container,
@@ -22,63 +23,47 @@ const TransactionCategory = () => {
         </Form.Select>
     );
 };
-const UserSelection = () => {
+const UserSelection = ({ members }) => {
+    if (members === null) {
+        return <div>Loading...</div>;
+    }
     return (
         <Form.Select aria-label="Default select example">
-            <option value="1" selected>
-                Alice
-            </option>
-            <option value="2">Bob</option>
-            <option value="3">Charlie</option>
-            <option value="4">David</option>
-            <option value="5">Ema</option>
-            <option value="6">Fred</option>
-            <option value="7">Gabe</option>
-            <option value="8">Henry</option>
-            <option value="9">Irene</option>
-            <option value="10">Jason</option>
-        </Form.Select>
-    );
-};
-
-const currencies = [
-    {
-        value: "NT$",
-        label: "NTD",
-    },
-    {
-        value: "$",
-        label: "USD",
-    },
-    {
-        value: "€",
-        label: "EUR",
-    },
-    {
-        value: "¥",
-        label: "JPY",
-    },
-    {
-        value: "฿",
-        label: "BTC",
-    },
-];
-
-const CurrencySelection = () => {
-    return (
-        <Form.Select aria-label="Default select example">
-            {currencies.map((option) => (
-                <option value={option.value}>{option.label}</option>
+            {members.map((member) => (
+                <option value="1">{member.name}</option>
             ))}
         </Form.Select>
     );
 };
 
-const Transaction = function Example() {
-    const [show, setShow] = useState(false);
+const CurrencySelection = ({ currencies, handleCurrencyOptionChange }) => {
+    const handleChange = (event) => {
+        handleCurrencyOptionChange(event.target.value);
+    };
 
+    return (
+        <Form.Select
+            aria-label="Default select example"
+            onChange={handleChange}
+        >
+            {currencies.map((option) => (
+                <option value={option.id}>{option.abbreviation}</option>
+            ))}
+        </Form.Select>
+    );
+};
+
+const Transaction = ({ members, currencies }) => {
+    const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const [selectedCurrency, setSelectedCurrency] = useState(1);
+    const handleCurrencyOptionChange = (selectedValue) => {
+        setSelectedCurrency(selectedValue);
+    };
+
+    const [amount, setAmount] = useState(0);
 
     return (
         <>
@@ -116,16 +101,25 @@ const Transaction = function Example() {
                 <Modal.Body>
                     <Container className="who-paid">
                         <p>Who paid</p>
-                        <UserSelection />
+                        <UserSelection members={members} />
                         <InputGroup>
                             <input type="text" />
-                            <CurrencySelection />
+                            <CurrencySelection
+                                currencies={currencies}
+                                handleCurrencyOptionChange={
+                                    handleCurrencyOptionChange
+                                }
+                            />
                         </InputGroup>
                     </Container>
                     <hr />
                     <Container className="debtor-list">
                         <p>For whom</p>
-                        <DebtorList></DebtorList>
+                        <DebtorList
+                            members={members}
+                            currencies={currencies}
+                            selectedCurrency={selectedCurrency}
+                        ></DebtorList>
                     </Container>
                     <Container className="description">
                         <p>Description</p>

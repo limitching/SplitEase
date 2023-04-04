@@ -8,23 +8,12 @@ import Checkbox from "@mui/material/Checkbox";
 import Avatar from "@mui/material/Avatar";
 import { api } from "../../../utils/api";
 
-export default function CheckboxListSecondary() {
-    const [members, setMembers] = useState([]);
+export default function CheckboxListSecondary({
+    members,
+    currencies,
+    selectedCurrency,
+}) {
     const [checked, setChecked] = useState([1]);
-
-    async function fetchMembers(gid) {
-        try {
-            const data = await api.getMembers(gid);
-            setMembers(data);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    useEffect(() => {
-        const gid = "backendawesome";
-        fetchMembers(gid);
-    }, []);
 
     const handleToggle = (value: number) => () => {
         const currentIndex = checked.indexOf(value);
@@ -38,6 +27,9 @@ export default function CheckboxListSecondary() {
 
         setChecked(newChecked);
     };
+    const [selectedCurrencyObj] = currencies.filter(
+        (currency) => currency.id == selectedCurrency
+    );
 
     return (
         <List
@@ -69,7 +61,7 @@ export default function CheckboxListSecondary() {
                             <ListItemText
                                 id={labelId}
                                 primary={`${member.name}`}
-                                secondary="NT$"
+                                secondary={`${selectedCurrencyObj.symbol}`}
                             />
                         </ListItemButton>
                     </ListItem>
