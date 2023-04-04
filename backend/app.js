@@ -10,6 +10,7 @@ const { API_VERSION } = process.env;
 
 import indexRouter from "./src/routes/index.js";
 import usersRouter from "./src/routes/users.js";
+import groupRouter from "./src/routes/group_route.js";
 import expenseRouter from "./src/routes/expense_route.js";
 
 var app = express();
@@ -18,7 +19,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 // API routes
-app.use("/api/" + API_VERSION, [indexRouter, usersRouter, expenseRouter]);
+app.use("/api/" + API_VERSION, [
+    indexRouter,
+    usersRouter,
+    groupRouter,
+    expenseRouter,
+]);
 
 app.use(logger("dev"));
 app.use(express.json());
