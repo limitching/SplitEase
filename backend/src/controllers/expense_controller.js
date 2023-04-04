@@ -1,4 +1,4 @@
-import { Expense } from "../models/expense_model.js";
+import { Expense, getCurrencies } from "../models/expense_model.js";
 
 const getExpensesByGroupId = async (gid) => {
     try {
@@ -38,7 +38,8 @@ const getGroupExpenses = async (req, res, next) => {
 
 const createGroupExpense = async (req, res, next) => {
     const expenseObject = req.body;
-    console.log("body", expenseObject);
+    // TODO: Remove log
+    // console.log("body", expenseObject);
     const { _id } = await createExpense(expenseObject);
     if (_id === -1) {
         return res.status(500).json({ msg: "Internal Server Error" });
@@ -48,5 +49,13 @@ const createGroupExpense = async (req, res, next) => {
             .json({ msg: `New expense_id: ${_id} was created!!` });
     }
 };
+const getExpensesCurrencies = async (req, res, next) => {
+    const currencies = await getCurrencies();
+    if (currencies === -1) {
+        return res.status(500).json({ msg: "Internal Server Error" });
+    } else {
+        return res.status(200).json(currencies);
+    }
+};
 
-export { getGroupExpenses, createGroupExpense };
+export { getGroupExpenses, createGroupExpense, getExpensesCurrencies };

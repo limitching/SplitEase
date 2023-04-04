@@ -35,4 +35,15 @@ const ExpenseSchema = new mongoose.Schema({
 
 const Expense = mongoose.model("Expense", ExpenseSchema);
 
-export { Expense };
+const getCurrencies = async () => {
+    try {
+        const currencyQuery = "SELECT * FROM currencies";
+        const [currencies] = await pool.query(currencyQuery);
+        return currencies;
+    } catch (error) {
+        console.error(error);
+        return -1;
+    }
+};
+
+export { Expense, getCurrencies };
