@@ -7,5 +7,9 @@ const api = {
         const { data } = await axios(`${this.hostname}/group/${gid}/members`);
         return data;
     },
+    getCurrencies: async function () {
+        const { data } = await axios(`${this.hostname}/currencies`);
+        return data;
+    },
 };
 export { api };
