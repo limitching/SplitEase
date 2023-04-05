@@ -19,41 +19,44 @@ const Creditor = ({
 
     return (
         <Container className="who-paid" as={Row}>
-            <Form.Label>Who paid</Form.Label>
-            <Col lg="6">
-                <Form.Select
-                    className="mb-3"
-                    aria-label="Default select example"
-                    onChange={handleChangeSelectedCreditorEvent}
-                >
-                    {members.map((member, index) => (
-                        <option key={member.id} value={index}>
-                            {member.name}
-                        </option>
-                    ))}
-                    <option key="multi" value="multi">
-                        Multiple Payer
-                    </option>
-                </Form.Select>
-            </Col>
-
-            <InputGroup as={Row}>
-                <Col lg="8">
-                    <Form.Control
+            <Form className="creditor">
+                <Form.Label>Who paid</Form.Label>
+                <Col lg="6">
+                    <Form.Select
                         className="mb-3"
-                        type="number"
-                        value={amount}
-                        onChange={handleChangeAmountEvent}
-                    />
+                        aria-label="Default select example"
+                        onChange={handleChangeSelectedCreditorEvent}
+                    >
+                        {members.map((member, index) => (
+                            <option key={member.id} value={index}>
+                                {member.name}
+                            </option>
+                        ))}
+                        <option key="multi" value="multi">
+                            Multiple Payer
+                        </option>
+                    </Form.Select>
                 </Col>
-                <Col lg="4">
-                    {" "}
-                    <CurrencySelector
-                        currencies={currencies}
-                        handleCurrencyOptionChange={handleCurrencyOptionChange}
-                    />
-                </Col>
-            </InputGroup>
+                <InputGroup as={Row}>
+                    <Col lg="8">
+                        <Form.Control
+                            className="mb-3"
+                            type="number"
+                            value={amount}
+                            onChange={handleChangeAmountEvent}
+                        />
+                    </Col>
+                    <Col lg="4">
+                        {" "}
+                        <CurrencySelector
+                            currencies={currencies}
+                            handleCurrencyOptionChange={
+                                handleCurrencyOptionChange
+                            }
+                        />
+                    </Col>
+                </InputGroup>
+            </Form>
         </Container>
     );
 };

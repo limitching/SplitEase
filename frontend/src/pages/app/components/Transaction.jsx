@@ -40,6 +40,8 @@ const Transaction = ({ members, currencies }) => {
         setSelectedSplitMethod(selectedSplitMethod);
     };
 
+    const submitExpense = () => {};
+
     return (
         <>
             <Button variant="primary" onClick={handleShow}>
@@ -96,7 +98,7 @@ const Transaction = ({ members, currencies }) => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Container className="d-grid">
-                        <Button variant="warning" onClick={handleClose}>
+                        <Button variant="warning" onClick={submitExpense}>
                             Save
                         </Button>
                     </Container>

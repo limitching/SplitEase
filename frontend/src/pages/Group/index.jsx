@@ -1,6 +1,4 @@
-import Transaction from "./components/Transaction";
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
+import Transaction from "../app/components/Transaction";
 import React, { useState, useEffect } from "react";
 import { api } from "../../utils/api";
 
@@ -22,7 +20,7 @@ async function fetchCurrencies(setCurrencies) {
     }
 }
 
-const App = () => {
+const Group = () => {
     const [members, setMembers] = useState(null);
     const [currencies, setCurrencies] = useState([]);
     // const isInitialMount = useRef(true);
@@ -38,7 +36,6 @@ const App = () => {
 
     return (
         <div>
-            <Header></Header>
             <div
                 className="group-information"
                 style={{
@@ -48,11 +45,10 @@ const App = () => {
                     backgroundColor: "blue",
                 }}
             ></div>
-            <h1 style={{ marginTop: "4rem" }}>Hello</h1>
+            <h1 style={{ marginTop: "3rem" }}>Hello</h1>
             <Transaction members={members} currencies={currencies} />
-            <Footer></Footer>
         </div>
     );
 };
 
-export default App;
+export default Group;
