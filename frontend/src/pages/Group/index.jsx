@@ -23,6 +23,7 @@ async function fetchCurrencies(setCurrencies) {
 const Group = () => {
     const [members, setMembers] = useState(null);
     const [currencies, setCurrencies] = useState([]);
+    const [checked, setChecked] = useState([]);
     // const isInitialMount = useRef(true);
     useEffect(() => {
         // if (isInitialMount.current) {
@@ -33,6 +34,12 @@ const Group = () => {
         fetchCurrencies(setCurrencies);
         // }
     }, []);
+
+    useEffect(() => {
+        if (members !== null) {
+            setChecked([...members]);
+        }
+    }, [members]);
 
     return (
         <div>
@@ -46,7 +53,12 @@ const Group = () => {
                 }}
             ></div>
             <h1 style={{ marginTop: "3rem" }}>Hello</h1>
-            <Transaction members={members} currencies={currencies} />
+            <Transaction
+                members={members}
+                currencies={currencies}
+                checked={checked}
+                setChecked={setChecked}
+            />
         </div>
     );
 };
