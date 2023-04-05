@@ -1,7 +1,7 @@
 import Transaction from "./components/Transaction";
 import Header from "../home/components/Header";
 import Footer from "../home/components/Footer";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { api } from "../../utils/api";
 
 async function fetchMembers(gid, setMembers) {
@@ -25,15 +25,15 @@ async function fetchCurrencies(setCurrencies) {
 const App = () => {
     const [members, setMembers] = useState(null);
     const [currencies, setCurrencies] = useState([]);
-    const isInitialMount = useRef(true);
+    // const isInitialMount = useRef(true);
     useEffect(() => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-        } else {
-            const gid = "backendawesome";
-            fetchMembers(gid, setMembers);
-            fetchCurrencies(setCurrencies);
-        }
+        // if (isInitialMount.current) {
+        //     isInitialMount.current = false;
+        // } else {
+        const gid = "backendawesome";
+        fetchMembers(gid, setMembers);
+        fetchCurrencies(setCurrencies);
+        // }
     }, []);
 
     return (

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
-import { api } from "../../../utils/api";
-import { Container, Modal, Button, Form, InputGroup } from "react-bootstrap";
+import React, { useState } from "react";
+import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
 import DebtorList from "./DebtorList";
+import Creditor from "./CreditorBox";
 
 const TransactionCategory = () => {
     return (
@@ -12,64 +12,33 @@ const TransactionCategory = () => {
         </Form.Select>
     );
 };
-const Creditor = ({ members, currencies, handleCurrencyOptionChange }) => {
-    if (members === null) {
-        return <div>Loading...</div>;
-    }
-    return (
-        <Container className="who-paid">
-            <p>Who paid</p>
-            <Form.Select aria-label="Default select example">
-                {members.map((member) => (
-                    <option key={member.id} value={member.id}>
-                        {member.name}
-                    </option>
-                ))}
-                <option key="multi" value="multi">
-                    Multiple Payer
-                </option>
-            </Form.Select>
-            <InputGroup>
-                <input type="text" />
-                <CurrencySelection
-                    currencies={currencies}
-                    handleCurrencyOptionChange={handleCurrencyOptionChange}
-                />
-            </InputGroup>
-        </Container>
-    );
-};
-
-const CurrencySelection = ({ currencies, handleCurrencyOptionChange }) => {
-    const handleChange = (event) => {
-        handleCurrencyOptionChange(event.target.value);
-    };
-
-    return (
-        <Form.Select
-            aria-label="Default select example"
-            onChange={handleChange}
-        >
-            {currencies.map((option) => (
-                <option key={option.id} value={option.id}>
-                    {option.abbreviation}
-                </option>
-            ))}
-        </Form.Select>
-    );
-};
 
 const Transaction = ({ members, currencies }) => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-
-    const [selectedCurrency, setSelectedCurrency] = useState(1);
-    const handleCurrencyOptionChange = (selectedValue) => {
-        setSelectedCurrency(selectedValue);
+    // When Transaction window is opened, set amount = 0
+    const handleShow = () => {
+        setAmount(0);
+        setShow(true);
     };
-
+    // Select NT$ on default
+    const [selectedCurrency, setSelectedCurrency] = useState(1);
+    const handleCurrencyOptionChange = (selectedCurrency) => {
+        setSelectedCurrency(selectedCurrency);
+    };
+    // When credit amount change, update state
     const [amount, setAmount] = useState(0);
+    const handleAmountChange = (amountValue) => {
+        setAmount(amountValue);
+    };
+    const [selectedCreditor, setSelectedCreditor] = useState(0);
+    const handleSelectedCreditorChange = (selectedCreditor) => {
+        setSelectedCreditor(selectedCreditor);
+    };
+    const [selectedSplitMethod, setSelectedSplitMethod] = useState(0);
+    const handleSplitMethodChange = (selectedSplitMethod) => {
+        setSelectedSplitMethod(selectedSplitMethod);
+    };
 
     return (
         <>
@@ -83,25 +52,11 @@ const Transaction = ({ members, currencies }) => {
                 backdrop="static"
                 keyboard={false}
             >
-                <Modal.Header closeButton>
-                    {/* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-                        <NavDropdown.Item href="#action/3.1">
-                            Action
-                        </NavDropdown.Item>
-                        <NavDropdown.Item href="#action/3.2">
-                            Another action
-                        </NavDropdown.Item>
-                        er
-                        <NavDropdown.Item href="#action/3.3">
-                            Something
-                        </NavDropdown.Item>
-                        <NavDropdown.Divider />
-                        <NavDropdown.Item href="#action/3.4">
-                            Separated link
-                        </NavDropdown.Item>
-                    </NavDropdown> */}
-                    <Container className="transaction-method">
-                        <TransactionCategory />
+                <Modal.Header closeButton as={Row}>
+                    <Container className="transaction-method ml-0 pl-0">
+                        <Col lg="6">
+                            <TransactionCategory />
+                        </Col>
                     </Container>
                 </Modal.Header>
                 <Modal.Body>
@@ -109,6 +64,11 @@ const Transaction = ({ members, currencies }) => {
                         members={members}
                         currencies={currencies}
                         handleCurrencyOptionChange={handleCurrencyOptionChange}
+                        amount={amount}
+                        handleAmountChange={handleAmountChange}
+                        handleSelectedCreditorChange={
+                            handleSelectedCreditorChange
+                        }
                     />
 
                     <hr />
@@ -117,28 +77,29 @@ const Transaction = ({ members, currencies }) => {
                         members={members}
                         currencies={currencies}
                         selectedCurrency={selectedCurrency}
+                        amount={amount}
+                        handleSplitMethodChange={handleSplitMethodChange}
                     ></DebtorList>
 
-                    <Container className="description">
-                        <p>Description</p>
-                        <input type="text" />
+                    <Container className="expense-description mb-3">
+                        <Form.Label>Description</Form.Label>
+                        <Form.Control as="textarea" rows={3} />
                     </Container>
-                    <Container className="debtor-list">
-                        <p>Date & time</p>
-                        <input type="datetime-local" />
+                    <Container className="expense-image mb-3">
+                        <Form.Label>Expense image</Form.Label>
+                        <Form.Control type="file" />
+                    </Container>
+                    <Container className="expense-datetime mb-3">
+                        <Form.Label>Date & time</Form.Label>
+                        <Form.Control type="datetime-local" />
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Container>
-                        <Button variant="secondary" onClick={handleClose}>
+                    <Container className="d-grid">
+                        <Button variant="warning" onClick={handleClose}>
                             Save
                         </Button>
                     </Container>
-
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary">Understood</Button>
                 </Modal.Footer>
             </Modal>
         </>
