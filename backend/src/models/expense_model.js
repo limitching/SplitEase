@@ -2,9 +2,8 @@ import { pool } from "../databases/MySQL.database.js";
 import { mongoose } from "../databases/Mongo.database.js";
 
 const ExpenseSchema = new mongoose.Schema({
-    expense_id: { type: String, required: true, unique: true },
     description: { type: String },
-    cost: {
+    amount: {
         type: Number,
     },
     split_method: {
