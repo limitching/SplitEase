@@ -17,6 +17,7 @@ import {
     Checkbox,
     Avatar,
 } from "@mui/material";
+import { api } from "../../../utils/api";
 import { SPLIT_METHODS } from "../../../global/constant";
 
 const TransactionSelector = () => {
@@ -256,7 +257,7 @@ const Transaction = ({ members, currencies, checked, setChecked }) => {
         event.preventDefault();
 
         const formData = new FormData(event.target);
-        formData.append("split_method", selectedSplitMethod);
+        formData.append("split_method", SPLIT_METHODS[selectedSplitMethod]);
         formData.append("attached_group_id", "backendawesome");
         formData.append("creditors", members[selectedCreditor]);
         formData.append("debtors", checked);
@@ -264,6 +265,8 @@ const Transaction = ({ members, currencies, checked, setChecked }) => {
         for (const pair of formData.entries()) {
             console.log(`${pair[0]}, ${pair[1]}`);
         }
+        const result = await api.createExpense(formData);
+        console.log(result);
     };
 
     return (
