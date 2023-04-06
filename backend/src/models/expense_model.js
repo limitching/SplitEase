@@ -6,6 +6,9 @@ const ExpenseSchema = new mongoose.Schema({
     amount: {
         type: Number,
     },
+    currencyOption: {
+        type: Number,
+    },
     split_method: {
         type: String,
         enum: [

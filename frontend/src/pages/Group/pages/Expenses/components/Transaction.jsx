@@ -17,8 +17,8 @@ import {
     Checkbox,
     Avatar,
 } from "@mui/material";
-import { api } from "../../../utils/api";
-import { SPLIT_METHODS } from "../../../global/constant";
+import { api } from "../../../../../utils/api";
+import { SPLIT_METHODS } from "../../../../../global/constant";
 
 const TransactionSelector = () => {
     return (
@@ -36,7 +36,10 @@ const CurrencySelector = ({ currencies, handleCurrencyOptionChange }) => {
     };
 
     return (
-        <Form.Select onChange={handleCurrencyOptionChangeEvent}>
+        <Form.Select
+            name="currencyOption"
+            onChange={handleCurrencyOptionChangeEvent}
+        >
             {currencies.map((option) => (
                 <option key={option.id} value={option.id}>
                     {option.abbreviation}

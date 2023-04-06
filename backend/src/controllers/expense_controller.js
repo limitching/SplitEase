@@ -34,9 +34,11 @@ const getGroupExpenses = async (req, res, next) => {
     const groupId = req.query.gid;
     const expenses = await getExpensesByGroupId(groupId);
     if (expenses === -1) {
-        return res.status(500).json({ msg: "Internal Server Error" });
+        return res
+            .status(500)
+            .json({ errors: [{ msg: "Internal Server Error" }] });
     } else {
-        return res.status(200).json({ data: expenses });
+        return res.status(200).json(expenses);
     }
 };
 
@@ -49,6 +51,7 @@ const createGroupExpense = async (req, res, next) => {
         attached_group_id,
         creditors,
         debtors,
+        currencyOption,
     } = req.body;
     const creditorsObj = JSON.parse(creditors);
     const debtorsObj = JSON.parse(debtors);
@@ -70,6 +73,7 @@ const createGroupExpense = async (req, res, next) => {
         description,
         split_method,
         amount,
+        currencyOption,
         attached_group_id,
         credit_users,
         debt_users,
@@ -80,7 +84,7 @@ const createGroupExpense = async (req, res, next) => {
     // Insert Expense into MongoDB
     const { _id } = await createExpense(expenseObject);
     if (_id === -1) {
-        return res.status(500).json({ msg: "MongoDB Error" });
+        return res.status(500).json({ errors: [{ msg: "MongoDB Error" }] });
     }
     // Insert involvedMembers into MySQL
     const createInvolvedResult = await createExpenseInvolvedMembers(
@@ -89,7 +93,7 @@ const createGroupExpense = async (req, res, next) => {
         date
     );
     if (createInvolvedResult === -1) {
-        return res.status(500).json({ msg: "MySQL Error" });
+        return res.status(500).json({ errors: [{ msg: "MySQL Error" }] });
     }
     return res
         .status(200)
