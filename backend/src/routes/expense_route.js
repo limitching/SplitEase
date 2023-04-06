@@ -7,12 +7,13 @@ import {
     createGroupExpense,
     getExpensesCurrencies,
 } from "../controllers/expense_controller.js";
+import expenseValidator from "../middlewares/validators/expenseValidator.js";
 
 /* Expense API */
 router
     .route("/expense")
     .get(wrapAsync(getGroupExpenses))
-    .post(expenseUpload, wrapAsync(createGroupExpense));
+    .post(expenseUpload, expenseValidator, wrapAsync(createGroupExpense));
 
 /* Currencies API */
 router.route("/currencies").get(wrapAsync(getExpensesCurrencies));
