@@ -22,5 +22,16 @@ const api = {
             return error.response;
         }
     },
+    getGroupExpenses: async function (gid) {
+        try {
+            const { data } = await axios.get(
+                `${this.hostname}/expense?gid=${gid}`
+            );
+            return data;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
 };
 export { api };
