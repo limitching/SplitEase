@@ -1,7 +1,9 @@
-import Transaction from "./components/Transaction";
+import Expenses from "./pages/Expenses";
+import GroupDashboard from "./components/Dashboard";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../utils/api";
+import { Outlet } from "react-router-dom";
 
 async function fetchMembers(gid, setMembers) {
     try {
@@ -21,6 +23,15 @@ async function fetchCurrencies(setCurrencies) {
     }
 }
 
+async function fetchGroupExpenses(gid, setGroupExpense) {
+    try {
+        const data = await api.getGroupExpenses(gid);
+        setGroupExpense(data);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 const Group = () => {
     const { gid } = useParams();
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
@@ -29,6 +40,7 @@ const Group = () => {
         .substring(0, 16);
 
     const [members, setMembers] = useState(null);
+    const [groupExpense, setGroupExpense] = useState([]);
     const [currencies, setCurrencies] = useState([]);
     const [checked, setChecked] = useState([]);
     const [expenseTime, setExpenseTime] = useState(localISOTime);
@@ -36,6 +48,7 @@ const Group = () => {
     useEffect(() => {
         fetchMembers(gid, setMembers);
         fetchCurrencies(setCurrencies);
+        fetchGroupExpenses(gid, setGroupExpense);
     }, []);
 
     useEffect(() => {
@@ -46,25 +59,8 @@ const Group = () => {
 
     return (
         <div>
-            <div
-                className="group-information"
-                style={{
-                    display: "block",
-                    width: "100%",
-                    height: "300px",
-                    backgroundColor: "blue",
-                }}
-            ></div>
-            <h1 style={{ marginTop: "3rem" }}>Hello</h1>
-            <Transaction
-                gid={gid}
-                members={members}
-                currencies={currencies}
-                checked={checked}
-                setChecked={setChecked}
-                expenseTime={expenseTime}
-                setExpenseTime={setExpenseTime}
-            />
+            <GroupDashboard></GroupDashboard>
+            <Outlet></Outlet>
         </div>
     );
 };
