@@ -78,15 +78,21 @@ const createGroupExpense = async (req, res, next) => {
     };
     // Insert Expense into MongoDB
     const { _id } = await createExpense(expenseObject);
-    // Insert involvedMembers into MySQL
-    const ids = await createExpenseInvolvedMembers(_id, involved_users, date);
     if (_id === -1) {
-        return res.status(500).json({ msg: "Internal Server Error" });
-    } else {
-        return res
-            .status(200)
-            .json({ msg: `New expense_id: ${_id} was created!!` });
+        return res.status(500).json({ msg: "MongoDB Error" });
     }
+    // Insert involvedMembers into MySQL
+    const createInvolvedResult = await createExpenseInvolvedMembers(
+        _id,
+        involved_users,
+        date
+    );
+    if (createInvolvedResult === -1) {
+        return res.status(500).json({ msg: "MySQL Error" });
+    }
+    return res
+        .status(200)
+        .json({ msg: `New expense_id: ${_id} was created!!` });
 };
 const getExpensesCurrencies = async (req, res, next) => {
     const currencies = await getCurrencies();

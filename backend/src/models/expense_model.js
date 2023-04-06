@@ -58,15 +58,13 @@ const createExpenseInvolvedMembers = async (eid, involved_users, date) => {
         ]);
         const involvedMembersQuery =
             "INSERT INTO expense_members (eid, uid, expense_date) VALUES ?";
-        const [insertResult] = await connection.query(involvedMembersQuery, [
-            involvedMembersBinding,
-        ]);
+        await connection.query(involvedMembersQuery, [involvedMembersBinding]);
         await connection.query("COMMIT");
-        return insertResult;
+        return 0;
     } catch (error) {
         console.error(error);
         await conn.query("ROLLBACK");
-        return [];
+        return -1;
     } finally {
         await connection.release();
     }
