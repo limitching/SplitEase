@@ -220,7 +220,15 @@ const DebtorList = ({
     );
 };
 
-const Transaction = ({ members, currencies, checked, setChecked }) => {
+const Transaction = ({
+    gid,
+    members,
+    currencies,
+    checked,
+    setChecked,
+    expenseTime,
+    setExpenseTime,
+}) => {
     const [show, setShow] = useState(false);
 
     const [selectedCurrency, setSelectedCurrency] = useState(1);
@@ -258,15 +266,25 @@ const Transaction = ({ members, currencies, checked, setChecked }) => {
 
         const formData = new FormData(event.target);
         formData.append("split_method", SPLIT_METHODS[selectedSplitMethod]);
-        formData.append("attached_group_id", "backendawesome");
-        formData.append("creditors", members[selectedCreditor]);
-        formData.append("debtors", checked);
+        formData.append("attached_group_id", gid);
+        formData.append("creditors", JSON.stringify(members[selectedCreditor]));
+        formData.append("debtors", JSON.stringify(checked));
 
-        for (const pair of formData.entries()) {
-            console.log(`${pair[0]}, ${pair[1]}`);
+        // //TODO: debug;
+        // for (const pair of formData.entries()) {
+        //     console.log(`${pair[0]}, ${pair[1]}`);
+        // }
+
+        const response = await api.createExpense(formData);
+        if (response.status === 200) {
+            alert("Expense Created successfully!");
+        } else if (response.status === 500) {
+            alert(response.data.msg);
         }
-        const result = await api.createExpense(formData);
-        console.log(result);
+    };
+
+    const handleExpenseTimeChange = (selectedExpenseTime) => {
+        setExpenseTime(selectedExpenseTime);
     };
 
     return (
@@ -325,11 +343,15 @@ const Transaction = ({ members, currencies, checked, setChecked }) => {
                         </Container>
                         <Container className="expense-image mb-3">
                             <Form.Label>Expense image</Form.Label>
-                            <Form.Control type="file" />
+                            <Form.Control type="file" name="image" />
                         </Container>
                         <Container className="expense-datetime mb-3">
                             <Form.Label>Date & time</Form.Label>
-                            <Form.Control type="datetime-local" name="date" />
+                            <Form.Control
+                                type="datetime-local"
+                                name="date"
+                                defaultValue={expenseTime}
+                            />
                         </Container>
                     </Modal.Body>
                     <Modal.Footer>

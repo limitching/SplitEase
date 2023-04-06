@@ -14,8 +14,15 @@ const api = {
         return data;
     },
     createExpense: async function (data) {
-        const result = await axios.post(`${this.hostname}/expense`, data);
-        return result;
+        try {
+            const result = await axios.post(`${this.hostname}/expense`, data);
+            return result;
+        } catch (error) {
+            console.error(error);
+            console.error("=========");
+            console.error(error.response.data.errors);
+            return error.response;
+        }
     },
 };
 export { api };

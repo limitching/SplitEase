@@ -1,5 +1,6 @@
 import Transaction from "./components/Transaction";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { api } from "../../utils/api";
 
 async function fetchMembers(gid, setMembers) {
@@ -21,18 +22,20 @@ async function fetchCurrencies(setCurrencies) {
 }
 
 const Group = () => {
+    const { gid } = useParams();
+    const timeZoneOffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
+    const localISOTime = new Date(Date.now() - timeZoneOffset)
+        .toISOString()
+        .substring(0, 16);
+
     const [members, setMembers] = useState(null);
     const [currencies, setCurrencies] = useState([]);
     const [checked, setChecked] = useState([]);
-    // const isInitialMount = useRef(true);
+    const [expenseTime, setExpenseTime] = useState(localISOTime);
+
     useEffect(() => {
-        // if (isInitialMount.current) {
-        //     isInitialMount.current = false;
-        // } else {
-        const gid = "backendawesome";
         fetchMembers(gid, setMembers);
         fetchCurrencies(setCurrencies);
-        // }
     }, []);
 
     useEffect(() => {
@@ -54,10 +57,13 @@ const Group = () => {
             ></div>
             <h1 style={{ marginTop: "3rem" }}>Hello</h1>
             <Transaction
+                gid={gid}
                 members={members}
                 currencies={currencies}
                 checked={checked}
                 setChecked={setChecked}
+                expenseTime={expenseTime}
+                setExpenseTime={setExpenseTime}
             />
         </div>
     );
