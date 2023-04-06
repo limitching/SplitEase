@@ -55,8 +55,9 @@ const createGroupExpense = async (req, res, next) => {
     const credit_users = new Map();
     const debt_users = new Map();
     const involved_users = [];
+    let image;
+    req.file ? (image = "expenses/" + req.file.filename) : (image = null);
 
-    const image = "expenses/" + req.file.filename;
     credit_users.set(creditorsObj.id.toString(), -amount);
     involved_users.push(creditorsObj.id);
     debtorsObj.forEach((debtor) => {
@@ -97,7 +98,9 @@ const createGroupExpense = async (req, res, next) => {
 const getExpensesCurrencies = async (req, res, next) => {
     const currencies = await getCurrencies();
     if (currencies === -1) {
-        return res.status(500).json({ msg: "Internal Server Error" });
+        return res
+            .status(500)
+            .json({ errors: [{ msg: "Internal Server Error" }] });
     } else {
         return res.status(200).json(currencies);
     }
