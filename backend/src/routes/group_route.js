@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import wrapAsync from "../utils/util.js";
+import { wrapAsync } from "../utils/util.js";
 import {
     getGroupInformation,
     getGroupMembers,
