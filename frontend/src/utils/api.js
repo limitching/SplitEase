@@ -19,8 +19,6 @@ const api = {
             return result;
         } catch (error) {
             console.error(error);
-            console.error("=========");
-            console.error(error.response.data.errors);
             return error.response;
         }
     },
