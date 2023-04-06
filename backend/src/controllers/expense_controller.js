@@ -1,4 +1,8 @@
-import { Expense, getCurrencies } from "../models/expense_model.js";
+import {
+    Expense,
+    getCurrencies,
+    createExpenseInvolvedMembers,
+} from "../models/expense_model.js";
 
 const getExpensesByGroupId = async (gid) => {
     try {
@@ -37,10 +41,45 @@ const getGroupExpenses = async (req, res, next) => {
 };
 
 const createGroupExpense = async (req, res, next) => {
-    const expenseObject = req.body;
-    // TODO: Remove log
-    // console.log("body", expenseObject);
+    const {
+        amount,
+        description,
+        date,
+        split_method,
+        attached_group_id,
+        creditors,
+        debtors,
+    } = req.body;
+    const creditorsObj = JSON.parse(creditors);
+    const debtorsObj = JSON.parse(debtors);
+    const credit_users = new Map();
+    const debt_users = new Map();
+    const involved_users = [];
+
+    const image = "expenses/" + req.file.filename;
+    credit_users.set(creditorsObj.id.toString(), -amount);
+    involved_users.push(creditorsObj.id);
+    debtorsObj.forEach((debtor) => {
+        debt_users.set(debtor.id.toString(), amount / debtorsObj.length);
+        if (involved_users.indexOf(debtor.id) === -1) {
+            involved_users.push(debtor.id);
+        }
+    });
+    const expenseObject = {
+        description,
+        split_method,
+        amount,
+        attached_group_id,
+        credit_users,
+        debt_users,
+        involved_users,
+        image,
+        date,
+    };
+    // Insert Expense into MongoDB
     const { _id } = await createExpense(expenseObject);
+    // Insert involvedMembers into MySQL
+    const ids = await createExpenseInvolvedMembers(_id, involved_users, date);
     if (_id === -1) {
         return res.status(500).json({ msg: "Internal Server Error" });
     } else {

@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router();
-import wrapAsync from "../utils/util.js";
+import { wrapAsync, multerUpload } from "../utils/util.js";
+const expenseUpload = multerUpload.single("image");
 import {
     getGroupExpenses,
     createGroupExpense,
@@ -11,7 +12,7 @@ import {
 router
     .route("/expense")
     .get(wrapAsync(getGroupExpenses))
-    .post(wrapAsync(createGroupExpense));
+    .post(expenseUpload, wrapAsync(createGroupExpense));
 
 /* Currencies API */
 router.route("/currencies").get(wrapAsync(getExpensesCurrencies));

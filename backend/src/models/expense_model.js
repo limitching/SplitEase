@@ -18,14 +18,16 @@ const ExpenseSchema = new mongoose.Schema({
         required: true,
     },
     attached_group_id: { type: String, default: null }, // index key
-    involved_users: {
-        type: Map,
-        of: Number, // MAP<user_id:balance>
-        // People who will receive money from others. They have a positive balance.
-        // People who will pay money to others. They have a negative balance.
-    },
+    credit_users: { type: Map, of: Number }, // People who will receive money from others. They have a positive balance.
+    debt_users: { type: Map, of: Number }, // People who will pay money to others. They have a negative balance.
+    involved_users: [
+        {
+            type: Number,
+        },
+    ],
     comments: {},
     date: { type: Date, default: Date.now },
+    image: { type: String },
     createTime: {
         type: Date,
         default: Date.now,
@@ -45,4 +47,29 @@ const getCurrencies = async () => {
     }
 };
 
-export { Expense, getCurrencies };
+const createExpenseInvolvedMembers = async (eid, involved_users, date) => {
+    const connection = await pool.getConnection();
+    try {
+        await connection.query("START TRANSACTION");
+        const involvedMembersBinding = involved_users.map((uid) => [
+            eid,
+            uid,
+            date,
+        ]);
+        const involvedMembersQuery =
+            "INSERT INTO expense_members (eid, uid, expense_date) VALUES ?";
+        const [insertResult] = await connection.query(involvedMembersQuery, [
+            involvedMembersBinding,
+        ]);
+        await connection.query("COMMIT");
+        return insertResult;
+    } catch (error) {
+        console.error(error);
+        await conn.query("ROLLBACK");
+        return [];
+    } finally {
+        await connection.release();
+    }
+};
+
+export { Expense, getCurrencies, createExpenseInvolvedMembers };
