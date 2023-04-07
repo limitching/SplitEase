@@ -2,7 +2,7 @@ import { Container, Navbar } from "react-bootstrap";
 
 const Footer = () => {
     return (
-        <Navbar bg="warning" expand="lg" fixed="bottom">
+        <Navbar bg="warning" expand="lg">
             <Container className="justify-content-md-center">
                 <Navbar.Brand href="#home">
                     <img

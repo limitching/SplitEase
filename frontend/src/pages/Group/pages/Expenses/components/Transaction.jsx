@@ -17,8 +17,12 @@ import {
     Checkbox,
     Avatar,
 } from "@mui/material";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { api } from "../../../../../utils/api";
 import { SPLIT_METHODS } from "../../../../../global/constant";
+
+const MySwal = withReactContent(Swal);
 
 const TransactionSelector = () => {
     return (
@@ -280,9 +284,39 @@ const Transaction = ({
 
         const response = await api.createExpense(formData);
         if (response.status === 200) {
-            alert("Expense Created successfully!");
+            // handleClickVariant("Expense Created successfully!", "success");
+            MySwal.fire({
+                title: <p>Expense Created successfully!</p>,
+                icon: "success",
+                timer: 1000,
+                didOpen: () => {
+                    // `MySwal` is a subclass of `Swal` with all the same instance & static methods
+                    MySwal.showLoading();
+                },
+            });
+            handleClose();
+        } else if (response.status === 400) {
+            MySwal.fire({
+                title: <p>Client Side Error</p>,
+                html: <p>{response.data.errors[0].msg}</p>,
+                icon: "error",
+                timer: 2000,
+                didOpen: () => {
+                    // `MySwal` is a subclass of `Swal` with all the same instance & static methods
+                    MySwal.showLoading();
+                },
+            });
         } else if (response.status === 500) {
-            alert(response.data.msg);
+            MySwal.fire({
+                title: <p>Client Side Error</p>,
+                html: <p>{response.data.errors[0].msg}</p>,
+                icon: "error",
+                timer: 2000,
+                didOpen: () => {
+                    // `MySwal` is a subclass of `Swal` with all the same instance & static methods
+                    MySwal.showLoading();
+                },
+            });
         }
     };
 

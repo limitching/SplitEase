@@ -1,15 +1,35 @@
 import { useState, useEffect } from "react";
+import styled from "styled-components";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
     List,
     ListItem,
     ListItemButton,
     ListItemText,
     ListItemAvatar,
-    Checkbox,
     Avatar,
+    AvatarGroup,
 } from "@mui/material";
+import { Container, Row, Col } from "react-bootstrap";
 import { CURRENCY_OPTIONS } from "../../../../../global/constant";
-const ExpensesBlock = ({ groupExpense, members }) => {
+
+const avatarTheme = createTheme({
+    components: {
+        MuiAvatarGroup: {
+            styleOverrides: {
+                avatar: { width: "20px", height: "20px", fontSize: "0.75rem" },
+            },
+        },
+    },
+});
+
+const StyledListItemTextForAmount = styled(ListItemText)`
+    text-align: right;
+    font-weight: bold;
+    color: blue;
+`;
+
+const ExpensesBlock = ({ groupExpense, members, memberMap }) => {
     const [checked, setChecked] = useState([1]);
 
     const handleToggle = (value: number) => () => {
@@ -24,23 +44,26 @@ const ExpensesBlock = ({ groupExpense, members }) => {
 
         setChecked(newChecked);
     };
-    console.log(groupExpense);
+
     return (
         <div
             className="group-information"
             style={{
                 display: "block",
                 width: "50%",
-                height: "300px",
-                backgroundColor: "green",
+
+                backgroundColor: "lightgreen",
                 fontSize: "5rem",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
             }}
         >
             <List
                 dense
                 sx={{
                     width: "100%",
-                    maxWidth: 360,
+                    maxWidth: 500,
                     bgcolor: "background.paper",
                 }}
             >
@@ -48,17 +71,27 @@ const ExpensesBlock = ({ groupExpense, members }) => {
                     const labelId = `checkbox-list-secondary-label-${expense._id}`;
                     let creditors;
                     if (Object.keys(expense.credit_users).length === 1) {
-                        creditors = members[Object.keys(expense.credit_users)];
+                        const creditorId = Object.keys(expense.credit_users)[0];
+                        creditors = memberMap.get(Number(creditorId));
                     } else {
                         creditors = { name: "Multiple Members" };
                     }
+                    const [currencyOption] = CURRENCY_OPTIONS.filter(
+                        (currency) => currency.id === expense.currencyOption
+                    );
+
+                    const debtors = Object.keys(expense.debt_users).map(
+                        (debtorId) => {
+                            return memberMap.get(Number(debtorId));
+                        }
+                    );
 
                     return (
                         <ListItem key={expense._id} disablePadding>
                             <ListItemButton>
                                 <ListItemAvatar>
                                     <Avatar
-                                        alt={``}
+                                        alt={`${creditors.name}`}
                                         src={`/static/images/avatar/${
                                             index + 1
                                         }.jpg`}
@@ -69,10 +102,27 @@ const ExpensesBlock = ({ groupExpense, members }) => {
                                     primary={`${expense.description}`}
                                     secondary={`${creditors.name} Paid for`}
                                 />
-                                <ListItemText
+                                <StyledListItemTextForAmount
                                     id={labelId}
-                                    primary={`${expense.description}`}
-                                    secondary={`${creditors.name} Paid for`}
+                                    primary={`${currencyOption.symbol} ${expense.amount}`}
+                                    secondary={
+                                        <ThemeProvider theme={avatarTheme}>
+                                            <AvatarGroup total={debtors.length}>
+                                                {debtors.map((debtor) => (
+                                                    <Avatar
+                                                        key={debtor.id}
+                                                        alt={debtor.name}
+                                                        src={
+                                                            debtor.image ===
+                                                            null
+                                                                ? ".jpg"
+                                                                : debtor.image
+                                                        }
+                                                    />
+                                                ))}
+                                            </AvatarGroup>
+                                        </ThemeProvider>
+                                    }
                                 />
                             </ListItemButton>
                         </ListItem>

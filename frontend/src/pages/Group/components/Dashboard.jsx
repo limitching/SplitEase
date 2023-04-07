@@ -6,8 +6,10 @@ const GroupDashboard = () => {
                 display: "block",
                 width: "100%",
                 height: "300px",
-                backgroundColor: "blue",
+                backgroundColor: "lightblue",
                 fontSize: "5rem",
+                display: "flex",
+                justifyContent: "center",
             }}
         >
             <br />

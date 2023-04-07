@@ -40,7 +40,7 @@ const Expenses = () => {
         .toISOString()
         .substring(0, 16);
 
-    const [members, setMembers] = useState(null);
+    const [members, setMembers] = useState([]);
     const [groupExpense, setGroupExpense] = useState([]);
     const currencies = CURRENCY_OPTIONS;
     // const [currencies, setCurrencies] = useState([]);
@@ -58,23 +58,34 @@ const Expenses = () => {
             setChecked([...members]);
         }
     }, [members]);
-    console.log(currencies);
-    return (
-        <Container>
-            <h1 style={{ marginTop: "3rem" }}>Hello</h1>
+    const memberMap = new Map();
+    members.map((member) => {
+        memberMap.set(member.id, member);
+    });
 
+    return (
+        <Container style={{ marginTop: "5rem" }}>
             <Row className="justify-content-md-center">
                 <ExpensesBlock
                     groupExpense={groupExpense}
                     members={members}
+                    memberMap={memberMap}
                 ></ExpensesBlock>
             </Row>
             <Row className="justify-content-md-center">
-                <Col lg="2" className="justify-content-md-center">
-                    {" "}
+                <Col
+                    lg="2"
+                    className="justify-content-md-center"
+                    style={{
+                        display: "flex",
+                        paddingTop: "3rem",
+                        paddingBottom: "3rem",
+                    }}
+                >
                     <Transaction
                         gid={gid}
                         members={members}
+                        memberMap={memberMap}
                         currencies={currencies}
                         checked={checked}
                         setChecked={setChecked}
