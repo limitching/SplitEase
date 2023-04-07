@@ -40,12 +40,14 @@ const Expenses = () => {
         .toISOString()
         .substring(0, 16);
 
+    // States
     const [members, setMembers] = useState([]);
     const [groupExpense, setGroupExpense] = useState([]);
     const currencies = CURRENCY_OPTIONS;
     // const [currencies, setCurrencies] = useState([]);
     const [checked, setChecked] = useState([]);
     const [expenseTime, setExpenseTime] = useState(localISOTime);
+    const [expensesChanged, setExpensesChanged] = useState(false);
 
     useEffect(() => {
         fetchMembers(gid, setMembers);
@@ -58,6 +60,12 @@ const Expenses = () => {
             setChecked([...members]);
         }
     }, [members]);
+
+    useEffect(() => {
+        fetchGroupExpenses(gid, setGroupExpense);
+        setExpensesChanged(false);
+    }, [expensesChanged]);
+
     const memberMap = new Map();
     members.map((member) => {
         memberMap.set(member.id, member);
@@ -91,6 +99,8 @@ const Expenses = () => {
                         setChecked={setChecked}
                         expenseTime={expenseTime}
                         setExpenseTime={setExpenseTime}
+                        expensesChanged={expensesChanged}
+                        setExpensesChanged={setExpensesChanged}
                     />
                 </Col>
             </Row>

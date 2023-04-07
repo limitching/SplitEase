@@ -99,7 +99,11 @@ const ExpensesBlock = ({ groupExpense, members, memberMap }) => {
                                 </ListItemAvatar>
                                 <ListItemText
                                     id={labelId}
-                                    primary={`${expense.description}`}
+                                    primary={
+                                        expense.description === ""
+                                            ? "Expense"
+                                            : `${expense.description}`
+                                    }
                                     secondary={`${creditors.name} Paid for`}
                                 />
                                 <StyledListItemTextForAmount

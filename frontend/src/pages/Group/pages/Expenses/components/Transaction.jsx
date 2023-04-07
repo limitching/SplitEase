@@ -235,6 +235,8 @@ const Transaction = ({
     setChecked,
     expenseTime,
     setExpenseTime,
+    expensesChanged,
+    setExpensesChanged,
 }) => {
     const [show, setShow] = useState(false);
 
@@ -284,6 +286,7 @@ const Transaction = ({
 
         const response = await api.createExpense(formData);
         if (response.status === 200) {
+            setExpensesChanged(true);
             // handleClickVariant("Expense Created successfully!", "success");
             MySwal.fire({
                 title: <p>Expense Created successfully!</p>,
