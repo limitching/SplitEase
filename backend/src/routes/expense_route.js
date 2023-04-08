@@ -6,6 +6,7 @@ import {
     getGroupExpenses,
     createGroupExpense,
     getExpensesCurrencies,
+    updateGroupExpense,
 } from "../controllers/expense_controller.js";
 import expenseValidator from "../middlewares/validators/expenseValidator.js";
 
@@ -13,7 +14,8 @@ import expenseValidator from "../middlewares/validators/expenseValidator.js";
 router
     .route("/expense")
     .get(wrapAsync(getGroupExpenses))
-    .post(expenseUpload, expenseValidator, wrapAsync(createGroupExpense));
+    .post(expenseUpload, expenseValidator, wrapAsync(createGroupExpense))
+    .put(expenseUpload, expenseValidator, wrapAsync(createGroupExpense));
 
 /* Currencies API */
 router.route("/currencies").get(wrapAsync(getExpensesCurrencies));

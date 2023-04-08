@@ -50,6 +50,32 @@ const getCurrencies = async () => {
     }
 };
 
+const getExpensesByGroupId = async (gid) => {
+    try {
+        return await Expense.find({ attached_group_id: gid });
+    } catch (error) {
+        return -1;
+    }
+};
+
+const getExpensesByExpenseId = async (eid) => {
+    try {
+        return await Expense.find({ expense_id: eid });
+    } catch (error) {
+        return -1;
+    }
+};
+
+const createExpense = async (expenseObject) => {
+    try {
+        const newExpense = new Expense(expenseObject);
+        return await newExpense.save();
+    } catch (error) {
+        console.error(error);
+        return { _id: -1 };
+    }
+};
+
 const createExpenseInvolvedMembers = async (eid, involved_users, date) => {
     const connection = await pool.getConnection();
     try {
@@ -73,4 +99,28 @@ const createExpenseInvolvedMembers = async (eid, involved_users, date) => {
     }
 };
 
-export { Expense, getCurrencies, createExpenseInvolvedMembers };
+const updateExpense = async (eid, updatedExpenseObject) => {
+    try {
+        const updateResult = await Expense.findOneAndUpdate(
+            eid,
+            updatedExpenseObject,
+            {
+                new: true,
+            }
+        );
+        console.log(updateResult);
+        return updateResult;
+    } catch (error) {
+        console.error(error);
+        return { _id: -1 };
+    }
+};
+
+export {
+    getCurrencies,
+    getExpensesByGroupId,
+    getExpensesByExpenseId,
+    createExpenseInvolvedMembers,
+    createExpense,
+    updateExpense,
+};
