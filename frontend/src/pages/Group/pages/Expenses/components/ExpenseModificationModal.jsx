@@ -113,7 +113,6 @@ const ExpenseModificationModal = ({
 
     const handleExpenseDelete = async (eid, gid) => {
         const response = await api.deleteExpense(eid, gid);
-        console.log(response.data);
         if (response.status === 200) {
             setExpensesChanged(true);
             // handleClickVariant("Expense Created successfully!", "success");
