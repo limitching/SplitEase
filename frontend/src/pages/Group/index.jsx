@@ -1,4 +1,3 @@
-import Expenses from "./pages/Expenses";
 import GroupDashboard from "./components/Dashboard";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
