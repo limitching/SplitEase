@@ -5,13 +5,21 @@ import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { api } from "../../../../../utils/api";
+import { api, HOST } from "../../../../../utils/api";
 import { SPLIT_METHODS } from "../../../../../global/constant";
 
 const MySwal = withReactContent(Swal);
 
 const StyledModalBody = styled(Modal.Body)`
     height: 700px;
+    overflow: scroll;
+`;
+
+const StyledExpenseImage = styled.img`
+    width: 400px;
+    hight: auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
     overflow: scroll;
 `;
 
@@ -31,6 +39,7 @@ const ExpenseModificationModal = ({
     expenseTime,
     setExpenseTime,
     setExpensesChanged,
+    selectedExpense,
     amount,
     setAmount,
     selectedCreditor,
@@ -40,10 +49,12 @@ const ExpenseModificationModal = ({
 }) => {
     const handleClose = () => setShowModification(false);
 
-    const handleExpenseSubmit = async (event) => {
+    const handleExpenseUpdate = async (event) => {
         event.preventDefault();
 
         const formData = new FormData(event.target);
+        // TODO:
+        formData.append("eid", selectedExpense._id);
         formData.append("split_method", SPLIT_METHODS[selectedSplitMethod]);
         formData.append("attached_group_id", gid);
         formData.append(
@@ -52,17 +63,17 @@ const ExpenseModificationModal = ({
         );
         formData.append("debtors", JSON.stringify(checked));
 
-        // //TODO: debug;
+        //TODO: debug;
         // for (const pair of formData.entries()) {
         //     console.log(`${pair[0]}, ${pair[1]}`);
         // }
 
-        const response = await api.createExpense(formData);
+        const response = await api.updateExpense(formData);
         if (response.status === 200) {
             setExpensesChanged(true);
             // handleClickVariant("Expense Created successfully!", "success");
             MySwal.fire({
-                title: <p>Expense Created successfully!</p>,
+                title: <p>{response.data.msg}</p>,
                 icon: "success",
                 timer: 1000,
                 didOpen: () => {
@@ -84,7 +95,7 @@ const ExpenseModificationModal = ({
             });
         } else if (response.status === 500) {
             MySwal.fire({
-                title: <p>Client Side Error</p>,
+                title: <p>Server Side Error</p>,
                 html: <p>{response.data.errors[0].msg}</p>,
                 icon: "error",
                 timer: 2000,
@@ -100,6 +111,35 @@ const ExpenseModificationModal = ({
         setExpenseTime(event.target.value);
     };
 
+    const handleExpenseDelete = async (eid, gid) => {
+        const response = await api.deleteExpense(eid, gid);
+        if (response.status === 200) {
+            setExpensesChanged(true);
+            // handleClickVariant("Expense Created successfully!", "success");
+            MySwal.fire({
+                title: <p>{response.data.msg}</p>,
+                icon: "success",
+                timer: 1000,
+                didOpen: () => {
+                    // `MySwal` is a subclass of `Swal` with all the same instance & static methods
+                    MySwal.showLoading();
+                },
+            });
+            handleClose();
+        } else if (response.status === 500) {
+            MySwal.fire({
+                title: <p>Server Side Error</p>,
+                html: <p>{response.data.errors[0].msg}</p>,
+                icon: "error",
+                timer: 2000,
+                didOpen: () => {
+                    // `MySwal` is a subclass of `Swal` with all the same instance & static methods
+                    MySwal.showLoading();
+                },
+            });
+        }
+    };
+
     return (
         <>
             <Modal
@@ -108,7 +148,7 @@ const ExpenseModificationModal = ({
                 backdrop="static"
                 keyboard={false}
             >
-                <Form onSubmit={handleExpenseSubmit}>
+                <Form onSubmit={handleExpenseUpdate}>
                     <Modal.Header closeButton as={Row}>
                         <Container className="transaction-method ml-0 pl-0">
                             <Col lg="6">
@@ -152,6 +192,21 @@ const ExpenseModificationModal = ({
                         </Container>
                         <Container className="expense-image mb-3">
                             <Form.Label>Expense image</Form.Label>
+                            {selectedExpense ===
+                            null ? null : selectedExpense.image ===
+                              null ? null : (
+                                <Container>
+                                    <StyledExpenseImage
+                                        src={
+                                            HOST +
+                                            "/assets/" +
+                                            selectedExpense.image
+                                        }
+                                        alt={selectedExpense.title}
+                                    />
+                                </Container>
+                            )}
+
                             <Form.Control type="file" name="image" />
                         </Container>
                         <Container className="expense-datetime mb-3">
@@ -168,7 +223,12 @@ const ExpenseModificationModal = ({
                         <Container className="d-grid">
                             <Button
                                 variant="light"
-                                type="submit"
+                                onClick={() =>
+                                    handleExpenseDelete(
+                                        selectedExpense._id,
+                                        gid
+                                    )
+                                }
                                 className="mb-3"
                             >
                                 Delete

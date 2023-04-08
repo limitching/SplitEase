@@ -33,5 +33,23 @@ const api = {
             return error.response;
         }
     },
+    updateExpense: async function (data) {
+        try {
+            const result = await axios.put(`${this.hostname}/expense`, data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+            return result;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    deleteExpense: async function (eid, gid) {
+        const data = { eid, gid };
+        const result = await axios.delete(`${this.hostname}/expense`, data);
+        return result;
+    },
 };
-export { api };
+export { api, HOST };
