@@ -17,4 +17,4 @@ async function poolEnd() {
     return pool.end();
 }
 
-module.exports = { pool, poolEnd };
+export { pool, poolEnd };
