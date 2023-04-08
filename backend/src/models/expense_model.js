@@ -155,6 +155,7 @@ const deleteExpense = async (eid, gid) => {
             attached_group_id: gid,
         });
         if (deleteResult === null) {
+            await connection.query("ROLLBACK");
             return -400;
         }
 

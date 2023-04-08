@@ -48,7 +48,9 @@ const api = {
     },
     deleteExpense: async function (eid, gid) {
         const data = { eid, gid };
-        const result = await axios.delete(`${this.hostname}/expense`, data);
+        const result = await axios.delete(`${this.hostname}/expense`, {
+            data: data,
+        });
         return result;
     },
 };
