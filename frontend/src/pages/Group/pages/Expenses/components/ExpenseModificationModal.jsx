@@ -112,8 +112,8 @@ const ExpenseModificationModal = ({
     };
 
     const handleExpenseDelete = async (eid, gid) => {
-        console.log(eid, gid);
         const response = await api.deleteExpense(eid, gid);
+        console.log(response.data);
         if (response.status === 200) {
             setExpensesChanged(true);
             // handleClickVariant("Expense Created successfully!", "success");
@@ -127,6 +127,17 @@ const ExpenseModificationModal = ({
                 },
             });
             handleClose();
+        } else if (response.status === 400) {
+            MySwal.fire({
+                title: <p>CLient Side Error</p>,
+                html: <p>{response.data.errors[0].msg}</p>,
+                icon: "error",
+                timer: 2000,
+                didOpen: () => {
+                    // `MySwal` is a subclass of `Swal` with all the same instance & static methods
+                    MySwal.showLoading();
+                },
+            });
         } else if (response.status === 500) {
             MySwal.fire({
                 title: <p>Server Side Error</p>,

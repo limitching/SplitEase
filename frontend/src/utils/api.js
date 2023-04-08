@@ -47,11 +47,16 @@ const api = {
         }
     },
     deleteExpense: async function (eid, gid) {
-        const data = { eid, gid };
-        const result = await axios.delete(`${this.hostname}/expense`, {
-            data: data,
-        });
-        return result;
+        try {
+            const data = { eid, gid };
+            const result = await axios.delete(`${this.hostname}/expense`, {
+                data: data,
+            });
+            return result;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
     },
 };
 export { api, HOST };
