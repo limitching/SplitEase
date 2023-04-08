@@ -143,6 +143,32 @@ const updateExpenseInvolvedMembers = async (eid, involved_users, date) => {
     }
 };
 
+const deleteExpense = async (eid, gid) => {
+    const connection = await pool.getConnection();
+    try {
+        await connection.query("START TRANSACTION");
+        const deleteExpenseQuery = "DELETE FROM expense_members WHERE eid = ?";
+        await connection.query(deleteExpenseQuery, [eid]);
+
+        const deleteResult = await Expense.findOneAndDelete({
+            _id: eid,
+            attached_group_id: gid,
+        });
+        if (deleteResult === null) {
+            return -400;
+        }
+
+        await connection.query("COMMIT");
+        return 0;
+    } catch (error) {
+        console.error(error);
+        await connection.query("ROLLBACK");
+        return -1;
+    } finally {
+        await connection.release();
+    }
+};
+
 export {
     getCurrencies,
     getExpensesByGroupId,
@@ -151,4 +177,5 @@ export {
     createExpense,
     updateExpense,
     updateExpenseInvolvedMembers,
+    deleteExpense,
 };
