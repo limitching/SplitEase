@@ -92,7 +92,7 @@ const createExpenseInvolvedMembers = async (eid, involved_users, date) => {
         return 0;
     } catch (error) {
         console.error(error);
-        await conn.query("ROLLBACK");
+        await connection.query("ROLLBACK");
         return -1;
     } finally {
         await connection.release();
@@ -102,17 +102,44 @@ const createExpenseInvolvedMembers = async (eid, involved_users, date) => {
 const updateExpense = async (eid, updatedExpenseObject) => {
     try {
         const updateResult = await Expense.findOneAndUpdate(
-            eid,
+            { _id: eid },
             updatedExpenseObject,
             {
                 new: true,
             }
         );
-        console.log(updateResult);
         return updateResult;
     } catch (error) {
         console.error(error);
         return { _id: -1 };
+    }
+};
+
+const updateExpenseInvolvedMembers = async (eid, involved_users, date) => {
+    const connection = await pool.getConnection();
+    try {
+        await connection.query("START TRANSACTION");
+        const deleteInvolvedMemberQuery =
+            "DELETE FROM expense_members WHERE eid = ?";
+        await connection.query(deleteInvolvedMemberQuery, [eid]);
+        const involvedMembersBinding = involved_users.map((uid) => [
+            eid,
+            uid,
+            date,
+        ]);
+        const insertInvolvedMembersQuery =
+            "INSERT INTO expense_members (eid, uid, expense_date) VALUES ?";
+        await connection.query(insertInvolvedMembersQuery, [
+            involvedMembersBinding,
+        ]);
+        await connection.query("COMMIT");
+        return 0;
+    } catch (error) {
+        console.error(error);
+        await connection.query("ROLLBACK");
+        return -1;
+    } finally {
+        await connection.release();
     }
 };
 
@@ -123,4 +150,5 @@ export {
     createExpenseInvolvedMembers,
     createExpense,
     updateExpense,
+    updateExpenseInvolvedMembers,
 };

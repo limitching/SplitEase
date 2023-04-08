@@ -15,7 +15,7 @@ router
     .route("/expense")
     .get(wrapAsync(getGroupExpenses))
     .post(expenseUpload, expenseValidator, wrapAsync(createGroupExpense))
-    .put(expenseUpload, expenseValidator, wrapAsync(createGroupExpense));
+    .put(expenseUpload, expenseValidator, wrapAsync(updateGroupExpense));
 
 /* Currencies API */
 router.route("/currencies").get(wrapAsync(getExpensesCurrencies));

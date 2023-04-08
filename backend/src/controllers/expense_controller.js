@@ -5,6 +5,7 @@ import {
     createExpenseInvolvedMembers,
     createExpense,
     updateExpense,
+    updateExpenseInvolvedMembers,
 } from "../models/expense_model.js";
 
 const getExpensesCurrencies = async (req, res, next) => {
@@ -88,8 +89,9 @@ const createGroupExpense = async (req, res, next) => {
         .json({ msg: `New expense_id: ${_id} was created!!` });
 };
 
-const updateGroupExpense = async (res, req, next) => {
+const updateGroupExpense = async (req, res, next) => {
     const {
+        eid,
         amount,
         description,
         date,
@@ -99,6 +101,7 @@ const updateGroupExpense = async (res, req, next) => {
         debtors,
         currencyOption,
     } = req.body;
+
     const creditorsObj = JSON.parse(creditors);
     const debtorsObj = JSON.parse(debtors);
     const credit_users = new Map();
@@ -133,6 +136,16 @@ const updateGroupExpense = async (res, req, next) => {
     if (_id === -1) {
         return res.status(500).json({ errors: [{ msg: "MongoDB Error" }] });
     }
+    // Update involvedMembers into MySQL
+    const updateInvolvedResult = await updateExpenseInvolvedMembers(
+        eid,
+        involved_users,
+        date
+    );
+    if (updateInvolvedResult === -1) {
+        return res.status(500).json({ errors: [{ msg: "MySQL Error" }] });
+    }
+    return res.status(200).json({ msg: `Successfully modified expense!` });
 };
 
 export {
