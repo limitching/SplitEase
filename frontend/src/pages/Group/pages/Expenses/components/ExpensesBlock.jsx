@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { SPLIT_METHODS } from "../../../../../global/constant";
 import styled from "styled-components";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
@@ -10,7 +10,7 @@ import {
     Avatar,
     AvatarGroup,
 } from "@mui/material";
-import { Container, Row, Col } from "react-bootstrap";
+
 import { CURRENCY_OPTIONS } from "../../../../../global/constant";
 
 const avatarTheme = createTheme({
@@ -29,29 +29,59 @@ const StyledListItemTextForAmount = styled(ListItemText)`
     color: blue;
 `;
 
-const ExpensesBlock = ({ groupExpense, members, memberMap }) => {
-    const [checked, setChecked] = useState([1]);
+const ExpensesBlock = ({
+    groupExpense,
+    members,
+    memberMap,
+    setSelectedExpense,
+    setShowModification,
+    setAmount,
+    setSelectedCreditor,
+    setChecked,
+    setSelectedCurrency,
+    setSelectedSplitMethod,
+    setExpenseTime,
+    setDescription,
+}) => {
+    const handleShow = () => {
+        setShowModification(true);
+    };
 
-    const handleToggle = (value: number) => () => {
-        const currentIndex = checked.indexOf(value);
-        const newChecked = [...checked];
-
-        if (currentIndex === -1) {
-            newChecked.push(value);
-        } else {
-            newChecked.splice(currentIndex, 1);
+    const handleExpenseItemClick = (expense) => {
+        // open modal and pass expense data to Transaction component
+        // TODO: remove log
+        console.log(expense);
+        setSelectedExpense(expense);
+        setAmount(expense.amount);
+        if (Object.keys(expense.credit_users).length === 1) {
+            const creditors = memberMap.get(
+                Number(Object.keys(expense.credit_users)[0])
+            );
+            setSelectedCreditor(creditors.id);
         }
+        const expenseChecked = Object.keys(expense.debt_users).map(
+            (debtorsId) => memberMap.get(Number(debtorsId))
+        );
+        setChecked(expenseChecked);
+        setSelectedCurrency(expense.currencyOption);
+        setSelectedSplitMethod(SPLIT_METHODS.indexOf(expense.split_method));
+        // Convert GMT datetime to local datetime
+        const gmtDate = new Date(expense.date);
+        const timeZoneOffset = gmtDate.getTimezoneOffset() * 60 * 1000; //offset in milliseconds
+        const localISOTime = new Date(gmtDate - timeZoneOffset)
+            .toISOString()
+            .substring(0, 16);
 
-        setChecked(newChecked);
+        setExpenseTime(localISOTime);
+        setDescription(expense.description);
+        handleShow();
     };
 
     return (
         <div
             className="group-information"
             style={{
-                display: "block",
                 width: "50%",
-
                 backgroundColor: "lightgreen",
                 fontSize: "5rem",
                 display: "flex",
@@ -87,7 +117,11 @@ const ExpensesBlock = ({ groupExpense, members, memberMap }) => {
                     );
 
                     return (
-                        <ListItem key={expense._id} disablePadding>
+                        <ListItem
+                            key={expense._id}
+                            onClick={() => handleExpenseItemClick(expense)}
+                            disablePadding
+                        >
                             <ListItemButton>
                                 <ListItemAvatar>
                                     <Avatar

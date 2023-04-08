@@ -1,11 +1,12 @@
-import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
+import CreditorsBlock from "./CreditorsBlock";
+import DebtorsBlock from "./DebtorsBlock";
 import styled from "styled-components";
+import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
+
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { api } from "../../../../../utils/api";
 import { SPLIT_METHODS } from "../../../../../global/constant";
-import CreditorsBlock from "./CreditorsBlock";
-import DebtorsBlock from "./DebtorsBlock";
 
 const MySwal = withReactContent(Swal);
 
@@ -14,53 +15,30 @@ const StyledModalBody = styled(Modal.Body)`
     overflow: scroll;
 `;
 
-const TransactionSelector = () => {
-    return (
-        <Form.Select aria-label="Default select example">
-            <option value="1">New Expense</option>
-            <option value="2">New Income</option>
-            <option value="3">New Settle up</option>
-        </Form.Select>
-    );
-};
-
-const Transaction = ({
+const ExpenseModificationModal = ({
     gid,
-    showTransaction,
-    setShowTransaction,
+    showModification,
+    setShowModification,
     members,
     memberMap,
     currencies,
-    selectedCreditor,
-    setSelectedCreditor,
+    selectedCurrency,
+    setSelectedCurrency,
+    selectedSplitMethod,
+    setSelectedSplitMethod,
     checked,
     setChecked,
-    localISOTime,
     expenseTime,
     setExpenseTime,
     setExpensesChanged,
     amount,
     setAmount,
-    selectedCurrency,
-    setSelectedCurrency,
-    selectedSplitMethod,
-    setSelectedSplitMethod,
+    selectedCreditor,
+    setSelectedCreditor,
+    description,
+    setDescription,
 }) => {
-    const handleClose = () => setShowTransaction(false);
-    // When Transaction window is opened, set amount = 0
-    const handleShow = () => {
-        setAmount(0);
-        setChecked([...members]);
-        setShowTransaction(true);
-        // TODO: Set default creditor when user is done
-        setSelectedCreditor(1);
-        setSelectedCurrency(1);
-        setSelectedSplitMethod(0);
-        setExpenseTime(localISOTime);
-    };
-    // Select NT$ on default
-
-    // When credit amount change, update state
+    const handleClose = () => setShowModification(false);
 
     const handleExpenseSubmit = async (event) => {
         event.preventDefault();
@@ -74,7 +52,7 @@ const Transaction = ({
         );
         formData.append("debtors", JSON.stringify(checked));
 
-        //TODO: debug;
+        // //TODO: debug;
         // for (const pair of formData.entries()) {
         //     console.log(`${pair[0]}, ${pair[1]}`);
         // }
@@ -124,12 +102,8 @@ const Transaction = ({
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Add Transaction
-            </Button>
-
             <Modal
-                show={showTransaction}
+                show={showModification}
                 onHide={handleClose}
                 backdrop="static"
                 keyboard={false}
@@ -138,7 +112,7 @@ const Transaction = ({
                     <Modal.Header closeButton as={Row}>
                         <Container className="transaction-method ml-0 pl-0">
                             <Col lg="6">
-                                <TransactionSelector />
+                                <h3>Expense detail</h3>
                             </Col>
                         </Container>
                     </Modal.Header>
@@ -172,6 +146,7 @@ const Transaction = ({
                             <Form.Control
                                 as="textarea"
                                 name="description"
+                                defaultValue={description}
                                 rows={3}
                             />
                         </Container>
@@ -184,15 +159,26 @@ const Transaction = ({
                             <Form.Control
                                 type="datetime-local"
                                 name="date"
-                                defaultValue={expenseTime}
+                                defaultValue={expenseTime.substring(0, 16)}
                                 onChange={handleExpenseTimeChange}
                             />
                         </Container>
                     </StyledModalBody>
                     <Modal.Footer>
                         <Container className="d-grid">
-                            <Button variant="warning" type="submit">
-                                Save
+                            <Button
+                                variant="light"
+                                type="submit"
+                                className="mb-3"
+                            >
+                                Delete
+                            </Button>
+                            <Button
+                                variant="warning"
+                                type="submit"
+                                className="mb-3"
+                            >
+                                Update
                             </Button>
                         </Container>
                     </Modal.Footer>
@@ -201,4 +187,5 @@ const Transaction = ({
         </>
     );
 };
-export default Transaction;
+
+export default ExpenseModificationModal;

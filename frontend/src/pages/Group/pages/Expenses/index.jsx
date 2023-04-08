@@ -1,5 +1,7 @@
 import Transaction from "./components/Transaction";
 import ExpensesBlock from "./components/ExpensesBlock";
+import ExpenseModificationModal from "./components/ExpenseModificationModal";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../../../utils/api";
@@ -10,15 +12,6 @@ async function fetchMembers(gid, setMembers) {
     try {
         const data = await api.getMembers(gid);
         setMembers(data);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-async function fetchCurrencies(setCurrencies) {
-    try {
-        const data = await api.getCurrencies();
-        setCurrencies(data);
     } catch (error) {
         console.error(error);
     }
@@ -48,6 +41,14 @@ const Expenses = () => {
     const [checked, setChecked] = useState([]);
     const [expenseTime, setExpenseTime] = useState(localISOTime);
     const [expensesChanged, setExpensesChanged] = useState(false);
+    const [selectedExpense, setSelectedExpense] = useState(null);
+    const [showTransaction, setShowTransaction] = useState(false);
+    const [showModification, setShowModification] = useState(false);
+    const [amount, setAmount] = useState(0);
+    const [selectedCurrency, setSelectedCurrency] = useState(1);
+    const [selectedCreditor, setSelectedCreditor] = useState(0);
+    const [selectedSplitMethod, setSelectedSplitMethod] = useState(0);
+    const [description, setDescription] = useState("");
 
     useEffect(() => {
         fetchMembers(gid, setMembers);
@@ -67,7 +68,7 @@ const Expenses = () => {
     }, [expensesChanged]);
 
     const memberMap = new Map();
-    members.map((member) => {
+    members.forEach((member) => {
         memberMap.set(member.id, member);
     });
 
@@ -78,6 +79,15 @@ const Expenses = () => {
                     groupExpense={groupExpense}
                     members={members}
                     memberMap={memberMap}
+                    setSelectedExpense={setSelectedExpense}
+                    setShowModification={setShowModification}
+                    setAmount={setAmount}
+                    setSelectedCreditor={setSelectedCreditor}
+                    setChecked={setChecked}
+                    setSelectedCurrency={setSelectedCurrency}
+                    setSelectedSplitMethod={setSelectedSplitMethod}
+                    setExpenseTime={setExpenseTime}
+                    setDescription={setDescription}
                 ></ExpensesBlock>
             </Row>
             <Row className="justify-content-md-center">
@@ -92,16 +102,51 @@ const Expenses = () => {
                 >
                     <Transaction
                         gid={gid}
+                        showTransaction={showTransaction}
+                        setShowTransaction={setShowTransaction}
                         members={members}
                         memberMap={memberMap}
                         currencies={currencies}
+                        selectedCreditor={selectedCreditor}
+                        setSelectedCreditor={setSelectedCreditor}
+                        checked={checked}
+                        setChecked={setChecked}
+                        localISOTime={localISOTime}
+                        expenseTime={expenseTime}
+                        setExpenseTime={setExpenseTime}
+                        setExpensesChanged={setExpensesChanged}
+                        selectedExpense={selectedExpense}
+                        amount={amount}
+                        setAmount={setAmount}
+                        selectedCurrency={selectedCurrency}
+                        setSelectedCurrency={setSelectedCurrency}
+                        selectedSplitMethod={selectedSplitMethod}
+                        setSelectedSplitMethod={setSelectedSplitMethod}
+                    />
+                    <ExpenseModificationModal
+                        gid={gid}
+                        showModification={showModification}
+                        setShowModification={setShowModification}
+                        members={members}
+                        memberMap={memberMap}
+                        currencies={currencies}
+                        selectedCurrency={selectedCurrency}
+                        setSelectedCurrency={setSelectedCurrency}
+                        selectedSplitMethod={selectedSplitMethod}
+                        setSelectedSplitMethod={setSelectedSplitMethod}
                         checked={checked}
                         setChecked={setChecked}
                         expenseTime={expenseTime}
                         setExpenseTime={setExpenseTime}
-                        expensesChanged={expensesChanged}
                         setExpensesChanged={setExpensesChanged}
-                    />
+                        selectedExpense={selectedExpense}
+                        amount={amount}
+                        setAmount={setAmount}
+                        selectedCreditor={selectedCreditor}
+                        setSelectedCreditor={setSelectedCreditor}
+                        description={description}
+                        setDescription={setDescription}
+                    ></ExpenseModificationModal>
                 </Col>
             </Row>
         </Container>
