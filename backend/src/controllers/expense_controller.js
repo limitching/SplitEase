@@ -6,6 +6,7 @@ import {
     createExpense,
     updateExpense,
     updateExpenseInvolvedMembers,
+    deleteExpense,
 } from "../models/expense_model.js";
 
 const getExpensesCurrencies = async (req, res, next) => {
@@ -147,10 +148,23 @@ const updateGroupExpense = async (req, res, next) => {
     }
     return res.status(200).json({ msg: `Successfully modified expense!` });
 };
+const deleteGroupExpense = async (req, res, next) => {
+    const { eid, gid } = req.body;
+    const deleteResult = await deleteExpense(eid, gid);
+    if (deleteResult === -400) {
+        return res.status(400).json({ errors: [{ msg: "Client side Error" }] });
+    } else if (deleteResult === -1) {
+        return res
+            .status(500)
+            .json({ errors: [{ msg: "Internal Server Error" }] });
+    }
+    return res.status(200).json({ msg: "Successfully deleted!" });
+};
 
 export {
     getGroupExpenses,
     createGroupExpense,
     getExpensesCurrencies,
     updateGroupExpense,
+    deleteGroupExpense,
 };
