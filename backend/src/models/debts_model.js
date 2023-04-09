@@ -155,4 +155,61 @@ function dinicMaxFlow(graph, source, sink) {
     return { maxFlow, residualGraph, levelGraph };
 }
 
-export { dinicMaxFlow };
+function minimizeDebts(graph, source, sink) {
+    const N = graph.length;
+    let residualGraph = buildResidualGraph(graph);
+    for (let source = 0; source < N; source++) {
+        for (let sink = 0; sink < N; sink++) {
+            const dinicResult = dinicMaxFlow(residualGraph, source, sink);
+            residualGraph = dinicResult.residualGraph;
+            // console.log(residualGraph);
+        }
+    }
+
+    const cutEdges = new Set();
+    const levelGraph = buildLevelGraph(residualGraph, source, sink);
+    // const levelGraph = buildLevelGraph(graph, source, sink);
+
+    // console.log(levelGraph);
+
+    // Find all edges crossing the cut
+    for (let i = 0; i < N; i++) {
+        if (levelGraph !== null && levelGraph[i] !== -1) {
+            for (let j = 0; j < N; j++) {
+                // if (levelGraph[j] === -1 && graph[i][j] !== 0) {
+                if (levelGraph[j] === -1 && residualGraph[i][j] !== 0) {
+                    cutEdges.add(`${i}-${j}`);
+                }
+            }
+        }
+    }
+
+    // Simplify the graph by removing all edges that cross the cut
+    const simplifiedGraph = new Array(N)
+        .fill(null)
+        .map(() => new Array(N).fill(0));
+    for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+            // if (!cutEdges.has(`${i}-${j}`) && graph[i][j] !== 0) {
+            if (!cutEdges.has(`${i}-${j}`) && residualGraph[i][j] !== 0) {
+                // simplifiedGraph[i][j] = graph[i][j];
+                simplifiedGraph[i][j] = residualGraph[i][j];
+            }
+        }
+    }
+    console.log("Simplify the graph", simplifiedGraph);
+
+    // Determine who owes how much money to whom
+    const transactions = [];
+    for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+            if (simplifiedGraph[i][j] !== 0) {
+                transactions.push([j, i, simplifiedGraph[i][j]]);
+            }
+        }
+    }
+
+    return transactions;
+}
+
+export { minimizeDebts };
