@@ -23,6 +23,15 @@ async function fetchGroupExpenses(gid, setGroupExpense) {
     }
 }
 
+async function fetchGroupDebts(gid, setDebts) {
+    try {
+        const data = await api.getGroupDebts(gid);
+        setDebts(data);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 const Debts = () => {
     const { gid } = useParams();
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
@@ -46,11 +55,12 @@ const Debts = () => {
     const [selectedCreditor, setSelectedCreditor] = useState(0);
     const [selectedSplitMethod, setSelectedSplitMethod] = useState(0);
     const [description, setDescription] = useState("");
+    const [debts, setDebts] = useState([]);
 
     useEffect(() => {
         fetchMembers(gid, setMembers);
-        // fetchCurrencies(setCurrencies);
         fetchGroupExpenses(gid, setGroupExpense);
+        fetchGroupDebts(gid, setDebts);
     }, []);
 
     useEffect(() => {
