@@ -38,4 +38,43 @@ function buildLevelGraph(residualGraph, start, end) {
     }
 }
 
-export { buildResidualGraph, buildLevelGraph };
+// A function to find BlockingFlow
+function findBlockingFlow(levelGraph, residualGraph, u, t, flow) {
+    // u = current user , t = target user
+    // when meet target user, return flow
+    if (u === t) {
+        return flow;
+    }
+
+    // N = number of users
+    const N = residualGraph.length;
+    let currentFlow = 0;
+
+    for (let i = 0; i < N; i++) {
+        // If user[u] has debt with user[i] , and user[i] is user[u]'s neighborhood,
+        // try finding BlockingFlow between them.
+        if (residualGraph[u][i] > 0 && levelGraph[i] === levelGraph[u] + 1) {
+            const minFlow = Math.min(flow - currentFlow, residualGraph[u][i]);
+            const delta = findBlockingFlow(
+                levelGraph,
+                residualGraph,
+                i,
+                t,
+                minFlow
+            );
+
+            if (delta > 0) {
+                currentFlow += delta;
+                // console.log(currentFlow);
+                // console.log("origin", residualGraph);
+                residualGraph[u][i] -= delta;
+                // residualGraph[i][u] += delta;
+                // console.log("updated", residualGraph);
+            }
+        }
+    }
+
+    return currentFlow;
+}
+
+export { buildResidualGraph, buildLevelGraph, findBlockingFlow };
