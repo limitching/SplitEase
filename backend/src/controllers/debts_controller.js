@@ -9,26 +9,41 @@ const getGroupDebts = async (req, res, next) => {
         membersIndexMap.set(member.uid, index)
     );
 
-    const debtsGraph = new Array(groupMembers.length);
-    for (let i = 0; i < debtsGraph.length; i++) {
-        debtsGraph[i] = new Array(groupMembers.length).fill(0);
-    }
+    const currencyGraph = {};
+    const currencyTransactions = {};
+    // const debtsGraph = new Array(groupMembers.length);
+    // for (let i = 0; i < debtsGraph.length; i++) {
+    // debtsGraph[i] = new Array(groupMembers.length).fill(0);
+    // }
     const groupExpenses = await getExpensesByGroupId(gid);
     groupExpenses.forEach((expense) => {
+        if (expense.currencyOption in currencyGraph === false) {
+            const debtsGraph = new Array(groupMembers.length);
+            for (let i = 0; i < debtsGraph.length; i++) {
+                debtsGraph[i] = new Array(groupMembers.length).fill(0);
+            }
+            currencyGraph[expense.currencyOption] = debtsGraph;
+            currencyTransactions[expense.currencyOption] = null;
+        }
+
         for (let [creditor, credit] of expense.credit_users) {
             for (let [debtor, debt] of expense.debt_users) {
                 const creditorIndex = membersIndexMap.get(Number(creditor));
                 const debtorIndex = membersIndexMap.get(Number(debtor));
                 // Only calculate case: creditorIndex !== debtorIndex
                 if (creditorIndex !== debtorIndex) {
-                    debtsGraph[creditorIndex][debtorIndex] += debt;
+                    currencyGraph[expense.currencyOption][creditorIndex][
+                        debtorIndex
+                    ] += debt;
                 }
             }
         }
     });
-    const transactions = minimizeDebts(debtsGraph);
+    for (const [currencyOption, graph] of Object.entries(currencyGraph)) {
+        currencyTransactions[currencyOption] = minimizeDebts(graph);
+    }
 
-    return res.status(200).json(transactions);
+    return res.status(200).json(currencyTransactions);
 };
 
 export { getGroupDebts };
