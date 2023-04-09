@@ -98,4 +98,61 @@ function updateGraph(graph, residualGraph, source, sink, maxFlow) {
     // console.log(graph);
 }
 
-export { buildResidualGraph, buildLevelGraph, findBlockingFlow, updateGraph };
+// A function to figure out maxFlow within specific source and sink
+function dinicMaxFlow(graph, source, sink) {
+    let maxFlow = 0;
+    let levelGraph;
+    let blockingFlow = 0;
+
+    // Check if there's any edge between source and sink
+    if (graph[source][sink] === 0) {
+        console.log(
+            `There's no path between source = ${source} and sink = ${sink}!`
+        );
+        return { maxFlow, residualGraph: graph };
+    }
+
+    // build residual graph
+    const residualGraph = buildResidualGraph(graph);
+
+    // loop until there's no blocking flow in the residual graph
+    while (levelGraph !== null) {
+        levelGraph = buildLevelGraph(residualGraph, source, sink);
+        if (levelGraph === null) {
+            break;
+        }
+
+        blockingFlow = Infinity;
+        while (
+            (blockingFlow = findBlockingFlow(
+                levelGraph,
+                residualGraph,
+                source,
+                sink,
+                Infinity
+            )) > 0
+        ) {
+            // // update residual graph
+            // updateResidualGraph(
+            //     residualGraph,
+            //     levelGraph,
+            //     blockingFlow,
+            //     source,
+            //     sink
+            // );
+            // update max flow
+            maxFlow += blockingFlow;
+            // console.log(blockingFlow);
+        }
+    }
+
+    // console.log("before update", graph);
+    // update original graph
+    updateGraph(graph, residualGraph, source, sink, maxFlow);
+    // console.log("after update", graph);
+    console.log(`[source = ${source} and sink = ${sink}] maxFlow = ${maxFlow}`);
+    // console.log("residual", residualGraph);
+    return { maxFlow, residualGraph, levelGraph };
+}
+
+export { dinicMaxFlow };
