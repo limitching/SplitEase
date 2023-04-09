@@ -6,6 +6,7 @@ import App from "./App";
 import Group from "./pages/Group";
 import Transaction from "./pages/Group/pages/Expenses/components/Transaction";
 import Expenses from "./pages/Group/pages/Expenses";
+import Debts from "./pages/Group/pages/Debts";
 // import reportWebVitals from "./reportWebVitals";
 
 // import App from "./pages/app";
@@ -22,6 +23,7 @@ root.render(
                 <Route path="group/:gid" element={<Group />}>
                     <Route path="expenses" element={<Expenses />} />
                     <Route path="dashboard" element={<Transaction />} />
+                    <Route path="debts" element={<Debts />} />
                 </Route>
             </Route>
         </Routes>

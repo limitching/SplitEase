@@ -3,7 +3,6 @@ const GroupDashboard = () => {
         <div
             className="group-information"
             style={{
-                display: "block",
                 width: "100%",
                 height: "300px",
                 backgroundColor: "lightblue",
