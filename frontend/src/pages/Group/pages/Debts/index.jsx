@@ -80,8 +80,10 @@ const Debts = () => {
     });
 
     return (
-        <Container style={{ marginTop: "5rem" }}>
-            <DebtsBlock members={members}></DebtsBlock>
+        <Container style={{ marginTop: "5rem", marginBottom: "5rem" }}>
+            <Row className="justify-content-md-center">
+                <DebtsBlock members={members} debts={debts}></DebtsBlock>
+            </Row>
         </Container>
     );
 };
