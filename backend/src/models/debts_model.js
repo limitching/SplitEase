@@ -77,4 +77,25 @@ function findBlockingFlow(levelGraph, residualGraph, u, t, flow) {
     return currentFlow;
 }
 
-export { buildResidualGraph, buildLevelGraph, findBlockingFlow };
+function updateGraph(graph, residualGraph, source, sink, maxFlow) {
+    const n = graph.length;
+    // console.log(maxFlow);
+    // console.log("//////");
+    // console.log("inside update function residual", residualGraph);
+    residualGraph[source][sink] = maxFlow;
+    // console.log("inside update function residual", residualGraph);
+    // console.log("//////");
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            if (residualGraph[i][j] > 0) {
+                // 將原本的邊減去 blocking flow
+                graph[i][j] -= maxFlow;
+                // 將反向邊加上 blocking flow
+                graph[j][i] += maxFlow;
+            }
+        }
+    }
+    // console.log(graph);
+}
+
+export { buildResidualGraph, buildLevelGraph, findBlockingFlow, updateGraph };
