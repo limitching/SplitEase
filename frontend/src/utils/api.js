@@ -58,5 +58,14 @@ const api = {
             return error.response;
         }
     },
+    getGroupDebts: async function (gid) {
+        try {
+            const { data } = await axios.get(`${this.hostname}/debts/${gid}`);
+            return data;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
 };
 export { api, HOST };
