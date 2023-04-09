@@ -12,6 +12,7 @@ import indexRouter from "./src/routes/index.js";
 import usersRouter from "./src/routes/users.js";
 import groupRouter from "./src/routes/group_route.js";
 import expenseRouter from "./src/routes/expense_route.js";
+import debtsRouter from "./src/routes/debts_route.js";
 import cors from "cors";
 var app = express();
 app.use(bodyParser.json());
@@ -26,6 +27,7 @@ app.use("/api/" + API_VERSION, [
     usersRouter,
     groupRouter,
     expenseRouter,
+    debtsRouter,
 ]);
 
 app.use(logger("dev"));
