@@ -1,5 +1,6 @@
 import { getMembers } from "../models/group_model.js";
 import { getExpensesByGroupId } from "../models/expense_model.js";
+import { minimizeDebts } from "../models/debts_model.js";
 const getGroupDebts = async (req, res, next) => {
     const gid = req.params.gid;
     const groupMembers = await getMembers(gid);
@@ -25,8 +26,9 @@ const getGroupDebts = async (req, res, next) => {
             }
         }
     });
+    const transactions = minimizeDebts(debtsGraph);
 
-    return res.status(200).json(debtsGraph);
+    return res.status(200).json(transactions);
 };
 
 export { getGroupDebts };

@@ -155,7 +155,7 @@ function dinicMaxFlow(graph, source, sink) {
     return { maxFlow, residualGraph, levelGraph };
 }
 
-function minimizeDebts(graph, source, sink) {
+function minimizeDebts(graph) {
     const N = graph.length;
     let residualGraph = buildResidualGraph(graph);
     for (let source = 0; source < N; source++) {
@@ -167,7 +167,7 @@ function minimizeDebts(graph, source, sink) {
     }
 
     const cutEdges = new Set();
-    const levelGraph = buildLevelGraph(residualGraph, source, sink);
+    const levelGraph = buildLevelGraph(residualGraph, 0, graph.length - 1);
     // const levelGraph = buildLevelGraph(graph, source, sink);
 
     // console.log(levelGraph);
@@ -200,16 +200,20 @@ function minimizeDebts(graph, source, sink) {
     console.log("Simplify the graph", simplifiedGraph);
 
     // Determine who owes how much money to whom
+    const transactions = calculateTransaction(simplifiedGraph);
+    return transactions;
+}
+
+const calculateTransaction = (graph) => {
     const transactions = [];
-    for (let i = 0; i < N; i++) {
-        for (let j = 0; j < N; j++) {
-            if (simplifiedGraph[i][j] !== 0) {
-                transactions.push([j, i, simplifiedGraph[i][j]]);
+    for (let i = 0; i < graph.length; i++) {
+        for (let j = 0; j < graph.length; j++) {
+            if (graph[i][j] !== 0) {
+                transactions.push([j, i, graph[i][j]]);
             }
         }
     }
-
     return transactions;
-}
+};
 
 export { minimizeDebts };
