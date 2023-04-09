@@ -1,4 +1,7 @@
-import { SPLIT_METHODS } from "../../../../../global/constant";
+import {
+    SPLIT_METHODS,
+    CURRENCY_OPTIONS,
+} from "../../../../../global/constant";
 import styled from "styled-components";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
@@ -31,73 +34,84 @@ const DebtsBlock = ({ members, debts }) => {
                     bgcolor: "background.paper",
                 }}
             >
-                {debts.map((debt, index) => {
-                    const labelId = `checkbox-list-secondary-label-${index}`;
-                    const creditor = members[debt[0]];
-                    const debtor = members[debt[1]];
-                    const debtAmounts = debt[2];
+                {Object.entries(debts).map(([currencyOption, transactions]) => {
+                    const [currency] = CURRENCY_OPTIONS.filter(
+                        (currency) => currency.id === Number(currencyOption)
+                    );
+                    return transactions.map((transaction, index) => {
+                        const labelId = `checkbox-list-secondary-label-${index}`;
+                        const creditor = members[transaction[0]];
+                        const debtor = members[transaction[1]];
+                        const debtAmounts = transaction[2];
 
-                    return (
-                        <ListItem key={index} disablePadding>
-                            <ListItemButton>
-                                <ListItemAvatar
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "left",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <Avatar
-                                        alt={`${creditor.name}`}
-                                        src={`/static/images/avatar/${
-                                            index + 1
-                                        }.jpg`}
-                                    />
-                                </ListItemAvatar>
-                                <ListItemText
-                                    id={labelId}
-                                    primary={creditor.name}
-                                    secondary={debtAmounts}
-                                    sx={{
-                                        textAlign: "LEFT",
-                                        maxWidth: "130px",
-                                    }}
-                                />
-                                <ListItemText
-                                    id={labelId}
-                                    primary="→"
+                        return (
+                            <ListItem key={index} disablePadding>
+                                <ListItemButton
                                     sx={{
                                         display: "flex",
                                         justifyContent: "center",
                                         alignItems: "center",
-                                        maxWidth: "50px",
-                                    }}
-                                />
-                                <ListItemText
-                                    id={labelId}
-                                    primary={debtor.name}
-                                    sx={{
-                                        textAlign: "right",
-                                        maxWidth: "130px",
-                                    }}
-                                />
-                                <ListItemAvatar
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "right",
-                                        alignItems: "center",
                                     }}
                                 >
-                                    <Avatar
-                                        alt={`${debtor.name}`}
-                                        src={`/static/images/avatar/${
-                                            index + 1
-                                        }.jpg`}
+                                    <ListItemAvatar
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "left",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <Avatar
+                                            alt={`${creditor.name}`}
+                                            src={`/static/images/avatar/${
+                                                index + 1
+                                            }.jpg`}
+                                        />
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                        id={labelId}
+                                        primary={creditor.name}
+                                        secondary={`${currency.symbol} ${debtAmounts}`}
+                                        sx={{
+                                            textAlign: "LEFT",
+                                            maxWidth: "130px",
+                                        }}
                                     />
-                                </ListItemAvatar>
-                            </ListItemButton>
-                        </ListItem>
-                    );
+                                    <ListItemText
+                                        id={labelId}
+                                        primary="→"
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            maxWidth: "50px",
+                                        }}
+                                    />
+                                    <ListItemText
+                                        id={labelId}
+                                        primary={debtor.name}
+                                        sx={{
+                                            textAlign: "right",
+                                            maxWidth: "130px",
+                                        }}
+                                    />
+                                    <ListItemAvatar
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "right",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <Avatar
+                                            alt={`${debtor.name}`}
+                                            src={`/static/images/avatar/${
+                                                index + 1
+                                            }.jpg`}
+                                        />
+                                    </ListItemAvatar>
+                                </ListItemButton>
+                            </ListItem>
+                        );
+                    });
                 })}
             </List>
         </div>
