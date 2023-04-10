@@ -56,12 +56,14 @@ const GroupContextProvider = ({ children }) => {
     }, [gid]);
 
     useEffect(() => {
-        setIsLoading(true);
-        fetchGroupExpenses(gid, setGroupExpense);
-        fetchGroupDebts(gid, setDebts);
-        setIsLoading(false);
-        setExpensesChanged(false);
-    }, [expensesChanged]);
+        if (expensesChanged) {
+            setIsLoading(true);
+            fetchGroupExpenses(gid, setGroupExpense);
+            fetchGroupDebts(gid, setDebts);
+            setIsLoading(false);
+            setExpensesChanged(false);
+        }
+    }, [expensesChanged, gid]);
 
     if (isLoading) {
         return <div>Loading...</div>;

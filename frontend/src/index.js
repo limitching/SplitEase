@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import { Group } from "./pages/Group";
@@ -21,8 +21,8 @@ root.render(
             <Route path="/" element={<App />}>
                 {/* <Route index element={<Home />} /> */}
                 <Route path="group/:gid" element={<Group />}>
-                    <Route path="expenses" element={<Expenses />} />
                     <Route path="overview" element={<Transaction />} />
+                    <Route path="expenses" element={<Expenses />} />
                     <Route path="debts" element={<Debts />} />
                 </Route>
             </Route>
