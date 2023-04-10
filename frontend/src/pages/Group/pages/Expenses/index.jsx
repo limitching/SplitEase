@@ -27,13 +27,6 @@ const Expenses = () => {
     const [selectedCreditor, setSelectedCreditor] = useState(0);
     const [selectedSplitMethod, setSelectedSplitMethod] = useState(0);
     const [description, setDescription] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-        setIsLoading(true);
-
-        setIsLoading(false);
-    }, []);
 
     useEffect(() => {
         if (members !== null) {
@@ -43,82 +36,74 @@ const Expenses = () => {
     if (members.length === 0) {
         return;
     }
-    console.log(members);
 
     return (
-        <>
-            {isLoading ? (
-                <></>
-            ) : (
-                <Container style={{ marginTop: "5rem" }}>
-                    <Row className="justify-content-md-center">
-                        <ExpensesBlock
-                            setSelectedExpense={setSelectedExpense}
-                            setShowModification={setShowModification}
-                            setAmount={setAmount}
-                            setSelectedCreditor={setSelectedCreditor}
-                            setChecked={setChecked}
-                            setSelectedCurrency={setSelectedCurrency}
-                            setSelectedSplitMethod={setSelectedSplitMethod}
-                            setExpenseTime={setExpenseTime}
-                            setDescription={setDescription}
-                            isLoading={isLoading}
-                        ></ExpensesBlock>
-                    </Row>
-                    <Row className="justify-content-md-center">
-                        <Col
-                            lg="2"
-                            className="justify-content-md-center"
-                            style={{
-                                display: "flex",
-                                paddingTop: "3rem",
-                                paddingBottom: "3rem",
-                            }}
-                        >
-                            <Transaction
-                                showTransaction={showTransaction}
-                                setShowTransaction={setShowTransaction}
-                                currencies={currencies}
-                                selectedCreditor={selectedCreditor}
-                                setSelectedCreditor={setSelectedCreditor}
-                                checked={checked}
-                                setChecked={setChecked}
-                                localISOTime={localISOTime}
-                                expenseTime={expenseTime}
-                                setExpenseTime={setExpenseTime}
-                                selectedExpense={selectedExpense}
-                                amount={amount}
-                                setAmount={setAmount}
-                                selectedCurrency={selectedCurrency}
-                                setSelectedCurrency={setSelectedCurrency}
-                                selectedSplitMethod={selectedSplitMethod}
-                                setSelectedSplitMethod={setSelectedSplitMethod}
-                            />
-                            <ExpenseModificationModal
-                                showModification={showModification}
-                                setShowModification={setShowModification}
-                                currencies={currencies}
-                                selectedCurrency={selectedCurrency}
-                                setSelectedCurrency={setSelectedCurrency}
-                                selectedSplitMethod={selectedSplitMethod}
-                                setSelectedSplitMethod={setSelectedSplitMethod}
-                                checked={checked}
-                                setChecked={setChecked}
-                                expenseTime={expenseTime}
-                                setExpenseTime={setExpenseTime}
-                                selectedExpense={selectedExpense}
-                                amount={amount}
-                                setAmount={setAmount}
-                                selectedCreditor={selectedCreditor}
-                                setSelectedCreditor={setSelectedCreditor}
-                                description={description}
-                                setDescription={setDescription}
-                            ></ExpenseModificationModal>
-                        </Col>
-                    </Row>
-                </Container>
-            )}
-        </>
+        <Container style={{ marginTop: "5rem" }}>
+            <Row className="justify-content-md-center">
+                <ExpensesBlock
+                    setSelectedExpense={setSelectedExpense}
+                    setShowModification={setShowModification}
+                    setAmount={setAmount}
+                    setSelectedCreditor={setSelectedCreditor}
+                    setChecked={setChecked}
+                    setSelectedCurrency={setSelectedCurrency}
+                    setSelectedSplitMethod={setSelectedSplitMethod}
+                    setExpenseTime={setExpenseTime}
+                    setDescription={setDescription}
+                ></ExpensesBlock>
+            </Row>
+            <Row className="justify-content-md-center">
+                <Col
+                    lg="2"
+                    className="justify-content-md-center"
+                    style={{
+                        display: "flex",
+                        paddingTop: "3rem",
+                        paddingBottom: "3rem",
+                    }}
+                >
+                    <Transaction
+                        showTransaction={showTransaction}
+                        setShowTransaction={setShowTransaction}
+                        currencies={currencies}
+                        selectedCreditor={selectedCreditor}
+                        setSelectedCreditor={setSelectedCreditor}
+                        checked={checked}
+                        setChecked={setChecked}
+                        localISOTime={localISOTime}
+                        expenseTime={expenseTime}
+                        setExpenseTime={setExpenseTime}
+                        selectedExpense={selectedExpense}
+                        amount={amount}
+                        setAmount={setAmount}
+                        selectedCurrency={selectedCurrency}
+                        setSelectedCurrency={setSelectedCurrency}
+                        selectedSplitMethod={selectedSplitMethod}
+                        setSelectedSplitMethod={setSelectedSplitMethod}
+                    />
+                    <ExpenseModificationModal
+                        showModification={showModification}
+                        setShowModification={setShowModification}
+                        currencies={currencies}
+                        selectedCurrency={selectedCurrency}
+                        setSelectedCurrency={setSelectedCurrency}
+                        selectedSplitMethod={selectedSplitMethod}
+                        setSelectedSplitMethod={setSelectedSplitMethod}
+                        checked={checked}
+                        setChecked={setChecked}
+                        expenseTime={expenseTime}
+                        setExpenseTime={setExpenseTime}
+                        selectedExpense={selectedExpense}
+                        amount={amount}
+                        setAmount={setAmount}
+                        selectedCreditor={selectedCreditor}
+                        setSelectedCreditor={setSelectedCreditor}
+                        description={description}
+                        setDescription={setDescription}
+                    ></ExpenseModificationModal>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 

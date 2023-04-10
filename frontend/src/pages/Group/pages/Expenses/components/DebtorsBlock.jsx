@@ -42,7 +42,7 @@ const DebtorsBlock = ({
     setChecked,
     selectedSplitMethod,
 }) => {
-    const { members, setMembers, gid } = useContext(GroupContext);
+    const { members } = useContext(GroupContext);
     if (members.length === 0) {
         return <div>Loading...</div>;
     }
