@@ -9,9 +9,9 @@ const GroupDashboard = () => {
                 fontSize: "5rem",
                 display: "flex",
                 justifyContent: "center",
+                alignItems: "center",
             }}
         >
-            <br />
             Group Dashboard 預定地
         </div>
     );
