@@ -20,11 +20,11 @@ const ExpenseSchema = new mongoose.Schema({
         ],
         required: true,
     },
-    split_objects: {
+    split_object: {
         type: Map,
         of: new mongoose.Schema({
             amount: { type: Number },
-            debtors: {
+            debtors_weight: {
                 type: Map,
                 of: Number,
             },
