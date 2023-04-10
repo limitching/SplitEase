@@ -37,7 +37,7 @@ const ExpenseModificationModal = ({
     setChecked,
     expenseTime,
     setExpenseTime,
-    setExpensesChanged,
+
     selectedExpense,
     amount,
     setAmount,
@@ -46,13 +46,21 @@ const ExpenseModificationModal = ({
     description,
     setDescription,
 }) => {
-    const { memberMap, gid } = useContext(GroupContext);
+    const { memberMap, gid, setExpensesChanged } = useContext(GroupContext);
     const handleClose = () => setShowModification(false);
 
     const handleExpenseUpdate = async (event) => {
         event.preventDefault();
 
         const formData = new FormData(event.target);
+        const creditor = memberMap.get(Number(selectedCreditor));
+        const creditorsAmounts = new Map();
+        const debtorsWeight = new Map();
+
+        if (SPLIT_METHODS[selectedSplitMethod] === "split equally") {
+            checked.forEach((debtor) => debtorsWeight.set(debtor.id, 1));
+        }
+        creditorsAmounts.set(creditor.id, Number(amount));
         // TODO:
         formData.append("eid", selectedExpense._id);
         formData.append("split_method", SPLIT_METHODS[selectedSplitMethod]);
@@ -62,6 +70,11 @@ const ExpenseModificationModal = ({
             JSON.stringify(memberMap.get(Number(selectedCreditor)))
         );
         formData.append("debtors", JSON.stringify(checked));
+        formData.append(
+            "creditorsAmounts",
+            JSON.stringify([...creditorsAmounts])
+        );
+        formData.append("debtorsWeight", JSON.stringify([...debtorsWeight]));
 
         //TODO: debug;
         // for (const pair of formData.entries()) {

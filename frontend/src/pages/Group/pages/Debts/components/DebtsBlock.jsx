@@ -13,14 +13,16 @@ const DebtsBlock = () => {
     const { members, debts } = useContext(GroupContext);
     return (
         <div
-            className="group-information"
+            className="debt-block"
             style={{
                 width: "50%",
+                height: "45vh",
+                overflow: "scroll",
                 // backgroundColor: "lightgreen",
                 fontSize: "5rem",
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "center",
+                alignItems: "start",
                 boxShadow:
                     "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
             }}
@@ -69,7 +71,9 @@ const DebtsBlock = () => {
                                     <ListItemText
                                         id={labelId}
                                         primary={creditor.name}
-                                        secondary={`${currency.symbol} ${debtAmounts}`}
+                                        secondary={`${currency.symbol} ${Number(
+                                            debtAmounts.toFixed(2)
+                                        )}`}
                                         sx={{
                                             textAlign: "LEFT",
                                             maxWidth: "130px",

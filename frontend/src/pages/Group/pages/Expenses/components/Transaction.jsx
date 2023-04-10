@@ -80,10 +80,10 @@ const Transaction = ({
         formData.append("creditors", JSON.stringify(creditor));
         formData.append("debtors", JSON.stringify(checked));
         formData.append(
-            "creditors_amounts",
+            "creditorsAmounts",
             JSON.stringify([...creditorsAmounts])
         );
-        formData.append("debtors_weight", JSON.stringify([...debtorsWeight]));
+        formData.append("debtorsWeight", JSON.stringify([...debtorsWeight]));
 
         // TODO: debug;
         // for (const pair of formData.entries()) {

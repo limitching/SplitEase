@@ -42,7 +42,6 @@ const ExpensesBlock = ({
     setSelectedSplitMethod,
     setExpenseTime,
     setDescription,
-    isLoading,
 }) => {
     const { members, memberMap, groupExpense } = useContext(GroupContext);
 
@@ -56,13 +55,13 @@ const ExpensesBlock = ({
         // console.log(expense);
         setSelectedExpense(expense);
         setAmount(expense.amount);
-        if (Object.keys(expense.credit_users).length === 1) {
+        if (Object.keys(expense.creditors_amounts).length === 1) {
             const creditors = memberMap.get(
-                Number(Object.keys(expense.credit_users)[0])
+                Number(Object.keys(expense.creditors_amounts)[0])
             );
             setSelectedCreditor(creditors.id);
         }
-        const expenseChecked = Object.keys(expense.debt_users).map(
+        const expenseChecked = Object.keys(expense.debtors_weight).map(
             (debtorsId) => memberMap.get(Number(debtorsId))
         );
         setChecked(expenseChecked);
@@ -85,14 +84,17 @@ const ExpensesBlock = ({
 
     return (
         <div
-            className="group-information"
+            className="expense-block"
             style={{
                 width: "50%",
+                height: "40vh",
+                overflow: "scroll",
                 // backgroundColor: "lightgreen",
                 fontSize: "5rem",
                 display: "flex",
+
                 justifyContent: "center",
-                alignItems: "center",
+                alignItems: "start",
                 boxShadow:
                     "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
             }}
@@ -108,8 +110,10 @@ const ExpensesBlock = ({
                 {groupExpense.map((expense, index) => {
                     const labelId = `checkbox-list-secondary-label-${expense._id}`;
                     let creditors;
-                    if (Object.keys(expense.credit_users).length === 1) {
-                        const creditorId = Object.keys(expense.credit_users)[0];
+                    if (Object.keys(expense.creditors_amounts).length === 1) {
+                        const creditorId = Object.keys(
+                            expense.creditors_amounts
+                        )[0];
                         creditors = memberMap.get(Number(creditorId));
                     } else {
                         creditors = { name: "Multiple Members" };
@@ -118,7 +122,7 @@ const ExpensesBlock = ({
                         (currency) => currency.id === expense.currencyOption
                     );
 
-                    const debtors = Object.keys(expense.debt_users).map(
+                    const debtors = Object.keys(expense.debtors_weight).map(
                         (debtorId) => {
                             return memberMap.get(Number(debtorId));
                         }
