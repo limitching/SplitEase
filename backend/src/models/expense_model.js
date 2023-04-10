@@ -20,6 +20,16 @@ const ExpenseSchema = new mongoose.Schema({
         ],
         required: true,
     },
+    split_objects: {
+        type: Map,
+        of: new mongoose.Schema({
+            amount: { type: Number },
+            debtors: {
+                type: Map,
+                of: Number,
+            },
+        }),
+    },
     attached_group_id: { type: String, default: null }, // index key
     credit_users: { type: Map, of: Number }, // People who will receive money from others. They have a positive balance.
     debt_users: { type: Map, of: Number }, // People who will pay money to others. They have a negative balance.
