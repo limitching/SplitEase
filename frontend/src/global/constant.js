@@ -57,4 +57,19 @@ const CURRENCY_OPTIONS = [
         symbol: "HK$",
     },
 ];
-export { SPLIT_METHODS, CURRENCY_OPTIONS };
+
+const GROUP_TABS = [
+    {
+        name: "overview",
+        displayText: "Overview",
+    },
+    {
+        name: "expenses",
+        displayText: "Expenses",
+    },
+    {
+        name: "debts",
+        displayText: "Debts",
+    },
+];
+export { SPLIT_METHODS, CURRENCY_OPTIONS, GROUP_TABS };

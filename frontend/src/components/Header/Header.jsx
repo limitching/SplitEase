@@ -1,9 +1,25 @@
+import styled from "styled-components";
 import { Container, Button, Nav, Navbar, NavDropdown } from "react-bootstrap";
+
+const StyledNavbar = styled(Navbar)`
+    height: 5vh;
+`;
+const StyledContainer = styled(Container)`
+    display: flex;
+    align-items: space-between;
+    @media (min-width: 1400px) {
+        max-width: 95vw;
+    }
+`;
+const StyledButton = styled(Button)`
+    width: 5vw;
+    min-width: 85px;
+`;
 
 const Header = () => {
     return (
-        <Navbar bg="warning" expand="lg" fixed="top">
-            <Container>
+        <StyledNavbar bg="warning" expand="lg" fixed="top">
+            <StyledContainer>
                 <Navbar.Brand href="#home">
                     <img
                         src="/logo192.png"
@@ -40,13 +56,13 @@ const Header = () => {
                         </NavDropdown>
                     </Nav>
                     <Nav>
-                        <Button variant="warning">Register</Button>
+                        <StyledButton variant="success">Register</StyledButton>
                         <span style={{ marginRight: "10px" }}></span>
-                        <Button variant="light">Login</Button>
+                        <StyledButton variant="light">Login</StyledButton>
                     </Nav>
                 </Navbar.Collapse>
-            </Container>
-        </Navbar>
+            </StyledContainer>
+        </StyledNavbar>
     );
 };
 export default Header;

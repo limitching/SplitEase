@@ -6,6 +6,8 @@ import { api } from "../../../../../utils/api";
 import { SPLIT_METHODS } from "../../../../../global/constant";
 import CreditorsBlock from "./CreditorsBlock";
 import DebtorsBlock from "./DebtorsBlock";
+import { GroupContext } from "../../../../../contexts/GroupContext";
+import { useContext } from "react";
 
 const MySwal = withReactContent(Swal);
 
@@ -25,11 +27,8 @@ const TransactionSelector = () => {
 };
 
 const Transaction = ({
-    gid,
     showTransaction,
     setShowTransaction,
-    members,
-    memberMap,
     currencies,
     selectedCreditor,
     setSelectedCreditor,
@@ -38,7 +37,6 @@ const Transaction = ({
     localISOTime,
     expenseTime,
     setExpenseTime,
-    setExpensesChanged,
     amount,
     setAmount,
     selectedCurrency,
@@ -46,6 +44,8 @@ const Transaction = ({
     selectedSplitMethod,
     setSelectedSplitMethod,
 }) => {
+    const { members, gid, memberMap, setExpensesChanged } =
+        useContext(GroupContext);
     const handleClose = () => setShowTransaction(false);
     // When Transaction window is opened, set amount = 0
     const handleShow = () => {
@@ -144,7 +144,6 @@ const Transaction = ({
                     </Modal.Header>
                     <StyledModalBody>
                         <CreditorsBlock
-                            members={members}
                             currencies={currencies}
                             selectedCurrency={selectedCurrency}
                             setSelectedCurrency={setSelectedCurrency}
@@ -157,7 +156,6 @@ const Transaction = ({
                         <hr />
 
                         <DebtorsBlock
-                            members={members}
                             currencies={currencies}
                             selectedCurrency={selectedCurrency}
                             amount={amount}

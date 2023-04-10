@@ -1,8 +1,13 @@
+import styled from "styled-components";
 import { Container, Navbar } from "react-bootstrap";
+
+const StyledNavbar = styled(Navbar)`
+    height: 5vh;
+`;
 
 const Footer = () => {
     return (
-        <Navbar bg="warning" expand="lg">
+        <StyledNavbar bg="warning" expand="lg" fixed="bottom">
             <Container className="justify-content-md-center">
                 <Navbar.Brand href="#home">
                     <img
@@ -30,7 +35,7 @@ const Footer = () => {
                     <div className="footer__social-media-facebook" />
                 </div>
             </Container>
-        </Navbar>
+        </StyledNavbar>
     );
 };
 export default Footer;

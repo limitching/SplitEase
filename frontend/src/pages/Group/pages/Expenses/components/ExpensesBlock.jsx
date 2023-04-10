@@ -1,5 +1,8 @@
 import { SPLIT_METHODS } from "../../../../../global/constant";
+import { useContext } from "react";
+import { GroupContext } from "../../../../../contexts/GroupContext";
 import styled from "styled-components";
+import { Container } from "react-bootstrap";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
     List,
@@ -30,9 +33,6 @@ const StyledListItemTextForAmount = styled(ListItemText)`
 `;
 
 const ExpensesBlock = ({
-    groupExpense,
-    members,
-    memberMap,
     setSelectedExpense,
     setShowModification,
     setAmount,
@@ -42,7 +42,10 @@ const ExpensesBlock = ({
     setSelectedSplitMethod,
     setExpenseTime,
     setDescription,
+    isLoading,
 }) => {
+    const { members, memberMap, groupExpense } = useContext(GroupContext);
+
     const handleShow = () => {
         setShowModification(true);
     };
@@ -50,7 +53,7 @@ const ExpensesBlock = ({
     const handleExpenseItemClick = (expense) => {
         // open modal and pass expense data to Transaction component
         // TODO: remove log
-        console.log(expense);
+        // console.log(expense);
         setSelectedExpense(expense);
         setAmount(expense.amount);
         if (Object.keys(expense.credit_users).length === 1) {
@@ -76,24 +79,29 @@ const ExpensesBlock = ({
         setDescription(expense.description);
         handleShow();
     };
+    if (!members) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div
             className="group-information"
             style={{
                 width: "50%",
-                backgroundColor: "lightgreen",
+                // backgroundColor: "lightgreen",
                 fontSize: "5rem",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                boxShadow:
+                    "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
             }}
         >
             <List
                 dense
                 sx={{
                     width: "100%",
-                    maxWidth: 500,
+                    maxWidth: "100%",
                     bgcolor: "background.paper",
                 }}
             >
@@ -131,37 +139,43 @@ const ExpensesBlock = ({
                                         }.jpg`}
                                     />
                                 </ListItemAvatar>
-                                <ListItemText
-                                    id={labelId}
-                                    primary={
-                                        expense.description === ""
-                                            ? "Expense"
-                                            : `${expense.description}`
-                                    }
-                                    secondary={`${creditors.name} Paid for`}
-                                />
-                                <StyledListItemTextForAmount
-                                    id={labelId}
-                                    primary={`${currencyOption.symbol} ${expense.amount}`}
-                                    secondary={
-                                        <ThemeProvider theme={avatarTheme}>
-                                            <AvatarGroup total={debtors.length}>
-                                                {debtors.map((debtor) => (
-                                                    <Avatar
-                                                        key={debtor.id}
-                                                        alt={debtor.name}
-                                                        src={
-                                                            debtor.image ===
-                                                            null
-                                                                ? ".jpg"
-                                                                : debtor.image
-                                                        }
-                                                    />
-                                                ))}
-                                            </AvatarGroup>
-                                        </ThemeProvider>
-                                    }
-                                />
+                                <Container>
+                                    <ListItemText
+                                        id={labelId}
+                                        primary={
+                                            expense.description === ""
+                                                ? "Expense"
+                                                : `${expense.description}`
+                                        }
+                                        secondary={`${creditors.name} Paid for`}
+                                    />
+                                </Container>
+
+                                <Container>
+                                    <StyledListItemTextForAmount
+                                        id={labelId}
+                                        primary={`${currencyOption.symbol} ${expense.amount}`}
+                                    />
+                                    <ThemeProvider theme={avatarTheme}>
+                                        <AvatarGroup total={debtors.length}>
+                                            {debtors.map((debtor, index) => (
+                                                <Avatar
+                                                    key={
+                                                        expense._id +
+                                                        "_debtor_" +
+                                                        index
+                                                    }
+                                                    alt={debtor.name}
+                                                    src={
+                                                        debtor.image === null
+                                                            ? ".jpg"
+                                                            : debtor.image
+                                                    }
+                                                />
+                                            ))}
+                                        </AvatarGroup>
+                                    </ThemeProvider>
+                                </Container>
                             </ListItemButton>
                         </ListItem>
                     );
