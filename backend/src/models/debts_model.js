@@ -106,9 +106,10 @@ function dinicMaxFlow(graph, source, sink) {
 
     // Check if there's any edge between source and sink
     if (graph[source][sink] === 0) {
-        console.log(
-            `There's no path between source = ${source} and sink = ${sink}!`
-        );
+        // TODO:
+        // console.log(
+        //     `There's no path between source = ${source} and sink = ${sink}!`
+        // );
         return { maxFlow, residualGraph: graph };
     }
 
@@ -150,7 +151,8 @@ function dinicMaxFlow(graph, source, sink) {
     // update original graph
     updateGraph(graph, residualGraph, source, sink, maxFlow);
     // console.log("after update", graph);
-    console.log(`[source = ${source} and sink = ${sink}] maxFlow = ${maxFlow}`);
+    // TODO:
+    // console.log(`[source = ${source} and sink = ${sink}] maxFlow = ${maxFlow}`);
     // console.log("residual", residualGraph);
     return { maxFlow, residualGraph, levelGraph };
 }
@@ -197,7 +199,8 @@ function minimizeDebts(graph) {
             }
         }
     }
-    console.log("Simplify the graph", simplifiedGraph);
+    // TODO:
+    // console.log("Simplify the graph", simplifiedGraph);
 
     // Determine who owes how much money to whom
     const transactions = calculateTransaction(simplifiedGraph);

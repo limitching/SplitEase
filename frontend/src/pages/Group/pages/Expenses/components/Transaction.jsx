@@ -66,15 +66,26 @@ const Transaction = ({
         event.preventDefault();
 
         const formData = new FormData(event.target);
+        const creditor = memberMap.get(Number(selectedCreditor));
+        const creditorsAmounts = new Map();
+        const debtorsWeight = new Map();
+
+        if (SPLIT_METHODS[selectedSplitMethod] === "split equally") {
+            checked.forEach((debtor) => debtorsWeight.set(debtor.id, 1));
+        }
+        creditorsAmounts.set(creditor.id, Number(amount));
+
         formData.append("split_method", SPLIT_METHODS[selectedSplitMethod]);
         formData.append("attached_group_id", gid);
-        formData.append(
-            "creditors",
-            JSON.stringify(memberMap.get(Number(selectedCreditor)))
-        );
+        formData.append("creditors", JSON.stringify(creditor));
         formData.append("debtors", JSON.stringify(checked));
+        formData.append(
+            "creditorsAmounts",
+            JSON.stringify([...creditorsAmounts])
+        );
+        formData.append("debtorsWeight", JSON.stringify([...debtorsWeight]));
 
-        //TODO: debug;
+        // TODO: debug;
         // for (const pair of formData.entries()) {
         //     console.log(`${pair[0]}, ${pair[1]}`);
         // }
