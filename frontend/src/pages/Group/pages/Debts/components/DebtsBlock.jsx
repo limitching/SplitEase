@@ -16,18 +16,20 @@ const DebtsBlock = () => {
             className="group-information"
             style={{
                 width: "50%",
-                backgroundColor: "lightgreen",
+                // backgroundColor: "lightgreen",
                 fontSize: "5rem",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                boxShadow:
+                    "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
             }}
         >
             <List
                 dense
                 sx={{
                     width: "100%",
-                    maxWidth: 500,
+                    maxWidth: "100%",
                     bgcolor: "background.paper",
                 }}
             >
@@ -46,7 +48,7 @@ const DebtsBlock = () => {
                                 <ListItemButton
                                     sx={{
                                         display: "flex",
-                                        justifyContent: "center",
+                                        justifyContent: "space-between",
                                         alignItems: "center",
                                     }}
                                 >
@@ -80,7 +82,7 @@ const DebtsBlock = () => {
                                             display: "flex",
                                             justifyContent: "center",
                                             alignItems: "center",
-                                            maxWidth: "50px",
+                                            maxWidth: "200px",
                                         }}
                                     />
                                     <ListItemText

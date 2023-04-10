@@ -2,6 +2,7 @@ import { SPLIT_METHODS } from "../../../../../global/constant";
 import { useContext } from "react";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import styled from "styled-components";
+import { Container } from "react-bootstrap";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
     List,
@@ -83,130 +84,104 @@ const ExpensesBlock = ({
     }
 
     return (
-        <>
-            {isLoading ? (
-                <></>
-            ) : (
-                <div
-                    className="group-information"
-                    style={{
-                        width: "50%",
-                        backgroundColor: "lightgreen",
-                        fontSize: "5rem",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}
-                >
-                    <List
-                        dense
-                        sx={{
-                            width: "100%",
-                            maxWidth: 500,
-                            bgcolor: "background.paper",
-                        }}
-                    >
-                        {groupExpense.map((expense, index) => {
-                            const labelId = `checkbox-list-secondary-label-${expense._id}`;
-                            let creditors;
-                            if (
-                                Object.keys(expense.credit_users).length === 1
-                            ) {
-                                const creditorId = Object.keys(
-                                    expense.credit_users
-                                )[0];
-                                creditors = memberMap.get(Number(creditorId));
-                            } else {
-                                creditors = { name: "Multiple Members" };
-                            }
-                            const [currencyOption] = CURRENCY_OPTIONS.filter(
-                                (currency) =>
-                                    currency.id === expense.currencyOption
-                            );
+        <div
+            className="group-information"
+            style={{
+                width: "50%",
+                // backgroundColor: "lightgreen",
+                fontSize: "5rem",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                boxShadow:
+                    "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
+            }}
+        >
+            <List
+                dense
+                sx={{
+                    width: "100%",
+                    maxWidth: "100%",
+                    bgcolor: "background.paper",
+                }}
+            >
+                {groupExpense.map((expense, index) => {
+                    const labelId = `checkbox-list-secondary-label-${expense._id}`;
+                    let creditors;
+                    if (Object.keys(expense.credit_users).length === 1) {
+                        const creditorId = Object.keys(expense.credit_users)[0];
+                        creditors = memberMap.get(Number(creditorId));
+                    } else {
+                        creditors = { name: "Multiple Members" };
+                    }
+                    const [currencyOption] = CURRENCY_OPTIONS.filter(
+                        (currency) => currency.id === expense.currencyOption
+                    );
 
-                            const debtors = Object.keys(expense.debt_users).map(
-                                (debtorId) => {
-                                    return memberMap.get(Number(debtorId));
-                                }
-                            );
+                    const debtors = Object.keys(expense.debt_users).map(
+                        (debtorId) => {
+                            return memberMap.get(Number(debtorId));
+                        }
+                    );
 
-                            return (
-                                <>
-                                    {isLoading ? (
-                                        <></>
-                                    ) : (
-                                        <ListItem
-                                            key={expense._id}
-                                            onClick={() =>
-                                                handleExpenseItemClick(expense)
-                                            }
-                                            disablePadding
-                                        >
-                                            <ListItemButton>
-                                                <ListItemAvatar>
-                                                    <Avatar
-                                                        alt={`${creditors.name}`}
-                                                        src={`/static/images/avatar/${
-                                                            index + 1
-                                                        }.jpg`}
-                                                    />
-                                                </ListItemAvatar>
-                                                <ListItemText
-                                                    id={labelId}
-                                                    primary={
-                                                        expense.description ===
-                                                        ""
-                                                            ? "Expense"
-                                                            : `${expense.description}`
+                    return (
+                        <ListItem
+                            key={expense._id}
+                            onClick={() => handleExpenseItemClick(expense)}
+                            disablePadding
+                        >
+                            <ListItemButton>
+                                <ListItemAvatar>
+                                    <Avatar
+                                        alt={`${creditors.name}`}
+                                        src={`/static/images/avatar/${
+                                            index + 1
+                                        }.jpg`}
+                                    />
+                                </ListItemAvatar>
+                                <Container>
+                                    <ListItemText
+                                        id={labelId}
+                                        primary={
+                                            expense.description === ""
+                                                ? "Expense"
+                                                : `${expense.description}`
+                                        }
+                                        secondary={`${creditors.name} Paid for`}
+                                    />
+                                </Container>
+
+                                <Container>
+                                    <StyledListItemTextForAmount
+                                        id={labelId}
+                                        primary={`${currencyOption.symbol} ${expense.amount}`}
+                                    />
+                                    <ThemeProvider theme={avatarTheme}>
+                                        <AvatarGroup total={debtors.length}>
+                                            {debtors.map((debtor, index) => (
+                                                <Avatar
+                                                    key={
+                                                        expense._id +
+                                                        "_debtor_" +
+                                                        index
                                                     }
-                                                    secondary={`${creditors.name} Paid for`}
-                                                />
-                                                <StyledListItemTextForAmount
-                                                    id={labelId}
-                                                    primary={`${currencyOption.symbol} ${expense.amount}`}
-                                                    secondary={
-                                                        <ThemeProvider
-                                                            theme={avatarTheme}
-                                                        >
-                                                            <AvatarGroup
-                                                                total={
-                                                                    debtors.length
-                                                                }
-                                                            >
-                                                                {debtors.map(
-                                                                    (
-                                                                        debtor
-                                                                    ) => (
-                                                                        <Avatar
-                                                                            key={
-                                                                                debtor.id
-                                                                            }
-                                                                            alt={
-                                                                                debtor.name
-                                                                            }
-                                                                            src={
-                                                                                debtor.image ===
-                                                                                null
-                                                                                    ? ".jpg"
-                                                                                    : debtor.image
-                                                                            }
-                                                                        />
-                                                                    )
-                                                                )}
-                                                            </AvatarGroup>
-                                                        </ThemeProvider>
+                                                    alt={debtor.name}
+                                                    src={
+                                                        debtor.image === null
+                                                            ? ".jpg"
+                                                            : debtor.image
                                                     }
                                                 />
-                                            </ListItemButton>
-                                        </ListItem>
-                                    )}
-                                </>
-                            );
-                        })}
-                    </List>
-                </div>
-            )}
-        </>
+                                            ))}
+                                        </AvatarGroup>
+                                    </ThemeProvider>
+                                </Container>
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
+            </List>
+        </div>
     );
 };
 export default ExpensesBlock;
