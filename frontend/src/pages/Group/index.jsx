@@ -1,17 +1,12 @@
 import GroupDashboard from "./components/Dashboard";
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import Tabs from "./components/Tabs";
+import {
+    GroupContextProvider,
+    GroupContext,
+} from "../../contexts/GroupContext";
+import { useState, useEffect, useContext } from "react";
 import { api } from "../../utils/api";
 import { Outlet } from "react-router-dom";
-
-async function fetchMembers(gid, setMembers) {
-    try {
-        const data = await api.getMembers(gid);
-        setMembers(data);
-    } catch (error) {
-        console.error(error);
-    }
-}
 
 async function fetchCurrencies(setCurrencies) {
     try {
@@ -32,23 +27,23 @@ async function fetchGroupExpenses(gid, setGroupExpense) {
 }
 
 const Group = () => {
-    const { gid } = useParams();
+    const { members, setMembers, gid } = useContext(GroupContext);
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
     const localISOTime = new Date(Date.now() - timeZoneOffset)
         .toISOString()
         .substring(0, 16);
 
-    const [members, setMembers] = useState(null);
     const [groupExpense, setGroupExpense] = useState([]);
     const [currencies, setCurrencies] = useState([]);
     const [checked, setChecked] = useState([]);
     const [expenseTime, setExpenseTime] = useState(localISOTime);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        fetchMembers(gid, setMembers);
-        fetchCurrencies(setCurrencies);
+        setIsLoading(true);
         fetchGroupExpenses(gid, setGroupExpense);
-    }, []);
+        setIsLoading(false);
+    }, [gid]);
 
     useEffect(() => {
         if (members !== null) {
@@ -57,11 +52,14 @@ const Group = () => {
     }, [members]);
 
     return (
-        <div>
-            <GroupDashboard></GroupDashboard>
-            <Outlet></Outlet>
-        </div>
+        <GroupContextProvider>
+            <div>
+                <GroupDashboard></GroupDashboard>
+                <Tabs></Tabs>
+                <Outlet></Outlet>
+            </div>
+        </GroupContextProvider>
     );
 };
 
-export default Group;
+export { Group };

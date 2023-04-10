@@ -2,6 +2,8 @@ import CreditorsBlock from "./CreditorsBlock";
 import DebtorsBlock from "./DebtorsBlock";
 import styled from "styled-components";
 import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
+import { GroupContext } from "../../../../../contexts/GroupContext";
+import { useContext } from "react";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -24,11 +26,8 @@ const StyledExpenseImage = styled.img`
 `;
 
 const ExpenseModificationModal = ({
-    gid,
     showModification,
     setShowModification,
-    members,
-    memberMap,
     currencies,
     selectedCurrency,
     setSelectedCurrency,
@@ -47,6 +46,7 @@ const ExpenseModificationModal = ({
     description,
     setDescription,
 }) => {
+    const { memberMap, gid } = useContext(GroupContext);
     const handleClose = () => setShowModification(false);
 
     const handleExpenseUpdate = async (event) => {
@@ -169,7 +169,6 @@ const ExpenseModificationModal = ({
                     </Modal.Header>
                     <StyledModalBody>
                         <CreditorsBlock
-                            members={members}
                             currencies={currencies}
                             selectedCurrency={selectedCurrency}
                             setSelectedCurrency={setSelectedCurrency}
@@ -182,7 +181,6 @@ const ExpenseModificationModal = ({
                         <hr />
 
                         <DebtorsBlock
-                            members={members}
                             currencies={currencies}
                             selectedCurrency={selectedCurrency}
                             amount={amount}

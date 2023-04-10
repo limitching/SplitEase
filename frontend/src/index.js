@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./index.css";
 import App from "./App";
-import Group from "./pages/Group";
+import { Group } from "./pages/Group";
 import Transaction from "./pages/Group/pages/Expenses/components/Transaction";
 import Expenses from "./pages/Group/pages/Expenses";
 import Debts from "./pages/Group/pages/Debts";
@@ -22,7 +22,7 @@ root.render(
                 {/* <Route index element={<Home />} /> */}
                 <Route path="group/:gid" element={<Group />}>
                     <Route path="expenses" element={<Expenses />} />
-                    <Route path="dashboard" element={<Transaction />} />
+                    <Route path="overview" element={<Transaction />} />
                     <Route path="debts" element={<Debts />} />
                 </Route>
             </Route>

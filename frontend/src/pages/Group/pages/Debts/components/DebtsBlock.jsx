@@ -1,9 +1,6 @@
-import {
-    SPLIT_METHODS,
-    CURRENCY_OPTIONS,
-} from "../../../../../global/constant";
-import styled from "styled-components";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { CURRENCY_OPTIONS } from "../../../../../global/constant";
+import { useContext } from "react";
+import { GroupContext } from "../../../../../contexts/GroupContext";
 import {
     List,
     ListItem,
@@ -11,9 +8,9 @@ import {
     ListItemText,
     ListItemAvatar,
     Avatar,
-    AvatarGroup,
 } from "@mui/material";
-const DebtsBlock = ({ members, debts }) => {
+const DebtsBlock = () => {
+    const { members, debts } = useContext(GroupContext);
     return (
         <div
             className="group-information"

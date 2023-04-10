@@ -1,4 +1,6 @@
 import { Container, Form, Col, Row, InputGroup } from "react-bootstrap";
+import { GroupContext } from "../../../../../contexts/GroupContext";
+import { useContext } from "react";
 
 const CurrencySelector = ({
     currencies,
@@ -25,7 +27,6 @@ const CurrencySelector = ({
 };
 
 const CreditorsBlock = ({
-    members,
     currencies,
     selectedCurrency,
     setSelectedCurrency,
@@ -34,7 +35,8 @@ const CreditorsBlock = ({
     amount,
     setAmount,
 }) => {
-    if (members === null) {
+    const { members, setMembers, gid } = useContext(GroupContext);
+    if (members.length === 0) {
         return <div>Loading...</div>;
     }
     const handleAmountChange = (event) => {
@@ -76,7 +78,6 @@ const CreditorsBlock = ({
                     />
                 </Col>
                 <Col lg="4">
-                    {" "}
                     <CurrencySelector
                         currencies={currencies}
                         selectedCurrency={selectedCurrency}
