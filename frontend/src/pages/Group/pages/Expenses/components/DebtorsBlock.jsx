@@ -1,6 +1,6 @@
 import { Container, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import {
     List,
     ListItem,
@@ -17,7 +17,13 @@ const SplitMethodSelector = ({
     setSelectedSplitMethod,
 }) => {
     const handleSplitMethodChange = (event) => {
-        setSelectedSplitMethod(event.target.value);
+        setSelectedSplitMethod(Number(event.target.value));
+        //TODO:
+        console.log(
+            "selectedSplitMethod",
+            selectedSplitMethod,
+            typeof selectedSplitMethod
+        );
     };
     return (
         <Form.Select
@@ -37,12 +43,14 @@ const DebtorsBlock = ({
     currencies,
     selectedCurrency,
     amount,
+    setAmount,
     setSelectedSplitMethod,
     checked,
     setChecked,
     selectedSplitMethod,
 }) => {
     const { members } = useContext(GroupContext);
+    const [subValues, setSubValues] = useState(Array(members.length).fill(0));
     if (members.length === 0) {
         return <div>Loading...</div>;
     }
@@ -73,6 +81,15 @@ const DebtorsBlock = ({
         }
     };
 
+    const handleExactAmountChange = (index, newValue) => {
+        const newSubValues = [...subValues];
+        newSubValues[index] = newValue;
+        setSubValues(newSubValues);
+
+        const newAmount = newSubValues.reduce((sum, value) => sum + value, 0);
+        setAmount(newAmount);
+    };
+
     return (
         <div className="debtor-list">
             <Container as={Row} className="debtor-header-container">
@@ -83,6 +100,7 @@ const DebtorsBlock = ({
                     <SplitMethodSelector
                         selectedSplitMethod={selectedSplitMethod}
                         setSelectedSplitMethod={setSelectedSplitMethod}
+                        // setShowInput={setShowInput}
                     />
                 </Col>
             </Container>
@@ -95,42 +113,97 @@ const DebtorsBlock = ({
                         bgcolor: "background.paper",
                     }}
                 >
-                    {members.map((member) => {
+                    {members.map((member, index) => {
                         const labelId = `checkbox-list-secondary-label-${member.id}`;
-                        return (
-                            <ListItem
-                                alignItems="center"
-                                key={member.id}
-                                onClick={handleToggle(member)}
-                                secondaryAction={
-                                    <Checkbox
-                                        edge="end"
-                                        onChange={handleToggle(member)}
-                                        checked={checked.indexOf(member) !== -1}
-                                        inputProps={{
-                                            "aria-labelledby": labelId,
-                                        }}
-                                    />
-                                }
-                                disablePadding
-                            >
-                                <ListItemButton>
-                                    <ListItemAvatar>
-                                        <Avatar
-                                            alt={`${member.name}`}
-                                            src={`${member.image}.jpg`}
+                        if (selectedSplitMethod === 0) {
+                            return (
+                                <ListItem
+                                    alignItems="center"
+                                    key={member.id}
+                                    onClick={handleToggle(member)}
+                                    secondaryAction={
+                                        <Checkbox
+                                            edge="end"
+                                            onChange={handleToggle(member)}
+                                            checked={
+                                                checked.indexOf(member) !== -1
+                                            }
+                                            inputProps={{
+                                                "aria-labelledby": labelId,
+                                            }}
                                         />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        id={labelId}
-                                        primary={`${member.name}`}
-                                        secondary={`${
-                                            selectedCurrencyObj.symbol
-                                        } ${updateDividedAmounts(member)}`}
-                                    />
-                                </ListItemButton>
-                            </ListItem>
-                        );
+                                    }
+                                    disablePadding
+                                >
+                                    <ListItemButton>
+                                        <ListItemAvatar>
+                                            <Avatar
+                                                alt={`${member.name}`}
+                                                src={`${member.image}.jpg`}
+                                            />
+                                        </ListItemAvatar>
+                                        <ListItemText
+                                            id={labelId}
+                                            primary={`${member.name}`}
+                                            secondary={`${
+                                                selectedCurrencyObj.symbol
+                                            } ${updateDividedAmounts(member)}`}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            );
+                        } else {
+                            return (
+                                <ListItem
+                                    alignItems="center"
+                                    key={member.id}
+                                    disablePadding
+                                >
+                                    <ListItemButton>
+                                        <ListItemAvatar>
+                                            <Avatar
+                                                alt={`${member.name}`}
+                                                src={`${member.image}.jpg`}
+                                            />
+                                        </ListItemAvatar>
+                                        <ListItemText
+                                            id={labelId}
+                                            primary={`${member.name}`}
+                                        />
+                                        <input
+                                            type="number"
+                                            value={subValues[index]}
+                                            onChange={(event) =>
+                                                handleExactAmountChange(
+                                                    index,
+                                                    Number(event.target.value)
+                                                )
+                                            }
+                                        />
+                                        {selectedSplitMethod === 1 ? (
+                                            <ListItemText
+                                                id={labelId}
+                                                primary={`${selectedCurrencyObj.abbreviation}`}
+                                            />
+                                        ) : selectedSplitMethod === 2 ? (
+                                            <ListItemText
+                                                id={labelId}
+                                                primary={`%`}
+                                            />
+                                        ) : (
+                                            <ListItemText
+                                                id={labelId}
+                                                primary={`share(s)`}
+                                            />
+                                        )}
+                                        {/* <ListItemText
+                                            id={labelId}
+                                            primary={`${selectedCurrencyObj.abbreviation}`}
+                                        /> */}
+                                    </ListItemButton>
+                                </ListItem>
+                            );
+                        }
                     })}
                 </List>
             </Container>

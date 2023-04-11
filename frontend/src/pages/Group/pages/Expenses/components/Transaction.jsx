@@ -170,6 +170,7 @@ const Transaction = ({
                             currencies={currencies}
                             selectedCurrency={selectedCurrency}
                             amount={amount}
+                            setAmount={setAmount}
                             setSelectedSplitMethod={setSelectedSplitMethod}
                             checked={checked}
                             setChecked={setChecked}

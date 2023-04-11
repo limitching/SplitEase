@@ -33,7 +33,6 @@ const getGroupExpenses = async (req, res, next) => {
 };
 
 const createGroupExpense = async (req, res, next) => {
-    console.log(req.body);
     const {
         amount,
         description,
@@ -49,7 +48,7 @@ const createGroupExpense = async (req, res, next) => {
     // const creditorsObj = JSON.parse(creditors);
     // const debtorsObj = JSON.parse(debtors);
     // const credit_users = new Map();
-    const debt_users = new Map();
+    // const debt_users = new Map();
     const involved_users = [];
     const creditorsArray = JSON.parse(creditorsAmounts);
     const creditors_amounts = creditorsArray.reduce(

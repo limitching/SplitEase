@@ -1,6 +1,7 @@
 import { Container, Form, Col, Row, InputGroup } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { useContext } from "react";
+import { TextField, MenuItem } from "@mui/material";
 
 const CurrencySelector = ({
     currencies,
@@ -12,17 +13,23 @@ const CurrencySelector = ({
     };
 
     return (
-        <Form.Select
+        <TextField
             name="currencyOption"
+            select
+            label="Currency"
+            // SelectProps={{
+            //     native: true,
+            // }}
+            variant="standard"
             defaultValue={selectedCurrency}
             onChange={handleCurrencyOptionChange}
         >
             {currencies.map((option) => (
-                <option key={option.id} value={option.id}>
+                <MenuItem key={option.id} value={option.id}>
                     {option.abbreviation}
-                </option>
+                </MenuItem>
             ))}
-        </Form.Select>
+        </TextField>
     );
 };
 
@@ -69,9 +76,10 @@ const CreditorsBlock = ({
             </Col>
             <InputGroup as={Row}>
                 <Col lg="8">
-                    <Form.Control
+                    <TextField
                         name="amount"
                         className="mb-3"
+                        label="Amount"
                         type="number"
                         value={amount}
                         onChange={handleAmountChange}
