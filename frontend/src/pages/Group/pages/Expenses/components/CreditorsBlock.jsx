@@ -2,6 +2,7 @@ import { Container, Form, Col, Row, InputGroup } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { useContext } from "react";
 import { TextField, MenuItem } from "@mui/material";
+import { amountFormatter } from "../../../../../utils/formatter";
 
 const CurrencySelector = ({
     currencies,
@@ -88,9 +89,12 @@ const CreditorsBlock = ({
                         name="amount"
                         className="mb-3"
                         label="Amount"
-                        type="number"
+                        type="text"
                         value={amount}
-                        onChange={handleAmountChange}
+                        onChange={(event) => {
+                            amountFormatter(event);
+                            handleAmountChange(event);
+                        }}
                     />
                 </Col>
                 <Col lg="4">
