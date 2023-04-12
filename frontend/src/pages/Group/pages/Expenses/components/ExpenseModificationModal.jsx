@@ -37,7 +37,6 @@ const ExpenseModificationModal = ({
     setChecked,
     expenseTime,
     setExpenseTime,
-
     selectedExpense,
     amount,
     setAmount,
@@ -45,8 +44,11 @@ const ExpenseModificationModal = ({
     setSelectedCreditor,
     description,
     setDescription,
+    subValues,
+    setSubValues,
 }) => {
-    const { memberMap, gid, setExpensesChanged } = useContext(GroupContext);
+    const { memberMap, gid, setExpensesChanged, members } =
+        useContext(GroupContext);
     const handleClose = () => setShowModification(false);
 
     const handleExpenseUpdate = async (event) => {
@@ -56,12 +58,31 @@ const ExpenseModificationModal = ({
         const creditor = memberMap.get(Number(selectedCreditor));
         const creditorsAmounts = new Map();
         const debtorsWeight = new Map();
+        const debtorsAdjustment = new Map();
 
-        if (SPLIT_METHODS[selectedSplitMethod] === "split equally") {
+        if (selectedSplitMethod === 0) {
             checked.forEach((debtor) => debtorsWeight.set(debtor.id, 1));
+        } else if (
+            selectedSplitMethod === 1 ||
+            selectedSplitMethod === 2 ||
+            selectedSplitMethod === 3
+        ) {
+            subValues.forEach((debtorAmount, debtorIndex) => {
+                if (debtorAmount !== 0) {
+                    // TODO: Error Client side error but mongodb error
+                    // console.log(members[debtorIndex].id);
+                    // debtorsWeight.set(memberMap.get(debtorIndex), debtorAmount);
+                    debtorsWeight.set(members[debtorIndex].id, debtorAmount);
+                }
+            });
+        } else if (selectedSplitMethod === 4) {
+            subValues.forEach((debtorAmount, debtorIndex) => {
+                debtorsWeight.set(members[debtorIndex].id, 1);
+                debtorsAdjustment.set(members[debtorIndex].id, debtorAmount);
+            });
         }
         creditorsAmounts.set(creditor.id, Number(amount));
-        // TODO:
+
         formData.append("eid", selectedExpense._id);
         formData.append("split_method", SPLIT_METHODS[selectedSplitMethod]);
         formData.append("attached_group_id", gid);
@@ -75,6 +96,12 @@ const ExpenseModificationModal = ({
             JSON.stringify([...creditorsAmounts])
         );
         formData.append("debtorsWeight", JSON.stringify([...debtorsWeight]));
+        if (selectedSplitMethod === 4) {
+            formData.append(
+                "debtorsAdjustment",
+                JSON.stringify([...debtorsAdjustment])
+            );
+        }
 
         //TODO: debug;
         // for (const pair of formData.entries()) {
@@ -201,6 +228,8 @@ const ExpenseModificationModal = ({
                             checked={checked}
                             setChecked={setChecked}
                             selectedSplitMethod={selectedSplitMethod}
+                            subValues={subValues}
+                            setSubValues={setSubValues}
                         ></DebtorsBlock>
 
                         <Container className="expense-description mb-3">
