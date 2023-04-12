@@ -1,14 +1,26 @@
 function inputFormatter(event) {
+    handleNonNumberChar(event);
     removeSingleMinus(event);
     handleMinus(event);
     removeLeadingZeros(event);
     return;
 }
-
+function handleNonNumberChar(event) {
+    event.target.value = event.target.value.replace(/[^\d-]/g, "");
+}
 function handleMinus(event) {
     // If input start with "-", remain it and remove the following "-"
     if (event.target.value.startsWith("-")) {
         event.target.value = "-" + event.target.value.replace(/-/g, "");
+    }
+
+    // If input has "-" in the middle, remove it
+    if (
+        event.target.value.includes("-") &&
+        !event.target.value.startsWith("-") &&
+        !event.target.value.endsWith("-")
+    ) {
+        event.target.value = event.target.value.replace(/-/g, "");
     }
 
     // If input end with "-", add "-" to the front
@@ -31,6 +43,7 @@ function removeAllMinus(event) {
 }
 
 function amountFormatter(event) {
+    handleNonNumberChar(event);
     removeSingleMinus(event);
     removeAllMinus(event);
     removeLeadingZeros(event);

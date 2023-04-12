@@ -35,16 +35,22 @@ const getGroupDebts = async (req, res, next) => {
             for (let [debtor, weight] of expense.debtors_weight) {
                 const creditorIndex = membersIndexMap.get(Number(creditor));
                 const debtorIndex = membersIndexMap.get(Number(debtor));
-                const adjustmentAmount =
+                const proportionAdjustAmount =
                     (totalAdjustments * creditorAmount) / expense.amount;
+                const debtorAdjustAmount = expense.debtors_adjustment.has(
+                    debtor
+                )
+                    ? expense.debtors_adjustment.get(debtor)
+                    : 0;
+
                 // Only calculate case: creditorIndex !== debtorIndex
                 if (creditorIndex !== debtorIndex) {
                     currencyGraph[expense.currencyOption][creditorIndex][
                         debtorIndex
                     ] +=
-                        ((creditorAmount - adjustmentAmount) * weight) /
+                        ((creditorAmount - proportionAdjustAmount) * weight) /
                             totalWeight +
-                        expense.debtors_adjustment.get(debtor);
+                        debtorAdjustAmount;
                 }
             }
         }
