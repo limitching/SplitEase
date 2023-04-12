@@ -1,6 +1,9 @@
+import SplitMethodSelector from "./SplitMethodSelector";
 import { Container, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
+import { TextField } from "@mui/material";
+import { TbPlusMinus } from "react-icons/tb";
 import {
     List,
     ListItem,
@@ -10,34 +13,6 @@ import {
     Checkbox,
     Avatar,
 } from "@mui/material";
-import { SPLIT_METHODS } from "../../../../../global/constant";
-
-const SplitMethodSelector = ({
-    selectedSplitMethod,
-    setSelectedSplitMethod,
-}) => {
-    const handleSplitMethodChange = (event) => {
-        setSelectedSplitMethod(Number(event.target.value));
-        //TODO:
-        console.log(
-            "selectedSplitMethod",
-            selectedSplitMethod,
-            typeof selectedSplitMethod
-        );
-    };
-    return (
-        <Form.Select
-            onChange={handleSplitMethodChange}
-            defaultValue={selectedSplitMethod}
-        >
-            {SPLIT_METHODS.map((method, index) => (
-                <option key={index} value={index}>
-                    {method}
-                </option>
-            ))}
-        </Form.Select>
-    );
-};
 
 const DebtorsBlock = ({
     currencies,
@@ -48,9 +23,14 @@ const DebtorsBlock = ({
     checked,
     setChecked,
     selectedSplitMethod,
+    subValues,
+    setSubValues,
 }) => {
     const { members } = useContext(GroupContext);
-    const [subValues, setSubValues] = useState(Array(members.length).fill(0));
+    const [modifiedIndices, setModifiedIndices] = useState([]);
+
+    useEffect(() => {}, [subValues]);
+
     if (members.length === 0) {
         return <div>Loading...</div>;
     }
@@ -71,13 +51,36 @@ const DebtorsBlock = ({
         setChecked(newChecked);
     };
 
-    // A function to update amount
-    const updateDividedAmounts = (member) => {
-        const currentIndex = checked.indexOf(member);
-        if (currentIndex === -1) {
-            return 0;
-        } else {
-            return parseFloat(Number(amount / checked.length).toFixed(2));
+    // A function to update divided amount
+    const updateDividedAmounts = (member, index) => {
+        if (selectedSplitMethod === 0) {
+            const currentIndex = checked.indexOf(member);
+            if (currentIndex === -1) {
+                return 0;
+            } else {
+                return parseFloat(Number(amount / checked.length).toFixed(2));
+            }
+        } else if (selectedSplitMethod === 1) {
+        } else if (selectedSplitMethod === 2) {
+            return parseFloat(
+                Number((amount / 100) * subValues[index]).toFixed(2)
+            );
+        } else if (selectedSplitMethod === 3) {
+            const totalShares = subValues.reduce((acc, cur) => acc + cur, 0);
+            return parseFloat(
+                Number((amount / totalShares) * subValues[index]).toFixed(2)
+            );
+        } else if (selectedSplitMethod === 4) {
+            const totalAdjustments = subValues.reduce(
+                (acc, cur) => acc + cur,
+                0
+            );
+            return parseFloat(
+                Number(
+                    (amount - totalAdjustments) / members.length +
+                        subValues[index]
+                ).toFixed(2)
+            );
         }
     };
 
@@ -90,6 +93,96 @@ const DebtorsBlock = ({
         setAmount(newAmount);
     };
 
+    const handlePercentageChange = (index, newValue) => {
+        const newModifiedIndices = [...modifiedIndices];
+        if (!modifiedIndices.includes(index)) {
+            newModifiedIndices.push(index);
+            setModifiedIndices(newModifiedIndices);
+        }
+        if (modifiedIndices.length === members.length) {
+            setModifiedIndices([index]);
+        }
+
+        const newSubValues = [...subValues];
+
+        // The value entered cannot be greater than 100 or less than 0
+        if (newValue > 100) {
+            newValue = 100;
+        } else if (newValue < 0) {
+            newValue = 0;
+        }
+
+        // Update the value of the current field
+        newSubValues[index] = newValue;
+
+        // Calculate the sum of the percentages currently set
+        const currentTotal = newSubValues.reduce(
+            (accumulator, currentValue, currentIndex) => {
+                if (newModifiedIndices.includes(currentIndex)) {
+                    return accumulator + currentValue;
+                } else {
+                    return accumulator;
+                }
+            },
+            0
+        );
+        if (currentTotal > 100) {
+            newSubValues.fill(0);
+            newSubValues[index] = newValue;
+            newSubValues[index + 1] = 100 - newValue;
+            setModifiedIndices([index, index + 1]);
+            return setSubValues(newSubValues);
+        }
+
+        // Calculates the percentage by which other fields should be split equally
+        const remaining = 100 - currentTotal;
+        const toDistribute =
+            remaining / (newSubValues.length - newModifiedIndices.length);
+
+        // Split other fields equally
+        for (let i = 0; i < newSubValues.length; i++) {
+            if (i === index || newModifiedIndices.includes(i)) {
+                continue;
+            }
+
+            newSubValues[i] = toDistribute;
+        }
+
+        // Complete missing percentages due to decimal point errors
+        const totalAfter = newSubValues.reduce((acc, val) => acc + val, 0);
+        const diff = 100 - totalAfter;
+        if (diff !== 0) {
+            const sign = diff > 0 ? 1 : -1;
+            for (let i = 0; i < Math.abs(diff); i++) {
+                for (let j = newSubValues.length - 1; j >= 0; j--) {
+                    if (newSubValues[j] !== 0) {
+                        newSubValues[j] += sign * 0.01;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Update state
+        setSubValues(newSubValues);
+    };
+
+    const handleShareChange = (index, newValue) => {
+        const newSubValues = [...subValues];
+        newSubValues[index] = newValue;
+
+        // Update state
+        setSubValues(newSubValues);
+    };
+
+    const handleAdjustmentChange = (index, newValue) => {
+        const newSubValues = [...subValues];
+        newSubValues[index] = newValue;
+
+        // Update state
+        setSubValues(newSubValues);
+    };
+
     return (
         <div className="debtor-list">
             <Container as={Row} className="debtor-header-container">
@@ -100,7 +193,8 @@ const DebtorsBlock = ({
                     <SplitMethodSelector
                         selectedSplitMethod={selectedSplitMethod}
                         setSelectedSplitMethod={setSelectedSplitMethod}
-                        // setShowInput={setShowInput}
+                        setSubValues={setSubValues}
+                        subValues={subValues}
                     />
                 </Col>
             </Container>
@@ -166,36 +260,94 @@ const DebtorsBlock = ({
                                                 src={`${member.image}.jpg`}
                                             />
                                         </ListItemAvatar>
-                                        <ListItemText
-                                            id={labelId}
-                                            primary={`${member.name}`}
-                                        />
-                                        <input
+                                        {selectedSplitMethod === 1 ? (
+                                            <ListItemText
+                                                id={labelId}
+                                                primary={`${member.name}`}
+                                            />
+                                        ) : (
+                                            <ListItemText
+                                                id={labelId}
+                                                primary={`${member.name}`}
+                                                secondary={`${
+                                                    selectedCurrencyObj.symbol
+                                                } ${updateDividedAmounts(
+                                                    member,
+                                                    index
+                                                )}`}
+                                            />
+                                        )}
+
+                                        {selectedSplitMethod === 4 ? (
+                                            <TbPlusMinus></TbPlusMinus>
+                                        ) : null}
+                                        <TextField
                                             type="number"
-                                            value={subValues[index]}
-                                            onChange={(event) =>
-                                                handleExactAmountChange(
-                                                    index,
-                                                    Number(event.target.value)
-                                                )
-                                            }
+                                            variant="standard"
+                                            value={Number(
+                                                subValues[index].toFixed(2)
+                                            )}
+                                            inputProps={{
+                                                style: { textAlign: "right" },
+                                            }}
+                                            onChange={(event) => {
+                                                if (selectedSplitMethod === 1) {
+                                                    handleExactAmountChange(
+                                                        index,
+                                                        Number(
+                                                            event.target.value
+                                                        )
+                                                    );
+                                                } else if (
+                                                    selectedSplitMethod === 2
+                                                ) {
+                                                    handlePercentageChange(
+                                                        index,
+                                                        Number(
+                                                            event.target.value
+                                                        )
+                                                    );
+                                                } else if (
+                                                    selectedSplitMethod === 3
+                                                ) {
+                                                    handleShareChange(
+                                                        index,
+                                                        Number(
+                                                            event.target.value
+                                                        )
+                                                    );
+                                                } else if (
+                                                    selectedSplitMethod === 4
+                                                ) {
+                                                    handleAdjustmentChange(
+                                                        index,
+                                                        Number(
+                                                            event.target.value
+                                                        )
+                                                    );
+                                                }
+                                            }}
+                                            sx={{ width: "30%" }}
                                         />
                                         {selectedSplitMethod === 1 ? (
                                             <ListItemText
                                                 id={labelId}
                                                 primary={`${selectedCurrencyObj.abbreviation}`}
+                                                style={{ maxWidth: "2rem" }}
                                             />
                                         ) : selectedSplitMethod === 2 ? (
                                             <ListItemText
                                                 id={labelId}
                                                 primary={`%`}
+                                                style={{ maxWidth: "1rem" }}
                                             />
-                                        ) : (
+                                        ) : selectedSplitMethod === 3 ? (
                                             <ListItemText
                                                 id={labelId}
                                                 primary={`share(s)`}
+                                                style={{ maxWidth: "3rem" }}
                                             />
-                                        )}
+                                        ) : null}
                                         {/* <ListItemText
                                             id={labelId}
                                             primary={`${selectedCurrencyObj.abbreviation}`}
