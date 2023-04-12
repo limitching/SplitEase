@@ -232,7 +232,11 @@ const Transaction = ({
                     </StyledModalBody>
                     <Modal.Footer>
                         <Container className="d-grid">
-                            <Button variant="warning" type="submit">
+                            <Button
+                                variant="warning"
+                                type="submit"
+                                disabled={amount === 0}
+                            >
                                 Save
                             </Button>
                         </Container>
