@@ -33,6 +33,7 @@ const Expenses = () => {
         if (members !== null) {
             setChecked([...members]);
         }
+        setSubValues(Array(members.length).fill(0));
     }, [members]);
     if (members.length === 0) {
         return;
