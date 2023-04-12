@@ -42,7 +42,6 @@ const CreditorsBlock = ({
     selectedCreditor,
     amount,
     setAmount,
-    subValues,
     setSubValues,
     selectedSplitMethod,
 }) => {
@@ -51,7 +50,7 @@ const CreditorsBlock = ({
         return <div>Loading...</div>;
     }
     const handleAmountChange = (event) => {
-        setAmount(event.target.value);
+        setAmount(Number(event.target.value));
         if (selectedSplitMethod === 1) {
             setSubValues(
                 Array(members.length).fill(event.target.value / members.length)
@@ -71,7 +70,7 @@ const CreditorsBlock = ({
                     className="mb-3"
                     aria-label="Default select example"
                     defaultValue={selectedCreditor}
-                    onChange={handleChangeSelectedCreditor}
+                    onChange={(event) => handleChangeSelectedCreditor(event)}
                 >
                     {members.map((member) => (
                         <option key={member.id} value={member.id}>

@@ -215,6 +215,8 @@ const ExpenseModificationModal = ({
                             setSelectedCreditor={setSelectedCreditor}
                             amount={amount}
                             setAmount={setAmount}
+                            setSubValues={setSubValues}
+                            selectedSplitMethod={selectedSplitMethod}
                         />
 
                         <hr />
@@ -229,6 +231,7 @@ const ExpenseModificationModal = ({
                             selectedSplitMethod={selectedSplitMethod}
                             subValues={subValues}
                             setSubValues={setSubValues}
+                            setAmount={setAmount}
                         ></DebtorsBlock>
 
                         <Container className="expense-description mb-3">
