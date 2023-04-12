@@ -216,6 +216,8 @@ const calculateTransaction = (graph) => {
             }
         }
     }
+    // TODO:
+    // console.log(transactions);
     return transactions;
 };
 

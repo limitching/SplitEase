@@ -33,23 +33,17 @@ const getGroupExpenses = async (req, res, next) => {
 };
 
 const createGroupExpense = async (req, res, next) => {
-    console.log(req.body);
     const {
         amount,
         description,
         date,
         split_method,
         attached_group_id,
-        // creditors,
-        // debtors,
         currencyOption,
         creditorsAmounts,
         debtorsWeight,
+        debtorsAdjustment,
     } = req.body;
-    // const creditorsObj = JSON.parse(creditors);
-    // const debtorsObj = JSON.parse(debtors);
-    // const credit_users = new Map();
-    const debt_users = new Map();
     const involved_users = [];
     const creditorsArray = JSON.parse(creditorsAmounts);
     const creditors_amounts = creditorsArray.reduce(
@@ -71,14 +65,20 @@ const createGroupExpense = async (req, res, next) => {
     let image;
     req.file ? (image = "expenses/" + req.file.filename) : (image = null);
 
-    // credit_users.set(creditorsObj.id.toString(), -amount);
-    // involved_users.push(creditorsObj.id);
-    // debtorsObj.forEach((debtor) => {
-    //     debt_users.set(debtor.id.toString(), amount / debtorsObj.length);
-    //     if (involved_users.indexOf(debtor.id) === -1) {
-    //         involved_users.push(debtor.id);
-    //     }
-    // });
+    const debtorsAdjustmentArray = debtorsAdjustment
+        ? JSON.parse(debtorsAdjustment)
+        : [];
+    const debtors_adjustment = debtorsAdjustmentArray.reduce(
+        (result, [debtor, weight]) => {
+            result[debtor] = weight;
+            if (involved_users.indexOf(debtor) === -1) {
+                involved_users.push(debtor);
+            }
+            return result;
+        },
+        {}
+    );
+
     const expenseObject = {
         description,
         split_method,
@@ -90,6 +90,7 @@ const createGroupExpense = async (req, res, next) => {
         date,
         creditors_amounts,
         debtors_weight,
+        debtors_adjustment,
     };
     // Insert Expense into MongoDB
     const { _id } = await createExpense(expenseObject);
@@ -118,17 +119,12 @@ const updateGroupExpense = async (req, res, next) => {
         date,
         split_method,
         attached_group_id,
-        // creditors,
-        // debtors,
         currencyOption,
         creditorsAmounts,
         debtorsWeight,
+        debtorsAdjustment,
     } = req.body;
 
-    // const creditorsObj = JSON.parse(creditors);
-    // const debtorsObj = JSON.parse(debtors);
-    // const credit_users = new Map();
-    // const debt_users = new Map();
     const involved_users = [];
     const creditorsArray = JSON.parse(creditorsAmounts);
     const creditors_amounts = creditorsArray.reduce(
@@ -149,15 +145,21 @@ const updateGroupExpense = async (req, res, next) => {
     }, {});
     let image;
     req.file ? (image = "expenses/" + req.file.filename) : (image = null);
-    // console.log(involved_users);
-    // credit_users.set(creditorsObj.id.toString(), -amount);
-    // involved_users.push(creditorsObj.id);
-    // debtorsObj.forEach((debtor) => {
-    //     debt_users.set(debtor.id.toString(), amount / debtorsObj.length);
-    //     if (involved_users.indexOf(debtor.id) === -1) {
-    //         involved_users.push(debtor.id);
-    //     }
-    // });
+
+    const debtorsAdjustmentArray = debtorsAdjustment
+        ? JSON.parse(debtorsAdjustment)
+        : [];
+    const debtors_adjustment = debtorsAdjustmentArray.reduce(
+        (result, [debtor, weight]) => {
+            result[debtor] = weight;
+            if (involved_users.indexOf(debtor) === -1) {
+                involved_users.push(debtor);
+            }
+            return result;
+        },
+        {}
+    );
+
     const updatedExpenseObject = {
         description,
         split_method,
@@ -169,6 +171,7 @@ const updateGroupExpense = async (req, res, next) => {
         date,
         creditors_amounts,
         debtors_weight,
+        debtors_adjustment,
     };
 
     // Update Expense in MongoDB

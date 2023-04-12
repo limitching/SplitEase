@@ -43,6 +43,8 @@ const Transaction = ({
     setSelectedCurrency,
     selectedSplitMethod,
     setSelectedSplitMethod,
+    subValues,
+    setSubValues,
 }) => {
     const { members, gid, memberMap, setExpensesChanged } =
         useContext(GroupContext);
@@ -69,9 +71,28 @@ const Transaction = ({
         const creditor = memberMap.get(Number(selectedCreditor));
         const creditorsAmounts = new Map();
         const debtorsWeight = new Map();
+        const debtorsAdjustment = new Map();
 
-        if (SPLIT_METHODS[selectedSplitMethod] === "split equally") {
+        if (selectedSplitMethod === 0) {
             checked.forEach((debtor) => debtorsWeight.set(debtor.id, 1));
+        } else if (
+            selectedSplitMethod === 1 ||
+            selectedSplitMethod === 2 ||
+            selectedSplitMethod === 3
+        ) {
+            subValues.forEach((debtorAmount, debtorIndex) => {
+                if (debtorAmount !== 0) {
+                    // TODO: Error Client side error but mongodb error
+                    // console.log(members[debtorIndex].id);
+                    // debtorsWeight.set(memberMap.get(debtorIndex), debtorAmount);
+                    debtorsWeight.set(members[debtorIndex].id, debtorAmount);
+                }
+            });
+        } else if (selectedSplitMethod === 4) {
+            subValues.forEach((debtorAmount, debtorIndex) => {
+                debtorsWeight.set(members[debtorIndex].id, 1);
+                debtorsAdjustment.set(members[debtorIndex].id, debtorAmount);
+            });
         }
         creditorsAmounts.set(creditor.id, Number(amount));
 
@@ -84,11 +105,16 @@ const Transaction = ({
             JSON.stringify([...creditorsAmounts])
         );
         formData.append("debtorsWeight", JSON.stringify([...debtorsWeight]));
-
+        if (selectedSplitMethod === 4) {
+            formData.append(
+                "debtorsAdjustment",
+                JSON.stringify([...debtorsAdjustment])
+            );
+        }
         // TODO: debug;
-        // for (const pair of formData.entries()) {
-        //     console.log(`${pair[0]}, ${pair[1]}`);
-        // }
+        for (const pair of formData.entries()) {
+            console.log(`${pair[0]}, ${pair[1]}`);
+        }
 
         const response = await api.createExpense(formData);
         if (response.status === 200) {
@@ -162,6 +188,9 @@ const Transaction = ({
                             setSelectedCreditor={setSelectedCreditor}
                             amount={amount}
                             setAmount={setAmount}
+                            subValues={subValues}
+                            setSubValues={setSubValues}
+                            selectedSplitMethod={selectedSplitMethod}
                         />
 
                         <hr />
@@ -170,10 +199,13 @@ const Transaction = ({
                             currencies={currencies}
                             selectedCurrency={selectedCurrency}
                             amount={amount}
+                            setAmount={setAmount}
                             setSelectedSplitMethod={setSelectedSplitMethod}
                             checked={checked}
                             setChecked={setChecked}
                             selectedSplitMethod={selectedSplitMethod}
+                            subValues={subValues}
+                            setSubValues={setSubValues}
                         ></DebtorsBlock>
 
                         <Container className="expense-description mb-3">

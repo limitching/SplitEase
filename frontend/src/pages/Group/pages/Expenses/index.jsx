@@ -27,18 +27,20 @@ const Expenses = () => {
     const [selectedCreditor, setSelectedCreditor] = useState(0);
     const [selectedSplitMethod, setSelectedSplitMethod] = useState(0);
     const [description, setDescription] = useState("");
+    const [subValues, setSubValues] = useState(Array(members.length).fill(0));
 
     useEffect(() => {
         if (members !== null) {
             setChecked([...members]);
         }
+        setSubValues(Array(members.length).fill(0));
     }, [members]);
     if (members.length === 0) {
         return;
     }
 
     return (
-        <Container style={{ marginTop: "5rem" }}>
+        <Container style={{ marginTop: "2rem" }}>
             <Row className="justify-content-md-center">
                 <ExpensesBlock
                     setSelectedExpense={setSelectedExpense}
@@ -50,6 +52,8 @@ const Expenses = () => {
                     setSelectedSplitMethod={setSelectedSplitMethod}
                     setExpenseTime={setExpenseTime}
                     setDescription={setDescription}
+                    subValues={subValues}
+                    setSubValues={setSubValues}
                 ></ExpensesBlock>
             </Row>
             <Row className="justify-content-md-center">
@@ -80,6 +84,8 @@ const Expenses = () => {
                         setSelectedCurrency={setSelectedCurrency}
                         selectedSplitMethod={selectedSplitMethod}
                         setSelectedSplitMethod={setSelectedSplitMethod}
+                        subValues={subValues}
+                        setSubValues={setSubValues}
                     />
                     <ExpenseModificationModal
                         showModification={showModification}
@@ -100,6 +106,8 @@ const Expenses = () => {
                         setSelectedCreditor={setSelectedCreditor}
                         description={description}
                         setDescription={setDescription}
+                        subValues={subValues}
+                        setSubValues={setSubValues}
                     ></ExpenseModificationModal>
                 </Col>
             </Row>

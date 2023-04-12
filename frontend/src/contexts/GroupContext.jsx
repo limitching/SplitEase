@@ -6,6 +6,7 @@ const GroupContext = createContext({
     gid: null,
     members: [],
     memberMap: new Map(),
+    indexMap: new Map(),
     groupExpense: [],
     debts: [],
     expensesChanged: false,
@@ -69,8 +70,13 @@ const GroupContextProvider = ({ children }) => {
         return <div>Loading...</div>;
     }
 
+    // A map to get member object from memberId
     const memberMap = members
         ? new Map(members.map((member) => [member.id, member]))
+        : new Map();
+
+    const indexMap = members
+        ? new Map(members.map((member, index) => [member.id, index]))
         : new Map();
 
     return (
@@ -79,6 +85,7 @@ const GroupContextProvider = ({ children }) => {
                 gid,
                 members,
                 memberMap,
+                indexMap,
                 groupExpense,
                 debts,
                 expensesChanged,

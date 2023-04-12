@@ -1,6 +1,8 @@
 import { Container, Form, Col, Row, InputGroup } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { useContext } from "react";
+import { TextField, MenuItem } from "@mui/material";
+import { amountFormatter } from "../../../../../utils/formatter";
 
 const CurrencySelector = ({
     currencies,
@@ -12,17 +14,23 @@ const CurrencySelector = ({
     };
 
     return (
-        <Form.Select
+        <TextField
             name="currencyOption"
+            select
+            label="Currency"
+            // SelectProps={{
+            //     native: true,
+            // }}
+            variant="standard"
             defaultValue={selectedCurrency}
             onChange={handleCurrencyOptionChange}
         >
             {currencies.map((option) => (
-                <option key={option.id} value={option.id}>
+                <MenuItem key={option.id} value={option.id}>
                     {option.abbreviation}
-                </option>
+                </MenuItem>
             ))}
-        </Form.Select>
+        </TextField>
     );
 };
 
@@ -34,6 +42,9 @@ const CreditorsBlock = ({
     selectedCreditor,
     amount,
     setAmount,
+    subValues,
+    setSubValues,
+    selectedSplitMethod,
 }) => {
     const { members } = useContext(GroupContext);
     if (members.length === 0) {
@@ -41,6 +52,11 @@ const CreditorsBlock = ({
     }
     const handleAmountChange = (event) => {
         setAmount(event.target.value);
+        if (selectedSplitMethod === 1) {
+            setSubValues(
+                Array(members.length).fill(event.target.value / members.length)
+            );
+        }
     };
 
     const handleChangeSelectedCreditor = (event) => {
@@ -69,12 +85,16 @@ const CreditorsBlock = ({
             </Col>
             <InputGroup as={Row}>
                 <Col lg="8">
-                    <Form.Control
+                    <TextField
                         name="amount"
                         className="mb-3"
-                        type="number"
+                        label="Amount"
+                        type="text"
                         value={amount}
-                        onChange={handleAmountChange}
+                        onChange={(event) => {
+                            amountFormatter(event);
+                            handleAmountChange(event);
+                        }}
                     />
                 </Col>
                 <Col lg="4">
