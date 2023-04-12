@@ -11,10 +11,7 @@ const getGroupDebts = async (req, res, next) => {
 
     const currencyGraph = {};
     const currencyTransactions = {};
-    // const debtsGraph = new Array(groupMembers.length);
-    // for (let i = 0; i < debtsGraph.length; i++) {
-    // debtsGraph[i] = new Array(groupMembers.length).fill(0);
-    // }
+
     const groupExpenses = await getExpensesByGroupId(gid);
     groupExpenses.forEach((expense) => {
         if (expense.currencyOption in currencyGraph === false) {
@@ -28,15 +25,26 @@ const getGroupDebts = async (req, res, next) => {
 
         const weights = Array.from(expense.debtors_weight.values());
         const totalWeight = weights.reduce((acc, curr) => acc + curr, 0);
-        for (let [creditor, amount] of expense.creditors_amounts) {
+        const adjustments = Array.from(expense.debtors_adjustment.values());
+        const totalAdjustments = adjustments.reduce(
+            (acc, curr) => acc + curr,
+            0
+        );
+
+        for (let [creditor, creditorAmount] of expense.creditors_amounts) {
             for (let [debtor, weight] of expense.debtors_weight) {
                 const creditorIndex = membersIndexMap.get(Number(creditor));
                 const debtorIndex = membersIndexMap.get(Number(debtor));
+                const adjustmentAmount =
+                    (totalAdjustments * creditorAmount) / expense.amount;
                 // Only calculate case: creditorIndex !== debtorIndex
                 if (creditorIndex !== debtorIndex) {
                     currencyGraph[expense.currencyOption][creditorIndex][
                         debtorIndex
-                    ] += (amount * weight) / totalWeight;
+                    ] +=
+                        ((creditorAmount - adjustmentAmount) * weight) /
+                            totalWeight +
+                        expense.debtors_adjustment.get(debtor);
                 }
             }
         }
