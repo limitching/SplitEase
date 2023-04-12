@@ -41,6 +41,9 @@ const CreditorsBlock = ({
     selectedCreditor,
     amount,
     setAmount,
+    subValues,
+    setSubValues,
+    selectedSplitMethod,
 }) => {
     const { members } = useContext(GroupContext);
     if (members.length === 0) {
@@ -48,6 +51,11 @@ const CreditorsBlock = ({
     }
     const handleAmountChange = (event) => {
         setAmount(event.target.value);
+        if (selectedSplitMethod === 1) {
+            setSubValues(
+                Array(members.length).fill(event.target.value / members.length)
+            );
+        }
     };
 
     const handleChangeSelectedCreditor = (event) => {
