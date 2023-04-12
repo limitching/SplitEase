@@ -27,6 +27,7 @@ const Expenses = () => {
     const [selectedCreditor, setSelectedCreditor] = useState(0);
     const [selectedSplitMethod, setSelectedSplitMethod] = useState(0);
     const [description, setDescription] = useState("");
+    const [subValues, setSubValues] = useState(Array(members.length).fill(0));
 
     useEffect(() => {
         if (members !== null) {
@@ -50,6 +51,8 @@ const Expenses = () => {
                     setSelectedSplitMethod={setSelectedSplitMethod}
                     setExpenseTime={setExpenseTime}
                     setDescription={setDescription}
+                    subValues={subValues}
+                    setSubValues={setSubValues}
                 ></ExpensesBlock>
             </Row>
             <Row className="justify-content-md-center">
@@ -80,6 +83,8 @@ const Expenses = () => {
                         setSelectedCurrency={setSelectedCurrency}
                         selectedSplitMethod={selectedSplitMethod}
                         setSelectedSplitMethod={setSelectedSplitMethod}
+                        subValues={subValues}
+                        setSubValues={setSubValues}
                     />
                     <ExpenseModificationModal
                         showModification={showModification}
@@ -100,6 +105,8 @@ const Expenses = () => {
                         setSelectedCreditor={setSelectedCreditor}
                         description={description}
                         setDescription={setDescription}
+                        subValues={subValues}
+                        setSubValues={setSubValues}
                     ></ExpenseModificationModal>
                 </Col>
             </Row>
