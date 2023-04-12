@@ -3,8 +3,14 @@ import DebtorsBlock from "./DebtorsBlock";
 import styled from "styled-components";
 import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
-import { useContext } from "react";
-
+import { useContext, useState } from "react";
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+} from "@mui/material";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { api, HOST } from "../../../../../utils/api";
@@ -49,6 +55,15 @@ const ExpenseModificationModal = ({
 }) => {
     const { memberMap, gid, setExpensesChanged, members } =
         useContext(GroupContext);
+    const [alertOpen, setAlertOpen] = useState(false);
+
+    const handleAlertOpen = () => {
+        setAlertOpen(true);
+    };
+    const handleAlertClose = () => {
+        setAlertOpen(false);
+    };
+
     const handleClose = () => setShowModification(false);
 
     const handleExpenseUpdate = async (event) => {
@@ -152,6 +167,7 @@ const ExpenseModificationModal = ({
     };
 
     const handleExpenseDelete = async (eid, gid) => {
+        handleAlertClose();
         const response = await api.deleteExpense(eid, gid);
         if (response.status === 200) {
             setExpensesChanged(true);
@@ -276,12 +292,7 @@ const ExpenseModificationModal = ({
                         <Container className="d-grid">
                             <Button
                                 variant="light"
-                                onClick={() =>
-                                    handleExpenseDelete(
-                                        selectedExpense._id,
-                                        gid
-                                    )
-                                }
+                                onClick={handleAlertOpen}
                                 className="mb-3"
                             >
                                 Delete
@@ -290,6 +301,7 @@ const ExpenseModificationModal = ({
                                 variant="warning"
                                 type="submit"
                                 className="mb-3"
+                                disabled={amount === 0}
                             >
                                 Update
                             </Button>
@@ -297,6 +309,32 @@ const ExpenseModificationModal = ({
                     </Modal.Footer>
                 </Form>
             </Modal>
+            <Dialog
+                open={alertOpen}
+                onClose={handleAlertClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Delete Expense"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Do you wish to delete this transaction?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleAlertClose}>Keep</Button>
+                    <Button
+                        onClick={() =>
+                            handleExpenseDelete(selectedExpense._id, gid)
+                        }
+                        autoFocus
+                    >
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };
