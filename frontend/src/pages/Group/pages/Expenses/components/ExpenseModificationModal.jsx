@@ -190,7 +190,6 @@ const ExpenseModificationModal = ({
             });
         }
     };
-
     return (
         <>
             <Modal

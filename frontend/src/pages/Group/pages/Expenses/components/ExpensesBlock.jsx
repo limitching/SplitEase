@@ -45,7 +45,8 @@ const ExpensesBlock = ({
     subValues,
     setSubValues,
 }) => {
-    const { members, memberMap, groupExpense } = useContext(GroupContext);
+    const { members, memberMap, indexMap, groupExpense } =
+        useContext(GroupContext);
 
     const handleShow = () => {
         setShowModification(true);
@@ -80,7 +81,11 @@ const ExpensesBlock = ({
         setExpenseTime(localISOTime);
         setDescription(expense.description);
         if (SPLIT_METHODS.indexOf(expense.split_method) !== 4) {
-            const expenseSubValues = Object.values(expense.debtors_weight);
+            const debtorsWeight = Object.entries(expense.debtors_weight);
+            const expenseSubValues = Array(members.length).fill(0);
+            for (const [debtorId, weight] of debtorsWeight) {
+                expenseSubValues[indexMap.get(Number(debtorId))] = weight;
+            }
             setSubValues(expenseSubValues);
         } else {
             const expenseSubValues = Object.values(expense.debtors_adjustment);
