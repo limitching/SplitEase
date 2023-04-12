@@ -29,8 +29,6 @@ const DebtorsBlock = ({
     const { members } = useContext(GroupContext);
     const [modifiedIndices, setModifiedIndices] = useState([]);
 
-    useEffect(() => {}, [subValues]);
-
     if (members.length === 0) {
         return <div>Loading...</div>;
     }
