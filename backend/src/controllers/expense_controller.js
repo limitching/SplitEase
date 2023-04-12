@@ -122,6 +122,7 @@ const updateGroupExpense = async (req, res, next) => {
         currencyOption,
         creditorsAmounts,
         debtorsWeight,
+        debtorsAdjustment,
     } = req.body;
 
     const involved_users = [];
@@ -145,6 +146,20 @@ const updateGroupExpense = async (req, res, next) => {
     let image;
     req.file ? (image = "expenses/" + req.file.filename) : (image = null);
 
+    const debtorsAdjustmentArray = debtorsAdjustment
+        ? JSON.parse(debtorsAdjustment)
+        : [];
+    const debtors_adjustment = debtorsAdjustmentArray.reduce(
+        (result, [debtor, weight]) => {
+            result[debtor] = weight;
+            if (involved_users.indexOf(debtor) === -1) {
+                involved_users.push(debtor);
+            }
+            return result;
+        },
+        {}
+    );
+
     const updatedExpenseObject = {
         description,
         split_method,
@@ -156,6 +171,7 @@ const updateGroupExpense = async (req, res, next) => {
         date,
         creditors_amounts,
         debtors_weight,
+        debtors_adjustment,
     };
 
     // Update Expense in MongoDB
