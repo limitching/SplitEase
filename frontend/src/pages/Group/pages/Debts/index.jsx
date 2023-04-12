@@ -3,7 +3,7 @@ import { Container, Row } from "react-bootstrap";
 
 const Debts = () => {
     return (
-        <Container style={{ marginTop: "5rem", marginBottom: "5rem" }}>
+        <Container style={{ marginTop: "2rem", marginBottom: "5rem" }}>
             <Row className="justify-content-md-center">
                 <DebtsBlock></DebtsBlock>
             </Row>

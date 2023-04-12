@@ -90,9 +90,6 @@ const Transaction = ({
             });
         } else if (selectedSplitMethod === 4) {
             subValues.forEach((debtorAmount, debtorIndex) => {
-                // TODO: Error Client side error but mongodb error
-                // console.log(members[debtorIndex].id);
-                // debtorsWeight.set(memberMap.get(debtorIndex), debtorAmount);
                 debtorsWeight.set(members[debtorIndex].id, 1);
                 debtorsAdjustment.set(members[debtorIndex].id, debtorAmount);
             });

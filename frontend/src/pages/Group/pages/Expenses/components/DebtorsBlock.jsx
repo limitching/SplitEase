@@ -1,9 +1,14 @@
 import SplitMethodSelector from "./SplitMethodSelector";
 import { Container, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { TextField } from "@mui/material";
 import { TbPlusMinus } from "react-icons/tb";
+import {
+    removeLeadingZeros,
+    inputFormatter,
+    amountFormatter,
+} from "../../../../../utils/formatter";
 import {
     List,
     ListItem,
@@ -83,6 +88,9 @@ const DebtorsBlock = ({
     };
 
     const handleExactAmountChange = (index, newValue) => {
+        if (newValue < 0) {
+            newValue = 0;
+        }
         const newSubValues = [...subValues];
         newSubValues[index] = newValue;
         setSubValues(newSubValues);
@@ -92,6 +100,13 @@ const DebtorsBlock = ({
     };
 
     const handlePercentageChange = (index, newValue) => {
+        // The value entered cannot be greater than 100 or less than 0
+        if (newValue > 100) {
+            newValue = 100;
+        } else if (newValue < 0) {
+            newValue = 0;
+        }
+
         const newModifiedIndices = [...modifiedIndices];
         if (!modifiedIndices.includes(index)) {
             newModifiedIndices.push(index);
@@ -102,13 +117,6 @@ const DebtorsBlock = ({
         }
 
         const newSubValues = [...subValues];
-
-        // The value entered cannot be greater than 100 or less than 0
-        if (newValue > 100) {
-            newValue = 100;
-        } else if (newValue < 0) {
-            newValue = 0;
-        }
 
         // Update the value of the current field
         newSubValues[index] = newValue;
@@ -166,6 +174,9 @@ const DebtorsBlock = ({
     };
 
     const handleShareChange = (index, newValue) => {
+        if (newValue < 0) {
+            newValue = 0;
+        }
         const newSubValues = [...subValues];
         newSubValues[index] = newValue;
 
@@ -180,7 +191,6 @@ const DebtorsBlock = ({
         // Update state
         setSubValues(newSubValues);
     };
-
     return (
         <div className="debtor-list">
             <Container as={Row} className="debtor-header-container">
@@ -275,81 +285,140 @@ const DebtorsBlock = ({
                                                 )}`}
                                             />
                                         )}
-
-                                        {selectedSplitMethod === 4 ? (
-                                            <TbPlusMinus></TbPlusMinus>
-                                        ) : null}
-                                        <TextField
-                                            type="number"
-                                            variant="standard"
-                                            value={Number(
-                                                subValues[index].toFixed(2)
-                                            )}
-                                            inputProps={{
-                                                style: { textAlign: "right" },
-                                            }}
-                                            onChange={(event) => {
-                                                if (selectedSplitMethod === 1) {
-                                                    handleExactAmountChange(
-                                                        index,
-                                                        Number(
-                                                            event.target.value
-                                                        )
-                                                    );
-                                                } else if (
-                                                    selectedSplitMethod === 2
-                                                ) {
-                                                    handlePercentageChange(
-                                                        index,
-                                                        Number(
-                                                            event.target.value
-                                                        )
-                                                    );
-                                                } else if (
-                                                    selectedSplitMethod === 3
-                                                ) {
-                                                    handleShareChange(
-                                                        index,
-                                                        Number(
-                                                            event.target.value
-                                                        )
-                                                    );
-                                                } else if (
-                                                    selectedSplitMethod === 4
-                                                ) {
-                                                    handleAdjustmentChange(
-                                                        index,
-                                                        Number(
-                                                            event.target.value
-                                                        )
-                                                    );
-                                                }
-                                            }}
-                                            sx={{ width: "30%" }}
-                                        />
                                         {selectedSplitMethod === 1 ? (
-                                            <ListItemText
-                                                id={labelId}
-                                                primary={`${selectedCurrencyObj.abbreviation}`}
-                                                style={{ maxWidth: "2rem" }}
-                                            />
+                                            <>
+                                                <TextField
+                                                    type="text"
+                                                    variant="standard"
+                                                    value={Number(
+                                                        subValues[
+                                                            index
+                                                        ].toFixed(2)
+                                                    )}
+                                                    inputProps={{
+                                                        style: {
+                                                            textAlign: "right",
+                                                        },
+                                                    }}
+                                                    onChange={(event) => {
+                                                        amountFormatter(event);
+                                                        handleExactAmountChange(
+                                                            index,
+                                                            Number(
+                                                                event.target
+                                                                    .value
+                                                            )
+                                                        );
+                                                    }}
+                                                    sx={{ width: "30%" }}
+                                                />
+                                                {/* <input
+                                                    type="text"
+                                                    onInput={removeLeadingZeros}
+                                                ></input> */}
+                                                <ListItemText
+                                                    id={labelId}
+                                                    primary={`${selectedCurrencyObj.abbreviation}`}
+                                                    style={{ maxWidth: "2rem" }}
+                                                />
+                                            </>
                                         ) : selectedSplitMethod === 2 ? (
-                                            <ListItemText
-                                                id={labelId}
-                                                primary={`%`}
-                                                style={{ maxWidth: "1rem" }}
-                                            />
+                                            <>
+                                                <TextField
+                                                    type="number"
+                                                    variant="standard"
+                                                    value={Number(
+                                                        subValues[
+                                                            index
+                                                        ].toFixed(2)
+                                                    )}
+                                                    inputProps={{
+                                                        style: {
+                                                            textAlign: "right",
+                                                        },
+                                                    }}
+                                                    onChange={(event) => {
+                                                        amountFormatter(event);
+                                                        handlePercentageChange(
+                                                            index,
+                                                            Number(
+                                                                event.target
+                                                                    .value
+                                                            )
+                                                        );
+                                                    }}
+                                                    sx={{ width: "30%" }}
+                                                />
+                                                <ListItemText
+                                                    id={labelId}
+                                                    primary={`%`}
+                                                    style={{ maxWidth: "1rem" }}
+                                                />
+                                            </>
                                         ) : selectedSplitMethod === 3 ? (
-                                            <ListItemText
-                                                id={labelId}
-                                                primary={`share(s)`}
-                                                style={{ maxWidth: "3rem" }}
-                                            />
+                                            <>
+                                                <TextField
+                                                    type="number"
+                                                    variant="standard"
+                                                    value={Number(
+                                                        subValues[
+                                                            index
+                                                        ].toFixed(2)
+                                                    )}
+                                                    inputProps={{
+                                                        style: {
+                                                            textAlign: "right",
+                                                        },
+                                                    }}
+                                                    onInput={removeLeadingZeros}
+                                                    onChange={(event) => {
+                                                        handleShareChange(
+                                                            index,
+                                                            Number(
+                                                                event.target
+                                                                    .value
+                                                            )
+                                                        );
+                                                    }}
+                                                    sx={{ width: "30%" }}
+                                                />
+                                                <ListItemText
+                                                    id={labelId}
+                                                    primary={`share(s)`}
+                                                    style={{ maxWidth: "3rem" }}
+                                                />
+                                            </>
+                                        ) : selectedSplitMethod === 4 ? (
+                                            <>
+                                                <TbPlusMinus></TbPlusMinus>
+                                                <TextField
+                                                    type="text"
+                                                    variant="standard"
+                                                    value={Number(
+                                                        subValues[
+                                                            index
+                                                        ].toFixed(2)
+                                                    )}
+                                                    inputProps={{
+                                                        style: {
+                                                            textAlign: "right",
+                                                        },
+                                                    }}
+                                                    // onInput={inputFormatter}
+                                                    onChange={(event) => {
+                                                        inputFormatter(event);
+                                                        handleAdjustmentChange(
+                                                            index,
+                                                            Number(
+                                                                event.target
+                                                                    .value
+                                                            )
+                                                        );
+                                                    }}
+                                                    sx={{ width: "30%" }}
+                                                />
+                                            </>
                                         ) : null}
-                                        {/* <ListItemText
-                                            id={labelId}
-                                            primary={`${selectedCurrencyObj.abbreviation}`}
-                                        /> */}
                                     </ListItemButton>
                                 </ListItem>
                             );

@@ -24,6 +24,7 @@ const SplitMethodSelector = ({
 }) => {
     const { members } = useContext(GroupContext);
     const handleSplitMethodChange = (event) => {
+        const previousMethod = selectedSplitMethod;
         setSelectedSplitMethod(Number(event.target.value));
         console.log(event.target.value, typeof event.target.value);
         console.log(SPLIT_METHODS[event.target.value]);
@@ -32,7 +33,11 @@ const SplitMethodSelector = ({
         } else if (event.target.value === 2) {
             setSubValues(Array(members.length).fill(100 / members.length));
         } else if (event.target.value === 3) {
-            setSubValues(normalizeArray(subValues));
+            if (previousMethod === 4) {
+                return setSubValues(Array(members.length).fill(1));
+            } else {
+                setSubValues(normalizeArray(subValues));
+            }
         } else if (event.target.value === 4) {
             setSubValues(Array(members.length).fill(0));
         }

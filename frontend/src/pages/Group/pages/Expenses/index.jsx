@@ -40,7 +40,7 @@ const Expenses = () => {
     }
 
     return (
-        <Container style={{ marginTop: "5rem" }}>
+        <Container style={{ marginTop: "2rem" }}>
             <Row className="justify-content-md-center">
                 <ExpensesBlock
                     setSelectedExpense={setSelectedExpense}
