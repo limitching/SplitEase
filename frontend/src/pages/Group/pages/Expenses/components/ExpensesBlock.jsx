@@ -42,6 +42,8 @@ const ExpensesBlock = ({
     setSelectedSplitMethod,
     setExpenseTime,
     setDescription,
+    subValues,
+    setSubValues,
 }) => {
     const { members, memberMap, groupExpense } = useContext(GroupContext);
 
@@ -67,6 +69,7 @@ const ExpensesBlock = ({
         setChecked(expenseChecked);
         setSelectedCurrency(expense.currencyOption);
         setSelectedSplitMethod(SPLIT_METHODS.indexOf(expense.split_method));
+
         // Convert GMT datetime to local datetime
         const gmtDate = new Date(expense.date);
         const timeZoneOffset = gmtDate.getTimezoneOffset() * 60 * 1000; //offset in milliseconds
@@ -76,6 +79,14 @@ const ExpensesBlock = ({
 
         setExpenseTime(localISOTime);
         setDescription(expense.description);
+        if (SPLIT_METHODS.indexOf(expense.split_method) !== 4) {
+            const expenseSubValues = Object.values(expense.debtors_weight);
+            setSubValues(expenseSubValues);
+        } else {
+            const expenseSubValues = Object.values(expense.debtors_adjustment);
+            setSubValues(expenseSubValues);
+        }
+
         handleShow();
     };
     if (!members) {
