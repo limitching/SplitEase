@@ -43,6 +43,8 @@ const Transaction = ({
     setSelectedCurrency,
     selectedSplitMethod,
     setSelectedSplitMethod,
+    subValues,
+    setSubValues,
 }) => {
     const { members, gid, memberMap, setExpensesChanged } =
         useContext(GroupContext);
@@ -162,6 +164,9 @@ const Transaction = ({
                             setSelectedCreditor={setSelectedCreditor}
                             amount={amount}
                             setAmount={setAmount}
+                            subValues={subValues}
+                            setSubValues={setSubValues}
+                            selectedSplitMethod={selectedSplitMethod}
                         />
 
                         <hr />
@@ -175,6 +180,8 @@ const Transaction = ({
                             checked={checked}
                             setChecked={setChecked}
                             selectedSplitMethod={selectedSplitMethod}
+                            subValues={subValues}
+                            setSubValues={setSubValues}
                         ></DebtorsBlock>
 
                         <Container className="expense-description mb-3">
