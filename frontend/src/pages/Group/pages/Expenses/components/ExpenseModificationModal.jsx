@@ -52,6 +52,8 @@ const ExpenseModificationModal = ({
     setDescription,
     subValues,
     setSubValues,
+    subCredit,
+    setSubCredit,
 }) => {
     const { memberMap, gid, setExpensesChanged, members } =
         useContext(GroupContext);
@@ -233,6 +235,8 @@ const ExpenseModificationModal = ({
                             setAmount={setAmount}
                             setSubValues={setSubValues}
                             selectedSplitMethod={selectedSplitMethod}
+                            subCredit={subCredit}
+                            setSubCredit={setSubCredit}
                         />
 
                         <hr />
@@ -248,6 +252,7 @@ const ExpenseModificationModal = ({
                             subValues={subValues}
                             setSubValues={setSubValues}
                             setAmount={setAmount}
+                            selectedCreditor={selectedCreditor}
                         ></DebtorsBlock>
 
                         <Container className="expense-description mb-3">
