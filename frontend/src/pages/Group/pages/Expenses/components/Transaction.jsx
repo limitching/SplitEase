@@ -26,6 +26,14 @@ const TransactionSelector = () => {
     );
 };
 
+// const ModalBodyWrapper = ({ children }) => {
+//     return selectedCreditor !== "multi" ? (
+//         <StyledModalBody>{children}</StyledModalBody>
+//     ) : (
+//         <div>{children}</div>
+//     );
+// };
+
 const Transaction = ({
     showTransaction,
     setShowTransaction,
@@ -45,6 +53,8 @@ const Transaction = ({
     setSelectedSplitMethod,
     subValues,
     setSubValues,
+    subCredit,
+    setSubCredit,
 }) => {
     const { members, gid, memberMap, setExpensesChanged } =
         useContext(GroupContext);
@@ -59,6 +69,7 @@ const Transaction = ({
         setSelectedCurrency(1);
         setSelectedSplitMethod(0);
         setExpenseTime(localISOTime);
+        setSubCredit(Array(members.length).fill(0));
     };
     // Select NT$ on default
 
@@ -191,6 +202,8 @@ const Transaction = ({
                             subValues={subValues}
                             setSubValues={setSubValues}
                             selectedSplitMethod={selectedSplitMethod}
+                            subCredit={subCredit}
+                            setSubCredit={setSubCredit}
                         />
 
                         <hr />
@@ -206,6 +219,7 @@ const Transaction = ({
                             selectedSplitMethod={selectedSplitMethod}
                             subValues={subValues}
                             setSubValues={setSubValues}
+                            selectedCreditor={selectedCreditor}
                         ></DebtorsBlock>
 
                         <Container className="expense-description mb-3">
