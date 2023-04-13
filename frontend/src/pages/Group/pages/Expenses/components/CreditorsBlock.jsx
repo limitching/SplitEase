@@ -1,5 +1,7 @@
 import { Container, Form, Col, Row, InputGroup } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
+import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
+import { CURRENCY_OPTIONS } from "../../../../../global/constant";
 import { useContext } from "react";
 import {
     List,
@@ -7,18 +9,15 @@ import {
     ListItemButton,
     ListItemText,
     ListItemAvatar,
-    Checkbox,
     Avatar,
     TextField,
     MenuItem,
 } from "@mui/material";
 import { amountFormatter } from "../../../../../utils/formatter";
 
-const CurrencySelector = ({
-    currencies,
-    selectedCurrency,
-    setSelectedCurrency,
-}) => {
+const CurrencySelector = () => {
+    const { selectedCurrency, setSelectedCurrency } =
+        useContext(ExpenseContext);
     const handleCurrencyOptionChange = (event) => {
         setSelectedCurrency(event.target.value);
     };
@@ -28,14 +27,11 @@ const CurrencySelector = ({
             name="currencyOption"
             select
             label="Currency"
-            // SelectProps={{
-            //     native: true,
-            // }}
             variant="standard"
             defaultValue={selectedCurrency}
             onChange={handleCurrencyOptionChange}
         >
-            {currencies.map((option) => (
+            {CURRENCY_OPTIONS.map((option) => (
                 <MenuItem key={option.id} value={option.id}>
                     {option.abbreviation}
                 </MenuItem>
@@ -44,24 +40,23 @@ const CurrencySelector = ({
     );
 };
 
-const CreditorsBlock = ({
-    currencies,
-    selectedCurrency,
-    setSelectedCurrency,
-    setSelectedCreditor,
-    selectedCreditor,
-    amount,
-    setAmount,
-    setSubValues,
-    selectedSplitMethod,
-    subCredit,
-    setSubCredit,
-}) => {
+const CreditorsBlock = () => {
     const { members } = useContext(GroupContext);
+    const {
+        subCredit,
+        selectedCurrency,
+        selectedSplitMethod,
+        selectedCreditor,
+        amount,
+        setSubValues,
+        setSubCredit,
+        setSelectedCreditor,
+        setAmount,
+    } = useContext(ExpenseContext);
     if (members.length === 0) {
         return <div>Loading...</div>;
     }
-    const [selectedCurrencyObj] = currencies.filter((currency) => {
+    const [selectedCurrencyObj] = CURRENCY_OPTIONS.filter((currency) => {
         return currency.id === Number(selectedCurrency);
     });
     const handleAmountChange = (event) => {
@@ -128,11 +123,7 @@ const CreditorsBlock = ({
                         />
                     </Col>
                     <Col lg="4">
-                        <CurrencySelector
-                            currencies={currencies}
-                            selectedCurrency={selectedCurrency}
-                            setSelectedCurrency={setSelectedCurrency}
-                        />
+                        <CurrencySelector />
                     </Col>
                 </InputGroup>
             </Container>
@@ -178,11 +169,7 @@ const CreditorsBlock = ({
                         />
                     </Col>
                     <Col lg="4">
-                        <CurrencySelector
-                            currencies={currencies}
-                            selectedCurrency={selectedCurrency}
-                            setSelectedCurrency={setSelectedCurrency}
-                        />
+                        <CurrencySelector />
                     </Col>
                 </InputGroup>
                 <List

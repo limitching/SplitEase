@@ -3,6 +3,7 @@ import DebtorsBlock from "./DebtorsBlock";
 import styled from "styled-components";
 import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
+import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import { useContext, useState } from "react";
 import {
     Dialog,
@@ -31,32 +32,22 @@ const StyledExpenseImage = styled.img`
     overflow: scroll;
 `;
 
-const ExpenseModificationModal = ({
-    showModification,
-    setShowModification,
-    currencies,
-    selectedCurrency,
-    setSelectedCurrency,
-    selectedSplitMethod,
-    setSelectedSplitMethod,
-    checked,
-    setChecked,
-    expenseTime,
-    setExpenseTime,
-    selectedExpense,
-    amount,
-    setAmount,
-    selectedCreditor,
-    setSelectedCreditor,
-    description,
-    setDescription,
-    subValues,
-    setSubValues,
-    subCredit,
-    setSubCredit,
-}) => {
+const ExpenseModificationModal = () => {
     const { memberMap, gid, setExpensesChanged, members } =
         useContext(GroupContext);
+    const {
+        checked,
+        subValues,
+        amount,
+        selectedCreditor,
+        selectedSplitMethod,
+        selectedExpense,
+        description,
+        expenseTime,
+        showModification,
+        setExpenseTime,
+        setShowModification,
+    } = useContext(ExpenseContext);
     const [alertOpen, setAlertOpen] = useState(false);
 
     const handleAlertOpen = () => {
@@ -225,35 +216,11 @@ const ExpenseModificationModal = ({
                         </Container>
                     </Modal.Header>
                     <StyledModalBody>
-                        <CreditorsBlock
-                            currencies={currencies}
-                            selectedCurrency={selectedCurrency}
-                            setSelectedCurrency={setSelectedCurrency}
-                            selectedCreditor={selectedCreditor}
-                            setSelectedCreditor={setSelectedCreditor}
-                            amount={amount}
-                            setAmount={setAmount}
-                            setSubValues={setSubValues}
-                            selectedSplitMethod={selectedSplitMethod}
-                            subCredit={subCredit}
-                            setSubCredit={setSubCredit}
-                        />
+                        <CreditorsBlock />
 
                         <hr />
 
-                        <DebtorsBlock
-                            currencies={currencies}
-                            selectedCurrency={selectedCurrency}
-                            amount={amount}
-                            setSelectedSplitMethod={setSelectedSplitMethod}
-                            checked={checked}
-                            setChecked={setChecked}
-                            selectedSplitMethod={selectedSplitMethod}
-                            subValues={subValues}
-                            setSubValues={setSubValues}
-                            setAmount={setAmount}
-                            selectedCreditor={selectedCreditor}
-                        ></DebtorsBlock>
+                        <DebtorsBlock></DebtorsBlock>
 
                         <Container className="expense-description mb-3">
                             <Form.Label>Description</Form.Label>

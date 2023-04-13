@@ -1,6 +1,8 @@
 import SplitMethodSelector from "./SplitMethodSelector";
 import { Container, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
+import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
+import { CURRENCY_OPTIONS } from "../../../../../global/constant";
 import { useContext, useState } from "react";
 import { TextField } from "@mui/material";
 import { TbPlusMinus } from "react-icons/tb";
@@ -19,26 +21,26 @@ import {
     Avatar,
 } from "@mui/material";
 
-const DebtorsBlock = ({
-    currencies,
-    selectedCurrency,
-    amount,
-    setAmount,
-    setSelectedSplitMethod,
-    checked,
-    setChecked,
-    selectedSplitMethod,
-    subValues,
-    setSubValues,
-    selectedCreditor,
-}) => {
+const DebtorsBlock = () => {
     const { members } = useContext(GroupContext);
+    const {
+        checked,
+        subValues,
+        selectedCurrency,
+        amount,
+        selectedSplitMethod,
+        selectedCreditor,
+        setChecked,
+        setSubValues,
+        setAmount,
+        setSelectedSplitMethod,
+    } = useContext(ExpenseContext);
     const [modifiedIndices, setModifiedIndices] = useState([]);
 
     if (members.length === 0) {
         return <div>Loading...</div>;
     }
-    const [selectedCurrencyObj] = currencies.filter((currency) => {
+    const [selectedCurrencyObj] = CURRENCY_OPTIONS.filter((currency) => {
         return currency.id === Number(selectedCurrency);
     });
 
