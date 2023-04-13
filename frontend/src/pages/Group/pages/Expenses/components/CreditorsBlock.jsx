@@ -1,7 +1,17 @@
 import { Container, Form, Col, Row, InputGroup } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { useContext } from "react";
-import { TextField, MenuItem } from "@mui/material";
+import {
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText,
+    ListItemAvatar,
+    Checkbox,
+    Avatar,
+    TextField,
+    MenuItem,
+} from "@mui/material";
 import { amountFormatter } from "../../../../../utils/formatter";
 
 const CurrencySelector = ({
@@ -44,11 +54,16 @@ const CreditorsBlock = ({
     setAmount,
     setSubValues,
     selectedSplitMethod,
+    subCredit,
+    setSubCredit,
 }) => {
     const { members } = useContext(GroupContext);
     if (members.length === 0) {
         return <div>Loading...</div>;
     }
+    const [selectedCurrencyObj] = currencies.filter((currency) => {
+        return currency.id === Number(selectedCurrency);
+    });
     const handleAmountChange = (event) => {
         setAmount(Number(event.target.value));
         if (selectedSplitMethod === 1) {
@@ -62,50 +77,176 @@ const CreditorsBlock = ({
         setSelectedCreditor(event.target.value);
     };
 
-    return (
-        <Container className="who-paid" as={Row}>
-            <Form.Label>Who paid</Form.Label>
-            <Col lg="6">
-                <Form.Select
-                    className="mb-3"
-                    aria-label="Default select example"
-                    defaultValue={selectedCreditor}
-                    onChange={(event) => handleChangeSelectedCreditor(event)}
-                >
-                    {members.map((member) => (
-                        <option key={member.id} value={member.id}>
-                            {member.name}
-                        </option>
-                    ))}
-                    <option key="multi" value="multi">
-                        Multiple Payer
-                    </option>
-                </Form.Select>
-            </Col>
-            <InputGroup as={Row}>
-                <Col lg="8">
-                    <TextField
-                        name="amount"
+    const handleSubCreditChange = (index, newCredit) => {
+        const newSubCredit = [...subCredit];
+        newSubCredit[index] = newCredit;
+        setSubCredit(newSubCredit);
+        const newAmount = newSubCredit.reduce((sum, value) => sum + value, 0);
+        setAmount(newAmount);
+        if (selectedSplitMethod === 1) {
+            setSubValues(
+                Array(members.length).fill(newAmount / members.length)
+            );
+        }
+    };
+
+    if (selectedCreditor !== "multi") {
+        return (
+            <Container className="who-paid" as={Row}>
+                <Form.Label>Who paid</Form.Label>
+                <Col lg="6">
+                    <Form.Select
                         className="mb-3"
-                        label="Amount"
-                        type="text"
-                        value={amount}
-                        onChange={(event) => {
-                            amountFormatter(event);
-                            handleAmountChange(event);
-                        }}
-                    />
+                        aria-label="Default select example"
+                        value={selectedCreditor}
+                        onChange={(event) =>
+                            handleChangeSelectedCreditor(event)
+                        }
+                    >
+                        {members.map((member) => (
+                            <option key={member.id} value={member.id}>
+                                {member.name}
+                            </option>
+                        ))}
+                        <option key="multi" value="multi">
+                            Multiple Payer
+                        </option>
+                    </Form.Select>
                 </Col>
-                <Col lg="4">
-                    <CurrencySelector
-                        currencies={currencies}
-                        selectedCurrency={selectedCurrency}
-                        setSelectedCurrency={setSelectedCurrency}
-                    />
+                <InputGroup as={Row}>
+                    <Col lg="8">
+                        <TextField
+                            name="amount"
+                            className="mb-3"
+                            label="Amount"
+                            type="text"
+                            value={amount}
+                            onChange={(event) => {
+                                amountFormatter(event);
+                                handleAmountChange(event);
+                            }}
+                        />
+                    </Col>
+                    <Col lg="4">
+                        <CurrencySelector
+                            currencies={currencies}
+                            selectedCurrency={selectedCurrency}
+                            setSelectedCurrency={setSelectedCurrency}
+                        />
+                    </Col>
+                </InputGroup>
+            </Container>
+        );
+    } else {
+        return (
+            <Container className="who-paid" as={Row}>
+                <Form.Label>Who paid</Form.Label>
+                <Col lg="6">
+                    <Form.Select
+                        className="mb-3"
+                        value={selectedCreditor}
+                        onChange={(event) =>
+                            handleChangeSelectedCreditor(event)
+                        }
+                        style={{ display: "none" }}
+                    >
+                        {members.map((member) => (
+                            <option key={member.id} value={member.id}>
+                                {member.name}
+                            </option>
+                        ))}
+                        <option key="multi" value="multi">
+                            Multiple Payer
+                        </option>
+                    </Form.Select>
                 </Col>
-            </InputGroup>
-        </Container>
-    );
+                <InputGroup as={Row}>
+                    <Col lg="8">
+                        <TextField
+                            name="amount"
+                            className="mb-3"
+                            label="Amount"
+                            type="text"
+                            value={amount}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                            // onChange={(event) => {
+                            //     amountFormatter(event);
+                            //     handleAmountChange(event);
+                            // }}
+                        />
+                    </Col>
+                    <Col lg="4">
+                        <CurrencySelector
+                            currencies={currencies}
+                            selectedCurrency={selectedCurrency}
+                            setSelectedCurrency={setSelectedCurrency}
+                        />
+                    </Col>
+                </InputGroup>
+                <List
+                    dense
+                    sx={{
+                        width: "100%",
+                        maxWidth: 500,
+                        bgcolor: "background.paper",
+                    }}
+                >
+                    {members.map((member, index) => {
+                        const labelId = `checkbox-list-secondary-label-${member.id}`;
+                        return (
+                            <ListItem
+                                alignItems="center"
+                                key={member.id}
+                                disablePadding
+                            >
+                                <ListItemButton>
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            alt={`${member.name}`}
+                                            src={`${member.image}.jpg`}
+                                        />
+                                    </ListItemAvatar>
+
+                                    <ListItemText
+                                        id={labelId}
+                                        primary={`${member.name}`}
+                                    />
+
+                                    <TextField
+                                        type="text"
+                                        variant="standard"
+                                        value={Number(
+                                            subCredit[index].toFixed(2)
+                                        )}
+                                        inputProps={{
+                                            style: {
+                                                textAlign: "right",
+                                            },
+                                        }}
+                                        onChange={(event) => {
+                                            amountFormatter(event);
+                                            handleSubCreditChange(
+                                                index,
+                                                Number(event.target.value)
+                                            );
+                                        }}
+                                        sx={{ width: "30%" }}
+                                    />
+                                    <ListItemText
+                                        id={labelId}
+                                        primary={`${selectedCurrencyObj.abbreviation}`}
+                                        style={{ maxWidth: "2rem" }}
+                                    />
+                                </ListItemButton>
+                            </ListItem>
+                        );
+                    })}
+                </List>
+            </Container>
+        );
+    }
 };
 
 export default CreditorsBlock;
