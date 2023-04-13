@@ -15,7 +15,6 @@ const Expenses = () => {
         .substring(0, 16);
 
     // States
-
     const currencies = CURRENCY_OPTIONS;
     const [checked, setChecked] = useState([]);
     const [expenseTime, setExpenseTime] = useState(localISOTime);
@@ -28,6 +27,7 @@ const Expenses = () => {
     const [selectedSplitMethod, setSelectedSplitMethod] = useState(0);
     const [description, setDescription] = useState("");
     const [subValues, setSubValues] = useState(Array(members.length).fill(0));
+    const [subCredit, setSubCredit] = useState(Array(members.length).fill(0));
 
     useEffect(() => {
         if (members !== null) {
@@ -86,6 +86,8 @@ const Expenses = () => {
                         setSelectedSplitMethod={setSelectedSplitMethod}
                         subValues={subValues}
                         setSubValues={setSubValues}
+                        subCredit={subCredit}
+                        setSubCredit={setSubCredit}
                     />
                     <ExpenseModificationModal
                         showModification={showModification}
@@ -108,6 +110,8 @@ const Expenses = () => {
                         setDescription={setDescription}
                         subValues={subValues}
                         setSubValues={setSubValues}
+                        subCredit={subCredit}
+                        setSubCredit={setSubCredit}
                     ></ExpenseModificationModal>
                 </Col>
             </Row>
