@@ -44,12 +44,12 @@ const ExpenseImage = () => {
     const { selectedExpense } = useContext(ExpenseContext);
     return (
         <Container className="expense-image mb-3">
-            <Form.Label>Expense image</Form.Label>
+            <Form.Label>Receipt photo</Form.Label>
             {selectedExpense.image ? (
                 <Container>
                     <StyledExpenseImage
                         src={`http://localhost:3000/assets/${selectedExpense.image}`}
-                        alt="好像是照片"
+                        alt="Ops, your network is unstable, so this image cannot load."
                     ></StyledExpenseImage>
                 </Container>
             ) : null}
