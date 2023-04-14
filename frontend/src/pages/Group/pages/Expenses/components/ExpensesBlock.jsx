@@ -40,6 +40,7 @@ const ExpensesBlock = () => {
         setAmount,
         setChecked,
         setSubValues,
+        setSubCredit,
         setSelectedCreditor,
         setSelectedCurrency,
         setSelectedSplitMethod,
@@ -63,6 +64,15 @@ const ExpensesBlock = () => {
                 Number(Object.keys(expense.creditors_amounts)[0])
             );
             setSelectedCreditor(creditors.id);
+        } else {
+            const newSubCredit = Array(members.length).fill(0);
+            for (const creditorId in expense.creditors_amounts) {
+                const subCredit = expense.creditors_amounts[creditorId];
+                const creditIndex = indexMap.get(Number(creditorId));
+                newSubCredit[creditIndex] = subCredit;
+            }
+            setSubCredit(newSubCredit);
+            setSelectedCreditor("multi");
         }
         const expenseChecked = Object.keys(expense.debtors_weight).map(
             (debtorsId) => memberMap.get(Number(debtorsId))
