@@ -264,18 +264,13 @@ const DebtorsBlock = () => {
         setSubValues(newSubValues);
     };
     return (
-        <div className="debtor-list">
+        <div className="debtor-list" style={{ width: "100%" }}>
             <Container as={Row} className="debtor-header-container">
                 <Form.Label column lg="6">
                     For whom
                 </Form.Label>
                 <Col lg="6">
-                    <SplitMethodSelector
-                        selectedSplitMethod={selectedSplitMethod}
-                        setSelectedSplitMethod={setSelectedSplitMethod}
-                        setSubValues={setSubValues}
-                        subValues={subValues}
-                    />
+                    <SplitMethodSelector />
                 </Col>
             </Container>
             <Container className="debtor-list-container">
