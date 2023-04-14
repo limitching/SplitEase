@@ -46,9 +46,10 @@ const api = {
             return error.response;
         }
     },
-    deleteExpense: async function (eid, group_id) {
+    deleteExpense: async function (expense_id, group_id) {
         try {
-            const data = { eid, group_id };
+            const data = { expense_id, group_id };
+            console.log(data);
             const result = await axios.delete(`${this.hostname}/expense`, {
                 data: data,
             });

@@ -135,7 +135,7 @@ const updateExpenseUsers = async (expense_id, involved_users, date) => {
         const deleteInvolvedUsersQuery =
             "DELETE FROM expense_users WHERE m_expense_id = ?";
         await connection.query(deleteInvolvedUsersQuery, [expense_id]);
-        const involvedUsersBinding = involved_users.map((uid) => [
+        const involvedUsersBinding = involved_users.map((user_id) => [
             expense_id,
             user_id,
             date,

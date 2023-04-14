@@ -86,8 +86,7 @@ const ExpenseModificationModal = () => {
                 debtorsAdjustment.set(members[debtorIndex].id, debtorAmount);
             });
         }
-
-        formData.append("eid", selectedExpense._id);
+        formData.append("expense_id", selectedExpense._id);
         formData.append("split_method", SPLIT_METHODS[selectedSplitMethod]);
         formData.append("attached_group_id", group_id);
         formData.append(
@@ -150,9 +149,10 @@ const ExpenseModificationModal = () => {
         }
     };
 
-    const handleExpenseDelete = async (eid, group_id) => {
+    const handleExpenseDelete = async (expense_id, group_id) => {
         handleAlertClose();
-        const response = await api.deleteExpense(eid, group_id);
+        console.log(expense_id);
+        const response = await api.deleteExpense(expense_id, group_id);
         if (response.status === 200) {
             setExpensesChanged(true);
             // handleClickVariant("Expense Created successfully!", "success");
