@@ -6,7 +6,7 @@ const ExpenseSchema = new mongoose.Schema({
     amount: {
         type: Number,
     },
-    currencyOption: {
+    currency_option: {
         type: Number,
     },
     split_method: {
@@ -63,17 +63,17 @@ const getCurrencies = async () => {
     }
 };
 
-const getExpensesByGroupId = async (gid) => {
+const getExpensesByGroupId = async (group_id) => {
     try {
-        return await Expense.find({ attached_group_id: gid });
+        return await Expense.find({ attached_group_id: group_id });
     } catch (error) {
         return -1;
     }
 };
 
-const getExpensesByExpenseId = async (eid) => {
+const getExpensesByExpenseId = async (expense_id) => {
     try {
-        return await Expense.find({ expense_id: eid });
+        return await Expense.find({ expense_id: expense_id });
     } catch (error) {
         return -1;
     }
@@ -89,18 +89,18 @@ const createExpense = async (expenseObject) => {
     }
 };
 
-const createExpenseInvolvedMembers = async (eid, involved_users, date) => {
+const createExpenseUsers = async (expense_id, involved_users, date) => {
     const connection = await pool.getConnection();
     try {
         await connection.query("START TRANSACTION");
-        const involvedMembersBinding = involved_users.map((uid) => [
-            eid,
-            uid,
+        const involvedUsersBinding = involved_users.map((user_id) => [
+            expense_id,
+            user_id,
             date,
         ]);
-        const involvedMembersQuery =
-            "INSERT INTO expense_members (eid, uid, expense_date) VALUES ?";
-        await connection.query(involvedMembersQuery, [involvedMembersBinding]);
+        const involvedUsersQuery =
+            "INSERT INTO expense_users (m_expense_id, user_id, expense_date) VALUES ?";
+        await connection.query(involvedUsersQuery, [involvedUsersBinding]);
         await connection.query("COMMIT");
         return 0;
     } catch (error) {
@@ -112,10 +112,10 @@ const createExpenseInvolvedMembers = async (eid, involved_users, date) => {
     }
 };
 
-const updateExpense = async (eid, updatedExpenseObject) => {
+const updateExpense = async (expense_id, updatedExpenseObject) => {
     try {
         const updateResult = await Expense.findOneAndUpdate(
-            { _id: eid },
+            { _id: expense_id },
             updatedExpenseObject,
             {
                 new: true,
@@ -128,22 +128,22 @@ const updateExpense = async (eid, updatedExpenseObject) => {
     }
 };
 
-const updateExpenseInvolvedMembers = async (eid, involved_users, date) => {
+const updateExpenseUsers = async (expense_id, involved_users, date) => {
     const connection = await pool.getConnection();
     try {
         await connection.query("START TRANSACTION");
-        const deleteInvolvedMemberQuery =
-            "DELETE FROM expense_members WHERE eid = ?";
-        await connection.query(deleteInvolvedMemberQuery, [eid]);
-        const involvedMembersBinding = involved_users.map((uid) => [
-            eid,
-            uid,
+        const deleteInvolvedUsersQuery =
+            "DELETE FROM expense_users WHERE m_expense_id = ?";
+        await connection.query(deleteInvolvedUsersQuery, [expense_id]);
+        const involvedUsersBinding = involved_users.map((user_id) => [
+            expense_id,
+            user_id,
             date,
         ]);
-        const insertInvolvedMembersQuery =
-            "INSERT INTO expense_members (eid, uid, expense_date) VALUES ?";
-        await connection.query(insertInvolvedMembersQuery, [
-            involvedMembersBinding,
+        const insertInvolvedUsersQuery =
+            "INSERT INTO expense_users (m_expense_id, user_id, expense_date) VALUES ?";
+        await connection.query(insertInvolvedUsersQuery, [
+            involvedUsersBinding,
         ]);
         await connection.query("COMMIT");
         return 0;
@@ -156,16 +156,17 @@ const updateExpenseInvolvedMembers = async (eid, involved_users, date) => {
     }
 };
 
-const deleteExpense = async (eid, gid) => {
+const deleteExpense = async (expense_id, group_id) => {
     const connection = await pool.getConnection();
     try {
         await connection.query("START TRANSACTION");
-        const deleteExpenseQuery = "DELETE FROM expense_members WHERE eid = ?";
-        await connection.query(deleteExpenseQuery, [eid]);
+        const deleteExpenseQuery =
+            "DELETE FROM expense_users WHERE m_expense_id = ?";
+        await connection.query(deleteExpenseQuery, [expense_id]);
 
         const deleteResult = await Expense.findOneAndDelete({
-            _id: eid,
-            attached_group_id: gid,
+            _id: expense_id,
+            attached_group_id: group_id,
         });
         if (deleteResult === null) {
             await connection.query("ROLLBACK");
@@ -187,9 +188,9 @@ export {
     getCurrencies,
     getExpensesByGroupId,
     getExpensesByExpenseId,
-    createExpenseInvolvedMembers,
+    createExpenseUsers,
     createExpense,
     updateExpense,
-    updateExpenseInvolvedMembers,
+    updateExpenseUsers,
     deleteExpense,
 };

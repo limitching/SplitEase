@@ -4,6 +4,7 @@ import { api } from "../utils/api";
 
 const GroupContext = createContext({
     gid: null,
+    group_id: null,
     members: [],
     memberMap: new Map(),
     indexMap: new Map(),
@@ -43,6 +44,7 @@ async function fetchGroupDebts(gid, setDebts) {
 
 const GroupContextProvider = ({ children }) => {
     const { gid } = useParams();
+    const group_id = gid;
     const [members, setMembers] = useState([]);
     const [groupExpense, setGroupExpense] = useState([]);
     const [debts, setDebts] = useState([]);
@@ -83,6 +85,7 @@ const GroupContextProvider = ({ children }) => {
         <GroupContext.Provider
             value={{
                 gid,
+                group_id,
                 members,
                 memberMap,
                 indexMap,

@@ -1,6 +1,7 @@
 import { SPLIT_METHODS } from "../../../../../global/constant";
 import { useContext } from "react";
 import { GroupContext } from "../../../../../contexts/GroupContext";
+import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import styled from "styled-components";
 import { Container } from "react-bootstrap";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -32,22 +33,22 @@ const StyledListItemTextForAmount = styled(ListItemText)`
     color: blue;
 `;
 
-const ExpensesBlock = ({
-    setSelectedExpense,
-    setShowModification,
-    setAmount,
-    setSelectedCreditor,
-    setChecked,
-    setSelectedCurrency,
-    setSelectedSplitMethod,
-    setExpenseTime,
-    setDescription,
-    subValues,
-    setSubValues,
-}) => {
+const ExpensesBlock = () => {
     const { members, memberMap, indexMap, groupExpense } =
         useContext(GroupContext);
-
+    const {
+        setAmount,
+        setChecked,
+        setSubValues,
+        setSubCredit,
+        setSelectedCreditor,
+        setSelectedCurrency,
+        setSelectedSplitMethod,
+        setSelectedExpense,
+        setDescription,
+        setExpenseTime,
+        setShowModification,
+    } = useContext(ExpenseContext);
     const handleShow = () => {
         setShowModification(true);
     };
@@ -63,12 +64,21 @@ const ExpensesBlock = ({
                 Number(Object.keys(expense.creditors_amounts)[0])
             );
             setSelectedCreditor(creditors.id);
+        } else {
+            const newSubCredit = Array(members.length).fill(0);
+            for (const creditorId in expense.creditors_amounts) {
+                const subCredit = expense.creditors_amounts[creditorId];
+                const creditIndex = indexMap.get(Number(creditorId));
+                newSubCredit[creditIndex] = subCredit;
+            }
+            setSubCredit(newSubCredit);
+            setSelectedCreditor("multi");
         }
         const expenseChecked = Object.keys(expense.debtors_weight).map(
             (debtorsId) => memberMap.get(Number(debtorsId))
         );
         setChecked(expenseChecked);
-        setSelectedCurrency(expense.currencyOption);
+        setSelectedCurrency(expense.currency_option);
         setSelectedSplitMethod(SPLIT_METHODS.indexOf(expense.split_method));
 
         // Convert GMT datetime to local datetime
@@ -135,7 +145,7 @@ const ExpensesBlock = ({
                         creditors = { name: "Multiple Members" };
                     }
                     const [currencyOption] = CURRENCY_OPTIONS.filter(
-                        (currency) => currency.id === expense.currencyOption
+                        (currency) => currency.id === expense.currency_option
                     );
 
                     const debtors = Object.keys(expense.debtors_weight).map(

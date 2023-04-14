@@ -2,10 +2,10 @@ import {
     getCurrencies,
     getExpensesByGroupId,
     getExpensesByExpenseId,
-    createExpenseInvolvedMembers,
+    createExpenseUsers,
     createExpense,
     updateExpense,
-    updateExpenseInvolvedMembers,
+    updateExpenseUsers,
     deleteExpense,
 } from "../models/expense_model.js";
 
@@ -21,8 +21,8 @@ const getExpensesCurrencies = async (req, res, next) => {
 };
 
 const getGroupExpenses = async (req, res, next) => {
-    const groupId = req.query.gid;
-    const expenses = await getExpensesByGroupId(groupId);
+    const group_id = req.query.group_id;
+    const expenses = await getExpensesByGroupId(group_id);
     if (expenses === -1) {
         return res
             .status(500)
@@ -39,7 +39,7 @@ const createGroupExpense = async (req, res, next) => {
         date,
         split_method,
         attached_group_id,
-        currencyOption,
+        currency_option,
         creditorsAmounts,
         debtorsWeight,
         debtorsAdjustment,
@@ -83,7 +83,7 @@ const createGroupExpense = async (req, res, next) => {
         description,
         split_method,
         amount,
-        currencyOption,
+        currency_option,
         attached_group_id,
         involved_users,
         image,
@@ -98,7 +98,7 @@ const createGroupExpense = async (req, res, next) => {
         return res.status(500).json({ errors: [{ msg: "MongoDB Error" }] });
     }
     // Insert involvedMembers into MySQL
-    const createInvolvedResult = await createExpenseInvolvedMembers(
+    const createInvolvedResult = await createExpenseUsers(
         _id,
         involved_users,
         date
@@ -113,13 +113,13 @@ const createGroupExpense = async (req, res, next) => {
 
 const updateGroupExpense = async (req, res, next) => {
     const {
-        eid,
+        expense_id,
         amount,
         description,
         date,
         split_method,
         attached_group_id,
-        currencyOption,
+        currency_option,
         creditorsAmounts,
         debtorsWeight,
         debtorsAdjustment,
@@ -164,7 +164,7 @@ const updateGroupExpense = async (req, res, next) => {
         description,
         split_method,
         amount,
-        currencyOption,
+        currency_option,
         attached_group_id,
         involved_users,
         image,
@@ -175,13 +175,13 @@ const updateGroupExpense = async (req, res, next) => {
     };
 
     // Update Expense in MongoDB
-    const { _id } = await updateExpense(eid, updatedExpenseObject);
+    const { _id } = await updateExpense(expense_id, updatedExpenseObject);
     if (_id === -1) {
         return res.status(500).json({ errors: [{ msg: "MongoDB Error" }] });
     }
     // Update involvedMembers into MySQL
-    const updateInvolvedResult = await updateExpenseInvolvedMembers(
-        eid,
+    const updateInvolvedResult = await updateExpenseUsers(
+        expense_id,
         involved_users,
         date
     );
@@ -191,8 +191,8 @@ const updateGroupExpense = async (req, res, next) => {
     return res.status(200).json({ msg: `Successfully modified expense!` });
 };
 const deleteGroupExpense = async (req, res, next) => {
-    const { eid, gid } = req.body;
-    const deleteResult = await deleteExpense(eid, gid);
+    const { expense_id, group_id } = req.body;
+    const deleteResult = await deleteExpense(expense_id, group_id);
     if (deleteResult === -400) {
         return res.status(400).json({ errors: [{ msg: "Client side Error" }] });
     } else if (deleteResult === -1) {

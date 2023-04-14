@@ -1,6 +1,7 @@
 import GroupDashboard from "./components/Dashboard";
 import Tabs from "./components/Tabs";
 import { GroupContextProvider } from "../../contexts/GroupContext";
+import { ExpenseContextProvider } from "../../contexts/ExpenseContext";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 
@@ -13,11 +14,13 @@ const WrapperGroupContainer = styled.div`
 const Group = () => {
     return (
         <GroupContextProvider>
-            <WrapperGroupContainer>
-                <GroupDashboard></GroupDashboard>
-                <Tabs></Tabs>
-                <Outlet></Outlet>
-            </WrapperGroupContainer>
+            <ExpenseContextProvider>
+                <WrapperGroupContainer>
+                    <GroupDashboard></GroupDashboard>
+                    <Tabs></Tabs>
+                    <Outlet></Outlet>
+                </WrapperGroupContainer>
+            </ExpenseContextProvider>
         </GroupContextProvider>
     );
 };
