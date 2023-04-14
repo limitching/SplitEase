@@ -3,9 +3,9 @@ const HOST = "http://localhost:3000";
 
 const api = {
     hostname: HOST + "/api/1.0",
-    getMembers: async function (gid) {
+    getMembers: async function (group_id) {
         const { data } = await axios.get(
-            `${this.hostname}/group/${gid}/members`
+            `${this.hostname}/group/members/${group_id}`
         );
         return data;
     },
@@ -22,10 +22,10 @@ const api = {
             return error.response;
         }
     },
-    getGroupExpenses: async function (gid) {
+    getGroupExpenses: async function (group_id) {
         try {
             const { data } = await axios.get(
-                `${this.hostname}/expense?gid=${gid}`
+                `${this.hostname}/expense?group_id=${group_id}`
             );
             return data;
         } catch (error) {
@@ -46,9 +46,9 @@ const api = {
             return error.response;
         }
     },
-    deleteExpense: async function (eid, gid) {
+    deleteExpense: async function (eid, group_id) {
         try {
-            const data = { eid, gid };
+            const data = { eid, group_id };
             const result = await axios.delete(`${this.hostname}/expense`, {
                 data: data,
             });
@@ -58,9 +58,11 @@ const api = {
             return error.response;
         }
     },
-    getGroupDebts: async function (gid) {
+    getGroupDebts: async function (group_id) {
         try {
-            const { data } = await axios.get(`${this.hostname}/debts/${gid}`);
+            const { data } = await axios.get(
+                `${this.hostname}/debts/${group_id}`
+            );
             return data;
         } catch (error) {
             console.error(error);
