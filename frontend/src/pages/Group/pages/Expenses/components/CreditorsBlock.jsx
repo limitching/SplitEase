@@ -87,12 +87,15 @@ const CreditorsBlock = () => {
 
     if (selectedCreditor !== "multi") {
         return (
-            <Container className="who-paid" as={Row}>
-                <Form.Label>Who paid</Form.Label>
-                <Col lg="6">
+            <div className="creditor-block" style={{ width: "100%" }}>
+                <Container className="creditor-header-container" as={Row}>
+                    <Form.Label column lg="6">
+                        Who paid
+                    </Form.Label>
+                </Container>
+                <Container className="creditor-selector">
                     <Form.Select
                         className="mb-3"
-                        aria-label="Default select example"
                         value={selectedCreditor}
                         onChange={(event) =>
                             handleChangeSelectedCreditor(event)
@@ -107,8 +110,8 @@ const CreditorsBlock = () => {
                             Multiple Payer
                         </option>
                     </Form.Select>
-                </Col>
-                <InputGroup as={Row}>
+                </Container>
+                <Container className="creditor-total-amount" as={Row}>
                     <Col lg="8">
                         <TextField
                             name="amount"
@@ -125,33 +128,18 @@ const CreditorsBlock = () => {
                     <Col lg="4">
                         <CurrencySelector />
                     </Col>
-                </InputGroup>
-            </Container>
+                </Container>
+            </div>
         );
     } else {
         return (
-            <Container className="who-paid" as={Row}>
-                <Form.Label>Who paid</Form.Label>
-                <Col lg="6">
-                    <Form.Select
-                        className="mb-3"
-                        value={selectedCreditor}
-                        onChange={(event) =>
-                            handleChangeSelectedCreditor(event)
-                        }
-                        style={{ display: "none" }}
-                    >
-                        {members.map((member) => (
-                            <option key={member.id} value={member.id}>
-                                {member.name}
-                            </option>
-                        ))}
-                        <option key="multi" value="multi">
-                            Multiple Payer
-                        </option>
-                    </Form.Select>
-                </Col>
-                <InputGroup as={Row}>
+            <div className="creditor-block" style={{ width: "100%" }}>
+                <Container className="creditor-header-container" as={Row}>
+                    <Form.Label column lg="6">
+                        Who paid
+                    </Form.Label>
+                </Container>
+                <Container className="creditor-total-amount" as={Row}>
                     <Col lg="8">
                         <TextField
                             name="amount"
@@ -162,76 +150,74 @@ const CreditorsBlock = () => {
                             InputProps={{
                                 readOnly: true,
                             }}
-                            // onChange={(event) => {
-                            //     amountFormatter(event);
-                            //     handleAmountChange(event);
-                            // }}
                         />
                     </Col>
                     <Col lg="4">
                         <CurrencySelector />
                     </Col>
-                </InputGroup>
-                <List
-                    dense
-                    sx={{
-                        width: "100%",
-                        maxWidth: 500,
-                        bgcolor: "background.paper",
-                    }}
-                >
-                    {members.map((member, index) => {
-                        const labelId = `checkbox-list-secondary-label-${member.id}`;
-                        return (
-                            <ListItem
-                                alignItems="center"
-                                key={member.id}
-                                disablePadding
-                            >
-                                <ListItemButton>
-                                    <ListItemAvatar>
-                                        <Avatar
-                                            alt={`${member.name}`}
-                                            src={`${member.image}.jpg`}
+                </Container>
+                <Container className="creditor-list-container" as={Row}>
+                    <List
+                        dense
+                        sx={{
+                            width: "100%",
+                            maxWidth: 500,
+                            bgcolor: "background.paper",
+                        }}
+                    >
+                        {members.map((member, index) => {
+                            const labelId = `checkbox-list-secondary-label-${member.id}`;
+                            return (
+                                <ListItem
+                                    alignItems="center"
+                                    key={member.id}
+                                    disablePadding
+                                >
+                                    <ListItemButton>
+                                        <ListItemAvatar>
+                                            <Avatar
+                                                alt={`${member.name}`}
+                                                src={`${member.image}.jpg`}
+                                            />
+                                        </ListItemAvatar>
+
+                                        <ListItemText
+                                            id={labelId}
+                                            primary={`${member.name}`}
                                         />
-                                    </ListItemAvatar>
 
-                                    <ListItemText
-                                        id={labelId}
-                                        primary={`${member.name}`}
-                                    />
-
-                                    <TextField
-                                        type="text"
-                                        variant="standard"
-                                        value={Number(
-                                            subCredit[index].toFixed(2)
-                                        )}
-                                        inputProps={{
-                                            style: {
-                                                textAlign: "right",
-                                            },
-                                        }}
-                                        onChange={(event) => {
-                                            amountFormatter(event);
-                                            handleSubCreditChange(
-                                                index,
-                                                Number(event.target.value)
-                                            );
-                                        }}
-                                        sx={{ width: "30%" }}
-                                    />
-                                    <ListItemText
-                                        id={labelId}
-                                        primary={`${selectedCurrencyObj.abbreviation}`}
-                                        style={{ maxWidth: "2rem" }}
-                                    />
-                                </ListItemButton>
-                            </ListItem>
-                        );
-                    })}
-                </List>
-            </Container>
+                                        <TextField
+                                            type="text"
+                                            variant="standard"
+                                            value={Number(
+                                                subCredit[index].toFixed(2)
+                                            )}
+                                            inputProps={{
+                                                style: {
+                                                    textAlign: "right",
+                                                },
+                                            }}
+                                            onChange={(event) => {
+                                                amountFormatter(event);
+                                                handleSubCreditChange(
+                                                    index,
+                                                    Number(event.target.value)
+                                                );
+                                            }}
+                                            sx={{ width: "30%" }}
+                                        />
+                                        <ListItemText
+                                            id={labelId}
+                                            primary={`${selectedCurrencyObj.abbreviation}`}
+                                            style={{ maxWidth: "2rem" }}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            );
+                        })}
+                    </List>
+                </Container>
+            </div>
         );
     }
 };
