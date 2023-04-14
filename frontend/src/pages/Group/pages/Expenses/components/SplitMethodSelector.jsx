@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { GroupContext } from "../../../../../contexts/GroupContext";
+import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import { TextField, MenuItem } from "@mui/material";
 import { SPLIT_METHODS } from "../../../../../global/constant";
 
@@ -16,20 +17,22 @@ function normalizeArray(arr) {
     return arr.map((val) => (val === 0 ? 1 : val / maxDivisor));
 }
 
-const SplitMethodSelector = ({
-    selectedSplitMethod,
-    setSelectedSplitMethod,
-    setSubValues,
-    subValues,
-}) => {
+const SplitMethodSelector = ({}) => {
     const { members } = useContext(GroupContext);
+    const {
+        amount,
+        subValues,
+        selectedSplitMethod,
+        setSubValues,
+        setSelectedSplitMethod,
+    } = useContext(ExpenseContext);
     const handleSplitMethodChange = (event) => {
         const previousMethod = selectedSplitMethod;
         setSelectedSplitMethod(Number(event.target.value));
         console.log(event.target.value, typeof event.target.value);
         console.log(SPLIT_METHODS[event.target.value]);
         if (event.target.value === 1) {
-            setSubValues(Array(members.length).fill(0));
+            setSubValues(Array(members.length).fill(amount / members.length));
         } else if (event.target.value === 2) {
             setSubValues(Array(members.length).fill(100 / members.length));
         } else if (event.target.value === 3) {
