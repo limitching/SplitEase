@@ -24,7 +24,7 @@ const StyledModalBody = styled(Modal.Body)`
 `;
 
 const ExpenseModificationModal = () => {
-    const { memberMap, gid, setExpensesChanged, members } =
+    const { memberMap, group_id, setExpensesChanged, members } =
         useContext(GroupContext);
     const {
         checked,
@@ -86,10 +86,9 @@ const ExpenseModificationModal = () => {
                 debtorsAdjustment.set(members[debtorIndex].id, debtorAmount);
             });
         }
-
-        formData.append("eid", selectedExpense._id);
+        formData.append("expense_id", selectedExpense._id);
         formData.append("split_method", SPLIT_METHODS[selectedSplitMethod]);
-        formData.append("attached_group_id", gid);
+        formData.append("attached_group_id", group_id);
         formData.append(
             "creditors",
             JSON.stringify(memberMap.get(Number(selectedCreditor)))
@@ -150,9 +149,10 @@ const ExpenseModificationModal = () => {
         }
     };
 
-    const handleExpenseDelete = async (eid, gid) => {
+    const handleExpenseDelete = async (expense_id, group_id) => {
         handleAlertClose();
-        const response = await api.deleteExpense(eid, gid);
+        console.log(expense_id);
+        const response = await api.deleteExpense(expense_id, group_id);
         if (response.status === 200) {
             setExpensesChanged(true);
             // handleClickVariant("Expense Created successfully!", "success");
@@ -249,7 +249,10 @@ const ExpenseModificationModal = () => {
                         <Button onClick={handleAlertClose}>Keep</Button>
                         <Button
                             onClick={() =>
-                                handleExpenseDelete(selectedExpense._id, gid)
+                                handleExpenseDelete(
+                                    selectedExpense._id,
+                                    group_id
+                                )
                             }
                             autoFocus
                         >
@@ -319,7 +322,10 @@ const ExpenseModificationModal = () => {
                         <Button onClick={handleAlertClose}>Keep</Button>
                         <Button
                             onClick={() =>
-                                handleExpenseDelete(selectedExpense._id, gid)
+                                handleExpenseDelete(
+                                    selectedExpense._id,
+                                    group_id
+                                )
                             }
                             autoFocus
                         >

@@ -21,7 +21,7 @@ const StyledModalBody = styled(Modal.Body)`
 `;
 
 const Transaction = () => {
-    const { members, gid, setExpensesChanged } = useContext(GroupContext);
+    const { members, group_id, setExpensesChanged } = useContext(GroupContext);
     const {
         checked,
         subValues,
@@ -93,7 +93,7 @@ const Transaction = () => {
         }
 
         formData.append("split_method", SPLIT_METHODS[selectedSplitMethod]);
-        formData.append("attached_group_id", gid);
+        formData.append("attached_group_id", group_id);
         formData.append(
             "creditorsAmounts",
             JSON.stringify([...creditorsAmounts])

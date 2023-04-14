@@ -28,7 +28,7 @@ const CurrencySelector = () => {
             select
             label="Currency"
             variant="standard"
-            defaultValue={selectedCurrency}
+            value={selectedCurrency}
             onChange={handleCurrencyOptionChange}
         >
             {CURRENCY_OPTIONS.map((option) => (

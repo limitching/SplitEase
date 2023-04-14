@@ -6,7 +6,7 @@ const getGroupDebts = async (req, res, next) => {
     const groupMembers = await getMembers(group_id);
     const membersIndexMap = new Map();
     groupMembers.forEach((member, index) =>
-        membersIndexMap.set(member.uid, index)
+        membersIndexMap.set(member.user_id, index)
     );
 
     const currencyGraph = {};
@@ -19,8 +19,8 @@ const getGroupDebts = async (req, res, next) => {
             for (let i = 0; i < debtsGraph.length; i++) {
                 debtsGraph[i] = new Array(groupMembers.length).fill(0);
             }
-            currencyGraph[expense.currencyOption] = debtsGraph;
-            currencyTransactions[expense.currencyOption] = null;
+            currencyGraph[expense.currency_option] = debtsGraph;
+            currencyTransactions[expense.currency_option] = null;
         }
 
         const weights = Array.from(expense.debtors_weight.values());
@@ -45,7 +45,7 @@ const getGroupDebts = async (req, res, next) => {
 
                 // Only calculate case: creditorIndex !== debtorIndex
                 if (creditorIndex !== debtorIndex) {
-                    currencyGraph[expense.currencyOption][creditorIndex][
+                    currencyGraph[expense.currency_option][creditorIndex][
                         debtorIndex
                     ] +=
                         ((creditorAmount - proportionAdjustAmount) * weight) /
@@ -55,8 +55,8 @@ const getGroupDebts = async (req, res, next) => {
             }
         }
     });
-    for (const [currencyOption, graph] of Object.entries(currencyGraph)) {
-        currencyTransactions[currencyOption] = minimizeDebts(graph);
+    for (const [currency_option, graph] of Object.entries(currencyGraph)) {
+        currencyTransactions[currency_option] = minimizeDebts(graph);
     }
 
     return res.status(200).json(currencyTransactions);
