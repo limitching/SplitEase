@@ -1,5 +1,3 @@
-import CreditorsBlock from "./CreditorsBlock";
-import DebtorsBlock from "./DebtorsBlock";
 import styled from "styled-components";
 import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
@@ -15,7 +13,7 @@ import {
 } from "@mui/material";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { api, HOST } from "../../../../../utils/api";
+import { api } from "../../../../../utils/api";
 import { SPLIT_METHODS } from "../../../../../global/constant";
 
 const MySwal = withReactContent(Swal);
@@ -25,20 +23,13 @@ const StyledModalBody = styled(Modal.Body)`
     overflow: scroll;
 `;
 
-const StyledExpenseImage = styled.img`
-    width: 400px;
-    hight: auto;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    overflow: scroll;
-`;
-
 const ExpenseModificationModal = () => {
     const { memberMap, gid, setExpensesChanged, members } =
         useContext(GroupContext);
     const {
         checked,
         subValues,
+        subCredit,
         amount,
         selectedCreditor,
         selectedSplitMethod,
@@ -46,6 +37,7 @@ const ExpenseModificationModal = () => {
         showModification,
         setShowModification,
     } = useContext(ExpenseContext);
+
     const [alertOpen, setAlertOpen] = useState(false);
 
     const handleAlertOpen = () => {
@@ -61,8 +53,15 @@ const ExpenseModificationModal = () => {
         event.preventDefault();
 
         const formData = new FormData(event.target);
-        const creditor = memberMap.get(Number(selectedCreditor));
+        const creditors = [selectedCreditor];
         const creditorsAmounts = new Map();
+        if (selectedCreditor !== "multi") {
+            creditorsAmounts.set(creditors[0], Number(amount));
+        } else {
+            subCredit.forEach((credit, creditorIndex) => {
+                creditorsAmounts.set(members[creditorIndex].id, Number(credit));
+            });
+        }
         const debtorsWeight = new Map();
         const debtorsAdjustment = new Map();
 
@@ -87,7 +86,6 @@ const ExpenseModificationModal = () => {
                 debtorsAdjustment.set(members[debtorIndex].id, debtorAmount);
             });
         }
-        creditorsAmounts.set(creditor.id, Number(amount));
 
         formData.append("eid", selectedExpense._id);
         formData.append("split_method", SPLIT_METHODS[selectedSplitMethod]);
@@ -96,7 +94,6 @@ const ExpenseModificationModal = () => {
             "creditors",
             JSON.stringify(memberMap.get(Number(selectedCreditor)))
         );
-        formData.append("debtors", JSON.stringify(checked));
         formData.append(
             "creditorsAmounts",
             JSON.stringify([...creditorsAmounts])

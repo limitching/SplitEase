@@ -26,6 +26,7 @@ const Transaction = () => {
     const {
         checked,
         subValues,
+        subCredit,
         selectedSplitMethod,
         amount,
         selectedCreditor,
@@ -56,10 +57,17 @@ const Transaction = () => {
 
     const handleExpenseSubmit = async (event) => {
         event.preventDefault();
-
         const formData = new FormData(event.target);
-        const creditor = memberMap.get(Number(selectedCreditor));
+        const creditors = [selectedCreditor];
         const creditorsAmounts = new Map();
+        if (selectedCreditor !== "multi") {
+            creditorsAmounts.set(creditors[0], Number(amount));
+        } else {
+            subCredit.forEach((credit, creditorIndex) => {
+                creditorsAmounts.set(members[creditorIndex].id, Number(credit));
+            });
+        }
+
         const debtorsWeight = new Map();
         const debtorsAdjustment = new Map();
 
@@ -84,12 +92,9 @@ const Transaction = () => {
                 debtorsAdjustment.set(members[debtorIndex].id, debtorAmount);
             });
         }
-        creditorsAmounts.set(creditor.id, Number(amount));
 
         formData.append("split_method", SPLIT_METHODS[selectedSplitMethod]);
         formData.append("attached_group_id", gid);
-        formData.append("creditors", JSON.stringify(creditor));
-        formData.append("debtors", JSON.stringify(checked));
         formData.append(
             "creditorsAmounts",
             JSON.stringify([...creditorsAmounts])
@@ -102,9 +107,9 @@ const Transaction = () => {
             );
         }
         // TODO: debug;
-        for (const pair of formData.entries()) {
-            console.log(`${pair[0]}, ${pair[1]}`);
-        }
+        // for (const pair of formData.entries()) {
+        //     console.log(`${pair[0]}, ${pair[1]}`);
+        // }
 
         const response = await api.createExpense(formData);
         if (response.status === 200) {
