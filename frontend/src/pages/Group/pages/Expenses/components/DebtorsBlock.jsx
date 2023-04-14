@@ -39,6 +39,7 @@ const DebtorsBlock = () => {
     if (members.length === 0) {
         return <div>Loading...</div>;
     }
+    console.log("selectedCurrency", selectedCurrency);
     const [selectedCurrencyObj] = CURRENCY_OPTIONS.filter((currency) => {
         return currency.id === Number(selectedCurrency);
     });

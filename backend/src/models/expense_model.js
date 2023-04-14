@@ -6,7 +6,7 @@ const ExpenseSchema = new mongoose.Schema({
     amount: {
         type: Number,
     },
-    currencyOption: {
+    currency_option: {
         type: Number,
     },
     split_method: {

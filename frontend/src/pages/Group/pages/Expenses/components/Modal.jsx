@@ -45,7 +45,7 @@ const ExpenseImage = () => {
     return (
         <Container className="expense-image mb-3">
             <Form.Label>Receipt photo</Form.Label>
-            {selectedExpense.image ? (
+            {selectedExpense && selectedExpense.image ? (
                 <Container>
                     <StyledExpenseImage
                         src={`http://localhost:3000/assets/${selectedExpense.image}`}
