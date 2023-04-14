@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
+import { ModalContent } from "./Modal";
 import { useContext, useState } from "react";
 import {
     Dialog,
@@ -42,10 +43,7 @@ const ExpenseModificationModal = () => {
         selectedCreditor,
         selectedSplitMethod,
         selectedExpense,
-        description,
-        expenseTime,
         showModification,
-        setExpenseTime,
         setShowModification,
     } = useContext(ExpenseContext);
     const [alertOpen, setAlertOpen] = useState(false);
@@ -155,10 +153,6 @@ const ExpenseModificationModal = () => {
         }
     };
 
-    const handleExpenseTimeChange = (event) => {
-        setExpenseTime(event.target.value);
-    };
-
     const handleExpenseDelete = async (eid, gid) => {
         handleAlertClose();
         const response = await api.deleteExpense(eid, gid);
@@ -199,116 +193,146 @@ const ExpenseModificationModal = () => {
             });
         }
     };
-    return (
-        <>
-            <Modal
-                show={showModification}
-                onHide={handleClose}
-                backdrop="static"
-                keyboard={false}
-            >
-                <Form onSubmit={handleExpenseUpdate}>
-                    <Modal.Header closeButton as={Row}>
-                        <Container className="transaction-method ml-0 pl-0">
-                            <Col lg="6">
-                                <h3>Expense detail</h3>
-                            </Col>
-                        </Container>
-                    </Modal.Header>
-                    <StyledModalBody>
-                        <CreditorsBlock />
-
-                        <hr />
-
-                        <DebtorsBlock></DebtorsBlock>
-
-                        <Container className="expense-description mb-3">
-                            <Form.Label>Description</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                name="description"
-                                defaultValue={description}
-                                rows={3}
-                            />
-                        </Container>
-                        <Container className="expense-image mb-3">
-                            <Form.Label>Expense image</Form.Label>
-                            {selectedExpense ===
-                            null ? null : selectedExpense.image ===
-                              null ? null : (
-                                <Container>
-                                    <StyledExpenseImage
-                                        src={
-                                            HOST +
-                                            "/assets/" +
-                                            selectedExpense.image
-                                        }
-                                        alt={selectedExpense.title}
-                                    />
-                                </Container>
-                            )}
-
-                            <Form.Control type="file" name="image" />
-                        </Container>
-                        <Container className="expense-datetime mb-3">
-                            <Form.Label>Date & time</Form.Label>
-                            <Form.Control
-                                type="datetime-local"
-                                name="date"
-                                defaultValue={expenseTime.substring(0, 16)}
-                                onChange={handleExpenseTimeChange}
-                            />
-                        </Container>
-                    </StyledModalBody>
-                    <Modal.Footer>
-                        <Container className="d-grid">
-                            <Button
-                                variant="light"
-                                onClick={handleAlertOpen}
-                                className="mb-3"
-                            >
-                                Delete
-                            </Button>
-                            <Button
-                                variant="warning"
-                                type="submit"
-                                className="mb-3"
-                                disabled={amount === 0}
-                            >
-                                Update
-                            </Button>
-                        </Container>
-                    </Modal.Footer>
-                </Form>
-            </Modal>
-            <Dialog
-                open={alertOpen}
-                onClose={handleAlertClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                    {"Delete Expense"}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Do you wish to delete this transaction?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleAlertClose}>Keep</Button>
-                    <Button
-                        onClick={() =>
-                            handleExpenseDelete(selectedExpense._id, gid)
-                        }
-                        autoFocus
-                    >
-                        Delete
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </>
-    );
+    if (selectedCreditor !== "multi") {
+        return (
+            <>
+                <Modal
+                    show={showModification}
+                    onHide={handleClose}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Form onSubmit={handleExpenseUpdate}>
+                        <Modal.Header closeButton as={Row}>
+                            <Container className="transaction-method ml-0 pl-0">
+                                <Col lg="6">
+                                    <h3>Expense detail</h3>
+                                </Col>
+                            </Container>
+                        </Modal.Header>
+                        <StyledModalBody>
+                            <ModalContent />
+                        </StyledModalBody>
+                        <Modal.Footer>
+                            <Container className="d-grid">
+                                <Button
+                                    variant="light"
+                                    onClick={handleAlertOpen}
+                                    className="mb-3"
+                                >
+                                    Delete
+                                </Button>
+                                <Button
+                                    variant="warning"
+                                    type="submit"
+                                    className="mb-3"
+                                    disabled={amount === 0}
+                                >
+                                    Update
+                                </Button>
+                            </Container>
+                        </Modal.Footer>
+                    </Form>
+                </Modal>
+                <Dialog
+                    open={alertOpen}
+                    onClose={handleAlertClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        {"Delete Expense"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Do you wish to delete this transaction?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleAlertClose}>Keep</Button>
+                        <Button
+                            onClick={() =>
+                                handleExpenseDelete(selectedExpense._id, gid)
+                            }
+                            autoFocus
+                        >
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </>
+        );
+    } else {
+        return (
+            <>
+                <Modal
+                    show={showModification}
+                    onHide={handleClose}
+                    backdrop="static"
+                    keyboard={false}
+                    size="xl"
+                >
+                    <Form onSubmit={handleExpenseUpdate}>
+                        <Modal.Header closeButton as={Row}>
+                            <Container className="transaction-method ml-0 pl-0">
+                                <Col lg="6">
+                                    <h3>Expense detail</h3>
+                                </Col>
+                            </Container>
+                        </Modal.Header>
+                        <StyledModalBody>
+                            <ModalContent />
+                        </StyledModalBody>
+                        <Modal.Footer>
+                            <Container className="d-grid">
+                                <Button
+                                    variant="light"
+                                    onClick={handleAlertOpen}
+                                    className="mb-3"
+                                >
+                                    Delete
+                                </Button>
+                                <Button
+                                    variant="warning"
+                                    type="submit"
+                                    className="mb-3"
+                                    disabled={amount === 0}
+                                >
+                                    Update
+                                </Button>
+                            </Container>
+                        </Modal.Footer>
+                    </Form>
+                </Modal>
+                <Dialog
+                    open={alertOpen}
+                    onClose={handleAlertClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        {"Delete Expense"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Do you wish to delete this transaction?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleAlertClose}>Keep</Button>
+                        <Button
+                            onClick={() =>
+                                handleExpenseDelete(selectedExpense._id, gid)
+                            }
+                            autoFocus
+                        >
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </>
+        );
+    }
 };
 
 export default ExpenseModificationModal;
