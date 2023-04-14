@@ -24,7 +24,7 @@ const CurrencySelector = () => {
 
     return (
         <TextField
-            name="currencyOption"
+            name="currency_option"
             select
             label="Currency"
             variant="standard"
