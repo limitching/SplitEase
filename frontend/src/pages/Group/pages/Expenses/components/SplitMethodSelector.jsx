@@ -17,7 +17,7 @@ function normalizeArray(arr) {
     return arr.map((val) => (val === 0 ? 1 : val / maxDivisor));
 }
 
-const SplitMethodSelector = ({}) => {
+const SplitMethodSelector = () => {
     const { members } = useContext(GroupContext);
     const {
         amount,

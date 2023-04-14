@@ -1,8 +1,17 @@
-import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
+import { Container, Form } from "react-bootstrap";
 import CreditorsBlock from "./CreditorsBlock";
 import DebtorsBlock from "./DebtorsBlock";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
+import styled from "styled-components";
 import { useContext } from "react";
+
+const StyledExpenseImage = styled.img`
+    width: 400px;
+    hight: auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    overflow: scroll;
+`;
 
 const TransactionSelector = () => {
     return (
@@ -15,18 +24,35 @@ const TransactionSelector = () => {
 };
 
 const ExpenseDescription = () => {
+    const { selectedExpense } = useContext(ExpenseContext);
     return (
         <Container className="expense-description mb-3">
             <Form.Label>Description</Form.Label>
-            <Form.Control as="textarea" name="description" rows={3} />
+            <Form.Control
+                as="textarea"
+                name="description"
+                rows={3}
+                defaultValue={
+                    selectedExpense ? selectedExpense.description : ""
+                }
+            />
         </Container>
     );
 };
 
 const ExpenseImage = () => {
+    const { selectedExpense } = useContext(ExpenseContext);
     return (
         <Container className="expense-image mb-3">
             <Form.Label>Expense image</Form.Label>
+            {selectedExpense.image ? (
+                <Container>
+                    <StyledExpenseImage
+                        src={`http://localhost:3000/assets/${selectedExpense.image}`}
+                        alt="好像是照片"
+                    ></StyledExpenseImage>
+                </Container>
+            ) : null}
             <Form.Control type="file" name="image" />
         </Container>
     );

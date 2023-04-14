@@ -33,7 +33,6 @@ const DebtorsBlock = () => {
         setChecked,
         setSubValues,
         setAmount,
-        setSelectedSplitMethod,
     } = useContext(ExpenseContext);
     const [modifiedIndices, setModifiedIndices] = useState([]);
 

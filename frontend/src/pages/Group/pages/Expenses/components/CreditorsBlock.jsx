@@ -1,4 +1,4 @@
-import { Container, Form, Col, Row, InputGroup } from "react-bootstrap";
+import { Container, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import { CURRENCY_OPTIONS } from "../../../../../global/constant";

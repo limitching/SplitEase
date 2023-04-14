@@ -21,8 +21,7 @@ const StyledModalBody = styled(Modal.Body)`
 `;
 
 const Transaction = () => {
-    const { members, gid, memberMap, setExpensesChanged } =
-        useContext(GroupContext);
+    const { members, gid, setExpensesChanged } = useContext(GroupContext);
     const {
         checked,
         subValues,
