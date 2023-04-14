@@ -2,8 +2,8 @@ import { getMembers } from "../models/group_model.js";
 import { getExpensesByGroupId } from "../models/expense_model.js";
 import { minimizeDebts } from "../models/debts_model.js";
 const getGroupDebts = async (req, res, next) => {
-    const gid = req.params.gid;
-    const groupMembers = await getMembers(gid);
+    const group_id = req.params.group_id;
+    const groupMembers = await getMembers(group_id);
     const membersIndexMap = new Map();
     groupMembers.forEach((member, index) =>
         membersIndexMap.set(member.uid, index)
@@ -12,7 +12,7 @@ const getGroupDebts = async (req, res, next) => {
     const currencyGraph = {};
     const currencyTransactions = {};
 
-    const groupExpenses = await getExpensesByGroupId(gid);
+    const groupExpenses = await getExpensesByGroupId(group_id);
     groupExpenses.forEach((expense) => {
         if (expense.currencyOption in currencyGraph === false) {
             const debtsGraph = new Array(groupMembers.length);

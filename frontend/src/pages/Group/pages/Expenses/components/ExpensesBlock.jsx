@@ -78,7 +78,7 @@ const ExpensesBlock = () => {
             (debtorsId) => memberMap.get(Number(debtorsId))
         );
         setChecked(expenseChecked);
-        setSelectedCurrency(expense.currencyOption);
+        setSelectedCurrency(expense.currency_option);
         setSelectedSplitMethod(SPLIT_METHODS.indexOf(expense.split_method));
 
         // Convert GMT datetime to local datetime
@@ -145,7 +145,7 @@ const ExpensesBlock = () => {
                         creditors = { name: "Multiple Members" };
                     }
                     const [currencyOption] = CURRENCY_OPTIONS.filter(
-                        (currency) => currency.id === expense.currencyOption
+                        (currency) => currency.id === expense.currency_option
                     );
 
                     const debtors = Object.keys(expense.debtors_weight).map(
