@@ -1,63 +1,45 @@
+import { useContext } from "react";
 import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
 import styled from "styled-components";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { api } from "../../../../../utils/api";
 import { SPLIT_METHODS } from "../../../../../global/constant";
-import CreditorsBlock from "./CreditorsBlock";
-import DebtorsBlock from "./DebtorsBlock";
+
 import { GroupContext } from "../../../../../contexts/GroupContext";
-import { useContext } from "react";
+import {
+    ExpenseContext,
+    localISOTime,
+} from "../../../../../contexts/ExpenseContext";
+import { TransactionSelector, ModalContent } from "./Modal";
 
 const MySwal = withReactContent(Swal);
 
 const StyledModalBody = styled(Modal.Body)`
-    height: 700px;
+    max-height: 800px;
     overflow: scroll;
 `;
 
-const TransactionSelector = () => {
-    return (
-        <Form.Select aria-label="Default select example">
-            <option value="1">New Expense</option>
-            <option value="2">New Income</option>
-            <option value="3">New Settle up</option>
-        </Form.Select>
-    );
-};
-
-// const ModalBodyWrapper = ({ children }) => {
-//     return selectedCreditor !== "multi" ? (
-//         <StyledModalBody>{children}</StyledModalBody>
-//     ) : (
-//         <div>{children}</div>
-//     );
-// };
-
-const Transaction = ({
-    showTransaction,
-    setShowTransaction,
-    currencies,
-    selectedCreditor,
-    setSelectedCreditor,
-    checked,
-    setChecked,
-    localISOTime,
-    expenseTime,
-    setExpenseTime,
-    amount,
-    setAmount,
-    selectedCurrency,
-    setSelectedCurrency,
-    selectedSplitMethod,
-    setSelectedSplitMethod,
-    subValues,
-    setSubValues,
-    subCredit,
-    setSubCredit,
-}) => {
+const Transaction = () => {
     const { members, gid, memberMap, setExpensesChanged } =
         useContext(GroupContext);
+    const {
+        checked,
+        subValues,
+        selectedSplitMethod,
+        amount,
+        selectedCreditor,
+        showTransaction,
+        setChecked,
+        setSubCredit,
+        setSelectedSplitMethod,
+        setSelectedCurrency,
+        setAmount,
+        setSelectedCreditor,
+        setExpenseTime,
+        setShowTransaction,
+    } = useContext(ExpenseContext);
+
     const handleClose = () => setShowTransaction(false);
     // When Transaction window is opened, set amount = 0
     const handleShow = () => {
@@ -71,9 +53,6 @@ const Transaction = ({
         setExpenseTime(localISOTime);
         setSubCredit(Array(members.length).fill(0));
     };
-    // Select NT$ on default
-
-    // When credit amount change, update state
 
     const handleExpenseSubmit = async (event) => {
         event.preventDefault();
@@ -166,97 +145,75 @@ const Transaction = ({
         }
     };
 
-    const handleExpenseTimeChange = (event) => {
-        setExpenseTime(event.target.value);
-    };
-
     return (
         <>
             <Button variant="primary" onClick={handleShow}>
                 Add Transaction
             </Button>
-
-            <Modal
-                show={showTransaction}
-                onHide={handleClose}
-                backdrop="static"
-                keyboard={false}
-            >
-                <Form onSubmit={handleExpenseSubmit}>
-                    <Modal.Header closeButton as={Row}>
-                        <Container className="transaction-method ml-0 pl-0">
-                            <Col lg="6">
-                                <TransactionSelector />
-                            </Col>
-                        </Container>
-                    </Modal.Header>
-                    <StyledModalBody>
-                        <CreditorsBlock
-                            currencies={currencies}
-                            selectedCurrency={selectedCurrency}
-                            setSelectedCurrency={setSelectedCurrency}
-                            selectedCreditor={selectedCreditor}
-                            setSelectedCreditor={setSelectedCreditor}
-                            amount={amount}
-                            setAmount={setAmount}
-                            subValues={subValues}
-                            setSubValues={setSubValues}
-                            selectedSplitMethod={selectedSplitMethod}
-                            subCredit={subCredit}
-                            setSubCredit={setSubCredit}
-                        />
-
-                        <hr />
-
-                        <DebtorsBlock
-                            currencies={currencies}
-                            selectedCurrency={selectedCurrency}
-                            amount={amount}
-                            setAmount={setAmount}
-                            setSelectedSplitMethod={setSelectedSplitMethod}
-                            checked={checked}
-                            setChecked={setChecked}
-                            selectedSplitMethod={selectedSplitMethod}
-                            subValues={subValues}
-                            setSubValues={setSubValues}
-                            selectedCreditor={selectedCreditor}
-                        ></DebtorsBlock>
-
-                        <Container className="expense-description mb-3">
-                            <Form.Label>Description</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                name="description"
-                                rows={3}
-                            />
-                        </Container>
-                        <Container className="expense-image mb-3">
-                            <Form.Label>Expense image</Form.Label>
-                            <Form.Control type="file" name="image" />
-                        </Container>
-                        <Container className="expense-datetime mb-3">
-                            <Form.Label>Date & time</Form.Label>
-                            <Form.Control
-                                type="datetime-local"
-                                name="date"
-                                defaultValue={expenseTime}
-                                onChange={handleExpenseTimeChange}
-                            />
-                        </Container>
-                    </StyledModalBody>
-                    <Modal.Footer>
-                        <Container className="d-grid">
-                            <Button
-                                variant="warning"
-                                type="submit"
-                                disabled={amount === 0}
-                            >
-                                Save
-                            </Button>
-                        </Container>
-                    </Modal.Footer>
-                </Form>
-            </Modal>
+            {selectedCreditor !== "multi" ? (
+                <Modal
+                    show={showTransaction}
+                    onHide={handleClose}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Form onSubmit={handleExpenseSubmit}>
+                        <Modal.Header closeButton as={Row}>
+                            <Container className="transaction-method ml-0 pl-0">
+                                <Col lg="6">
+                                    <TransactionSelector />
+                                </Col>
+                            </Container>
+                        </Modal.Header>
+                        <StyledModalBody>
+                            <ModalContent />
+                        </StyledModalBody>
+                        <Modal.Footer>
+                            <Container className="d-grid">
+                                <Button
+                                    variant="warning"
+                                    type="submit"
+                                    disabled={amount === 0}
+                                >
+                                    Save
+                                </Button>
+                            </Container>
+                        </Modal.Footer>
+                    </Form>
+                </Modal>
+            ) : (
+                <Modal
+                    show={showTransaction}
+                    onHide={handleClose}
+                    backdrop="static"
+                    keyboard={false}
+                    size="xl"
+                >
+                    <Form onSubmit={handleExpenseSubmit}>
+                        <Modal.Header closeButton as={Row}>
+                            <Container className="transaction-method ml-0 pl-0">
+                                <Col lg="6">
+                                    <TransactionSelector />
+                                </Col>
+                            </Container>
+                        </Modal.Header>
+                        <StyledModalBody>
+                            <ModalContent />
+                        </StyledModalBody>
+                        <Modal.Footer>
+                            <Container className="d-grid">
+                                <Button
+                                    variant="warning"
+                                    type="submit"
+                                    disabled={amount === 0}
+                                >
+                                    Save
+                                </Button>
+                            </Container>
+                        </Modal.Footer>
+                    </Form>
+                </Modal>
+            )}
         </>
     );
 };
