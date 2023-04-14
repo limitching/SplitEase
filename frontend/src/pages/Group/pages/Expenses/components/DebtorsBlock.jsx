@@ -1,6 +1,8 @@
 import SplitMethodSelector from "./SplitMethodSelector";
 import { Container, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
+import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
+import { CURRENCY_OPTIONS } from "../../../../../global/constant";
 import { useContext, useState } from "react";
 import { TextField } from "@mui/material";
 import { TbPlusMinus } from "react-icons/tb";
@@ -19,25 +21,25 @@ import {
     Avatar,
 } from "@mui/material";
 
-const DebtorsBlock = ({
-    currencies,
-    selectedCurrency,
-    amount,
-    setAmount,
-    setSelectedSplitMethod,
-    checked,
-    setChecked,
-    selectedSplitMethod,
-    subValues,
-    setSubValues,
-}) => {
+const DebtorsBlock = () => {
     const { members } = useContext(GroupContext);
+    const {
+        checked,
+        subValues,
+        selectedCurrency,
+        amount,
+        selectedSplitMethod,
+        selectedCreditor,
+        setChecked,
+        setSubValues,
+        setAmount,
+    } = useContext(ExpenseContext);
     const [modifiedIndices, setModifiedIndices] = useState([]);
 
     if (members.length === 0) {
         return <div>Loading...</div>;
     }
-    const [selectedCurrencyObj] = currencies.filter((currency) => {
+    const [selectedCurrencyObj] = CURRENCY_OPTIONS.filter((currency) => {
         return currency.id === Number(selectedCurrency);
     });
 
@@ -88,6 +90,69 @@ const DebtorsBlock = ({
     };
 
     const handleExactAmountChange = (index, newValue) => {
+        if (selectedCreditor === "multi") {
+            const maxAmount = amount;
+            if (newValue > maxAmount) {
+                newValue = maxAmount;
+            } else if (newValue < 0) {
+                newValue = 0;
+            }
+            const newModifiedIndices = [...modifiedIndices];
+            if (!modifiedIndices.includes(index)) {
+                newModifiedIndices.push(index);
+                if (newModifiedIndices.length === members.length) {
+                    newModifiedIndices.length = 0;
+                    newModifiedIndices.push(index);
+                    setModifiedIndices(newModifiedIndices);
+                } else {
+                    setModifiedIndices(newModifiedIndices);
+                }
+            }
+            console.log(newModifiedIndices);
+            if (modifiedIndices.length === members.length) {
+                setModifiedIndices([index]);
+            }
+            const newSubValues = [...subValues];
+            // Update the value of the current field
+            newSubValues[index] = newValue;
+
+            // Calculate the sum of the percentages currently set
+            const currentTotal = newSubValues.reduce(
+                (accumulator, currentValue, currentIndex) => {
+                    if (newModifiedIndices.includes(currentIndex)) {
+                        return accumulator + currentValue;
+                    } else {
+                        return accumulator;
+                    }
+                },
+                0
+            );
+
+            if (currentTotal > maxAmount) {
+                newSubValues.fill(0);
+                newSubValues[index] = newValue;
+                newSubValues[index + 1] = maxAmount - newValue;
+                setModifiedIndices([index, index + 1]);
+                return setSubValues(newSubValues);
+            }
+
+            // Calculates the percentage by which other fields should be split equally
+            const remaining = maxAmount - currentTotal;
+            const toDistribute =
+                remaining / (newSubValues.length - newModifiedIndices.length);
+
+            // Split other fields equally
+            for (let i = 0; i < newSubValues.length; i++) {
+                if (i === index || newModifiedIndices.includes(i)) {
+                    continue;
+                }
+
+                newSubValues[i] = toDistribute;
+            }
+            // Update state
+            setSubValues(newSubValues);
+            return;
+        }
         if (newValue < 0) {
             newValue = 0;
         }
@@ -110,7 +175,13 @@ const DebtorsBlock = ({
         const newModifiedIndices = [...modifiedIndices];
         if (!modifiedIndices.includes(index)) {
             newModifiedIndices.push(index);
-            setModifiedIndices(newModifiedIndices);
+            if (newModifiedIndices.length === members.length) {
+                newModifiedIndices.length = 0;
+                newModifiedIndices.push(index);
+                setModifiedIndices(newModifiedIndices);
+            } else {
+                setModifiedIndices(newModifiedIndices);
+            }
         }
         if (modifiedIndices.length === members.length) {
             setModifiedIndices([index]);
@@ -192,18 +263,13 @@ const DebtorsBlock = ({
         setSubValues(newSubValues);
     };
     return (
-        <div className="debtor-list">
+        <div className="debtor-list" style={{ width: "100%" }}>
             <Container as={Row} className="debtor-header-container">
                 <Form.Label column lg="6">
                     For whom
                 </Form.Label>
                 <Col lg="6">
-                    <SplitMethodSelector
-                        selectedSplitMethod={selectedSplitMethod}
-                        setSelectedSplitMethod={setSelectedSplitMethod}
-                        setSubValues={setSubValues}
-                        subValues={subValues}
-                    />
+                    <SplitMethodSelector />
                 </Col>
             </Container>
             <Container className="debtor-list-container">
@@ -312,10 +378,6 @@ const DebtorsBlock = ({
                                                     }}
                                                     sx={{ width: "30%" }}
                                                 />
-                                                {/* <input
-                                                    type="text"
-                                                    onInput={removeLeadingZeros}
-                                                ></input> */}
                                                 <ListItemText
                                                     id={labelId}
                                                     primary={`${selectedCurrencyObj.abbreviation}`}
