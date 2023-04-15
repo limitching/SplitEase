@@ -1,9 +1,12 @@
 import styled from "styled-components";
 import { NativeLogin } from "./components/NativeLogin";
-import { useState } from "react";
+import { NativeRegister } from "./components/NativeRegister";
+import { useContext, useEffect } from "react";
 import { FaLine } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
-import { api } from "../../utils/api";
+import { GoMail } from "react-icons/go";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { AuthContext } from "../../contexts/AuthContext";
 
 const WrapperLoginContainer = styled.div`
     display: flex;
@@ -22,6 +25,12 @@ const LoginBox = styled.div`
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
     max-width: 500px;
     width: 100%;
+`;
+
+const WelcomeImage = styled.img`
+    height: 160px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 `;
 
 const LoginMethod = styled.div`
@@ -90,28 +99,37 @@ const LoginTerms = styled.div`
     }
 `;
 
+const HaveAccountAlready = styled.a`
+    margin-top: 20px;
+    display: flex;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+    color: ${(props) => props.theme.textColor};
+`;
+
 const Login = () => {
-    const [loginMethod, setLoginMethod] = useState(null);
     const location = useLocation();
-    console.log(location);
+    const navigate = useNavigate();
+    const {
+        loading,
+        isLogin,
+        haveAccount,
+        loginMethod,
+        setHaveAccount,
+        lineSignIn,
+        setLoginMethod,
+    } = useContext(AuthContext);
+
     const searchParams = new URLSearchParams(location.search);
     const code = searchParams.get("code");
     const state = searchParams.get("state");
-    console.log(code, state);
-    const handleSignIn = async () => {
-        const data = { provider: "line", code, state };
-        const result = await api.userSignIn(data);
-        console.log("result", result);
-    };
-    if (code && state) {
-        handleSignIn(code, state);
-    }
 
     const handleLoginMethod = (method) => {
         setLoginMethod(method);
     };
 
-    const handleLineLogin = () => {
+    const navigateToLineLogin = () => {
         const clientId = "1660896460";
         const redirectUri = encodeURIComponent("http://localhost:3001/login");
         const state = "login";
@@ -120,43 +138,67 @@ const Login = () => {
         window.location.href = url;
     };
 
+    useEffect(() => {
+        if (loading) {
+            return;
+        }
+
+        if (isLogin) {
+            navigate("/home");
+        }
+
+        if (code && state) {
+            lineSignIn(code, state);
+        }
+    }, [loading, isLogin, code, state, navigate, lineSignIn]);
+
     return (
         <WrapperLoginContainer>
-            {loginMethod === null ? (
-                <LoginBox>
-                    <LoginMethod>
-                        <LoginButton
-                            isActive={loginMethod === "google"}
-                            onClick={() => handleLoginMethod("google")}
-                        >
-                            Sign in with Google
-                        </LoginButton>
-                        <LineLoginButton
-                            isActive={loginMethod === "line"}
-                            onClick={() => handleLineLogin()}
-                        >
-                            <LineLoginIcon></LineLoginIcon>
-                            Sign in with LINE
-                        </LineLoginButton>
-                        <LoginButton
-                            isActive={loginMethod === "native"}
-                            onClick={() => handleLoginMethod("native")}
-                        >
-                            Sign in with Email
-                        </LoginButton>
-                        <LoginTerms>
-                            By continuing, you are indicating that you accept
-                            our
-                            <br /> <a href="/">Terms of Service</a> and{" "}
-                            <a href="/">Privacy Policy</a>.
-                        </LoginTerms>
-                    </LoginMethod>
-                </LoginBox>
+            {haveAccount === true ? (
+                loginMethod === null ? (
+                    <LoginBox>
+                        <LoginMethod>
+                            <WelcomeImage src="/mornings.svg"></WelcomeImage>
+                            <LineLoginButton
+                                isActive={loginMethod === "line"}
+                                onClick={() => navigateToLineLogin()}
+                            >
+                                <LineLoginIcon></LineLoginIcon>
+                                Sign in with LINE
+                            </LineLoginButton>
+                            <LoginButton
+                                isActive={loginMethod === "native"}
+                                onClick={() => handleLoginMethod("native")}
+                            >
+                                <GoMail />
+                                <span> </span>
+                                Sign in with Email
+                            </LoginButton>
+                            <LoginTerms>
+                                By continuing, you are indicating that you
+                                accept our
+                                <br /> <a href="/">Terms of Service</a> and{" "}
+                                <a href="/">Privacy Policy</a>.
+                            </LoginTerms>
+                            <HaveAccountAlready
+                                onClick={() => setHaveAccount(false)}
+                            >
+                                Don't have an account yet?
+                            </HaveAccountAlready>
+                        </LoginMethod>
+                    </LoginBox>
+                ) : (
+                    <WrapperLoginContainer>
+                        <NativeLogin />
+                    </WrapperLoginContainer>
+                )
             ) : (
-                <NativeLogin></NativeLogin>
+                <WrapperLoginContainer>
+                    <NativeRegister />
+                </WrapperLoginContainer>
             )}
         </WrapperLoginContainer>
     );
 };
 
-export { Login };
+export default Login;
