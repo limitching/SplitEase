@@ -64,9 +64,7 @@ const signIn = async (req, res) => {
     }
     const user = result.user;
     if (!user || result.status === 500) {
-        return res
-            .status(500)
-            .send({ error: "Server Error: Database Query Error" });
+        return res.status(500).send({ error: result.error });
     }
 
     const accessToken = jwt.sign(
