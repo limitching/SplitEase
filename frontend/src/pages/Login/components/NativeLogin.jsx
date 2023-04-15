@@ -50,6 +50,7 @@ const NativeLogin = () => {
         <>
             <LoginFormContainer>
                 <WelcomeImage src="/greeting.svg"></WelcomeImage>
+                <InputField type="text" placeholder="Name" />
                 <InputField type="text" placeholder="Email" />
                 <InputField type="password" placeholder="Password" />
                 <LoginButton>Login</LoginButton>
