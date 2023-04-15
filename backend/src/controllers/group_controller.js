@@ -1,5 +1,5 @@
 import { getGroups, getMembers } from "../models/group_model.js";
-import { getUsers } from "../models/user_model.js";
+import User from "../models/user_model.js";
 const getGroupInformation = async (req, res, next) => {
     const group_id = req.params.group_id;
     const requirement = { group_id };
@@ -15,7 +15,7 @@ const getGroupMembers = async (req, res, next) => {
     const memberIds = groupUsers.map((user) => user.user_id);
     // Use memberIds to query user details
     const requirement = { uid: memberIds };
-    const memberUsers = await getUsers(requirement);
+    const memberUsers = await User.getUsers(requirement);
     return res.status(200).json(memberUsers);
 };
 export { getGroupInformation, getGroupMembers };
