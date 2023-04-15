@@ -8,7 +8,6 @@ const { TOKEN_EXPIRE, TOKEN_SECRET } = process.env;
 
 const signUp = async (req, res) => {
     const { name, email, password } = req.body;
-    console.log(name, email, password);
 
     const result = await User.signUp(name, email, password);
     if (result.error) {
