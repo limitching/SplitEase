@@ -2,6 +2,7 @@ import User from "../models/user_model.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import path from "path";
+
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 dotenv.config({ path: __dirname + "/../../.env" });
 const { TOKEN_EXPIRE, TOKEN_SECRET } = process.env;
@@ -52,6 +53,8 @@ const signIn = async (req, res) => {
             result = await nativeSignIn(data.email, data.password);
             break;
         case "line":
+            const { code, state } = data;
+            result = await lineSignIn(code, state);
             break;
         default:
             result = { error: "Request Error: Wrong Request" };
@@ -96,6 +99,29 @@ const nativeSignIn = async (email, password) => {
         return await User.nativeSignIn(email, password);
     } catch (error) {
         return { error };
+    }
+};
+
+const lineSignIn = async (code, state) => {
+    if (!code || !state) {
+        return {
+            error: "Request Error: code and state is required.",
+            status: 400,
+        };
+    }
+    try {
+        const profile = await User.getLineProfile(code, state);
+        console.log(profile);
+        const { name, email, image, line_id } = profile;
+
+        if (!name || !email || !image || !line_id) {
+            return {
+                error: "Permissions Error: LINE access code can not get line_id, name, image or email",
+            };
+        }
+        return await User.lineSignIn(name, email, image, line_id);
+    } catch (error) {
+        return { error: error };
     }
 };
 export { signUp, signIn };
