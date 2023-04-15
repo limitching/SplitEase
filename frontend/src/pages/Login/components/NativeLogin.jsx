@@ -1,11 +1,14 @@
 import styled from "styled-components";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 const WelcomeImage = styled.img`
-    width: 200px;
-    height: 160px;
+    height: 120px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 `;
 
-const LoginFormContainer = styled.div`
+const LoginFormContainer = styled.form`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -45,15 +48,71 @@ const LoginButton = styled.button`
     }
 `;
 
+const HaveAccountAlready = styled.a`
+    margin-top: 20px;
+    display: flex;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+    color: ${(props) => props.theme.textColor};
+`;
+
+const OtherLoginMethod = styled.a`
+    margin-top: 20px;
+    display: flex;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+    color: ${(props) => props.theme.textColor};
+`;
+
 const NativeLogin = () => {
+    const { setHaveAccount, setLoginMethod, nativeSignIn } =
+        useContext(AuthContext);
+    const [signInForm, setSignInForm] = useState({
+        provider: "native",
+        email: "",
+        password: "",
+    });
+
+    const handleSignInChange = (event) => {
+        const key = event.target.name;
+        setSignInForm({ ...signInForm, [key]: event.target.value });
+    };
     return (
         <>
             <LoginFormContainer>
-                <WelcomeImage src="/greeting.svg"></WelcomeImage>
-                <InputField type="text" placeholder="Name" />
-                <InputField type="text" placeholder="Email" />
-                <InputField type="password" placeholder="Password" />
-                <LoginButton>Login</LoginButton>
+                <WelcomeImage src="/summer.svg"></WelcomeImage>
+                <InputField
+                    type="text"
+                    name="email"
+                    placeholder="Email"
+                    value={signInForm.email}
+                    onChange={handleSignInChange}
+                    autoComplete="on"
+                />
+                <InputField
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={signInForm.password}
+                    onChange={handleSignInChange}
+                    autoComplete="on"
+                />
+                <LoginButton
+                    onClick={(event) => {
+                        event.preventDefault();
+                        nativeSignIn(signInForm);
+                    }}
+                >
+                    Login
+                </LoginButton>
+                <HaveAccountAlready onClick={() => setHaveAccount(false)}>
+                    Don't have an account yet?
+                </HaveAccountAlready>
+                <OtherLoginMethod onClick={() => setLoginMethod(null)}>
+                    Other login methods
+                </OtherLoginMethod>
             </LoginFormContainer>
         </>
     );
