@@ -41,6 +41,48 @@ const signUp = async (name, email, password) => {
     }
 };
 
+const nativeSignIn = async (email, password) => {
+    const connection = await pool.getConnection();
+    try {
+        await connection.query("START TRANSACTION");
+        const [result] = await connection.query(
+            "SELECT * FROM users WHERE email = ?",
+            [email]
+        );
+        const user = result[0];
+
+        if (!user) {
+            await connection.query("COMMIT");
+            return {
+                error: "Request Error: Account does not exist",
+                status: 400,
+            };
+        }
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) {
+            await connection.query("COMMIT");
+            return { error: "Request Error: password is wrong", status: 400 };
+        }
+
+        // Update last login time
+        const loginAt = new Date();
+        await connection.query("UPDATE users SET login_at = ? WHERE id = ?", [
+            loginAt,
+            user.id,
+        ]);
+        await connection.query("COMMIT");
+
+        user.login_at = loginAt;
+
+        return { user };
+    } catch (error) {
+        await connection.query("ROLLBACK");
+        return { error, status: 500 };
+    } finally {
+        await connection.release();
+    }
+};
+
 const getUsers = async (requirement) => {
     const condition = { sql: "", binding: [] };
     if (requirement.uid) {
@@ -53,4 +95,4 @@ const getUsers = async (requirement) => {
     return users;
 };
 
-export default { getUsers, signUp };
+export default { getUsers, signUp, nativeSignIn };
