@@ -1,20 +1,26 @@
 import { check, validationResult } from "express-validator";
 
 export default [
-    check("email")
+    check("name")
         .exists()
-        .withMessage("Request Error: email and password are required.")
+        .withMessage("Request Error: name, email and password are required.")
         .bail()
         .notEmpty()
-        .withMessage("Request Error: email and password are required.")
+        .withMessage("Request Error: name, email and password are required.")
+        .bail(),
+    check("email")
+        .exists()
+        .withMessage("Request Error: name, email and password are required.")
+        .bail()
+        .notEmpty()
+        .withMessage("Request Error: name, email and password are required.")
         .bail()
         .isEmail()
         .withMessage("Request Error: Invalid email format")
         .bail(),
-
     check("password")
         .exists()
-        .withMessage("Request Error: email and password are required.")
+        .withMessage("Request Error: name, email and password are required.")
         .isLength({ min: 4, max: 16 })
         .withMessage("Request Error: password length should be between 8 - 16")
         .custom((value) => {
