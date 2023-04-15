@@ -27,8 +27,10 @@ const signUp = async (name, email, password) => {
             login_at: loginAt,
         };
 
-        const queryStr = "INSERT INTO users SET ?";
-        const [result] = await connection.query(queryStr, user);
+        const [result] = await connection.query(
+            "INSERT INTO users SET ?",
+            user
+        );
         user.id = result.insertId;
 
         return { user };
@@ -85,6 +87,47 @@ const nativeSignIn = async (email, password) => {
     }
 };
 
+const lineSignIn = async (name, email, image, line_id) => {
+    const connection = await pool.getConnection();
+    try {
+        const loginAt = new Date();
+        const user = {
+            provider: "line",
+            name: name,
+            email: email,
+            image: image,
+            line_id: line_id,
+            login_at: loginAt,
+        };
+        const [users] = await connection.query(
+            "SELECT id FROM users WHERE email = ? AND provider = 'line'",
+            [email]
+        );
+        let userId;
+        if (users.length === 0) {
+            // Create new user
+            const [result] = await connection.query(
+                "INSERT INTO users SET ?",
+                user
+            );
+            userId = result.insertId;
+        } else {
+            // Exist user login
+            userId = users[0].id;
+            await connection.query(
+                "UPDATE users SET login_at = ? WHERE id = ?",
+                [loginAt, userId]
+            );
+        }
+        user.id = userId;
+        return { user };
+    } catch (error) {
+        return { error };
+    } finally {
+        await connection.release();
+    }
+};
+
 const getLineProfile = async (code, state) => {
     try {
         const uri = "https://api.line.me/oauth2/v2.1/token";
@@ -129,4 +172,4 @@ const getUsers = async (requirement) => {
     return users;
 };
 
-export default { getUsers, signUp, nativeSignIn, getLineProfile };
+export default { getUsers, signUp, nativeSignIn, getLineProfile, lineSignIn };
