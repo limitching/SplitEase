@@ -1,32 +1,30 @@
 import { check, validationResult } from "express-validator";
 
 export default [
-    check("provider")
-        .exists()
-        .withMessage("Request Error: provider are required."),
+    check("provider").exists().withMessage("provider is required."),
     check("email")
         .if((value, { req }) => req.body.provider === "native")
         .exists()
-        .withMessage("Request Error: name, email and password are required.")
+        .withMessage("email is required.")
         .bail()
         .notEmpty()
-        .withMessage("Request Error: name, email and password are required.")
+        .withMessage("email is required.")
         .bail()
         .isEmail()
-        .withMessage("Request Error: Invalid email format")
+        .withMessage("Invalid email format")
         .bail(),
     check("password")
         .if((value, { req }) => req.body.provider === "native")
         .exists()
-        .withMessage("Request Error: name, email and password are required.")
+        .withMessage("password is required.")
         .isLength({ min: 4, max: 16 })
-        .withMessage("Request Error: password length should be between 8 - 16")
+        .withMessage("password length should be between 8 - 16")
         .custom((value) => {
             const pwdregex =
                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{4,16}$/;
             if (!value.match(pwdregex)) {
                 throw new Error(
-                    "Request Error: password should be at least one lowercase, one uppercase, one digit, one special character"
+                    "password should be at least one lowercase, one uppercase, one digit, one special character"
                 );
             } else {
                 return true;
