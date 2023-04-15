@@ -59,7 +59,6 @@ const signIn = async (req, res) => {
         default:
             result = { error: "Request Error: Wrong Request" };
     }
-    console.log(result);
     if (result.status === 400) {
         return res.status(400).send({ error: result.error });
     }
@@ -111,7 +110,6 @@ const lineSignIn = async (code, state) => {
     }
     try {
         const profile = await User.getLineProfile(code, state);
-        console.log(profile);
         const { name, email, image, line_id } = profile;
 
         if (!name || !email || !image || !line_id) {
