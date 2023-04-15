@@ -1,10 +1,12 @@
 import { pool } from "../databases/MySQL.database.js";
 import bcrypt from "bcrypt";
+import axios from "axios";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import path from "path";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 dotenv.config({ path: __dirname + "/../../.env" });
-const { PASSWORD_HASH_TIMES, TOKEN_EXPIRE, TOKEN_SECRET } = process.env;
+const { PASSWORD_HASH_TIMES, LINE_CLIENT_ID, LINE_CLIENT_SECRET } = process.env;
 
 const signUp = async (name, email, password) => {
     const connection = await pool.getConnection();
@@ -83,6 +85,38 @@ const nativeSignIn = async (email, password) => {
     }
 };
 
+const getLineProfile = async (code, state) => {
+    try {
+        const uri = "https://api.line.me/oauth2/v2.1/token";
+        const authData = {
+            grant_type: "authorization_code",
+            code: code,
+            redirect_uri: "http://localhost:3001/login",
+            client_id: LINE_CLIENT_ID,
+            client_secret: LINE_CLIENT_SECRET,
+        };
+        const config = {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        };
+
+        const { data } = await axios.post(uri, authData, config);
+
+        const decoded = jwt.verify(data.id_token, LINE_CLIENT_SECRET);
+        const user = {
+            name: decoded.name,
+            email: decoded.email,
+            image: decoded.picture,
+            line_id: decoded.sub,
+        };
+        return user;
+    } catch (error) {
+        console.error(error);
+        throw "Permissions Error: LINE access code is wrong";
+    }
+};
+
 const getUsers = async (requirement) => {
     const condition = { sql: "", binding: [] };
     if (requirement.uid) {
@@ -95,4 +129,4 @@ const getUsers = async (requirement) => {
     return users;
 };
 
-export default { getUsers, signUp, nativeSignIn };
+export default { getUsers, signUp, nativeSignIn, getLineProfile };
