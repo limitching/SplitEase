@@ -1,9 +1,9 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
+import { AuthContext } from "./AuthContext";
 import { api } from "../utils/api";
 
 const GroupContext = createContext({
-    gid: null,
     group_id: null,
     members: [],
     memberMap: new Map(),
@@ -15,27 +15,27 @@ const GroupContext = createContext({
     setExpensesChanged: () => {},
 });
 
-async function fetchMembers(gid, setMembers) {
+async function fetchMembers(group_id, setMembers) {
     try {
-        const data = await api.getMembers(gid);
+        const data = await api.getMembers(group_id);
         setMembers(data);
     } catch (error) {
         console.error(error);
     }
 }
 
-async function fetchGroupExpenses(gid, setGroupExpense) {
+async function fetchGroupExpenses(group_id, setGroupExpense) {
     try {
-        const data = await api.getGroupExpenses(gid);
+        const data = await api.getGroupExpenses(group_id);
         setGroupExpense(data);
     } catch (error) {
         console.error(error);
     }
 }
 
-async function fetchGroupDebts(gid, setDebts) {
+async function fetchGroupDebts(group_id, setDebts) {
     try {
-        const data = await api.getGroupDebts(gid);
+        const data = await api.getGroupDebts(group_id);
         setDebts(data);
     } catch (error) {
         console.error(error);
@@ -43,8 +43,11 @@ async function fetchGroupDebts(gid, setDebts) {
 }
 
 const GroupContextProvider = ({ children }) => {
-    const { gid } = useParams();
-    const group_id = gid;
+    const { userGroups } = useContext(AuthContext);
+
+    const { slug } = useParams();
+    const [selectedGroup] = userGroups.filter((group) => group.slug === slug);
+    const group_id = selectedGroup.id;
     const [members, setMembers] = useState([]);
     const [groupExpense, setGroupExpense] = useState([]);
     const [debts, setDebts] = useState([]);
@@ -52,21 +55,21 @@ const GroupContextProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
         setIsLoading(true);
-        fetchMembers(gid, setMembers);
-        fetchGroupExpenses(gid, setGroupExpense);
-        fetchGroupDebts(gid, setDebts);
+        fetchMembers(group_id, setMembers);
+        fetchGroupExpenses(group_id, setGroupExpense);
+        fetchGroupDebts(group_id, setDebts);
         setIsLoading(false);
-    }, [gid]);
+    }, [group_id]);
 
     useEffect(() => {
         if (expensesChanged) {
             setIsLoading(true);
-            fetchGroupExpenses(gid, setGroupExpense);
-            fetchGroupDebts(gid, setDebts);
+            fetchGroupExpenses(group_id, setGroupExpense);
+            fetchGroupDebts(group_id, setDebts);
             setIsLoading(false);
             setExpensesChanged(false);
         }
-    }, [expensesChanged, gid]);
+    }, [expensesChanged, group_id]);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -84,7 +87,6 @@ const GroupContextProvider = ({ children }) => {
     return (
         <GroupContext.Provider
             value={{
-                gid,
                 group_id,
                 members,
                 memberMap,
