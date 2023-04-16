@@ -94,5 +94,20 @@ const api = {
             return error.response;
         }
     },
+    getUserGroups: async function (jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.get(
+                `${this.hostname}/user/groups`,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
 };
 export { api, HOST };
