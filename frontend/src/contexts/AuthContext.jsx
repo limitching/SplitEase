@@ -17,6 +17,7 @@ const AuthContext = createContext({
     nativeSignUp: () => {},
     nativeSignIn: () => {},
     lineSignIn: () => {},
+    logout: () => {},
 });
 
 const AuthContextProvider = ({ children }) => {
@@ -162,6 +163,25 @@ const AuthContextProvider = ({ children }) => {
         return tokenFromServer;
     };
 
+    const logout = async () => {
+        setLoading(true);
+        setIsLogin(false);
+        setUser({});
+        setJwtToken();
+        window.localStorage.removeItem("jwtToken");
+        MySwal.fire({
+            title: <p>Logout</p>,
+            html: <p>Logout Successfully</p>,
+            icon: "success",
+            timer: 1000,
+            didOpen: () => {
+                MySwal.showLoading();
+            },
+        });
+        navigate("login");
+        setLoading(false);
+    };
+
     return (
         <AuthContext.Provider
             value={{
@@ -176,6 +196,7 @@ const AuthContextProvider = ({ children }) => {
                 nativeSignUp,
                 nativeSignIn,
                 lineSignIn,
+                logout,
             }}
         >
             {children}
