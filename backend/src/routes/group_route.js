@@ -5,6 +5,8 @@ import {
     getGroupInformation,
     getGroupMembers,
     createNewGroup,
+    getPublicInformation,
+    joinGroup,
 } from "../controllers/group_controller.js";
 import { authentication } from "../utils/util.js";
 import createGroupValidator from "../middlewares/validators/createGroupValidator.js";
@@ -17,5 +19,11 @@ router.route("/group/members/:group_id").get(wrapAsync(getGroupMembers));
 router
     .route("/group")
     .post(authentication(), createGroupValidator, wrapAsync(createNewGroup));
+
+/* Join the Group via Invitation */
+router
+    .route("/group/:slug/join")
+    .get(wrapAsync(getPublicInformation))
+    .post(authentication(), wrapAsync(joinGroup));
 
 export default router;
