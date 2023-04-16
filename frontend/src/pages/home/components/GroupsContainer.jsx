@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import CreateGroupModal from "../components/CreateGroupModal";
+import { Link } from "react-router-dom";
 import {
     List,
     ListItem,
@@ -31,6 +32,11 @@ const CustomListItemText = styled(ListItemText)`
     }
 `;
 
+const GroupLink = styled(Link)`
+    text-decoration: none;
+    color: inherit;
+`;
+
 const GroupsContainer = () => {
     const { userGroups } = useContext(AuthContext);
     const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
@@ -56,21 +62,19 @@ const GroupsContainer = () => {
             >
                 {userGroups.map((group, index) => {
                     return (
-                        <ListItem
-                            alignItems="center"
-                            key={group.id}
-                            disablePadding
-                        >
-                            <ListItemButton>
-                                <ListItemAvatar>
-                                    <Avatar
-                                        alt={`${group.name}`}
-                                        src={`${group.image}.jpg`}
-                                    />
-                                </ListItemAvatar>
-                                <ListItemText primary={`${group.name}`} />
-                            </ListItemButton>
-                        </ListItem>
+                        <GroupLink key={group.slug} to={`/group/${group.slug}`}>
+                            <ListItem alignItems="center" disablePadding>
+                                <ListItemButton>
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            alt={`${group.name}`}
+                                            src={`${group.image}.jpg`}
+                                        />
+                                    </ListItemAvatar>
+                                    <ListItemText primary={`${group.name}`} />
+                                </ListItemButton>
+                            </ListItem>
+                        </GroupLink>
                     );
                 })}
                 <ListItem alignItems="center" disablePadding>
