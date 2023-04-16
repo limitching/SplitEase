@@ -129,7 +129,7 @@ const getUserGroups = async (req, res) => {
     console.log(req.user);
     const groupsIds = await User.getUserGroupsIds(id);
     const groups = await User.getGroupsInformation(groupsIds);
-    return res.status(200).json({ groups });
+    return res.status(200).json(groups);
 };
 
 const getUserProfile = async (req, res) => {
