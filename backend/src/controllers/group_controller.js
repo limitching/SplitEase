@@ -1,4 +1,9 @@
-import { getGroups, getMembers, createGroup } from "../models/group_model.js";
+import {
+    getGroups,
+    getMembers,
+    createGroup,
+    joinGroupViaCode,
+} from "../models/group_model.js";
 import User from "../models/user_model.js";
 const getGroupInformation = async (req, res) => {
     const group_id = req.params.group_id;
@@ -30,4 +35,23 @@ const createNewGroup = async (req, res) => {
     return res.status(200).json(result.group);
 };
 
-export { getGroupInformation, getGroupMembers, createNewGroup };
+const getPublicInformation = async (req, res) => {
+    const slug = req.params.slug;
+    return res.status(200).json({ msg: "getPublicInformation" });
+};
+
+const joinGroup = async (req, res) => {
+    const slug = req.params.slug;
+    const { invitation_code } = req.body;
+    const { user } = req;
+    const group = await joinGroupViaCode(user.id, slug, invitation_code);
+    return res.status(200).json(group);
+};
+
+export {
+    getGroupInformation,
+    getGroupMembers,
+    createNewGroup,
+    getPublicInformation,
+    joinGroup,
+};
