@@ -172,4 +172,29 @@ const getUsers = async (requirement) => {
     return users;
 };
 
-export default { getUsers, signUp, nativeSignIn, getLineProfile, lineSignIn };
+const getUserGroupsIds = async (id) => {
+    const [groups] = await pool.query(
+        "SELECT * FROM group_users WHERE user_id = ?",
+        [id]
+    );
+    const groupsIds = groups.map((group) => group.group_id);
+    return groupsIds;
+};
+
+const getGroupsInformation = async (groupsIds) => {
+    const [groups] = await pool.query(
+        "SELECT * FROM `groups` WHERE id = ? ORDER BY creation_date DESC",
+        [groupsIds]
+    );
+    return groups;
+};
+
+export default {
+    getUsers,
+    signUp,
+    nativeSignIn,
+    getLineProfile,
+    lineSignIn,
+    getUserGroupsIds,
+    getGroupsInformation,
+};
