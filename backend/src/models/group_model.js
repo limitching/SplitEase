@@ -1,5 +1,12 @@
 import { pool } from "../databases/MySQL.database.js";
 import { v4 as uuidV4 } from "uuid";
+import dotenv from "dotenv";
+import path from "path";
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+dotenv.config({ path: __dirname + "/../../.env" });
+const { HASH_ID_SALT } = process.env;
+import Hashids from "hashids";
+const hashids = new Hashids(HASH_ID_SALT, 10);
 
 const getGroups = async (requirement) => {
     const condition = { sql: "", binding: [] };
@@ -34,6 +41,15 @@ const createGroup = async (newGroupData) => {
             newGroupData
         );
         newGroupData.id = result.insertId;
+        const invitationCode = {
+            invitation_code: hashids.encode(result.insertId),
+        };
+        // Insert invitation code via encoded group_id
+        await connection.query("UPDATE `groups` SET ? WHERE id = ?", [
+            invitationCode,
+            result.insertId,
+        ]);
+
         const newGroupUserData = {
             group_id: result.insertId,
             user_id: newGroupData.owner,
