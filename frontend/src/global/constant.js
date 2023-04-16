@@ -71,5 +71,21 @@ const GROUP_TABS = [
         name: "debts",
         displayText: "Debts",
     },
+    {
+        name: "settlement",
+        displayText: "Settlement",
+    },
+    {
+        name: "members",
+        displayText: "members",
+    },
+    {
+        name: "activities",
+        displayText: "Recent Activities",
+    },
+    {
+        name: "join",
+        displayText: "Invite Friends",
+    },
 ];
 export { SPLIT_METHODS, CURRENCY_OPTIONS, GROUP_TABS };
