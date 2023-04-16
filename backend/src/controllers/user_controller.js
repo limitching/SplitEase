@@ -128,6 +128,9 @@ const getUserGroups = async (req, res) => {
     const { id } = req.user;
     console.log(req.user);
     const groupsIds = await User.getUserGroupsIds(id);
+    if (groupsIds.length === 0) {
+        return res.status(200).json([]);
+    }
     const groups = await User.getGroupsInformation(groupsIds);
     return res.status(200).json(groups);
 };
