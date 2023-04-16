@@ -1,13 +1,13 @@
-import { getGroups, getMembers } from "../models/group_model.js";
+import { getGroups, getMembers, createGroup } from "../models/group_model.js";
 import User from "../models/user_model.js";
-const getGroupInformation = async (req, res, next) => {
+const getGroupInformation = async (req, res) => {
     const group_id = req.params.group_id;
     const requirement = { group_id };
     const [groupInformation] = await getGroups(requirement);
     return res.status(200).json({ data: groupInformation });
 };
 
-const getGroupMembers = async (req, res, next) => {
+const getGroupMembers = async (req, res) => {
     const group_id = req.params.group_id;
 
     // Use gid to query group memberIds
@@ -18,4 +18,16 @@ const getGroupMembers = async (req, res, next) => {
     const memberUsers = await User.getUsers(requirement);
     return res.status(200).json(memberUsers);
 };
-export { getGroupInformation, getGroupMembers };
+
+const createNewGroup = async (req, res) => {
+    const newGroupData = req.body;
+    const result = await createGroup(newGroupData);
+    if (result.status === 500) {
+        return res
+            .status(500)
+            .json({ error: "Internal Server Error: MySQL error." });
+    }
+    return res.status(200).json(result.group);
+};
+
+export { getGroupInformation, getGroupMembers, createNewGroup };
