@@ -21,7 +21,8 @@ const CreateGroupModal = ({
     showCreateGroupModal,
     handleCloseCreateGroupModal,
 }) => {
-    const { user, jwtToken } = useContext(AuthContext);
+    const { user, jwtToken, setLoading, setGroupChange } =
+        useContext(AuthContext);
     const [newGroupData, setNewGroupData] = useState({
         owner: user.id,
         name: "",
@@ -35,7 +36,7 @@ const CreateGroupModal = ({
         setNewGroupData({ ...newGroupData, [key]: event.target.value });
     }
 
-    const createGroup = (event) => {
+    const createGroup = async (event) => {
         event.preventDefault();
         const errors = [];
         if (!newGroupData.owner) {
@@ -62,6 +63,49 @@ const CreateGroupModal = ({
                 },
             });
         }
+        setLoading(true);
+        const response = await api.createGroup(jwtToken, newGroupData);
+        console.log(response);
+        if (response.data.errors) {
+            return MySwal.fire({
+                title: <p>Request Error</p>,
+                html: (
+                    <div>
+                        {response.data.errors.map((error) => (
+                            <p>{error.msg}</p>
+                        ))}
+                    </div>
+                ),
+                icon: "success",
+                timer: 2000,
+                didOpen: () => {
+                    MySwal.showLoading();
+                },
+            });
+        }
+
+        MySwal.fire({
+            title: <p>Create Group Successfully</p>,
+            html: (
+                <div>
+                    <p>Group name: {response.data.name}</p>
+                </div>
+            ),
+            icon: "success",
+            timer: 2000,
+            didOpen: () => {
+                MySwal.showLoading();
+            },
+        });
+        setNewGroupData({
+            owner: user.id,
+            name: "",
+            default_currency: 1,
+            description: "",
+        });
+        handleCloseCreateGroupModal();
+        setGroupChange(true);
+        setLoading(false);
     };
 
     return (
