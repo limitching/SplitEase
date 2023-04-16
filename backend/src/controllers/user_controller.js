@@ -87,6 +87,7 @@ const signIn = async (req, res) => {
             provider: user.provider,
             name: user.name,
             email: user.email,
+            image: user.image,
         },
     });
 };
