@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { NativeLogin } from "./components/NativeLogin";
 import { NativeRegister } from "./components/NativeRegister";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { FaLine } from "react-icons/fa";
 import { GoMail } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -120,10 +120,18 @@ const Login = () => {
         lineSignIn,
         setLoginMethod,
     } = useContext(AuthContext);
+    const [code, setCode] = useState("");
+    const [state, setState] = useState("");
 
-    const searchParams = new URLSearchParams(location.search);
-    const code = searchParams.get("code");
-    const state = searchParams.get("state");
+    useMemo(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const queryCode = searchParams.get("code");
+        const queryState = searchParams.get("state");
+        if (queryCode && queryState) {
+            setCode(queryCode);
+            setState(queryState);
+        }
+    }, [location.search]);
 
     const handleLoginMethod = (method) => {
         setLoginMethod(method);
@@ -142,15 +150,21 @@ const Login = () => {
         if (loading) {
             return;
         }
+    }, [loading]);
 
+    useEffect(() => {
         if (isLogin) {
             navigate("/home");
         }
+    }, [isLogin, navigate]);
 
+    useEffect(() => {
         if (code && state) {
             lineSignIn(code, state);
         }
-    }, [loading, isLogin, code, state, navigate, lineSignIn]);
+        setCode("");
+        setState("");
+    }, [code, state, lineSignIn]);
 
     return (
         <WrapperLoginContainer>
