@@ -1,5 +1,9 @@
 import styled from "styled-components";
 import { Container, Button, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
+import { Link } from "react-router-dom";
+import ProfileButton from "./ProfileButton";
 
 const StyledNavbar = styled(Navbar)`
     height: 5vh;
@@ -14,22 +18,38 @@ const StyledContainer = styled(Container)`
 const StyledButton = styled(Button)`
     width: 5vw;
     min-width: 85px;
+    height: 2.5rem;
+`;
+
+const StyledLink = styled(Link)`
+    text-decoration: none;
+    color: inherit;
+`;
+
+const StyledNav = styled(Nav)`
+    display: flex;
+    justify-context: center;
+    align-items: center;
 `;
 
 const Header = () => {
+    const { isLogin, logout } = useContext(AuthContext);
     return (
         <StyledNavbar bg="warning" expand="lg" fixed="top">
             <StyledContainer>
-                <Navbar.Brand href="#home">
-                    <img
-                        src="/logo192.png"
-                        width="30"
-                        height="30"
-                        alt="SplitEase logo"
-                    />
-                    <span style={{ marginRight: "10px" }}></span>
-                    SplitEase
-                </Navbar.Brand>
+                <StyledLink to="/">
+                    <Navbar.Brand>
+                        <img
+                            src="/logo192.png"
+                            width="30"
+                            height="30"
+                            alt="SplitEase logo"
+                        />
+                        <span style={{ marginRight: "10px" }}></span>
+                        SplitEase
+                    </Navbar.Brand>
+                </StyledLink>
+
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
@@ -55,12 +75,21 @@ const Header = () => {
                             </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
-                    <Nav>
-                        <StyledButton variant="success">Register</StyledButton>
-                        <span style={{ marginRight: "10px" }}></span>
-                        <StyledButton variant="light">Login</StyledButton>
-                    </Nav>
                 </Navbar.Collapse>
+                {isLogin ? (
+                    <StyledNav>
+                        <ProfileButton></ProfileButton>
+                        <StyledButton variant="light" onClick={logout}>
+                            Logout
+                        </StyledButton>
+                    </StyledNav>
+                ) : (
+                    <StyledNav>
+                        <Link to="/login">
+                            <StyledButton variant="light">Start</StyledButton>
+                        </Link>
+                    </StyledNav>
+                )}
             </StyledContainer>
         </StyledNavbar>
     );
