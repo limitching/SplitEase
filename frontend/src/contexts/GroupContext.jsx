@@ -4,6 +4,7 @@ import { AuthContext } from "./AuthContext";
 import { api } from "../utils/api";
 
 const GroupContext = createContext({
+    group: {},
     group_id: null,
     members: [],
     memberMap: new Map(),
@@ -53,6 +54,8 @@ const GroupContextProvider = ({ children }) => {
     const [debts, setDebts] = useState([]);
     const [expensesChanged, setExpensesChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [group, setgroup] = useState(selectedGroup);
+
     useEffect(() => {
         setIsLoading(true);
         fetchMembers(group_id, setMembers);
@@ -87,6 +90,7 @@ const GroupContextProvider = ({ children }) => {
     return (
         <GroupContext.Provider
             value={{
+                group,
                 group_id,
                 members,
                 memberMap,
