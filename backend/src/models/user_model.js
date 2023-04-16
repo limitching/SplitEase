@@ -183,7 +183,7 @@ const getUserGroupsIds = async (id) => {
 
 const getGroupsInformation = async (groupsIds) => {
     const [groups] = await pool.query(
-        "SELECT * FROM `groups` WHERE id = ? ORDER BY creation_date DESC",
+        "SELECT * FROM `groups` WHERE id IN (?) ORDER BY creation_date DESC",
         [groupsIds]
     );
     return groups;
