@@ -19,6 +19,8 @@ const AuthContext = createContext({
     nativeSignIn: () => {},
     lineSignIn: () => {},
     logout: () => {},
+    setLoading: () => {},
+    setGroupChange: () => {},
 });
 
 const AuthContextProvider = ({ children }) => {
@@ -30,6 +32,7 @@ const AuthContextProvider = ({ children }) => {
     const [loginMethod, setLoginMethod] = useState(null);
     const [haveAccount, setHaveAccount] = useState(true);
     const [userGroups, setUserGroups] = useState([]);
+    const [groupChange, setGroupChange] = useState(false);
 
     useEffect(() => {
         if (isLogin && jwtToken) {
@@ -42,6 +45,20 @@ const AuthContextProvider = ({ children }) => {
             setLoading(false);
         }
     }, [isLogin, jwtToken]);
+
+    useEffect(() => {
+        if (groupChange) {
+            const fetchUserGroups = async () => {
+                const { data } = await api.getUserGroups(jwtToken);
+                console.log(data);
+                setUserGroups(data);
+            };
+            setLoading(true);
+            fetchUserGroups();
+            setGroupChange(false);
+            setLoading(false);
+        }
+    }, [groupChange, jwtToken]);
 
     const handleSignUpResponse = useCallback(async (signUpForm) => {
         const { data } = await api.userSignUp(signUpForm);
@@ -212,6 +229,8 @@ const AuthContextProvider = ({ children }) => {
                 nativeSignIn,
                 lineSignIn,
                 logout,
+                setLoading,
+                setGroupChange,
             }}
         >
             {children}
