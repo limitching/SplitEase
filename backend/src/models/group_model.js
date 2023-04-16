@@ -69,4 +69,40 @@ const createGroup = async (newGroupData) => {
         await connection.release();
     }
 };
-export { getGroups, getMembers, createGroup };
+
+const joinGroupViaCode = async (user_id, slug, invitation_code) => {
+    const connection = await pool.getConnection();
+    try {
+        await connection.query("START TRANSACTION");
+        const [group_id] = hashids.decode(invitation_code);
+        const [result] = await connection.query(
+            "SELECT * FROM `groups` WHERE id = ? ",
+            group_id
+        );
+        const group = result[0];
+
+        if (group.length === 0 || group.slug !== slug) {
+            await connection.query("COMMIT");
+            return { error: "Invalid invitation code.", status: 400 };
+        }
+
+        const newGroupUserData = {
+            group_id: group.id,
+            user_id: user_id,
+            add_by_user: group.owner,
+        };
+        await connection.query(
+            "INSERT INTO `group_users` SET ?",
+            newGroupUserData
+        );
+
+        await connection.query("COMMIT");
+        return group;
+    } catch (error) {
+        await connection.query("ROLLBACK");
+        return { error, status: 500 };
+    } finally {
+        await connection.release();
+    }
+};
+export { getGroups, getMembers, createGroup, joinGroupViaCode };
