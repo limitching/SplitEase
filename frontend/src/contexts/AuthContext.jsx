@@ -1,4 +1,4 @@
-import { createContext, useState, useCallback } from "react";
+import { createContext, useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
 import Swal from "sweetalert2";
@@ -8,6 +8,7 @@ const MySwal = withReactContent(Swal);
 const AuthContext = createContext({
     isLogin: false,
     user: {},
+    userGroups: [],
     loading: false,
     jwtToken: "",
     loginMethod: null,
@@ -28,6 +29,19 @@ const AuthContextProvider = ({ children }) => {
     const [jwtToken, setJwtToken] = useState();
     const [loginMethod, setLoginMethod] = useState(null);
     const [haveAccount, setHaveAccount] = useState(true);
+    const [userGroups, setUserGroups] = useState([]);
+
+    useEffect(() => {
+        if (isLogin && jwtToken) {
+            const fetchUserGroups = async () => {
+                const { data } = await api.getUserGroups(jwtToken);
+                setUserGroups(data);
+            };
+            setLoading(true);
+            fetchUserGroups();
+            setLoading(false);
+        }
+    }, [isLogin, jwtToken]);
 
     const handleSignUpResponse = useCallback(async (signUpForm) => {
         const { data } = await api.userSignUp(signUpForm);
@@ -187,6 +201,7 @@ const AuthContextProvider = ({ children }) => {
             value={{
                 isLogin,
                 user,
+                userGroups,
                 loading,
                 jwtToken,
                 loginMethod,
