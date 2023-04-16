@@ -61,11 +61,11 @@ const signIn = async (req, res) => {
             result = { error: "Request Error: Wrong Request" };
     }
     if (result.status === 400) {
-        return res.status(400).send({ error: result.error });
+        return res.status(400).json({ error: result.error });
     }
     const user = result.user;
     if (!user || result.status === 500) {
-        return res.status(500).send({ error: result.error });
+        return res.status(500).json({ error: result.error });
     }
 
     const accessToken = jwt.sign(
