@@ -54,7 +54,7 @@ const GroupContextProvider = ({ children }) => {
     const [debts, setDebts] = useState([]);
     const [expensesChanged, setExpensesChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [group, setgroup] = useState(selectedGroup);
+    const [group, setGroup] = useState(selectedGroup);
 
     useEffect(() => {
         setIsLoading(true);
