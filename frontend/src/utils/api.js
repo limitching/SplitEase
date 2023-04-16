@@ -109,5 +109,21 @@ const api = {
             return error.response;
         }
     },
+    createGroup: async function (jwtToken, newGroupData) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.post(
+                `${this.hostname}/group`,
+                newGroupData,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
 };
 export { api, HOST };
