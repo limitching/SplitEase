@@ -11,6 +11,7 @@ import {
     ExpenseContext,
     localISOTime,
 } from "../../../../../contexts/ExpenseContext";
+import { AuthContext } from "../../../../../contexts/AuthContext";
 import { TransactionSelector, ModalContent } from "./Modal";
 
 const MySwal = withReactContent(Swal);
@@ -39,6 +40,7 @@ const Transaction = () => {
         setExpenseTime,
         setShowTransaction,
     } = useContext(ExpenseContext);
+    const { user } = useContext(AuthContext);
 
     const handleClose = () => setShowTransaction(false);
     // When Transaction window is opened, set amount = 0
@@ -47,13 +49,12 @@ const Transaction = () => {
         setChecked([...members]);
         setShowTransaction(true);
         // TODO: Set default creditor when user is done
-        setSelectedCreditor(1);
+        setSelectedCreditor(user.id);
         setSelectedCurrency(1);
         setSelectedSplitMethod(0);
         setExpenseTime(localISOTime);
         setSubCredit(Array(members.length).fill(0));
     };
-
     const handleExpenseSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
