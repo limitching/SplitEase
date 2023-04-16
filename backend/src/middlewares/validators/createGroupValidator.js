@@ -1,4 +1,5 @@
 import { check, validationResult } from "express-validator";
+import validator from "validator";
 
 export default [
     check("owner")
@@ -16,7 +17,15 @@ export default [
         .bail()
         .notEmpty()
         .withMessage("group name are required.")
-        .bail(),
+        .bail()
+        .trim()
+        .custom((value) => {
+            if (validator.isEmpty(value.trim())) {
+                throw new Error("name cannot be all space");
+            }
+            return true;
+        })
+        .withMessage("name cannot be all space"),
     check("default_currency")
         .exists()
         .withMessage("default_currency are required.")
