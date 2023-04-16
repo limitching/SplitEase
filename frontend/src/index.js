@@ -22,7 +22,7 @@ root.render(
         <Routes>
             <Route path="/" element={<App />}>
                 {/* <Route index element={<Home />} /> */}
-                <Route path="group/:gid" element={<Group />}>
+                <Route path="group/:slug" element={<Group />}>
                     <Route path="overview" element={<Transaction />} />
                     <Route path="expenses" element={<Expenses />} />
                     <Route path="debts" element={<Debts />} />
