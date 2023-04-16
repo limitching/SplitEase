@@ -23,6 +23,7 @@ const signUp = async (req, res) => {
     }
     const accessToken = jwt.sign(
         {
+            id: user.id,
             provider: user.provider,
             name: user.name,
             email: user.email,
@@ -69,6 +70,7 @@ const signIn = async (req, res) => {
 
     const accessToken = jwt.sign(
         {
+            id: user.id,
             provider: user.provider,
             name: user.name,
             email: user.email,
@@ -121,4 +123,21 @@ const lineSignIn = async (code, state) => {
         return { error: error };
     }
 };
-export { signUp, signIn };
+
+const getUserGroups = async (req, res) => {
+    const { id } = req.user;
+    console.log(req.user);
+    const groupsIds = await User.getUserGroupsIds(id);
+    const groups = await User.getGroupsInformation(groupsIds);
+    return res.status(200).json({ groups });
+};
+
+const getUserProfile = async (req, res) => {
+    return res.status(200).json({
+        id: req.user.id,
+        provider: req.user.provider,
+        name: req.user.name,
+        image: req.user.image,
+    });
+};
+export { signUp, signIn, getUserGroups, getUserProfile };
