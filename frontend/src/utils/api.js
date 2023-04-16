@@ -70,5 +70,29 @@ const api = {
             return error.response;
         }
     },
+    userSignIn: async function (data) {
+        try {
+            const result = await axios.post(
+                `${this.hostname}/user/signin`,
+                data
+            );
+            return result;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    userSignUp: async function (data) {
+        try {
+            const result = await axios.post(
+                `${this.hostname}/user/signup`,
+                data
+            );
+            return result;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
 };
 export { api, HOST };

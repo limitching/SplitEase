@@ -25,4 +25,4 @@ const Group = () => {
     );
 };
 
-export { Group };
+export default Group;
