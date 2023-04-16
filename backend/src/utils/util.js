@@ -49,7 +49,6 @@ const authentication = (req, res, next) => {
         try {
             const user = jwt.verify(accessToken, TOKEN_SECRET);
             req.user = user;
-            console.log(user);
             next();
         } catch (error) {
             console.error(error);
