@@ -125,5 +125,16 @@ const api = {
             return error.response;
         }
     },
+    getGroupPublicInformation: async function (slug, invitation_code) {
+        try {
+            const response = await axios.get(
+                `${this.hostname}/group/${slug}/join?invitation_code=${invitation_code}`
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
 };
 export { api, HOST };
