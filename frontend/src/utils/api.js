@@ -151,5 +151,21 @@ const api = {
             return error.response;
         }
     },
+    joinGroup: async function (slug, invitation_code, jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.post(
+                `${this.hostname}/group/${slug}/join`,
+                { invitation_code: invitation_code },
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
 };
 export { api, HOST };
