@@ -55,9 +55,9 @@ const ExpenseContextProvider = ({ children }) => {
         }
         setSubValues(Array(members.length).fill(0));
     }, [members]);
-    if (members.length === 0) {
-        return;
-    }
+    // if (members.length === 0) {
+    //     return;
+    // }
 
     return (
         <ExpenseContext.Provider
