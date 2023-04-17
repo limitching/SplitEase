@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { GroupContext } from "../../../contexts/GroupContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import styled from "styled-components";
+import Loading from "../../../components/Loading";
 const ErrorPage = styled.div`
     width: 100%;
     height: 100%;
@@ -41,8 +42,12 @@ const ErrorImage = styled.img`
 `;
 
 const Error = () => {
-    const { group, error } = useContext(GroupContext);
-    const { isLogin } = useContext(AuthContext);
+    const { isLoading } = useContext(GroupContext);
+    const { loading } = useContext(AuthContext);
+
+    if (isLoading || loading) {
+        return <Loading />;
+    }
 
     return (
         <ErrorPage>
