@@ -136,5 +136,20 @@ const api = {
             return error.response;
         }
     },
+    getUserProfile: async function (jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.get(
+                `${this.hostname}/user/profile`,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
 };
 export { api, HOST };
