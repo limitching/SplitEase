@@ -28,7 +28,6 @@ const getMembers = async (group_id) => {
 };
 
 const createGroup = async (newGroupData) => {
-    console.log("new", newGroupData);
     if (!newGroupData.slug) {
         newGroupData.slug = uuidV4();
     }
@@ -75,6 +74,7 @@ const joinGroupViaCode = async (user_id, slug, invitation_code) => {
     try {
         await connection.query("START TRANSACTION");
         const [group_id] = hashids.decode(invitation_code);
+
         const [result] = await connection.query(
             "SELECT * FROM `groups` WHERE id = ? ",
             group_id
@@ -84,6 +84,15 @@ const joinGroupViaCode = async (user_id, slug, invitation_code) => {
         if (group.length === 0 || group.slug !== slug) {
             await connection.query("COMMIT");
             return { error: "Invalid invitation code.", status: 400 };
+        }
+
+        const [group_users] = await connection.query(
+            "SELECT * FROM `group_users` WHERE group_id = ? ",
+            group_id
+        );
+        if (group_users.length !== 0) {
+            await connection.query("COMMIT");
+            return group;
         }
 
         const newGroupUserData = {
@@ -105,4 +114,28 @@ const joinGroupViaCode = async (user_id, slug, invitation_code) => {
         await connection.release();
     }
 };
-export { getGroups, getMembers, createGroup, joinGroupViaCode };
+
+const getGroupInformationViaCode = async (slug, invitation_code) => {
+    try {
+        const [group_id] = hashids.decode(invitation_code);
+        const [result] = await pool.query(
+            "SELECT * FROM `groups` WHERE id = ? ",
+            group_id
+        );
+        const group = result[0];
+        if (group.length === 0 || group.slug !== slug) {
+            return { error: "Invalid invitation code.", status: 400 };
+        }
+        return group;
+    } catch (error) {
+        return { error, status: 400 };
+    }
+};
+
+export {
+    getGroups,
+    getMembers,
+    createGroup,
+    joinGroupViaCode,
+    getGroupInformationViaCode,
+};
