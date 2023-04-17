@@ -35,21 +35,25 @@ const AuthContextProvider = ({ children }) => {
     const [groupChange, setGroupChange] = useState(false);
 
     useEffect(() => {
-        if (isLogin && jwtToken) {
+        if (isLogin && window.localStorage.getItem("jwtToken")) {
             const fetchUserGroups = async () => {
-                const { data } = await api.getUserGroups(jwtToken);
+                const { data } = await api.getUserGroups(
+                    window.localStorage.getItem("jwtToken")
+                );
                 setUserGroups(data);
             };
             setLoading(true);
             fetchUserGroups();
             setLoading(false);
         }
-    }, [isLogin, jwtToken]);
+    }, [isLogin]);
 
     useEffect(() => {
-        if (groupChange) {
+        if (groupChange && window.localStorage.getItem("jwtToken")) {
             const fetchUserGroups = async () => {
-                const { data } = await api.getUserGroups(jwtToken);
+                const { data } = await api.getUserGroups(
+                    window.localStorage.getItem("jwtToken")
+                );
                 console.log(data);
                 setUserGroups(data);
             };
@@ -58,7 +62,26 @@ const AuthContextProvider = ({ children }) => {
             setGroupChange(false);
             setLoading(false);
         }
-    }, [groupChange, jwtToken]);
+    }, [groupChange]);
+
+    useEffect(() => {
+        const checkAuthStatus = async () => {
+            if (window.localStorage.getItem("jwtToken") !== null) {
+                const { data } = await api.getUserProfile(
+                    window.localStorage.getItem("jwtToken")
+                );
+                setUser(data);
+                setIsLogin(true);
+                setLoading(false);
+            } else {
+                window.localStorage.removeItem("jwtToken");
+                window.localStorage.removeItem("fortune");
+                setIsLogin(false);
+                setLoading(false);
+            }
+        };
+        checkAuthStatus();
+    }, []);
 
     const handleSignUpResponse = useCallback(async (signUpForm) => {
         const { data } = await api.userSignUp(signUpForm);
@@ -96,9 +119,7 @@ const AuthContextProvider = ({ children }) => {
     const handleNativeLoginResponse = useCallback(async (signInForm) => {
         console.log(signInForm);
         const { data } = await api.userSignIn(signInForm);
-        console.log("data", data);
         if (data.errors !== undefined || data.error !== undefined) {
-            console.log("hi");
             MySwal.fire({
                 title: <p>Request Error</p>,
                 html: (
