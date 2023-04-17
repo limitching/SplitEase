@@ -88,4 +88,16 @@ const GROUP_TABS = [
         displayText: "Invite Friends",
     },
 ];
-export { SPLIT_METHODS, CURRENCY_OPTIONS, GROUP_TABS };
+
+const GROUP_TABS_VISITORS = [
+    {
+        name: "members",
+        displayText: "members",
+    },
+    {
+        name: "join",
+        displayText: "Invite Friends",
+    },
+];
+
+export { SPLIT_METHODS, CURRENCY_OPTIONS, GROUP_TABS, GROUP_TABS_VISITORS };
