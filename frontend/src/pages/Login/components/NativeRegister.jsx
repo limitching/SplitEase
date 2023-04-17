@@ -71,7 +71,12 @@ const NativeRegister = () => {
     };
     return (
         <>
-            <LoginFormContainer>
+            <LoginFormContainer
+                onSubmit={(event) => {
+                    event.preventDefault();
+                    nativeSignUp(signUpForm);
+                }}
+            >
                 <WelcomeImage src="/greeting.svg"></WelcomeImage>
 
                 <InputField
@@ -102,14 +107,7 @@ const NativeRegister = () => {
                     required
                 />
 
-                <LoginButton
-                    onClick={(event) => {
-                        event.preventDefault();
-                        nativeSignUp(signUpForm);
-                    }}
-                >
-                    Register
-                </LoginButton>
+                <LoginButton>Register</LoginButton>
                 <HaveAccountAlready onClick={() => setHaveAccount(true)}>
                     Already have an account?
                 </HaveAccountAlready>

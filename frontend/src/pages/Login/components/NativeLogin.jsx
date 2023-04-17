@@ -81,7 +81,12 @@ const NativeLogin = () => {
     };
     return (
         <>
-            <LoginFormContainer>
+            <LoginFormContainer
+                onSubmit={(event) => {
+                    event.preventDefault();
+                    nativeSignIn(signInForm);
+                }}
+            >
                 <WelcomeImage src="/summer.svg"></WelcomeImage>
                 <InputField
                     type="text"
@@ -90,6 +95,7 @@ const NativeLogin = () => {
                     value={signInForm.email}
                     onChange={handleSignInChange}
                     autoComplete="on"
+                    required
                 />
                 <InputField
                     type="password"
@@ -98,15 +104,9 @@ const NativeLogin = () => {
                     value={signInForm.password}
                     onChange={handleSignInChange}
                     autoComplete="on"
+                    required
                 />
-                <LoginButton
-                    onClick={(event) => {
-                        event.preventDefault();
-                        nativeSignIn(signInForm);
-                    }}
-                >
-                    Login
-                </LoginButton>
+                <LoginButton>Login</LoginButton>
                 <HaveAccountAlready onClick={() => setHaveAccount(false)}>
                     Don't have an account yet?
                 </HaveAccountAlready>
