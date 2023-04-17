@@ -139,7 +139,7 @@ const getUserProfile = async (req, res) => {
     return res.status(200).json({
         id: req.user.id,
         provider: req.user.provider,
-        email: eq.user.email,
+        email: req.user.email,
         name: req.user.name,
         image: req.user.image,
     });
