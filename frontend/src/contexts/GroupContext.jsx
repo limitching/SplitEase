@@ -4,6 +4,8 @@ import { AuthContext } from "./AuthContext";
 import { api } from "../utils/api";
 
 const GroupContext = createContext({
+    slug: null,
+    invitation_code: null,
     group: {},
     group_id: null,
     members: [],
@@ -74,12 +76,10 @@ const GroupContextProvider = ({ children }) => {
     const [debts, setDebts] = useState([]);
     const [expensesChanged, setExpensesChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [group, setGroup] = useState(null);
+    const [group, setGroup] = useState({});
     const [invitation_code, setInvitation_code] = useState(null);
     const [isPublicVisit, setIsPublicVisit] = useState(false);
     const [error, setError] = useState(null);
-    console.log("1", isPublicVisit);
-    console.log("error", error);
 
     useMemo(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -116,7 +116,6 @@ const GroupContextProvider = ({ children }) => {
                 setIsPublicVisit(false);
                 console.log("2", isPublicVisit);
             }
-        } else {
         }
     }, [isPublicVisit, slug, userGroups]);
 
@@ -156,6 +155,8 @@ const GroupContextProvider = ({ children }) => {
     return (
         <GroupContext.Provider
             value={{
+                slug,
+                invitation_code,
                 group,
                 group_id,
                 members,
