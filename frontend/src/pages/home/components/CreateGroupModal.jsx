@@ -141,7 +141,7 @@ const CreateGroupModal = ({
                         <TextField
                             name="default_currency"
                             select
-                            label="Currency for group debts"
+                            label="Default currency for group debts"
                             value={newGroupData.default_currency}
                             onChange={handleNewGroupDataChange}
                             variant="standard"
