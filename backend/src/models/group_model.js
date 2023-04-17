@@ -22,7 +22,7 @@ const getGroups = async (requirement) => {
 
 const getMembers = async (group_id) => {
     const memberQuery =
-        "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ?";
+        "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ? ORDER BY user_id";
     const [members] = await pool.query(memberQuery, [group_id]);
     return members;
 };
