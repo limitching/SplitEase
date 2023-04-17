@@ -21,6 +21,7 @@ const AuthContext = createContext({
     logout: () => {},
     setLoading: () => {},
     setGroupChange: () => {},
+    joinGroup: () => {},
 });
 
 const AuthContextProvider = ({ children }) => {
@@ -28,11 +29,33 @@ const AuthContextProvider = ({ children }) => {
     const [isLogin, setIsLogin] = useState(false);
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(false);
-    const [jwtToken, setJwtToken] = useState();
+    const [jwtToken, setJwtToken] = useState(
+        window.localStorage.getItem("jwtToken")
+    );
     const [loginMethod, setLoginMethod] = useState(null);
     const [haveAccount, setHaveAccount] = useState(true);
     const [userGroups, setUserGroups] = useState([]);
     const [groupChange, setGroupChange] = useState(false);
+
+    useEffect(() => {
+        const checkAuthStatus = async () => {
+            if (window.localStorage.getItem("jwtToken") !== null) {
+                const { data } = await api.getUserProfile(
+                    window.localStorage.getItem("jwtToken")
+                );
+                console.log(data);
+                setUser(data);
+                setIsLogin(true);
+                setLoading(false);
+            } else {
+                window.localStorage.removeItem("jwtToken");
+                window.localStorage.removeItem("fortune");
+                setIsLogin(false);
+                setLoading(false);
+            }
+        };
+        checkAuthStatus();
+    }, []);
 
     useEffect(() => {
         if (isLogin && window.localStorage.getItem("jwtToken")) {
@@ -63,25 +86,6 @@ const AuthContextProvider = ({ children }) => {
             setLoading(false);
         }
     }, [groupChange]);
-
-    useEffect(() => {
-        const checkAuthStatus = async () => {
-            if (window.localStorage.getItem("jwtToken") !== null) {
-                const { data } = await api.getUserProfile(
-                    window.localStorage.getItem("jwtToken")
-                );
-                setUser(data);
-                setIsLogin(true);
-                setLoading(false);
-            } else {
-                window.localStorage.removeItem("jwtToken");
-                window.localStorage.removeItem("fortune");
-                setIsLogin(false);
-                setLoading(false);
-            }
-        };
-        checkAuthStatus();
-    }, []);
 
     const handleSignUpResponse = useCallback(async (signUpForm) => {
         const { data } = await api.userSignUp(signUpForm);
@@ -193,6 +197,58 @@ const AuthContextProvider = ({ children }) => {
         }
     }, []);
 
+    const handleJoinGroup = useCallback(
+        async (slug, invitation_code, jwtToken) => {
+            const response = await api.joinGroup(
+                slug,
+                invitation_code,
+                jwtToken
+            );
+            if (response.status === 200) {
+                MySwal.fire({
+                    title: <p>Login Successfully!</p>,
+                    icon: "success",
+                    timer: 1000,
+                    didOpen: () => {
+                        MySwal.showLoading();
+                    },
+                });
+                setGroupChange(true);
+                return;
+            } else if (response.status === 400) {
+                const { error } = response.data;
+                MySwal.fire({
+                    title: <p>Server Side Error</p>,
+                    html: <p>{error}</p>,
+                    icon: "error",
+                    timer: 2000,
+                    didOpen: () => {
+                        MySwal.showLoading();
+                    },
+                });
+            } else if (response.status === 500) {
+                const { error } = response.data;
+                MySwal.fire({
+                    title: <p>Server Side Error</p>,
+                    html: <p>{error}</p>,
+                    icon: "error",
+                    timer: 2000,
+                    didOpen: () => {
+                        MySwal.showLoading();
+                    },
+                });
+            }
+        },
+        []
+    );
+
+    const joinGroup = async (slug, invitation_code, jwtToken) => {
+        setLoading(true);
+        handleJoinGroup(slug, invitation_code, jwtToken);
+        setLoading(false);
+        // return navigate("home");
+    };
+
     const nativeSignUp = async (signUpForm) => {
         setLoading(true);
         navigate("login");
@@ -252,6 +308,7 @@ const AuthContextProvider = ({ children }) => {
                 logout,
                 setLoading,
                 setGroupChange,
+                joinGroup,
             }}
         >
             {children}
