@@ -6,6 +6,8 @@ import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { useContext } from "react";
 import { GroupContext } from "../../contexts/GroupContext";
+import { AuthContext } from "../../contexts/AuthContext";
+import Loading from "../../components/Loading";
 
 const WrapperGroupContainer = styled.div`
     padding-top: 5vh;
@@ -14,7 +16,11 @@ const WrapperGroupContainer = styled.div`
 `;
 
 const Group = () => {
-    const { group } = useContext(GroupContext);
+    const { group, isLoading } = useContext(GroupContext);
+    const { loading } = useContext(AuthContext);
+    if (isLoading || loading) {
+        return <Loading />;
+    }
 
     return (
         <ExpenseContextProvider>
