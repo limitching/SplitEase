@@ -1,7 +1,7 @@
 import { GROUP_TABS, GROUP_TABS_VISITORS } from "../../../global/constant";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Box, Tabs, Tab } from "@mui/material";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import { GroupContext } from "../../../contexts/GroupContext";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -19,17 +19,39 @@ function LinkTab(props) {
 }
 
 function NavTabs() {
-    const [value, setValue] = useState(0);
+    const location = useLocation();
     const navigate = useNavigate();
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+    const currentLocation = location.pathname;
+    const currentValue = currentLocation.split("/").pop();
     const { group } = useContext(GroupContext);
     const { userGroups } = useContext(AuthContext);
-
     const filterResult = userGroups.filter(
         (userGroup) => userGroup.id === group.id
     );
+
+    const [value, setValue] = useState(
+        filterResult.length === 0
+            ? GROUP_TABS_VISITORS.findIndex((tab) => tab.name === currentValue)
+            : GROUP_TABS.findIndex((tab) => tab.name === currentValue)
+    );
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    useEffect(() => {
+        if (filterResult.length === 0) {
+            const tab = GROUP_TABS_VISITORS.findIndex(
+                (tab) => tab.name === currentValue
+            );
+            setValue(tab);
+        } else {
+            const tab = GROUP_TABS.findIndex(
+                (tab) => tab.name === currentValue
+            );
+            setValue(tab);
+        }
+    }, [value, filterResult.length, currentValue]);
 
     return (
         <Container>
