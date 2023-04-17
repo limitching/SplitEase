@@ -1,4 +1,9 @@
+import { PageWrapper } from "../../components/PageWrapper";
 const JoinGroup = () => {
-    return <div>Hello</div>;
+    return (
+        <PageWrapper>
+            <h1>To be done...</h1>
+        </PageWrapper>
+    );
 };
 export default JoinGroup;
