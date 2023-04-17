@@ -1,5 +1,5 @@
-import { createContext, useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { createContext, useState, useEffect, useContext, useMemo } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import { api } from "../utils/api";
 
@@ -12,6 +12,8 @@ const GroupContext = createContext({
     groupExpense: [],
     debts: [],
     expensesChanged: false,
+    isPublicVisit: false,
+    error: null,
     setMembers: () => {},
     setExpensesChanged: () => {},
 });
@@ -43,25 +45,89 @@ async function fetchGroupDebts(group_id, setDebts) {
     }
 }
 
-const GroupContextProvider = ({ children }) => {
-    const { userGroups } = useContext(AuthContext);
+async function fetchGroupPublicInformation(
+    slug,
+    invitation_code,
+    setGroup,
+    setMembers,
+    setError,
+    setIsPublicVisit
+) {
+    const response = await api.getGroupPublicInformation(slug, invitation_code);
+    console.log("response", response);
+    if (response.data.error) {
+        return setError(response.data.error);
+    }
+    setGroup(response.data.group);
+    setMembers(response.data.members);
+    setIsPublicVisit(true);
+}
 
+const GroupContextProvider = ({ children }) => {
+    const location = useLocation();
+    const { userGroups } = useContext(AuthContext);
     const { slug } = useParams();
-    const [selectedGroup] = userGroups.filter((group) => group.slug === slug);
-    const group_id = selectedGroup.id;
+
+    const [group_id, setGroup_id] = useState(null);
     const [members, setMembers] = useState([]);
     const [groupExpense, setGroupExpense] = useState([]);
     const [debts, setDebts] = useState([]);
     const [expensesChanged, setExpensesChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [group, setGroup] = useState(selectedGroup);
+    const [group, setGroup] = useState(null);
+    const [invitation_code, setInvitation_code] = useState(null);
+    const [isPublicVisit, setIsPublicVisit] = useState(false);
+    const [error, setError] = useState(null);
+    console.log("1", isPublicVisit);
+    console.log("error", error);
+
+    useMemo(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const queryInvitationCode = searchParams.get("invitation_code");
+        if (queryInvitationCode) {
+            setInvitation_code(queryInvitationCode);
+        }
+    }, [location.search]);
 
     useEffect(() => {
-        setIsLoading(true);
-        fetchMembers(group_id, setMembers);
-        fetchGroupExpenses(group_id, setGroupExpense);
-        fetchGroupDebts(group_id, setDebts);
-        setIsLoading(false);
+        if (invitation_code) {
+            setIsLoading(true);
+            fetchGroupPublicInformation(
+                slug,
+                invitation_code,
+                setGroup,
+                setMembers,
+                setError,
+                setIsPublicVisit
+            );
+
+            setIsLoading(false);
+        }
+    }, [invitation_code, slug]);
+
+    useEffect(() => {
+        if (userGroups.length !== 0) {
+            const [selectedGroup] = userGroups.filter(
+                (group) => group.slug === slug
+            );
+            if (selectedGroup) {
+                setGroup(selectedGroup);
+                setGroup_id(selectedGroup.id);
+                setIsPublicVisit(false);
+                console.log("2", isPublicVisit);
+            }
+        } else {
+        }
+    }, [isPublicVisit, slug, userGroups]);
+
+    useEffect(() => {
+        if (group_id !== null) {
+            setIsLoading(true);
+            fetchMembers(group_id, setMembers);
+            fetchGroupExpenses(group_id, setGroupExpense);
+            fetchGroupDebts(group_id, setDebts);
+            setIsLoading(false);
+        }
     }, [group_id]);
 
     useEffect(() => {
@@ -98,6 +164,8 @@ const GroupContextProvider = ({ children }) => {
                 groupExpense,
                 debts,
                 expensesChanged,
+                isPublicVisit,
+                error,
                 setMembers,
                 setExpensesChanged,
             }}
