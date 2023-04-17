@@ -1,8 +1,10 @@
-import { GROUP_TABS } from "../../../global/constant";
+import { GROUP_TABS, GROUP_TABS_VISITORS } from "../../../global/constant";
 import { useNavigate } from "react-router-dom";
 import { Box, Tabs, Tab } from "@mui/material";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Container } from "react-bootstrap";
+import { GroupContext } from "../../../contexts/GroupContext";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function LinkTab(props) {
     return (
@@ -22,6 +24,12 @@ function NavTabs() {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+    const { group } = useContext(GroupContext);
+    const { userGroups } = useContext(AuthContext);
+
+    const filterResult = userGroups.filter(
+        (userGroup) => userGroup.id === group.id
+    );
 
     return (
         <Container>
@@ -32,19 +40,35 @@ function NavTabs() {
                     aria-label="nav tabs example"
                     centered
                 >
-                    {GROUP_TABS.map(({ name, displayText }, index) => (
-                        <LinkTab
-                            key={name}
-                            label={displayText}
-                            onClick={() => {
-                                window.scrollTo({
-                                    top: 0,
-                                    behavior: "smooth",
-                                });
-                                navigate(name);
-                            }}
-                        />
-                    ))}
+                    {filterResult.length === 0
+                        ? GROUP_TABS_VISITORS.map(
+                              ({ name, displayText }, index) => (
+                                  <LinkTab
+                                      key={name}
+                                      label={displayText}
+                                      onClick={() => {
+                                          window.scrollTo({
+                                              top: 0,
+                                              behavior: "smooth",
+                                          });
+                                          navigate(name);
+                                      }}
+                                  />
+                              )
+                          )
+                        : GROUP_TABS.map(({ name, displayText }, index) => (
+                              <LinkTab
+                                  key={name}
+                                  label={displayText}
+                                  onClick={() => {
+                                      window.scrollTo({
+                                          top: 0,
+                                          behavior: "smooth",
+                                      });
+                                      navigate(name);
+                                  }}
+                              />
+                          ))}
                 </Tabs>
             </Box>
         </Container>
