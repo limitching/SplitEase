@@ -89,8 +89,8 @@ const joinGroupViaCode = async (user_id, slug, invitation_code) => {
         }
 
         const [group_users] = await connection.query(
-            "SELECT * FROM `group_users` WHERE group_id = ? ",
-            group_id
+            "SELECT * FROM `group_users` WHERE group_id = ? AND user_id = ? ",
+            [group_id, user_id]
         );
         if (group_users.length !== 0) {
             await connection.query("COMMIT");
@@ -110,6 +110,7 @@ const joinGroupViaCode = async (user_id, slug, invitation_code) => {
         await connection.query("COMMIT");
         return group;
     } catch (error) {
+        console.error(error);
         await connection.query("ROLLBACK");
         return { error, status: 500 };
     } finally {
