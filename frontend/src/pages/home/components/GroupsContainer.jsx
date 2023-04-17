@@ -10,13 +10,15 @@ import {
     ListItemText,
     ListItemAvatar,
     Avatar,
+    Paper,
 } from "@mui/material";
 
-const GroupsWrapper = styled.div`
+const GroupsWrapper = styled(Paper)`
     width: 40%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-context: center;
     background-color: white;
     margin: 0 auto;
     position: absolute;
@@ -37,6 +39,16 @@ const GroupLink = styled(Link)`
     color: inherit;
 `;
 
+const GroupsHeader = styled.h3`
+    padding-top: 2rem;
+    text-decoration: none;
+    color: inherit;
+`;
+
+const GroupsList = styled(List)`
+    margin: 2rem;
+`;
+
 const GroupsContainer = () => {
     const { userGroups } = useContext(AuthContext);
     const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
@@ -51,7 +63,7 @@ const GroupsContainer = () => {
 
     return (
         <GroupsWrapper>
-            <h3>My Groups</h3>
+            <GroupsHeader>My Groups</GroupsHeader>
             <List
                 dense
                 sx={{
@@ -62,7 +74,10 @@ const GroupsContainer = () => {
             >
                 {userGroups.map((group, index) => {
                     return (
-                        <GroupLink key={group.slug} to={`/group/${group.slug}`}>
+                        <GroupLink
+                            key={group.slug}
+                            to={`/group/${group.slug}/overview`}
+                        >
                             <ListItem alignItems="center" disablePadding>
                                 <ListItemButton>
                                     <ListItemAvatar>
