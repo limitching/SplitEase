@@ -1,6 +1,7 @@
 import { createContext, useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
+import Loading from "../components/Loading";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
@@ -289,6 +290,9 @@ const AuthContextProvider = ({ children }) => {
         navigate("login");
         setLoading(false);
     };
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <AuthContext.Provider

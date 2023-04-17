@@ -2,6 +2,7 @@ import { createContext, useState, useEffect, useContext, useMemo } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import { api } from "../utils/api";
+import Loading from "../components/Loading";
 
 const GroupContext = createContext({
     slug: null,
@@ -111,10 +112,11 @@ const GroupContextProvider = ({ children }) => {
                 (group) => group.slug === slug
             );
             if (selectedGroup) {
+                setIsLoading(true);
                 setGroup(selectedGroup);
                 setGroup_id(selectedGroup.id);
                 setIsPublicVisit(false);
-                console.log("2", isPublicVisit);
+                setIsLoading(false);
             }
         }
     }, [isPublicVisit, slug, userGroups]);
@@ -140,7 +142,7 @@ const GroupContextProvider = ({ children }) => {
     }, [expensesChanged, group_id]);
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Loading />;
     }
 
     // A map to get member object from memberId
