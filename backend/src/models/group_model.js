@@ -74,7 +74,9 @@ const joinGroupViaCode = async (user_id, slug, invitation_code) => {
     try {
         await connection.query("START TRANSACTION");
         const [group_id] = hashids.decode(invitation_code);
-
+        if (!group_id) {
+            return { error: "Invalid invitation code.", status: 400 };
+        }
         const [result] = await connection.query(
             "SELECT * FROM `groups` WHERE id = ? ",
             group_id
@@ -118,6 +120,9 @@ const joinGroupViaCode = async (user_id, slug, invitation_code) => {
 const getGroupInformationViaCode = async (slug, invitation_code) => {
     try {
         const [group_id] = hashids.decode(invitation_code);
+        if (!group_id) {
+            return { error: "Invalid invitation code.", status: 400 };
+        }
         const [result] = await pool.query(
             "SELECT * FROM `groups` WHERE id = ? ",
             group_id
