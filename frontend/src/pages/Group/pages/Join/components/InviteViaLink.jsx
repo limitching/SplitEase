@@ -13,7 +13,10 @@ import Button from "@mui/material-next/Button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import SendIcon from "@mui/icons-material/Send";
 import ShareIcon from "@mui/icons-material/Share";
-import { FixedButtonWrapper } from "../../../components/PageWrapper";
+import {
+    FixedButtonWrapper,
+    HeaderTextContainer,
+} from "../../../components/PageWrapper";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
@@ -36,15 +39,6 @@ const CheckboxContainer = styled.div`
     justify-content: start;
     align-items: center;
     gap: 1rem;
-`;
-
-const HeaderTextContainer = styled.div`
-    width: 95%;
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center;
-    margin-top: 1rem;
 `;
 
 const InviteViaLink = () => {
