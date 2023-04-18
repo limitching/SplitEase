@@ -27,7 +27,7 @@ const signUp = async (req, res) => {
             provider: user.provider,
             name: user.name,
             email: user.email,
-            image: user.picture,
+            image: user.image,
         },
         TOKEN_SECRET,
         { expiresIn: TOKEN_EXPIRE }
@@ -74,7 +74,7 @@ const signIn = async (req, res) => {
             provider: user.provider,
             name: user.name,
             email: user.email,
-            image: user.picture,
+            image: user.image,
         },
         TOKEN_SECRET,
         { expiresIn: TOKEN_EXPIRE }
