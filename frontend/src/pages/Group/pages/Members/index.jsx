@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import { Paper } from "@mui/material";
-import { PageWrapper, ListWrapper } from "../../components/PageWrapper";
+import {
+    PageWrapper,
+    ListWrapper,
+    HeaderTextContainer,
+} from "../../components/PageWrapper";
 import { GroupContext } from "../../../../contexts/GroupContext";
 import { useContext } from "react";
 import { Container } from "react-bootstrap";
@@ -29,9 +33,9 @@ const Members = () => {
     return (
         <>
             <PageWrapper>
-                <HeaderWrapper>
-                    <Header>Member</Header>
-                </HeaderWrapper>
+                <HeaderTextContainer>
+                    <h6>Members</h6>
+                </HeaderTextContainer>
                 <ListWrapper>
                     <List
                         dense
