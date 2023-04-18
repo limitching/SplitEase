@@ -18,6 +18,8 @@ const GroupContext = createContext({
     isPublicVisit: false,
     error: null,
     inviteEmail: "",
+    balance: [],
+    spent: [],
     setMembers: () => {},
     setExpensesChanged: () => {},
     setInviteEmail: () => {},
@@ -84,6 +86,21 @@ const GroupContextProvider = ({ children }) => {
     const [isPublicVisit, setIsPublicVisit] = useState(false);
     const [error, setError] = useState(null);
     const [inviteEmail, setInviteEmail] = useState("");
+    const [balance, setBalance] = useState([]);
+    const [spent, setSpent] = useState([]);
+
+    // A map to get member object from memberId
+    const memberMap = members
+        ? new Map(members.map((member) => [member.id, member]))
+        : new Map();
+
+    const indexMap = useMemo(
+        () =>
+            members
+                ? new Map(members.map((member, index) => [member.id, index]))
+                : new Map(),
+        [members]
+    );
 
     useMemo(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -144,18 +161,44 @@ const GroupContextProvider = ({ children }) => {
         }
     }, [expensesChanged, group_id]);
 
+    useEffect(() => {
+        if (!debts[group.default_currency]) {
+            const newBalance = new Array(members.length).fill(0);
+            setBalance(newBalance);
+        }
+        if (members.length !== 0 && debts[group.default_currency]) {
+            setIsLoading(true);
+            const newBalance = new Array(members.length).fill(0);
+
+            debts[group.default_currency].forEach(
+                ([debtorIndex, creditorIndex, amount]) => {
+                    newBalance[debtorIndex] -= amount;
+                    newBalance[creditorIndex] += amount;
+                }
+            );
+            setBalance(newBalance);
+            setIsLoading(false);
+        }
+    }, [debts, group.default_currency, members.length]);
+
+    useEffect(() => {
+        if (groupExpense) {
+            setIsLoading(true);
+            const newSpent = new Array(members.length).fill(0);
+            groupExpense.forEach(({ creditors_amounts }) => {
+                for (const creditorId in creditors_amounts) {
+                    newSpent[indexMap.get(Number(creditorId))] +=
+                        creditors_amounts[creditorId];
+                }
+            });
+            setSpent(newSpent);
+            setIsLoading(false);
+        }
+    }, [groupExpense, indexMap, members.length]);
+
     if (isLoading) {
         return <Loading />;
     }
-
-    // A map to get member object from memberId
-    const memberMap = members
-        ? new Map(members.map((member) => [member.id, member]))
-        : new Map();
-
-    const indexMap = members
-        ? new Map(members.map((member, index) => [member.id, index]))
-        : new Map();
 
     return (
         <GroupContext.Provider
@@ -173,6 +216,8 @@ const GroupContextProvider = ({ children }) => {
                 isPublicVisit,
                 error,
                 inviteEmail,
+                balance,
+                spent,
                 setMembers,
                 setExpensesChanged,
                 setInviteEmail,
