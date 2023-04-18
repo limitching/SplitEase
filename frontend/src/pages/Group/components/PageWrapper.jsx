@@ -24,4 +24,14 @@ const ListWrapper = styled.div`
     margin: 0 auto;
 `;
 
-export { PageWrapper, ListWrapper };
+const FixedButtonWrapper = styled.div`
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    bottom: 7rem;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+`;
+
+export { PageWrapper, ListWrapper, FixedButtonWrapper };
