@@ -17,8 +17,10 @@ const GroupContext = createContext({
     expensesChanged: false,
     isPublicVisit: false,
     error: null,
+    inviteEmail: "",
     setMembers: () => {},
     setExpensesChanged: () => {},
+    setInviteEmail: () => {},
 });
 
 async function fetchMembers(group_id, setMembers) {
@@ -81,6 +83,7 @@ const GroupContextProvider = ({ children }) => {
     const [invitation_code, setInvitation_code] = useState(null);
     const [isPublicVisit, setIsPublicVisit] = useState(false);
     const [error, setError] = useState(null);
+    const [inviteEmail, setInviteEmail] = useState("");
 
     useMemo(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -169,8 +172,10 @@ const GroupContextProvider = ({ children }) => {
                 expensesChanged,
                 isPublicVisit,
                 error,
+                inviteEmail,
                 setMembers,
                 setExpensesChanged,
+                setInviteEmail,
             }}
         >
             {children}
