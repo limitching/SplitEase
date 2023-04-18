@@ -41,8 +41,8 @@ const DebtsBlock = () => {
                     );
                     return transactions.map((transaction, index) => {
                         const labelId = `checkbox-list-secondary-label-${index}`;
-                        const creditor = members[transaction[0]];
-                        const debtor = members[transaction[1]];
+                        const debtor = members[transaction[0]];
+                        const creditor = members[transaction[1]];
                         const debtAmounts = transaction[2];
 
                         return (
@@ -62,15 +62,13 @@ const DebtsBlock = () => {
                                         }}
                                     >
                                         <Avatar
-                                            alt={`${creditor.name}`}
-                                            src={`/static/images/avatar/${
-                                                index + 1
-                                            }.jpg`}
+                                            alt={`${debtor.name}`}
+                                            src={debtor.image}
                                         />
                                     </ListItemAvatar>
                                     <ListItemText
                                         id={labelId}
-                                        primary={creditor.name}
+                                        primary={debtor.name}
                                         secondary={`${currency.symbol} ${Number(
                                             debtAmounts.toFixed(2)
                                         )}`}
@@ -91,7 +89,7 @@ const DebtsBlock = () => {
                                     />
                                     <ListItemText
                                         id={labelId}
-                                        primary={debtor.name}
+                                        primary={creditor.name}
                                         sx={{
                                             textAlign: "right",
                                             maxWidth: "130px",
@@ -105,10 +103,8 @@ const DebtsBlock = () => {
                                         }}
                                     >
                                         <Avatar
-                                            alt={`${debtor.name}`}
-                                            src={`/static/images/avatar/${
-                                                index + 1
-                                            }.jpg`}
+                                            alt={creditor.name}
+                                            src={creditor.image}
                                         />
                                     </ListItemAvatar>
                                 </ListItemButton>
