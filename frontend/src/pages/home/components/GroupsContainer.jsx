@@ -48,7 +48,7 @@ const GroupsHeader = styled.h3`
 const GroupsContainer = () => {
     const { userGroups } = useContext(AuthContext);
     const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
-    console.log(userGroups);
+
     const handleOpenCreateGroupModal = () => {
         setShowCreateGroupModal(true);
     };
