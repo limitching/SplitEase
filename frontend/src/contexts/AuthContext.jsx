@@ -40,6 +40,7 @@ const AuthContextProvider = ({ children }) => {
 
     useEffect(() => {
         const checkAuthStatus = async () => {
+            setLoading(true);
             if (window.localStorage.getItem("jwtToken") !== null) {
                 const { data } = await api.getUserProfile(
                     window.localStorage.getItem("jwtToken")
