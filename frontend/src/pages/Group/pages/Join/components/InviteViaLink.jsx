@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import {
@@ -44,9 +44,14 @@ const CheckboxContainer = styled.div`
 const InviteViaLink = () => {
     const { group, slug, inviteEmail, setInviteEmail } =
         useContext(GroupContext);
-    const invitation_link = `http://localhost:3001/group/${slug}/join?invitation_code=${group.invitation_code}`;
-    const [link, setLink] = useState(invitation_link);
+
+    const [link, setLink] = useState("");
     const [isCheck, setIsCheck] = useState(true);
+
+    useEffect(() => {
+        const invitation_link = `http://localhost:3001/group/${slug}/join?invitation_code=${group.invitation_code}`;
+        setLink(invitation_link);
+    }, [group, slug]);
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(link).then(
