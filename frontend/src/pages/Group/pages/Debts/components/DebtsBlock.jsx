@@ -8,6 +8,7 @@ import {
     ListItemText,
     ListItemAvatar,
     Avatar,
+    Divider,
 } from "@mui/material";
 import { Container } from "react-bootstrap";
 const DebtsBlock = () => {
@@ -32,46 +33,51 @@ const DebtsBlock = () => {
                     const debtAmounts = transaction[2];
 
                     return (
-                        <ListItem key={index}>
-                            <ListItemButton>
-                                <ListItemAvatar>
-                                    <Avatar
-                                        alt={`${debtor.name}`}
-                                        src={debtor.image}
-                                        sx={{ width: 50, height: 50 }}
-                                    />
-                                </ListItemAvatar>
-                                <Container>
-                                    <ListItemText
-                                        primary={debtor.name}
-                                        secondary={`${currency.symbol} ${Number(
-                                            debtAmounts.toFixed(2)
-                                        )}`}
-                                    />
-                                </Container>
-                                <Container>
-                                    <ListItemText
-                                        id={labelId}
-                                        primary="→"
-                                        sx={{ textAlign: "center" }}
-                                    />
-                                </Container>
-                                <Container>
-                                    <ListItemText
-                                        primary={creditor.name}
-                                        sx={{ textAlign: "right" }}
-                                    />
-                                </Container>
+                        <>
+                            <Divider></Divider>
+                            <ListItem key={index}>
+                                <ListItemButton>
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            alt={`${debtor.name}`}
+                                            src={debtor.image}
+                                            sx={{ width: 50, height: 50 }}
+                                        />
+                                    </ListItemAvatar>
+                                    <Container>
+                                        <ListItemText
+                                            primary={debtor.name}
+                                            secondary={`${
+                                                currency.symbol
+                                            } ${Number(
+                                                debtAmounts.toFixed(2)
+                                            )}`}
+                                        />
+                                    </Container>
+                                    <Container>
+                                        <ListItemText
+                                            id={labelId}
+                                            primary="→"
+                                            sx={{ textAlign: "center" }}
+                                        />
+                                    </Container>
+                                    <Container>
+                                        <ListItemText
+                                            primary={creditor.name}
+                                            sx={{ textAlign: "right" }}
+                                        />
+                                    </Container>
 
-                                <ListItemAvatar>
-                                    <Avatar
-                                        alt={creditor.name}
-                                        src={creditor.image}
-                                        sx={{ width: 50, height: 50 }}
-                                    />
-                                </ListItemAvatar>
-                            </ListItemButton>
-                        </ListItem>
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            alt={creditor.name}
+                                            src={creditor.image}
+                                            sx={{ width: 50, height: 50 }}
+                                        />
+                                    </ListItemAvatar>
+                                </ListItemButton>
+                            </ListItem>
+                        </>
                     );
                 });
             })}
