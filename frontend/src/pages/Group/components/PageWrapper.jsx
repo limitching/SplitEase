@@ -34,4 +34,13 @@ const FixedButtonWrapper = styled.div`
     padding: 20px;
 `;
 
-export { PageWrapper, ListWrapper, FixedButtonWrapper };
+const HeaderTextContainer = styled.div`
+    width: 95%;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    margin-top: 1rem;
+`;
+
+export { PageWrapper, ListWrapper, FixedButtonWrapper, HeaderTextContainer };
