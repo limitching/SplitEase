@@ -4,9 +4,9 @@ import {
     HeaderTextContainer,
 } from "../../components/PageWrapper";
 import { GroupContext } from "../../../../contexts/GroupContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Container } from "react-bootstrap";
-
+import { CURRENCY_OPTIONS } from "../../../../global/constant";
 import {
     List,
     ListItem,
@@ -18,7 +18,11 @@ import {
 } from "@mui/material";
 
 const Members = () => {
-    const { members } = useContext(GroupContext);
+    const { members, group, balance, spent } = useContext(GroupContext);
+    const [currencyObject] = CURRENCY_OPTIONS.filter(
+        (currencyObject) => currencyObject.id === group.default_currency
+    );
+
     return (
         <>
             <PageWrapper>
@@ -36,9 +40,9 @@ const Members = () => {
                     >
                         {members.map((user, index) => {
                             return (
-                                <>
+                                <div key={"Member " + user.id}>
                                     <Divider></Divider>
-                                    <ListItem key={user.id}>
+                                    <ListItem>
                                         <ListItemButton>
                                             <ListItemAvatar>
                                                 <Avatar
@@ -53,18 +57,18 @@ const Members = () => {
                                             <Container>
                                                 <ListItemText
                                                     primary={user.name}
-                                                    secondary={`Spent XXX NTD`}
+                                                    secondary={`Spent ${currencyObject.symbol} ${spent[index]}`}
                                                 />
                                             </Container>
                                             <Container>
                                                 <ListItemText
-                                                    primary={`-9527NT$`}
+                                                    primary={`${balance[index]} ${currencyObject.symbol}`}
                                                     sx={{ textAlign: "right" }}
                                                 />
                                             </Container>
                                         </ListItemButton>
                                     </ListItem>
-                                </>
+                                </div>
                             );
                         })}
                     </List>
