@@ -44,7 +44,15 @@ const AuthContextProvider = ({ children }) => {
                 const { data } = await api.getUserProfile(
                     window.localStorage.getItem("jwtToken")
                 );
-                console.log(data);
+
+                if (data.error) {
+                    window.localStorage.removeItem("jwtToken");
+                    window.localStorage.removeItem("fortune");
+                    setUser({});
+                    setIsLogin(true);
+                    setLoading(false);
+                    return;
+                }
                 setUser(data);
                 setIsLogin(true);
                 setLoading(false);
