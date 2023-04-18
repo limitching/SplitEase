@@ -1,5 +1,3 @@
-import styled from "styled-components";
-import { Paper } from "@mui/material";
 import {
     PageWrapper,
     ListWrapper,
@@ -17,16 +15,6 @@ import {
     ListItemAvatar,
     Avatar,
 } from "@mui/material";
-
-const Header = styled.p`
-    font-size: 1.5rem;
-`;
-
-const HeaderWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
 
 const Members = () => {
     const { members } = useContext(GroupContext);
