@@ -45,10 +45,6 @@ const GroupsHeader = styled.h3`
     color: inherit;
 `;
 
-const GroupsList = styled(List)`
-    margin: 2rem;
-`;
-
 const GroupsContainer = () => {
     const { userGroups } = useContext(AuthContext);
     const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
