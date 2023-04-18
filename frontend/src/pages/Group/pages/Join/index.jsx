@@ -1,8 +1,9 @@
 import { PageWrapper } from "../../components/PageWrapper";
+import InviteViaLink from "./components/InviteViaLink";
 const JoinGroup = () => {
     return (
         <PageWrapper>
-            <h1>To be done...</h1>
+            <InviteViaLink></InviteViaLink>
         </PageWrapper>
     );
 };
