@@ -4,7 +4,7 @@ import { PageWrapper, ListWrapper } from "../../components/PageWrapper";
 import { GroupContext } from "../../../../contexts/GroupContext";
 import { useContext } from "react";
 import { Container } from "react-bootstrap";
-import InviteViaLink from "./components/InviteViaLink";
+
 import {
     List,
     ListItem,
@@ -22,20 +22,6 @@ const HeaderWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-`;
-
-const InvitationWrapper = styled(Paper)`
-    width: 25%;
-    height: 55vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-    background-color: white;
-    margin: 2rem auto;
-    position: fixed;
-    bottom: 6vh;
-    right: 2.5%;
 `;
 
 const Members = () => {
@@ -85,9 +71,6 @@ const Members = () => {
                     </List>
                 </ListWrapper>
             </PageWrapper>
-            <InvitationWrapper>
-                <InviteViaLink></InviteViaLink>
-            </InvitationWrapper>
         </>
     );
 };
