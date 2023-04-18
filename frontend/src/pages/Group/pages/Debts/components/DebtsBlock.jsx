@@ -9,111 +9,73 @@ import {
     ListItemAvatar,
     Avatar,
 } from "@mui/material";
+import { Container } from "react-bootstrap";
 const DebtsBlock = () => {
     const { members, debts } = useContext(GroupContext);
     return (
-        <div
-            className="debt-block"
-            style={{
-                width: "50%",
-                height: "45vh",
-                overflow: "scroll",
-                // backgroundColor: "lightgreen",
-                fontSize: "5rem",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "start",
-                boxShadow:
-                    "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
+        <List
+            dense
+            sx={{
+                width: "100%",
+                maxWidth: "100%",
+                bgcolor: "background.paper",
             }}
         >
-            <List
-                dense
-                sx={{
-                    width: "100%",
-                    maxWidth: "100%",
-                    bgcolor: "background.paper",
-                }}
-            >
-                {Object.entries(debts).map(([currencyOption, transactions]) => {
-                    const [currency] = CURRENCY_OPTIONS.filter(
-                        (currency) => currency.id === Number(currencyOption)
-                    );
-                    return transactions.map((transaction, index) => {
-                        const labelId = `checkbox-list-secondary-label-${index}`;
-                        const debtor = members[transaction[0]];
-                        const creditor = members[transaction[1]];
-                        const debtAmounts = transaction[2];
+            {Object.entries(debts).map(([currencyOption, transactions]) => {
+                const [currency] = CURRENCY_OPTIONS.filter(
+                    (currency) => currency.id === Number(currencyOption)
+                );
+                return transactions.map((transaction, index) => {
+                    const labelId = `checkbox-list-secondary-label-${index}`;
+                    const debtor = members[transaction[0]];
+                    const creditor = members[transaction[1]];
+                    const debtAmounts = transaction[2];
 
-                        return (
-                            <ListItem key={index} disablePadding>
-                                <ListItemButton
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <ListItemAvatar
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "left",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <Avatar
-                                            alt={`${debtor.name}`}
-                                            src={debtor.image}
-                                        />
-                                    </ListItemAvatar>
+                    return (
+                        <ListItem key={index}>
+                            <ListItemButton>
+                                <ListItemAvatar>
+                                    <Avatar
+                                        alt={`${debtor.name}`}
+                                        src={debtor.image}
+                                        sx={{ width: 50, height: 50 }}
+                                    />
+                                </ListItemAvatar>
+                                <Container>
                                     <ListItemText
-                                        id={labelId}
                                         primary={debtor.name}
                                         secondary={`${currency.symbol} ${Number(
                                             debtAmounts.toFixed(2)
                                         )}`}
-                                        sx={{
-                                            textAlign: "LEFT",
-                                            maxWidth: "130px",
-                                        }}
                                     />
+                                </Container>
+                                <Container>
                                     <ListItemText
                                         id={labelId}
                                         primary="→"
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            maxWidth: "200px",
-                                        }}
+                                        sx={{ textAlign: "center" }}
                                     />
+                                </Container>
+                                <Container>
                                     <ListItemText
-                                        id={labelId}
                                         primary={creditor.name}
-                                        sx={{
-                                            textAlign: "right",
-                                            maxWidth: "130px",
-                                        }}
+                                        sx={{ textAlign: "right" }}
                                     />
-                                    <ListItemAvatar
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "right",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <Avatar
-                                            alt={creditor.name}
-                                            src={creditor.image}
-                                        />
-                                    </ListItemAvatar>
-                                </ListItemButton>
-                            </ListItem>
-                        );
-                    });
-                })}
-            </List>
-        </div>
+                                </Container>
+
+                                <ListItemAvatar>
+                                    <Avatar
+                                        alt={creditor.name}
+                                        src={creditor.image}
+                                        sx={{ width: 50, height: 50 }}
+                                    />
+                                </ListItemAvatar>
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                });
+            })}
+        </List>
     );
 };
 
