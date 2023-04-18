@@ -164,9 +164,7 @@ const ExpensesBlock = () => {
                                 <ListItemAvatar>
                                     <Avatar
                                         alt={`${creditors.name}`}
-                                        src={`/static/images/avatar/${
-                                            index + 1
-                                        }.jpg`}
+                                        src={creditors.image}
                                     />
                                 </ListItemAvatar>
                                 <Container>
