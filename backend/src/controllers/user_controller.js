@@ -126,7 +126,6 @@ const lineSignIn = async (code, state) => {
 
 const getUserGroups = async (req, res) => {
     const { id } = req.user;
-    console.log(req.user);
     const groupsIds = await User.getUserGroupsIds(id);
     if (groupsIds.length === 0) {
         return res.status(200).json([]);
