@@ -62,6 +62,28 @@ const createGroup = async (newGroupData) => {
 
         return { group: newGroupData };
     } catch (error) {
+        console.error(error);
+        await connection.query("ROLLBACK");
+        return { error, status: 500 };
+    } finally {
+        await connection.release();
+    }
+};
+
+const editGroup = async (modifiedGroupData) => {
+    const connection = await pool.getConnection();
+    try {
+        await connection.query("START TRANSACTION");
+        await connection.query("UPDATE `groups` SET ? WHERE id = ?", [
+            modifiedGroupData,
+            modifiedGroupData.id,
+        ]);
+
+        await connection.query("COMMIT");
+
+        return { group: modifiedGroupData };
+    } catch (error) {
+        console.error(error);
         await connection.query("ROLLBACK");
         return { error, status: 500 };
     } finally {
@@ -142,6 +164,7 @@ export {
     getGroups,
     getMembers,
     createGroup,
+    editGroup,
     joinGroupViaCode,
     getGroupInformationViaCode,
 };
