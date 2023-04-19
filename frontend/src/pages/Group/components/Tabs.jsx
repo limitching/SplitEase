@@ -1,10 +1,19 @@
 import { GROUP_TABS, GROUP_TABS_VISITORS } from "../../../global/constant";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Box, Tabs, Tab } from "@mui/material";
+import { Box, Tabs, Tab, Menu, MenuItem } from "@mui/material";
 import { useState, useContext, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import { GroupContext } from "../../../contexts/GroupContext";
 import { AuthContext } from "../../../contexts/AuthContext";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import styled from "styled-components";
+import ModifyGroupModal from "./ModifyGroupModal";
+
+const StyledMenuWrapper = styled.div`
+    color: ${(props) => props.textColor};
+`;
+
+const MENU_ITEM_HEIGHT = 48;
 
 function LinkTab(props) {
     return (
@@ -53,6 +62,26 @@ function NavTabs() {
         }
     }, [value, filterResult.length, currentValue]);
 
+    //Popper menu
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const [showModifyGroupModal, setShowModifyGroupModal] = useState(false);
+
+    const handleOpenModifyGroupModal = () => {
+        setShowModifyGroupModal(true);
+    };
+
+    const handleCloseModifyGroupModal = () => {
+        setShowModifyGroupModal(false);
+    };
+
     return (
         <Container>
             <Box sx={{ width: "100%" }}>
@@ -91,8 +120,35 @@ function NavTabs() {
                                   }}
                               />
                           ))}
+                    <Tab label={<MoreVertIcon />} onClick={handleClick} />
+                    <StyledMenuWrapper>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            PaperProps={{
+                                style: {
+                                    maxHeight: MENU_ITEM_HEIGHT * 4.5,
+                                    width: "15ch",
+                                },
+                            }}
+                        >
+                            <MenuItem
+                                onClick={() => {
+                                    handleOpenModifyGroupModal();
+                                    handleClose();
+                                }}
+                            >
+                                Edit group
+                            </MenuItem>
+                        </Menu>
+                    </StyledMenuWrapper>
                 </Tabs>
             </Box>
+            <ModifyGroupModal
+                showModifyGroupModal={showModifyGroupModal}
+                handleCloseModifyGroupModal={handleCloseModifyGroupModal}
+            ></ModifyGroupModal>
         </Container>
     );
 }
