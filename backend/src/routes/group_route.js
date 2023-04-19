@@ -3,6 +3,7 @@ const router = express.Router();
 import { wrapAsync } from "../utils/util.js";
 import {
     getGroupInformation,
+    archiveExistingGroup,
     getGroupMembers,
     createNewGroup,
     getPublicInformation,
@@ -14,7 +15,10 @@ import createGroupValidator from "../middlewares/validators/createGroupValidator
 import editGroupValidator from "../middlewares/validators/editGroupValidator.js";
 
 /* GET expense data */
-router.route("/group/:group_id").get(wrapAsync(getGroupInformation));
+router
+    .route("/group/:group_id")
+    .get(wrapAsync(getGroupInformation))
+    .put(wrapAsync(archiveExistingGroup));
 
 router.route("/group/members/:group_id").get(wrapAsync(getGroupMembers));
 
