@@ -8,6 +8,7 @@ import { GroupContext } from "../../../contexts/GroupContext";
 import { api } from "../../../utils/api";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { useEffect } from "react";
 const MySwal = withReactContent(Swal);
 
 const StyledModalBody = styled(Modal.Body)`
@@ -25,6 +26,7 @@ const ModifyGroupModal = ({
     const { user, jwtToken, setLoading, setGroupChange } =
         useContext(AuthContext);
     const { group } = useContext(GroupContext);
+    console.log("group", group);
 
     const [modifiedGroupData, setModifiedGroupData] = useState({
         owner: group.owner,
@@ -32,7 +34,15 @@ const ModifyGroupModal = ({
         default_currency: group.default_currency,
         description: group.description,
     });
-    console.log(modifiedGroupData);
+
+    useEffect(() => {
+        setModifiedGroupData({
+            owner: group.owner,
+            name: group.name,
+            default_currency: group.default_currency,
+            description: group.description,
+        });
+    }, [group]);
 
     function handleNewGroupDataChange(event) {
         const key = event.target.name;
