@@ -9,10 +9,21 @@ import {
 } from "@mui/material";
 import { Container } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
+import { AuthContext } from "../../../../../contexts/AuthContext";
 import { useContext } from "react";
+import { CURRENCY_OPTIONS } from "../../../../../global/constant";
 
 const MemberList = () => {
-    const { members } = useContext(GroupContext);
+    const { members, group, balance, spent } = useContext(GroupContext);
+    const [currencyObject] = CURRENCY_OPTIONS.filter(
+        (currencyObject) => currencyObject.id === group.default_currency
+    );
+
+    const { userGroups } = useContext(AuthContext);
+    const filterResult = userGroups.filter(
+        (userGroup) => userGroup.id === group.id
+    );
+
     return (
         <List
             dense
@@ -24,8 +35,8 @@ const MemberList = () => {
         >
             {members.map((user, index) => {
                 return (
-                    <>
-                        <ListItem key={user.id}>
+                    <div key={"Member " + user.id}>
+                        <ListItem>
                             <ListItemButton>
                                 <ListItemAvatar>
                                     <Avatar
@@ -37,19 +48,27 @@ const MemberList = () => {
                                 <Container>
                                     <ListItemText
                                         primary={user.name}
-                                        secondary={`Spent XXX NTD`}
+                                        secondary={
+                                            filterResult.length === 0
+                                                ? ``
+                                                : `Spent ${currencyObject.symbol} ${spent[index]}`
+                                        }
                                     />
                                 </Container>
                                 <Container>
                                     <ListItemText
-                                        primary={`-9528NT$`}
+                                        primary={
+                                            filterResult.length === 0
+                                                ? ``
+                                                : `${balance[index]} ${currencyObject.symbol}`
+                                        }
                                         sx={{ textAlign: "right" }}
                                     />
                                 </Container>
                             </ListItemButton>
                         </ListItem>
                         <Divider />
-                    </>
+                    </div>
                 );
             })}
         </List>
