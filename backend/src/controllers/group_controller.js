@@ -2,6 +2,7 @@ import {
     getGroups,
     getMembers,
     createGroup,
+    editGroup,
     joinGroupViaCode,
     getGroupInformationViaCode,
 } from "../models/group_model.js";
@@ -34,6 +35,18 @@ const createNewGroup = async (req, res) => {
             .json({ error: "Internal Server Error: MySQL error." });
     }
     return res.status(200).json(result.group);
+};
+
+const editExistingGroup = async (req, res) => {
+    const modifiedGroupData = req.body;
+
+    const result = await editGroup(modifiedGroupData);
+    if (result.status === 500) {
+        return res
+            .status(500)
+            .json({ error: "Internal Server Error: MySQL error." });
+    }
+    return res.status(200).json(modifiedGroupData);
 };
 
 const getPublicInformation = async (req, res) => {
@@ -74,4 +87,5 @@ export {
     createNewGroup,
     getPublicInformation,
     joinGroup,
+    editExistingGroup,
 };
