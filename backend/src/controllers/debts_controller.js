@@ -14,7 +14,7 @@ const getGroupDebts = async (req, res, next) => {
 
     const groupExpenses = await getExpensesByGroupId(group_id);
     groupExpenses.forEach((expense) => {
-        if (expense.currencyOption in currencyGraph === false) {
+        if (expense.currency_option in currencyGraph === false) {
             const debtsGraph = new Array(groupMembers.length);
             for (let i = 0; i < debtsGraph.length; i++) {
                 debtsGraph[i] = new Array(groupMembers.length).fill(0);
@@ -22,7 +22,6 @@ const getGroupDebts = async (req, res, next) => {
             currencyGraph[expense.currency_option] = debtsGraph;
             currencyTransactions[expense.currency_option] = null;
         }
-
         const weights = Array.from(expense.debtors_weight.values());
         const totalWeight = weights.reduce((acc, curr) => acc + curr, 0);
         const adjustments = Array.from(expense.debtors_adjustment.values());

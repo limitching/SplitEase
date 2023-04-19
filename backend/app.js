@@ -9,7 +9,7 @@ dotenv.config();
 const { API_VERSION } = process.env;
 
 import indexRouter from "./src/routes/index.js";
-import usersRouter from "./src/routes/users.js";
+import userRouter from "./src/routes/user_route.js";
 import groupRouter from "./src/routes/group_route.js";
 import expenseRouter from "./src/routes/expense_route.js";
 import debtsRouter from "./src/routes/debts_route.js";
@@ -24,7 +24,7 @@ app.use(cors());
 // API routes
 app.use("/api/" + API_VERSION, [
     indexRouter,
-    usersRouter,
+    userRouter,
     groupRouter,
     expenseRouter,
     debtsRouter,
