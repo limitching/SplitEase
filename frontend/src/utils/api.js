@@ -125,6 +125,22 @@ const api = {
             return error.response;
         }
     },
+    editGroup: async function (jwtToken, modifiedGroupData) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.put(
+                `${this.hostname}/group`,
+                modifiedGroupData,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
     getGroupPublicInformation: async function (slug, invitation_code) {
         try {
             const response = await axios.get(
