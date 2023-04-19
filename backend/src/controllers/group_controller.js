@@ -1,5 +1,6 @@
 import {
     getGroups,
+    archiveGroup,
     getMembers,
     createGroup,
     editGroup,
@@ -12,6 +13,15 @@ const getGroupInformation = async (req, res) => {
     const requirement = { group_id };
     const [groupInformation] = await getGroups(requirement);
     return res.status(200).json({ data: groupInformation });
+};
+
+const archiveExistingGroup = async (req, res) => {
+    const group_id = req.params.group_id;
+    const archiveResult = await archiveGroup(group_id);
+    if (archiveResult === -1) {
+        return res.status(500).json({ error: "Internal server error." });
+    }
+    return res.status(200).json({ msg: "Successfully archived." });
 };
 
 const getGroupMembers = async (req, res) => {
@@ -83,6 +93,7 @@ const joinGroup = async (req, res) => {
 
 export {
     getGroupInformation,
+    archiveExistingGroup,
     getGroupMembers,
     createNewGroup,
     getPublicInformation,
