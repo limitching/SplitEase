@@ -23,10 +23,11 @@ const signUp = async (req, res) => {
     }
     const accessToken = jwt.sign(
         {
+            id: user.id,
             provider: user.provider,
             name: user.name,
             email: user.email,
-            image: user.picture,
+            image: user.image,
         },
         TOKEN_SECRET,
         { expiresIn: TOKEN_EXPIRE }
@@ -60,19 +61,20 @@ const signIn = async (req, res) => {
             result = { error: "Request Error: Wrong Request" };
     }
     if (result.status === 400) {
-        return res.status(400).send({ error: result.error });
+        return res.status(400).json({ error: result.error });
     }
     const user = result.user;
     if (!user || result.status === 500) {
-        return res.status(500).send({ error: result.error });
+        return res.status(500).json({ error: result.error });
     }
 
     const accessToken = jwt.sign(
         {
+            id: user.id,
             provider: user.provider,
             name: user.name,
             email: user.email,
-            image: user.picture,
+            image: user.image,
         },
         TOKEN_SECRET,
         { expiresIn: TOKEN_EXPIRE }
@@ -121,4 +123,25 @@ const lineSignIn = async (code, state) => {
         return { error: error };
     }
 };
-export { signUp, signIn };
+
+const getUserGroups = async (req, res) => {
+    const { id } = req.user;
+    const { is_archived } = req.query;
+    const groupsIds = await User.getUserGroupsIds(id);
+    if (groupsIds.length === 0) {
+        return res.status(200).json([]);
+    }
+    const groups = await User.getGroupsInformation(groupsIds, is_archived);
+    return res.status(200).json(groups);
+};
+
+const getUserProfile = async (req, res) => {
+    return res.status(200).json({
+        id: req.user.id,
+        provider: req.user.provider,
+        email: req.user.email,
+        name: req.user.name,
+        image: req.user.image,
+    });
+};
+export { signUp, signIn, getUserGroups, getUserProfile };

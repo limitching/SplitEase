@@ -94,5 +94,124 @@ const api = {
             return error.response;
         }
     },
+    getUserGroups: async function (jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.get(
+                `${this.hostname}/user/groups?is_archived=0`,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    getUserArchiveGroups: async function (jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.get(
+                `${this.hostname}/user/groups?is_archived=1`,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    createGroup: async function (jwtToken, newGroupData) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.post(
+                `${this.hostname}/group`,
+                newGroupData,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    editGroup: async function (jwtToken, modifiedGroupData) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.put(
+                `${this.hostname}/group`,
+                modifiedGroupData,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    archiveGroup: async function (jwtToken, group_id) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.put(
+                `${this.hostname}/group/${group_id}`,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    getGroupPublicInformation: async function (slug, invitation_code) {
+        try {
+            const response = await axios.get(
+                `${this.hostname}/group/${slug}/join?invitation_code=${invitation_code}`
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    getUserProfile: async function (jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.get(
+                `${this.hostname}/user/profile`,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    joinGroup: async function (slug, invitation_code, jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.post(
+                `${this.hostname}/group/${slug}/join`,
+                { invitation_code: invitation_code },
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
 };
 export { api, HOST };

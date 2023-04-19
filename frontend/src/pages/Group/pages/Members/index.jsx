@@ -1,24 +1,22 @@
-import DebtsBlock from "./components/DebtsBlock";
-
 import {
     PageWrapper,
     ListWrapper,
     HeaderTextContainer,
 } from "../../components/PageWrapper";
+import MemberList from "./components/MemberList";
 
-const Debts = () => {
+const Members = () => {
     return (
         <>
             <PageWrapper>
                 <HeaderTextContainer>
-                    <h6>Settle debts</h6>
+                    <h6>Members</h6>
                 </HeaderTextContainer>
                 <ListWrapper>
-                    <DebtsBlock></DebtsBlock>
+                    <MemberList></MemberList>
                 </ListWrapper>
             </PageWrapper>
         </>
     );
 };
-
-export default Debts;
+export default Members;

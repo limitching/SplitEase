@@ -1,8 +1,12 @@
 import multer from "multer";
 import path from "path";
 import { v4 as uuidV4 } from "uuid";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+const { TOKEN_SECRET } = process.env;
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
+dotenv.config({ path: __dirname + "/../../.env" });
 
 // reference: https://thecodebarbarian.com/80-20-guide-to-express-error-handling
 const wrapAsync = (fn) => {
@@ -31,4 +35,25 @@ const multerUpload = multer({
         },
     }),
 });
-export { wrapAsync, multerUpload };
+
+const authentication = (req, res, next) => {
+    return async function (req, res, next) {
+        let accessToken = req.get("Authorization");
+        if (!accessToken) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+        accessToken = accessToken.replace("Bearer ", "");
+        if (accessToken == "null") {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+        try {
+            const user = jwt.verify(accessToken, TOKEN_SECRET);
+            req.user = user;
+            next();
+        } catch (error) {
+            console.error(error);
+            return res.status(403).json({ error: "Forbidden" });
+        }
+    };
+};
+export { wrapAsync, multerUpload, authentication };

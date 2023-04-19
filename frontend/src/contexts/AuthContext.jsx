@@ -1,6 +1,7 @@
-import { createContext, useState, useCallback } from "react";
+import { createContext, useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
+import Loading from "../components/Loading";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
@@ -8,6 +9,7 @@ const MySwal = withReactContent(Swal);
 const AuthContext = createContext({
     isLogin: false,
     user: {},
+    userGroups: [],
     loading: false,
     jwtToken: "",
     loginMethod: null,
@@ -18,6 +20,9 @@ const AuthContext = createContext({
     nativeSignIn: () => {},
     lineSignIn: () => {},
     logout: () => {},
+    setLoading: () => {},
+    setGroupChange: () => {},
+    joinGroup: () => {},
 });
 
 const AuthContextProvider = ({ children }) => {
@@ -25,9 +30,72 @@ const AuthContextProvider = ({ children }) => {
     const [isLogin, setIsLogin] = useState(false);
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(false);
-    const [jwtToken, setJwtToken] = useState();
+    const [jwtToken, setJwtToken] = useState(
+        window.localStorage.getItem("jwtToken")
+    );
     const [loginMethod, setLoginMethod] = useState(null);
     const [haveAccount, setHaveAccount] = useState(true);
+    const [userGroups, setUserGroups] = useState([]);
+    const [groupChange, setGroupChange] = useState(false);
+
+    useEffect(() => {
+        const checkAuthStatus = async () => {
+            setLoading(true);
+            if (window.localStorage.getItem("jwtToken") !== null) {
+                const { data } = await api.getUserProfile(
+                    window.localStorage.getItem("jwtToken")
+                );
+
+                if (data.error) {
+                    window.localStorage.removeItem("jwtToken");
+                    window.localStorage.removeItem("fortune");
+                    setUser({});
+                    setIsLogin(true);
+                    setLoading(false);
+                    return;
+                }
+                setUser(data);
+                setIsLogin(true);
+                setLoading(false);
+            } else {
+                window.localStorage.removeItem("jwtToken");
+                window.localStorage.removeItem("fortune");
+                setIsLogin(false);
+                setLoading(false);
+            }
+        };
+        checkAuthStatus();
+    }, []);
+
+    useEffect(() => {
+        if (isLogin && window.localStorage.getItem("jwtToken")) {
+            const fetchUserGroups = async () => {
+                const { data } = await api.getUserGroups(
+                    window.localStorage.getItem("jwtToken")
+                );
+                setUserGroups(data);
+            };
+            setLoading(true);
+            fetchUserGroups();
+            setLoading(false);
+        }
+    }, [isLogin]);
+
+    useEffect(() => {
+        if (groupChange && window.localStorage.getItem("jwtToken")) {
+            const fetchUserGroups = async () => {
+                const { data } = await api.getUserGroups(
+                    window.localStorage.getItem("jwtToken")
+                );
+                console.log(data);
+                setUserGroups(data);
+            };
+            setLoading(true);
+            fetchUserGroups();
+            setGroupChange(false);
+            setLoading(false);
+        }
+    }, [groupChange]);
 
     const handleSignUpResponse = useCallback(async (signUpForm) => {
         const { data } = await api.userSignUp(signUpForm);
@@ -65,9 +133,7 @@ const AuthContextProvider = ({ children }) => {
     const handleNativeLoginResponse = useCallback(async (signInForm) => {
         console.log(signInForm);
         const { data } = await api.userSignIn(signInForm);
-        console.log("data", data);
         if (data.errors !== undefined || data.error !== undefined) {
-            console.log("hi");
             MySwal.fire({
                 title: <p>Request Error</p>,
                 html: (
@@ -141,6 +207,58 @@ const AuthContextProvider = ({ children }) => {
         }
     }, []);
 
+    const handleJoinGroup = useCallback(
+        async (slug, invitation_code, jwtToken) => {
+            const response = await api.joinGroup(
+                slug,
+                invitation_code,
+                jwtToken
+            );
+            if (response.status === 200) {
+                MySwal.fire({
+                    title: <p>Login Successfully!</p>,
+                    icon: "success",
+                    timer: 1000,
+                    didOpen: () => {
+                        MySwal.showLoading();
+                    },
+                });
+                setGroupChange(true);
+                return;
+            } else if (response.status === 400) {
+                const { error } = response.data;
+                MySwal.fire({
+                    title: <p>Server Side Error</p>,
+                    html: <p>{error}</p>,
+                    icon: "error",
+                    timer: 2000,
+                    didOpen: () => {
+                        MySwal.showLoading();
+                    },
+                });
+            } else if (response.status === 500) {
+                const { error } = response.data;
+                MySwal.fire({
+                    title: <p>Server Side Error</p>,
+                    html: <p>{error}</p>,
+                    icon: "error",
+                    timer: 2000,
+                    didOpen: () => {
+                        MySwal.showLoading();
+                    },
+                });
+            }
+        },
+        []
+    );
+
+    const joinGroup = async (slug, invitation_code, jwtToken) => {
+        setLoading(true);
+        handleJoinGroup(slug, invitation_code, jwtToken);
+        setLoading(false);
+        // return navigate("home");
+    };
+
     const nativeSignUp = async (signUpForm) => {
         setLoading(true);
         navigate("login");
@@ -181,12 +299,16 @@ const AuthContextProvider = ({ children }) => {
         navigate("login");
         setLoading(false);
     };
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <AuthContext.Provider
             value={{
                 isLogin,
                 user,
+                userGroups,
                 loading,
                 jwtToken,
                 loginMethod,
@@ -197,6 +319,9 @@ const AuthContextProvider = ({ children }) => {
                 nativeSignIn,
                 lineSignIn,
                 logout,
+                setLoading,
+                setGroupChange,
+                joinGroup,
             }}
         >
             {children}

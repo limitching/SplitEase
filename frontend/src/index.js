@@ -6,9 +6,14 @@ import App from "./App";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Group from "./pages/Group";
-import Transaction from "./pages/Group/pages/Expenses/components/Transaction";
+import Overview from "./pages/Group/pages/Overview";
 import Expenses from "./pages/Group/pages/Expenses";
 import Debts from "./pages/Group/pages/Debts";
+import Settlement from "./pages/Group/pages/Settlement";
+import Members from "./pages/Group/pages/Members";
+import Activities from "./pages/Group/pages/Activities";
+import Join from "./pages/Group/pages/Join";
+
 // import reportWebVitals from "./reportWebVitals";
 
 // import App from "./pages/app";
@@ -22,10 +27,14 @@ root.render(
         <Routes>
             <Route path="/" element={<App />}>
                 {/* <Route index element={<Home />} /> */}
-                <Route path="group/:gid" element={<Group />}>
-                    <Route path="overview" element={<Transaction />} />
+                <Route path="group/:slug" element={<Group />}>
+                    <Route path="overview" element={<Overview />} />
                     <Route path="expenses" element={<Expenses />} />
                     <Route path="debts" element={<Debts />} />
+                    <Route path="settlement" element={<Settlement />} />
+                    <Route path="members" element={<Members />} />
+                    <Route path="join" element={<Join />} />
+                    <Route path="activities" element={<Activities />} />
                 </Route>
                 <Route path="login" element={<Login />}></Route>
                 <Route path="home" element={<Home />}></Route>
