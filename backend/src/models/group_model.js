@@ -20,6 +20,25 @@ const getGroups = async (requirement) => {
     return groups;
 };
 
+const archiveGroup = async (group_id) => {
+    const connection = await pool.getConnection();
+    try {
+        await connection.query("START TRANSACTION");
+        await connection.query(
+            "UPDATE `groups` SET is_archived = 1 WHERE id = ?",
+            [group_id]
+        );
+        await connection.query("COMMIT");
+        return 0;
+    } catch (error) {
+        console.error(error);
+        await connection.query("ROLLBACK");
+        return -1;
+    } finally {
+        await connection.release();
+    }
+};
+
 const getMembers = async (group_id) => {
     const memberQuery =
         "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ? ORDER BY user_id";
@@ -162,6 +181,7 @@ const getGroupInformationViaCode = async (slug, invitation_code) => {
 
 export {
     getGroups,
+    archiveGroup,
     getMembers,
     createGroup,
     editGroup,
