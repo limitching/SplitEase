@@ -181,10 +181,10 @@ const getUserGroupsIds = async (id) => {
     return groupsIds;
 };
 
-const getGroupsInformation = async (groupsIds) => {
+const getGroupsInformation = async (groupsIds, is_archived) => {
     const [groups] = await pool.query(
-        "SELECT * FROM `groups` WHERE id IN (?) ORDER BY creation_date DESC",
-        [groupsIds]
+        "SELECT * FROM `groups` WHERE id IN (?) AND is_archived = ? ORDER BY creation_date DESC",
+        [groupsIds, is_archived]
     );
     return groups;
 };
