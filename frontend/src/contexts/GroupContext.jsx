@@ -160,7 +160,6 @@ const GroupContextProvider = ({ children }) => {
             setExpensesChanged(false);
         }
     }, [expensesChanged, group_id]);
-
     useEffect(() => {
         if (!debts[group.default_currency]) {
             const newBalance = new Array(members.length).fill(0);
@@ -168,13 +167,17 @@ const GroupContextProvider = ({ children }) => {
         }
         if (members.length !== 0 && debts[group.default_currency]) {
             setIsLoading(true);
-            const newBalance = new Array(members.length).fill(0);
+            let newBalance = new Array(members.length).fill(0);
 
             debts[group.default_currency].forEach(
                 ([debtorIndex, creditorIndex, amount]) => {
                     newBalance[debtorIndex] -= amount;
                     newBalance[creditorIndex] += amount;
                 }
+            );
+            //TODO:
+            newBalance = newBalance.map((balance) =>
+                Number(balance.toFixed(2))
             );
             setBalance(newBalance);
             setIsLoading(false);
