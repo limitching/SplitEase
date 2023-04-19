@@ -1,6 +1,15 @@
-import { Container, Modal, Button, Form, Row } from "react-bootstrap";
 import styled from "styled-components";
-import { TextField, MenuItem } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Container, Modal, Button, Form, Row } from "react-bootstrap";
+import {
+    Button as MuiButton,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+} from "@mui/material";
+import { TextField, MenuItem, FormControlLabel, Checkbox } from "@mui/material";
 import { CURRENCY_OPTIONS } from "../../../global/constant";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -23,28 +32,57 @@ const ModifyGroupModal = ({
     showModifyGroupModal,
     handleCloseModifyGroupModal,
 }) => {
+    const navigate = useNavigate();
     const { user, jwtToken, setLoading, setGroupChange } =
         useContext(AuthContext);
     const { group } = useContext(GroupContext);
-    console.log("group", group);
+    const [isCheck, setIsCheck] = useState(
+        Boolean(Number(group.minimized_debts))
+    );
+    const [alertOpen, setAlertOpen] = useState(false);
 
     const [modifiedGroupData, setModifiedGroupData] = useState({
-        owner: group.owner,
+        id: group.id,
         name: group.name,
         default_currency: group.default_currency,
         description: group.description,
+        minimized_debts: Number(group.minimized_debts),
     });
 
     useEffect(() => {
         setModifiedGroupData({
-            owner: group.owner,
+            id: group.id,
             name: group.name,
             default_currency: group.default_currency,
             description: group.description,
+            minimized_debts: Number(group.minimized_debts),
         });
     }, [group]);
 
-    function handleNewGroupDataChange(event) {
+    const handleAlertOpen = () => {
+        setAlertOpen(true);
+    };
+    const handleAlertClose = () => {
+        setAlertOpen(false);
+    };
+
+    const handleChecked = (event) => {
+        if (isCheck) {
+            setIsCheck(false);
+            setModifiedGroupData({
+                ...modifiedGroupData,
+                minimized_debts: Number(false),
+            });
+        } else {
+            setIsCheck(true);
+            setModifiedGroupData({
+                ...modifiedGroupData,
+                minimized_debts: Number(true),
+            });
+        }
+    };
+
+    function handleGroupDataChange(event) {
         const key = event.target.name;
         setModifiedGroupData({
             ...modifiedGroupData,
@@ -52,11 +90,10 @@ const ModifyGroupModal = ({
         });
     }
 
-    const createGroup = async (event) => {
+    const editGroup = async (event) => {
         event.preventDefault();
         const errors = [];
-        if (!modifiedGroupData.owner) {
-            errors.push("Owner cannot be null");
+        if (!modifiedGroupData.id) {
             errors.push("Please re-login again");
         }
         if (modifiedGroupData.name.length === 0) {
@@ -74,17 +111,12 @@ const ModifyGroupModal = ({
                 ),
                 icon: "error",
                 timer: 2000,
-                didOpen: () => {
-                    MySwal.showLoading();
-                },
+                showConfirmButton: false,
             });
         }
-        setLoading(true);
+
         const response = await api.editGroup(jwtToken, modifiedGroupData);
-        console.log(response);
         if (response.data.errors || response.status !== 200) {
-            console.log("hello");
-            setLoading(false);
             return MySwal.fire({
                 title: <p>Request Error</p>,
                 html: (
@@ -100,14 +132,12 @@ const ModifyGroupModal = ({
                 ),
                 icon: "error",
                 timer: 2000,
-                didOpen: () => {
-                    MySwal.showLoading();
-                },
+                showConfirmButton: false,
             });
         }
 
         MySwal.fire({
-            title: <p>Create Group Successfully</p>,
+            title: <p>Update Group Successfully</p>,
             html: (
                 <div>
                     <p>Group name: {response.data.name}</p>
@@ -115,9 +145,7 @@ const ModifyGroupModal = ({
             ),
             icon: "success",
             timer: 2000,
-            didOpen: () => {
-                MySwal.showLoading();
-            },
+            showConfirmButton: false,
         });
         setModifiedGroupData({
             owner: user.id,
@@ -127,80 +155,148 @@ const ModifyGroupModal = ({
         });
         handleCloseModifyGroupModal();
         setGroupChange(true);
-        setLoading(false);
+    };
+
+    const handleGroupArchive = async () => {
+        handleAlertClose();
+        console.log(group.id);
+        const response = await api.archiveGroup(jwtToken, group.id);
+
+        setGroupChange(true);
+        // handleClickVariant("Expense Created successfully!", "success");
+        MySwal.fire({
+            title: <p>{response.data.msg}</p>,
+            icon: "success",
+            timer: 1000,
+            showConfirmButton: false,
+        });
+        navigate("/home");
     };
 
     return (
-        <Modal
-            show={showModifyGroupModal}
-            onHide={handleCloseModifyGroupModal}
-            backdrop="static"
-            keyboard={false}
-            size="md"
-            centered
-        >
-            <Form onSubmit={createGroup}>
-                <Modal.Header closeButton as={Row}>
-                    <Container className="modal-header-text ml-0 pl-0">
-                        <h3>Edit group</h3>
-                    </Container>
-                </Modal.Header>
-                <StyledModalBody>
-                    <Container>
-                        <TextField
-                            name="name"
-                            className="mb-3"
-                            label="Group name"
-                            type="text"
-                            value={modifiedGroupData.name}
-                            onChange={handleNewGroupDataChange}
-                            variant="standard"
-                            fullWidth
-                            required
-                        />
-                    </Container>
-                    <Container>
-                        <TextField
-                            name="default_currency"
-                            select
-                            label="Default currency for group debts"
-                            value={modifiedGroupData.default_currency}
-                            onChange={handleNewGroupDataChange}
-                            variant="standard"
-                            fullWidth
-                            required
-                        >
-                            {CURRENCY_OPTIONS.map((option) => (
-                                <MenuItem key={option.id} value={option.id}>
-                                    {`${option.abbreviation}  (${option.symbol})`}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </Container>
-                    <Container>
-                        <TextField
-                            name="description"
-                            className="mb-3"
-                            label="Group description"
-                            type="text"
-                            variant="standard"
-                            value={modifiedGroupData.description}
-                            onChange={handleNewGroupDataChange}
-                            fullWidth
-                            multiline
-                            rows={3}
-                        />
-                    </Container>
-                </StyledModalBody>
-                <Modal.Footer>
-                    <Container className="d-grid">
-                        <Button variant="warning" type="submit">
-                            Save
-                        </Button>
-                    </Container>
-                </Modal.Footer>
-            </Form>
-        </Modal>
+        <>
+            <Modal
+                show={showModifyGroupModal}
+                onHide={handleCloseModifyGroupModal}
+                backdrop="static"
+                keyboard={false}
+                size="md"
+                centered
+            >
+                <Form onSubmit={editGroup}>
+                    <Modal.Header closeButton as={Row}>
+                        <Container className="modal-header-text ml-0 pl-0">
+                            <h3>Edit group</h3>
+                        </Container>
+                    </Modal.Header>
+                    <StyledModalBody>
+                        <Container>
+                            <TextField
+                                name="name"
+                                className="mb-3"
+                                label="Group name"
+                                type="text"
+                                value={modifiedGroupData.name}
+                                onChange={handleGroupDataChange}
+                                variant="standard"
+                                fullWidth
+                                required
+                            />
+                        </Container>
+                        <Container>
+                            <TextField
+                                name="default_currency"
+                                select
+                                label="Default currency for group debts"
+                                value={modifiedGroupData.default_currency}
+                                onChange={handleGroupDataChange}
+                                variant="standard"
+                                fullWidth
+                                required
+                            >
+                                {CURRENCY_OPTIONS.map((option) => (
+                                    <MenuItem key={option.id} value={option.id}>
+                                        {`${option.abbreviation}  (${option.symbol})`}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Container>
+
+                        <Container>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={isCheck}
+                                        onChange={(event) => {
+                                            handleChecked(event);
+                                        }}
+                                    />
+                                }
+                                label={"Minimize the number of group debts"}
+                            />
+                        </Container>
+                        <Container>
+                            <TextField
+                                name="description"
+                                className="mb-3"
+                                label="Group description"
+                                type="text"
+                                variant="standard"
+                                value={modifiedGroupData.description}
+                                onChange={handleGroupDataChange}
+                                fullWidth
+                                multiline
+                                rows={3}
+                            />
+                        </Container>
+                        {user.id === group.owner ? (
+                            <Container>
+                                <MuiButton
+                                    variant="outlined"
+                                    onClick={handleAlertOpen}
+                                >
+                                    Archive group
+                                </MuiButton>
+                            </Container>
+                        ) : null}
+                    </StyledModalBody>
+                    <Modal.Footer>
+                        <Container className="d-grid">
+                            <Button variant="warning" type="submit">
+                                Save
+                            </Button>
+                        </Container>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+            <Dialog
+                open={alertOpen}
+                onClose={handleAlertClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Archive Group"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        <strong>Do you wish to archive this group?</strong>
+                        <br />
+                        When a group is archived, anything related to the group
+                        cannot be edited.
+                        <br />
+                        Group owner can always restore it from the your Groups
+                        screen.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <MuiButton onClick={handleAlertClose}>Cancel</MuiButton>
+                    <MuiButton onClick={() => handleGroupArchive()} autoFocus>
+                        Archive
+                    </MuiButton>
+                </DialogActions>
+            </Dialog>
+        </>
     );
 };
 export default ModifyGroupModal;
