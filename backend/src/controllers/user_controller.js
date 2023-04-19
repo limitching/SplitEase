@@ -126,11 +126,12 @@ const lineSignIn = async (code, state) => {
 
 const getUserGroups = async (req, res) => {
     const { id } = req.user;
+    const { is_archived } = req.query;
     const groupsIds = await User.getUserGroupsIds(id);
     if (groupsIds.length === 0) {
         return res.status(200).json([]);
     }
-    const groups = await User.getGroupsInformation(groupsIds);
+    const groups = await User.getGroupsInformation(groupsIds, is_archived);
     return res.status(200).json(groups);
 };
 
