@@ -141,6 +141,21 @@ const api = {
             return error.response;
         }
     },
+    archiveGroup: async function (group_id, jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.post(
+                `${this.hostname}/group/${group_id}`,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
     getGroupPublicInformation: async function (slug, invitation_code) {
         try {
             const response = await axios.get(
