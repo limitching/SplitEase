@@ -100,7 +100,22 @@ const api = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
             const response = await axios.get(
-                `${this.hostname}/user/groups`,
+                `${this.hostname}/user/groups?is_archived=0`,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    getUserArchiveGroups: async function (jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.get(
+                `${this.hostname}/user/groups?is_archived=1`,
                 config
             );
             return response;
@@ -141,12 +156,12 @@ const api = {
             return error.response;
         }
     },
-    archiveGroup: async function (group_id, jwtToken) {
+    archiveGroup: async function (jwtToken, group_id) {
         try {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const response = await axios.post(
+            const response = await axios.put(
                 `${this.hostname}/group/${group_id}`,
                 config
             );
