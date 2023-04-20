@@ -174,13 +174,15 @@ const ExpensesBlock = () => {
                                 <ThemeProvider theme={avatarTheme}>
                                     <AvatarGroup total={debtors.length}>
                                         {debtors.map((debtor, index) => (
-                                            <Tooltip title={debtor.name}>
+                                            <Tooltip
+                                                key={
+                                                    expense._id +
+                                                    "_debtor_" +
+                                                    index
+                                                }
+                                                title={debtor.name + index}
+                                            >
                                                 <Avatar
-                                                    key={
-                                                        expense._id +
-                                                        "_debtor_" +
-                                                        index
-                                                    }
                                                     alt={debtor.name}
                                                     src={
                                                         debtor.image === null
