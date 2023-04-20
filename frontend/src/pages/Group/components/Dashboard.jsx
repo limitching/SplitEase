@@ -1,17 +1,25 @@
 import styled from "styled-components";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GroupContext } from "../../../contexts/GroupContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { Avatar } from "@mui/material";
+import { Container } from "react-bootstrap";
+import DoughnutChart from "./DoughnutChart";
+import HorizontalBarChart from "./HorizontalBarChart";
+import { CURRENCY_OPTIONS } from "../../../global/constant";
+import CountUp from "react-countup";
 
 const Dashboard = styled.div`
     width: 100%;
     height: 300px;
-    background-color: #f4f4f4;
+    background-color: #2196f3;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+`;
+const TextWrapper = styled.div`
+    color: white;
 `;
 
 const VisitorDashboard = styled(Dashboard)`
@@ -19,7 +27,32 @@ const VisitorDashboard = styled(Dashboard)`
 `;
 
 const UserDashboard = styled(Dashboard)`
-    background-color: #c5e0dc;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: no-wrap;
+    justify-context: center;
+    align-items: center;
+    background-color: #2196f3;
+`;
+
+const DashboardWrapper = styled(Dashboard)`
+    display: flex;
+    flex-direction: row;
+    flex-wrap: no-wrap;
+    justify-context: center;
+    align-items: center;
+    width: 50vw;
+    gap: 2rem;
+`;
+
+const DoughnutWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-wrap: no-wrap;
+    justify-context: center;
+    align-items: center;
+    width: 100%;
+    max-width: 300px;
 `;
 
 const JoinButton = styled.button`
@@ -41,15 +74,52 @@ const JoinButton = styled.button`
 `;
 
 const GroupDashboard = () => {
-    const { group, members, invitation_code, slug } = useContext(GroupContext);
-    const { userGroups, jwtToken, isLogin, joinGroup } =
+    const {
+        group,
+        members,
+        invitation_code,
+        slug,
+        balance,
+        groupExpense,
+        isLoading,
+        indexMap,
+        spent,
+        usersShare,
+    } = useContext(GroupContext);
+    const { userGroups, jwtToken, isLogin, joinGroup, user } =
         useContext(AuthContext);
+    const [shouldPayUser, setShouldPayUser] = useState({});
+    const userIndex = indexMap.get(user.id);
 
+    const [currencyObject] = CURRENCY_OPTIONS.filter(
+        (currencyObject) => currencyObject.id === group.default_currency
+    );
+
+    useEffect(() => {
+        if (
+            members.length !== 0 &&
+            balance.length === members.length &&
+            usersShare.length === members.length
+        ) {
+            const whoShouldPayIndex = balance.indexOf(Math.min(...balance));
+            setShouldPayUser(members[whoShouldPayIndex]);
+        }
+    }, [members, balance, usersShare]);
+    const totalGroupExpense = groupExpense.reduce((sum, expense) => {
+        if (expense.currency_option === group.default_currency) {
+            return sum + expense.amount;
+        }
+        return sum;
+    }, 0);
     const [owner] = members.filter((user) => user.id === group.owner);
 
     const filterResult = userGroups.filter(
         (userGroup) => userGroup.id === group.id
     );
+
+    if (isLoading) {
+        return <></>;
+    }
 
     if (filterResult.length === 0) {
         return (
@@ -76,11 +146,66 @@ const GroupDashboard = () => {
             </VisitorDashboard>
         );
     }
-
+    // console.log(indexMap);
+    // console.log(userIndex);
+    // console.log(usersShare[userIndex]);
     return (
         <UserDashboard>
-            <h1>{group.name}</h1>
-            <h3>{group.description}</h3>
+            <DashboardWrapper>
+                <DoughnutWrapper>
+                    <DoughnutChart
+                        shouldPayUser={shouldPayUser}
+                    ></DoughnutChart>
+                </DoughnutWrapper>
+
+                {/* <HorizontalBarChart></HorizontalBarChart> */}
+
+                <Container>
+                    <TextWrapper>
+                        <h1>{group.name}</h1>
+
+                        <p>
+                            {`Total group spending: ${currencyObject.symbol} `}
+                            <CountUp
+                                duration={1}
+                                end={totalGroupExpense}
+                                style={{
+                                    fontSize: "1rem",
+                                }}
+                            />
+                        </p>
+                        <p>
+                            {`Total you paid for: ${currencyObject.symbol} `}
+                            <CountUp
+                                duration={1}
+                                end={spent[userIndex]}
+                                style={{
+                                    fontSize: "1rem",
+                                }}
+                            />
+                        </p>
+                        {userIndex ? (
+                            <p>
+                                {`Your total share: ${currencyObject.symbol} `}
+                                <CountUp
+                                    duration={1}
+                                    end={usersShare[userIndex]}
+                                    style={{
+                                        fontSize: "1rem",
+                                    }}
+                                />
+                            </p>
+                        ) : null}
+
+                        {members.length === 0 ? null : (
+                            <>
+                                <h4>{`${shouldPayUser.name} owes the most money`}</h4>
+                                <h4>{`${shouldPayUser.name} should pay`}</h4>
+                            </>
+                        )}
+                    </TextWrapper>
+                </Container>
+            </DashboardWrapper>
         </UserDashboard>
     );
 };
