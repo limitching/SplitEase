@@ -37,7 +37,7 @@ const Header = () => {
     return (
         <StyledNavbar bg="warning" expand="lg" fixed="top">
             <StyledContainer>
-                <StyledLink to="/">
+                <StyledLink to={isLogin ? "/home" : "/"}>
                     <Navbar.Brand>
                         <img
                             src="/logo192.png"
