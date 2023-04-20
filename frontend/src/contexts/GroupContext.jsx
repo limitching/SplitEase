@@ -20,6 +20,7 @@ const GroupContext = createContext({
     inviteEmail: "",
     balance: [],
     spent: [],
+    usersShare: [],
     setMembers: () => {},
     setExpensesChanged: () => {},
     setInviteEmail: () => {},
@@ -88,6 +89,7 @@ const GroupContextProvider = ({ children }) => {
     const [inviteEmail, setInviteEmail] = useState("");
     const [balance, setBalance] = useState([]);
     const [spent, setSpent] = useState([]);
+    const [usersShare, setUsersShare] = useState([]);
 
     // A map to get member object from memberId
     const memberMap = members
@@ -160,7 +162,6 @@ const GroupContextProvider = ({ children }) => {
             setExpensesChanged(false);
         }
     }, [expensesChanged, group_id]);
-
     useEffect(() => {
         if (!debts[group.default_currency]) {
             const newBalance = new Array(members.length).fill(0);
@@ -168,13 +169,17 @@ const GroupContextProvider = ({ children }) => {
         }
         if (members.length !== 0 && debts[group.default_currency]) {
             setIsLoading(true);
-            const newBalance = new Array(members.length).fill(0);
+            let newBalance = new Array(members.length).fill(0);
 
             debts[group.default_currency].forEach(
                 ([debtorIndex, creditorIndex, amount]) => {
                     newBalance[debtorIndex] -= amount;
                     newBalance[creditorIndex] += amount;
                 }
+            );
+            //TODO:
+            newBalance = newBalance.map((balance) =>
+                Number(balance.toFixed(2))
             );
             setBalance(newBalance);
             setIsLoading(false);
@@ -185,12 +190,49 @@ const GroupContextProvider = ({ children }) => {
         if (groupExpense) {
             setIsLoading(true);
             const newSpent = new Array(members.length).fill(0);
-            groupExpense.forEach(({ creditors_amounts }) => {
-                for (const creditorId in creditors_amounts) {
-                    newSpent[indexMap.get(Number(creditorId))] +=
-                        creditors_amounts[creditorId];
+            let newUsersShare = new Array(members.length).fill(0);
+            groupExpense.forEach(
+                ({
+                    creditors_amounts,
+                    debtors_adjustment,
+                    debtors_weight,
+                    amount,
+                }) => {
+                    for (const creditorId in creditors_amounts) {
+                        newSpent[indexMap.get(Number(creditorId))] +=
+                            creditors_amounts[creditorId];
+                    }
+
+                    let totalAdjustment = 0;
+                    for (let debtorId in debtors_adjustment) {
+                        if (debtors_adjustment.hasOwnProperty(debtorId)) {
+                            totalAdjustment += debtors_adjustment[debtorId];
+                        }
+                    }
+                    let totalWeight = 0;
+                    for (let debtorId in debtors_weight) {
+                        if (debtors_weight.hasOwnProperty(debtorId)) {
+                            totalWeight += debtors_weight[debtorId];
+                        }
+                    }
+
+                    for (let debtorId in debtors_weight) {
+                        const debtorAdjustAmount = debtors_adjustment[debtorId]
+                            ? debtors_adjustment[debtorId]
+                            : 0;
+                        newUsersShare[indexMap.get(Number(debtorId))] +=
+                            ((amount - totalAdjustment) *
+                                debtors_weight[debtorId]) /
+                                totalWeight +
+                            debtorAdjustAmount;
+                    }
                 }
-            });
+            );
+            //TODO:
+            newUsersShare = newUsersShare.map((balance) =>
+                Number(balance.toFixed(2))
+            );
+            setUsersShare(newUsersShare);
             setSpent(newSpent);
             setIsLoading(false);
         }
@@ -218,6 +260,7 @@ const GroupContextProvider = ({ children }) => {
                 inviteEmail,
                 balance,
                 spent,
+                usersShare,
                 setMembers,
                 setExpensesChanged,
                 setInviteEmail,
