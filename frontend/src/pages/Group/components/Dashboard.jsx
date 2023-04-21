@@ -5,7 +5,7 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { Avatar } from "@mui/material";
 import { Container } from "react-bootstrap";
 import DoughnutChart from "./DoughnutChart";
-import HorizontalBarChart from "./HorizontalBarChart";
+// import HorizontalBarChart from "./HorizontalBarChart";
 import { CURRENCY_OPTIONS } from "../../../global/constant";
 import CountUp from "react-countup";
 

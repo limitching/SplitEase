@@ -7,7 +7,6 @@ import {
     Title,
     Tooltip,
     Legend,
-    Colors,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
@@ -48,28 +47,28 @@ const backgroundColors = [
     "rgba(255, 99, 132, 0.1)",
 ];
 
-const borderColors = backgroundColors.map((color) => {
-    const alpha = 1; // set alpha to 1
-    const rgbaValues = color.slice(5, -1).split(","); // extract the RGBA values from the string
-    const r = rgbaValues[0].trim();
-    const g = rgbaValues[1].trim();
-    const b = rgbaValues[2].trim();
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-});
+// const borderColors = backgroundColors.map((color) => {
+//     const alpha = 1; // set alpha to 1
+//     const rgbaValues = color.slice(5, -1).split(","); // extract the RGBA values from the string
+//     const r = rgbaValues[0].trim();
+//     const g = rgbaValues[1].trim();
+//     const b = rgbaValues[2].trim();
+//     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+// });
 
 const HorizontalBarChart = () => {
-    const { balance, members, spent } = useContext(GroupContext);
+    const { balance, members } = useContext(GroupContext);
     const userName = members.map((user) => user.name);
 
     const min = Math.min(...balance);
     const max = Math.max(...balance);
     const axisRange = Math.max(Math.abs(min), Math.abs(max));
 
-    const randomColor = () => {
-        return `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(
-            Math.random() * 256
-        )}, ${Math.floor(Math.random() * 256)}, 0.2)`;
-    };
+    // const randomColor = () => {
+    //     return `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(
+    //         Math.random() * 256
+    //     )}, ${Math.floor(Math.random() * 256)}, 0.2)`;
+    // };
 
     const sortedBalance = balance
         .map((value, index) => ({ value, index }))
