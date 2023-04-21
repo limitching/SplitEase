@@ -24,4 +24,6 @@ jobs:
             - name: Build React app
               run: |
                   cd frontend
+                  pwd
+                  ls -al
                   npm run build
