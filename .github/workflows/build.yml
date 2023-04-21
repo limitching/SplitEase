@@ -20,6 +20,8 @@ jobs:
               run: |
                   cd frontend
                   rm -rf node_modules
+                  rm -f package-lock.json
+                  npm cache clean --force
                   npm install
 
             - name: Build React app
