@@ -7,29 +7,15 @@ import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 
-const { API_VERSION } = process.env;
-
 import indexRouter from "./src/routes/index.js";
-import userRouter from "./src/routes/user_route.js";
-import groupRouter from "./src/routes/group_route.js";
-import expenseRouter from "./src/routes/expense_route.js";
-import debtsRouter from "./src/routes/debts_route.js";
 
 const app = express();
+app.use("/", indexRouter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 // CORS allow all
 app.use(cors());
-
-// API routes
-app.use("/api/" + API_VERSION, [
-    indexRouter,
-    userRouter,
-    groupRouter,
-    expenseRouter,
-    debtsRouter,
-]);
 
 app.use(logger("dev"));
 app.use(express.json());
