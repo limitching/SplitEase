@@ -20,7 +20,6 @@ jobs:
               run: |
                   cd frontend
                   rm -rf node_modules
-                  npm cache clean
                   npm install
 
             - name: Build React app
