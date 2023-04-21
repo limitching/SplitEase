@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@line/liff": "^2.22.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.12.1",
     "@mui/material-next": "^6.0.0-alpha.82",
@@ -22,6 +23,7 @@
     "react-countup": "^6.4.2",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
+    "react-liff": "^2.1.0",
     "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",
     "styled-components": "^5.3.9",

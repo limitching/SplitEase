@@ -8,6 +8,7 @@
     },
     "dependencies": {
         "@line/bot-sdk": "^7.5.2",
+        "@line/liff": "^2.22.0",
         "cookie-parser": "~1.4.4",
         "cors": "^2.8.5",
         "debug": "~2.6.9",
