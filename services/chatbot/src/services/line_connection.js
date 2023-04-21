@@ -9,8 +9,8 @@ const config = {
 };
 
 // create LINE SDK client
-const client = new line.Client(config);
+const bot = new line.Client(config);
 
 const lineMiddleware = line.middleware(config);
 
-export { client, lineMiddleware };
+export { bot, lineMiddleware };
