@@ -1,8 +1,8 @@
 import axios from "axios";
-const HOST = "http://localhost:3000";
+import { API_HOST } from "../global/constant";
 
 const api = {
-    hostname: HOST + "/api/1.0",
+    hostname: API_HOST + "/api/1.0",
     getMembers: async function (group_id) {
         const { data } = await axios.get(
             `${this.hostname}/group/members/${group_id}`
@@ -214,4 +214,4 @@ const api = {
         }
     },
 };
-export { api, HOST };
+export { api };
