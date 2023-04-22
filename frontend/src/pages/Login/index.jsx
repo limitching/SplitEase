@@ -5,6 +5,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { FaLine } from "react-icons/fa";
 import { GoMail } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
+import { WEB_HOST } from "../../global/constant";
 
 import { AuthContext } from "../../contexts/AuthContext";
 
@@ -139,7 +140,7 @@ const Login = () => {
 
     const navigateToLineLogin = () => {
         const clientId = "1660896460";
-        const redirectUri = encodeURIComponent("http://localhost:3001/login");
+        const redirectUri = encodeURIComponent(`${WEB_HOST}/login`);
         const state = "login";
         const scope = "openid%20profile%20email";
         const url = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;

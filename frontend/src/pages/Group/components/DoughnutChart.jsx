@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { useContext, useState, useRef } from "react";
+import { useContext } from "react";
 import { GroupContext } from "../../../contexts/GroupContext";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { CURRENCY_OPTIONS } from "../../../global/constant";

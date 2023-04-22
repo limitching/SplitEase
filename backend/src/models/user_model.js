@@ -6,7 +6,12 @@ import dotenv from "dotenv";
 import path from "path";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 dotenv.config({ path: __dirname + "/../../.env" });
-const { PASSWORD_HASH_TIMES, LINE_CLIENT_ID, LINE_CLIENT_SECRET } = process.env;
+const {
+    PASSWORD_HASH_TIMES,
+    LINE_CLIENT_ID,
+    LINE_CLIENT_SECRET,
+    WEB_DEPLOY_URI,
+} = process.env;
 
 const signUp = async (name, email, password) => {
     const connection = await pool.getConnection();
@@ -134,7 +139,7 @@ const getLineProfile = async (code, state) => {
         const authData = {
             grant_type: "authorization_code",
             code: code,
-            redirect_uri: "http://localhost:3001/login",
+            redirect_uri: `${WEB_DEPLOY_URI}/login`,
             client_id: LINE_CLIENT_ID,
             client_secret: LINE_CLIENT_SECRET,
         };

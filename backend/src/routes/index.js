@@ -1,9 +1,9 @@
 import express from "express";
 var router = express.Router();
 
-/* GET home page. */
+/* Health check page for AWS ELB. */
 router.get("/", function (req, res, next) {
-    res.render("index", { title: "Express" });
+    return res.status(200);
 });
 
 export default router;

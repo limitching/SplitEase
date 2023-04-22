@@ -1,3 +1,7 @@
+// const API_HOST = "http://localhost:3000";
+const API_HOST = "https://api.splitease.cc";
+const WEB_HOST = "https://splitease.cc";
+
 const SPLIT_METHODS = [
     "split equally",
     "split by exact amounts",
@@ -100,4 +104,11 @@ const GROUP_TABS_VISITORS = [
     },
 ];
 
-export { SPLIT_METHODS, CURRENCY_OPTIONS, GROUP_TABS, GROUP_TABS_VISITORS };
+export {
+    API_HOST,
+    WEB_HOST,
+    SPLIT_METHODS,
+    CURRENCY_OPTIONS,
+    GROUP_TABS,
+    GROUP_TABS_VISITORS,
+};

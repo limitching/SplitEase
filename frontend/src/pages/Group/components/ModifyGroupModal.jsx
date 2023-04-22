@@ -33,8 +33,7 @@ const ModifyGroupModal = ({
     handleCloseModifyGroupModal,
 }) => {
     const navigate = useNavigate();
-    const { user, jwtToken, setLoading, setGroupChange } =
-        useContext(AuthContext);
+    const { user, jwtToken, setGroupChange } = useContext(AuthContext);
     const { group } = useContext(GroupContext);
     const [isCheck, setIsCheck] = useState(
         Boolean(Number(group.minimized_debts))
