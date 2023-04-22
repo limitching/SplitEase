@@ -29,7 +29,6 @@ const CreateGroupModal = ({
         default_currency: 1,
         description: "",
     });
-    console.log(newGroupData);
 
     function handleNewGroupDataChange(event) {
         const key = event.target.name;

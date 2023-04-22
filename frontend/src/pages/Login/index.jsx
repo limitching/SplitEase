@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { NativeLogin } from "./components/NativeLogin";
 import { NativeRegister } from "./components/NativeRegister";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect } from "react";
 import { FaLine } from "react-icons/fa";
 import { GoMail } from "react-icons/go";
-import { useLocation, useNavigate } from "react-router-dom";
-import { WEB_HOST } from "../../global/constant";
+import { useNavigate } from "react-router-dom";
+import { useLiff } from "react-liff";
 
 import { AuthContext } from "../../contexts/AuthContext";
 
@@ -110,7 +110,6 @@ const HaveAccountAlready = styled.a`
 `;
 
 const Login = () => {
-    const location = useLocation();
     const navigate = useNavigate();
     const {
         loading,
@@ -118,33 +117,12 @@ const Login = () => {
         haveAccount,
         loginMethod,
         setHaveAccount,
-        lineSignIn,
         setLoginMethod,
     } = useContext(AuthContext);
-    const [code, setCode] = useState("");
-    const [state, setState] = useState("");
-
-    useMemo(() => {
-        const searchParams = new URLSearchParams(location.search);
-        const queryCode = searchParams.get("code");
-        const queryState = searchParams.get("state");
-        if (queryCode && queryState) {
-            setCode(queryCode);
-            setState(queryState);
-        }
-    }, [location.search]);
+    const { isLoggedIn } = useLiff();
 
     const handleLoginMethod = (method) => {
         setLoginMethod(method);
-    };
-
-    const navigateToLineLogin = () => {
-        const clientId = "1660896460";
-        const redirectUri = encodeURIComponent(`${WEB_HOST}/login`);
-        const state = "login";
-        const scope = "openid%20profile%20email";
-        const url = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
-        window.location.href = url;
     };
 
     useEffect(() => {
@@ -159,13 +137,15 @@ const Login = () => {
         }
     }, [isLogin, navigate]);
 
-    useEffect(() => {
-        if (code && state) {
-            lineSignIn(code, state);
+    const handleLineLogin = async () => {
+        try {
+            if (!isLoggedIn) {
+                navigate("/liff");
+            }
+        } catch (error) {
+            console.error("liff error", error);
         }
-        setCode("");
-        setState("");
-    }, [code, state, lineSignIn]);
+    };
 
     return (
         <WrapperLoginContainer>
@@ -174,13 +154,15 @@ const Login = () => {
                     <LoginBox>
                         <LoginMethod>
                             <WelcomeImage src="/mornings.svg"></WelcomeImage>
+
                             <LineLoginButton
                                 isActive={loginMethod === "line"}
-                                onClick={() => navigateToLineLogin()}
+                                onClick={() => handleLineLogin()}
                             >
                                 <LineLoginIcon></LineLoginIcon>
                                 Sign in with LINE
                             </LineLoginButton>
+
                             <LoginButton
                                 isActive={loginMethod === "native"}
                                 onClick={() => handleLoginMethod("native")}
@@ -189,6 +171,7 @@ const Login = () => {
                                 <span> </span>
                                 Sign in with Email
                             </LoginButton>
+
                             <LoginTerms>
                                 By continuing, you are indicating that you
                                 accept our
