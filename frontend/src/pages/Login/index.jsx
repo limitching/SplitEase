@@ -5,8 +5,8 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { FaLine } from "react-icons/fa";
 import { GoMail } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
-import { WEB_HOST, LIFF_ID } from "../../global/constant";
-import liff from "@line/liff";
+import { WEB_HOST } from "../../global/constant";
+import { useLiff } from "react-liff";
 
 import { AuthContext } from "../../contexts/AuthContext";
 
@@ -124,6 +124,7 @@ const Login = () => {
     } = useContext(AuthContext);
     const [code, setCode] = useState("");
     const [state, setState] = useState("");
+    const { error, isLoggedIn, isReady, liff } = useLiff();
 
     useMemo(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -170,12 +171,13 @@ const Login = () => {
 
     const handleLineLogin = async () => {
         try {
-            await liff.init({ liffId: LIFF_ID });
-            if (!liff.isLoggedIn()) {
+            if (!isLoggedIn) {
                 liff.login({ redirectUri: `${WEB_HOST}/login` });
+            } else {
+                console.log("is looooooooooogin");
             }
         } catch (error) {
-            console.error(error);
+            console.error("liff error", error);
         }
     };
 

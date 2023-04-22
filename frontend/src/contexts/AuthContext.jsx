@@ -4,6 +4,8 @@ import { api } from "../utils/api";
 import Loading from "../components/Loading";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+// import liff from "@line/liff";
+import { useLiff } from "react-liff";
 const MySwal = withReactContent(Swal);
 
 const AuthContext = createContext({
@@ -37,7 +39,12 @@ const AuthContextProvider = ({ children }) => {
     const [haveAccount, setHaveAccount] = useState(true);
     const [userGroups, setUserGroups] = useState([]);
     const [groupChange, setGroupChange] = useState(false);
+    const { error, isLoggedIn, isReady, liff } = useLiff();
+    console.log("liff", liff);
+    console.log("isLIFFLoginIn", isLoggedIn);
 
+    // //TODO:
+    // liff.init({ liffId: LIFF_ID }, console.log("LIFF init success"));
     useEffect(() => {
         const checkAuthStatus = async () => {
             setLoading(true);
