@@ -1,11 +1,10 @@
 import styled from "styled-components";
 import { NativeLogin } from "./components/NativeLogin";
 import { NativeRegister } from "./components/NativeRegister";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect } from "react";
 import { FaLine } from "react-icons/fa";
 import { GoMail } from "react-icons/go";
-import { useLocation, useNavigate } from "react-router-dom";
-import { WEB_HOST } from "../../global/constant";
+import { useNavigate } from "react-router-dom";
 import { useLiff } from "react-liff";
 
 import { AuthContext } from "../../contexts/AuthContext";
@@ -111,7 +110,6 @@ const HaveAccountAlready = styled.a`
 `;
 
 const Login = () => {
-    const location = useLocation();
     const navigate = useNavigate();
     const {
         loading,
@@ -119,35 +117,12 @@ const Login = () => {
         haveAccount,
         loginMethod,
         setHaveAccount,
-        lineSignIn,
-        liffSignIn,
         setLoginMethod,
     } = useContext(AuthContext);
-    const [code, setCode] = useState("");
-    const [state, setState] = useState("");
-    const { error, isLoggedIn, isReady, liff } = useLiff();
-
-    useMemo(() => {
-        const searchParams = new URLSearchParams(location.search);
-        const queryCode = searchParams.get("code");
-        const queryState = searchParams.get("state");
-        if (queryCode && queryState) {
-            setCode(queryCode);
-            setState(queryState);
-        }
-    }, [location.search]);
+    const { isLoggedIn } = useLiff();
 
     const handleLoginMethod = (method) => {
         setLoginMethod(method);
-    };
-
-    const navigateToLineLogin = () => {
-        const clientId = "1660896460";
-        const redirectUri = encodeURIComponent(`${WEB_HOST}/login`);
-        const state = "login";
-        const scope = "openid%20profile%20email";
-        const url = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
-        window.location.href = url;
     };
 
     useEffect(() => {
@@ -162,29 +137,10 @@ const Login = () => {
         }
     }, [isLogin, navigate]);
 
-    useEffect(() => {
-        if (isLoggedIn) {
-            liffSignIn();
-        }
-    }, [isLoggedIn, liffSignIn]);
-
-    // useEffect(() => {
-    //     if (code && state) {
-    //         lineSignIn(code, state);
-    //     }
-    //     setCode("");
-    //     setState("");
-    // }, [code, state, lineSignIn]);
-
     const handleLineLogin = async () => {
         try {
             if (!isLoggedIn) {
-                liff.login({
-                    redirectUri: `${WEB_HOST}/login`,
-                    scope: ["profile", "email"],
-                });
-            } else {
-                console.log("is looooooooooogin");
+                navigate("/liff");
             }
         } catch (error) {
             console.error("liff error", error);
@@ -198,20 +154,13 @@ const Login = () => {
                     <LoginBox>
                         <LoginMethod>
                             <WelcomeImage src="/mornings.svg"></WelcomeImage>
-                            <LineLoginButton
-                                isActive={loginMethod === "line"}
-                                onClick={() => navigateToLineLogin()}
-                            >
-                                <LineLoginIcon></LineLoginIcon>
-                                Sign in with LINE
-                            </LineLoginButton>
 
                             <LineLoginButton
                                 isActive={loginMethod === "line"}
                                 onClick={() => handleLineLogin()}
                             >
                                 <LineLoginIcon></LineLoginIcon>
-                                Sign in with LINE LIFF
+                                Sign in with LINE
                             </LineLoginButton>
 
                             <LoginButton
