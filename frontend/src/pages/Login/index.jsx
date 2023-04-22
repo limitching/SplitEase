@@ -5,7 +5,8 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { FaLine } from "react-icons/fa";
 import { GoMail } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
-import { WEB_HOST } from "../../global/constant";
+import { WEB_HOST, LIFF_ID } from "../../global/constant";
+import liff from "@line/liff";
 
 import { AuthContext } from "../../contexts/AuthContext";
 
@@ -167,6 +168,17 @@ const Login = () => {
         setState("");
     }, [code, state, lineSignIn]);
 
+    const handleLineLogin = async () => {
+        try {
+            await liff.init({ liffId: LIFF_ID });
+            if (!liff.isLoggedIn()) {
+                liff.login({ redirectUri: `${WEB_HOST}/login` });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <WrapperLoginContainer>
             {haveAccount === true ? (
@@ -181,6 +193,15 @@ const Login = () => {
                                 <LineLoginIcon></LineLoginIcon>
                                 Sign in with LINE
                             </LineLoginButton>
+
+                            <LineLoginButton
+                                isActive={loginMethod === "line"}
+                                onClick={() => handleLineLogin()}
+                            >
+                                <LineLoginIcon></LineLoginIcon>
+                                Sign in with LINE LIFF
+                            </LineLoginButton>
+
                             <LoginButton
                                 isActive={loginMethod === "native"}
                                 onClick={() => handleLoginMethod("native")}
@@ -189,6 +210,7 @@ const Login = () => {
                                 <span> </span>
                                 Sign in with Email
                             </LoginButton>
+
                             <LoginTerms>
                                 By continuing, you are indicating that you
                                 accept our
