@@ -1,6 +1,8 @@
 // const API_HOST = "http://localhost:3000";
 const API_HOST = "https://api.splitease.cc";
+// const WEB_HOST = "http://localhost:3001";
 const WEB_HOST = "https://splitease.cc";
+const LIFF_ID = "1660896460-KPNk7vny";
 
 const SPLIT_METHODS = [
     "split equally",
@@ -107,6 +109,7 @@ const GROUP_TABS_VISITORS = [
 export {
     API_HOST,
     WEB_HOST,
+    LIFF_ID,
     SPLIT_METHODS,
     CURRENCY_OPTIONS,
     GROUP_TABS,
