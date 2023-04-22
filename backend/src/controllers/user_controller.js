@@ -57,6 +57,9 @@ const signIn = async (req, res) => {
             const { code, state } = data;
             result = await lineSignIn(code, state);
             break;
+        case "liff":
+            result = await liffSignIn(data);
+            break;
         default:
             result = { error: "Request Error: Wrong Request" };
     }
@@ -118,6 +121,21 @@ const lineSignIn = async (code, state) => {
                 error: "Permissions Error: LINE access code can not get line_id, name, image or email",
             };
         }
+        return await User.lineSignIn(name, email, image, line_id);
+    } catch (error) {
+        return { error: error };
+    }
+};
+
+const liffSignIn = async (data) => {
+    if (!data) {
+        return {
+            error: "Request Error: signIn data is required.",
+            status: 400,
+        };
+    }
+    try {
+        const { name, email, image, line_id } = data;
         return await User.lineSignIn(name, email, image, line_id);
     } catch (error) {
         return { error: error };

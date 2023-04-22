@@ -120,6 +120,7 @@ const Login = () => {
         loginMethod,
         setHaveAccount,
         lineSignIn,
+        liffSignIn,
         setLoginMethod,
     } = useContext(AuthContext);
     const [code, setCode] = useState("");
@@ -162,17 +163,26 @@ const Login = () => {
     }, [isLogin, navigate]);
 
     useEffect(() => {
-        if (code && state) {
-            lineSignIn(code, state);
+        if (isLoggedIn) {
+            liffSignIn();
         }
-        setCode("");
-        setState("");
-    }, [code, state, lineSignIn]);
+    }, [isLoggedIn, liffSignIn]);
+
+    // useEffect(() => {
+    //     if (code && state) {
+    //         lineSignIn(code, state);
+    //     }
+    //     setCode("");
+    //     setState("");
+    // }, [code, state, lineSignIn]);
 
     const handleLineLogin = async () => {
         try {
             if (!isLoggedIn) {
-                liff.login({ redirectUri: `${WEB_HOST}/login` });
+                liff.login({
+                    redirectUri: `${WEB_HOST}/login`,
+                    scope: ["profile", "email"],
+                });
             } else {
                 console.log("is looooooooooogin");
             }
