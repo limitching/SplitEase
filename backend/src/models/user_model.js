@@ -134,7 +134,7 @@ const getLineProfile = async (code, state) => {
         const authData = {
             grant_type: "authorization_code",
             code: code,
-            redirect_uri: "http://localhost:3001/login",
+            redirect_uri: `${WEB_DEPLOY_URI}/login`,
             client_id: LINE_CLIENT_ID,
             client_secret: LINE_CLIENT_SECRET,
         };
