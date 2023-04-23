@@ -11,7 +11,7 @@ const Debts = () => {
         <>
             <PageWrapper>
                 <HeaderTextContainer>
-                    <h6>Settle debts</h6>
+                    <h6>Total debts</h6>
                 </HeaderTextContainer>
                 <ListWrapper>
                     <DebtsBlock></DebtsBlock>
