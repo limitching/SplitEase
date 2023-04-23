@@ -42,6 +42,7 @@ const ExpenseSchema = new mongoose.Schema({
         },
     ],
     comments: {},
+    status: { type: String, default: "unsettled" },
     date: { type: Date, default: Date.now },
     image: { type: String },
     createTime: {
@@ -66,6 +67,17 @@ const getCurrencies = async () => {
 const getExpensesByGroupId = async (group_id) => {
     try {
         return await Expense.find({ attached_group_id: group_id });
+    } catch (error) {
+        return -1;
+    }
+};
+
+const getSettlingExpensesByGroupId = async (group_id) => {
+    try {
+        return await Expense.find({
+            attached_group_id: group_id,
+            status: "settling",
+        });
     } catch (error) {
         return -1;
     }
@@ -156,6 +168,22 @@ const updateExpenseUsers = async (expense_id, involved_users, date) => {
     }
 };
 
+const updateExpenseStatusByGroupId = async (group_id, deadline) => {
+    try {
+        const updateResult = await Expense.updateMany(
+            {
+                attached_group_id: group_id,
+                date: { $lte: new Date(deadline) },
+            },
+            { $set: { status: "settling" } }
+        );
+        return updateResult;
+    } catch (error) {
+        console.error(error);
+        return { error: error };
+    }
+};
+
 const deleteExpense = async (expense_id, group_id) => {
     const connection = await pool.getConnection();
     try {
@@ -187,10 +215,12 @@ const deleteExpense = async (expense_id, group_id) => {
 export {
     getCurrencies,
     getExpensesByGroupId,
+    getSettlingExpensesByGroupId,
     getExpensesByExpenseId,
     createExpenseUsers,
     createExpense,
     updateExpense,
     updateExpenseUsers,
+    updateExpenseStatusByGroupId,
     deleteExpense,
 };
