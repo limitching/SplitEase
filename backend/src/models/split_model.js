@@ -202,8 +202,42 @@ function minimizeDebts(graph) {
     // TODO:
     // console.log("Simplify the graph", simplifiedGraph);
 
+    // // Determine who owes how much money to whom
+    // const transactions = calculateTransaction(simplifiedGraph);
+    const transactions = minimizeTransaction(simplifiedGraph);
+    return transactions;
+}
+
+function minimizeTransaction(graph) {
+    const N = graph.length;
+
+    // Calculate total debts and credits for each person
+    for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+            if (i === j) {
+                continue;
+            }
+            if (graph[i][j] !== 0 && graph[j][i] !== 0) {
+                if (graph[i][j] >= graph[j][i]) {
+                    graph[i][j] = graph[i][j] - graph[j][i];
+                    graph[j][i] = 0;
+                } else {
+                    graph[j][i] = graph[j][i] - graph[i][j];
+                    graph[i][j] = 0;
+                }
+            }
+        }
+    }
+
     // Determine who owes how much money to whom
-    const transactions = calculateTransaction(simplifiedGraph);
+    let transactions = [];
+    for (let i = 0; i < graph.length; i++) {
+        for (let j = 0; j < graph.length; j++) {
+            if (graph[i][j] !== 0) {
+                transactions.push([j, i, graph[i][j]]);
+            }
+        }
+    }
     return transactions;
 }
 
