@@ -14,6 +14,7 @@ const GroupContext = createContext({
     indexMap: new Map(),
     groupExpense: [],
     debts: [],
+    settlingDebts: [],
     expensesChanged: false,
     isPublicVisit: false,
     error: null,
@@ -53,6 +54,15 @@ async function fetchGroupDebts(group_id, setDebts, jwtToken) {
     }
 }
 
+async function fetchSettlingGroupDebts(group_id, setSettlingDebts, jwtToken) {
+    try {
+        const data = await api.getSettlingGroupDebts(group_id, jwtToken);
+        setSettlingDebts(data);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 async function fetchGroupPublicInformation(
     slug,
     invitation_code,
@@ -80,6 +90,7 @@ const GroupContextProvider = ({ children }) => {
     const [members, setMembers] = useState([]);
     const [groupExpense, setGroupExpense] = useState([]);
     const [debts, setDebts] = useState([]);
+    const [settlingDebts, setSettlingDebts] = useState([]);
     const [expensesChanged, setExpensesChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [group, setGroup] = useState({});
@@ -149,6 +160,7 @@ const GroupContextProvider = ({ children }) => {
             fetchMembers(group_id, setMembers);
             fetchGroupExpenses(group_id, setGroupExpense);
             fetchGroupDebts(group_id, setDebts, jwtToken);
+            fetchSettlingGroupDebts(group_id, setSettlingDebts, jwtToken);
             setIsLoading(false);
         }
     }, [group_id, jwtToken]);
@@ -158,6 +170,7 @@ const GroupContextProvider = ({ children }) => {
             setIsLoading(true);
             fetchGroupExpenses(group_id, setGroupExpense);
             fetchGroupDebts(group_id, setDebts, jwtToken);
+            fetchSettlingGroupDebts(group_id, setSettlingDebts, jwtToken);
             setIsLoading(false);
             setExpensesChanged(false);
         }
@@ -254,6 +267,7 @@ const GroupContextProvider = ({ children }) => {
                 indexMap,
                 groupExpense,
                 debts,
+                settlingDebts,
                 expensesChanged,
                 isPublicVisit,
                 error,
