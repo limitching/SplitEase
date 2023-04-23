@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Container } from "react-bootstrap";
 const SettlingDebtsBlock = () => {
-    const { members, settlingDebts, debts } = useContext(GroupContext);
+    const { members, settlingDebts } = useContext(GroupContext);
     return (
         <List
             dense
