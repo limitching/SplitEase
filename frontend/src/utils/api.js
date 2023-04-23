@@ -89,6 +89,22 @@ const api = {
             return error.response;
         }
     },
+    settleUpGroupDebts: async function (group_id, settlementData, jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const { data } = await axios.post(
+                `${this.hostname}/debts/${group_id}`,
+                settlementData,
+                config
+            );
+            return data;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
     userSignIn: async function (data) {
         try {
             const result = await axios.post(
