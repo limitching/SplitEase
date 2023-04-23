@@ -46,6 +46,13 @@ const getMembers = async (group_id) => {
     return members;
 };
 
+const getMember = async (group_id, user_id) => {
+    const memberQuery =
+        "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ? AND user_id = ?";
+    const [member] = await pool.query(memberQuery, [group_id, user_id]);
+    return member;
+};
+
 const createGroup = async (newGroupData) => {
     if (!newGroupData.slug) {
         newGroupData.slug = uuidV4();
@@ -183,6 +190,7 @@ export {
     getGroups,
     archiveGroup,
     getMembers,
+    getMember,
     createGroup,
     editGroup,
     joinGroupViaCode,
