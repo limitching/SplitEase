@@ -180,7 +180,7 @@ const ExpensesBlock = () => {
                                                     "_debtor_" +
                                                     index
                                                 }
-                                                title={debtor.name + index}
+                                                title={debtor.name}
                                             >
                                                 <Avatar
                                                     alt={debtor.name}

@@ -6,6 +6,7 @@ import {
     ListItemAvatar,
     Avatar,
     Divider,
+    Tooltip,
 } from "@mui/material";
 import { Container } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
@@ -39,11 +40,13 @@ const MemberList = () => {
                         <ListItem>
                             <ListItemButton>
                                 <ListItemAvatar>
-                                    <Avatar
-                                        alt={user.name}
-                                        src={user.image}
-                                        sx={{ width: 50, height: 50 }}
-                                    />
+                                    <Tooltip title={user.name}>
+                                        <Avatar
+                                            alt={user.name}
+                                            src={user.image}
+                                            sx={{ width: 50, height: 50 }}
+                                        />
+                                    </Tooltip>
                                 </ListItemAvatar>
                                 <Container>
                                     <ListItemText

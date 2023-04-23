@@ -9,6 +9,7 @@ import {
     ListItemAvatar,
     Avatar,
     Divider,
+    Tooltip,
 } from "@mui/material";
 import { Container } from "react-bootstrap";
 const DebtsBlock = () => {
@@ -39,11 +40,16 @@ const DebtsBlock = () => {
                                 <ListItem>
                                     <ListItemButton>
                                         <ListItemAvatar>
-                                            <Avatar
-                                                alt={`${debtor.name}`}
-                                                src={debtor.image}
-                                                sx={{ width: 50, height: 50 }}
-                                            />
+                                            <Tooltip title={debtor.name}>
+                                                <Avatar
+                                                    alt={`${debtor.name}`}
+                                                    src={debtor.image}
+                                                    sx={{
+                                                        width: 50,
+                                                        height: 50,
+                                                    }}
+                                                />
+                                            </Tooltip>
                                         </ListItemAvatar>
                                         <Container>
                                             <ListItemText
@@ -70,11 +76,16 @@ const DebtsBlock = () => {
                                         </Container>
 
                                         <ListItemAvatar>
-                                            <Avatar
-                                                alt={creditor.name}
-                                                src={creditor.image}
-                                                sx={{ width: 50, height: 50 }}
-                                            />
+                                            <Tooltip title={creditor.name}>
+                                                <Avatar
+                                                    alt={creditor.name}
+                                                    src={creditor.image}
+                                                    sx={{
+                                                        width: 50,
+                                                        height: 50,
+                                                    }}
+                                                />
+                                            </Tooltip>
                                         </ListItemAvatar>
                                     </ListItemButton>
                                 </ListItem>
