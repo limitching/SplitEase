@@ -9,6 +9,7 @@ import {
     getPublicInformation,
     joinGroup,
     editExistingGroup,
+    startSettlement,
 } from "../controllers/group_controller.js";
 import { authentication } from "../utils/util.js";
 import createGroupValidator from "../middlewares/validators/createGroupValidator.js";
@@ -32,5 +33,10 @@ router
     .route("/group/:slug/join")
     .get(wrapAsync(getPublicInformation))
     .post(authentication(), wrapAsync(joinGroup));
+
+/* Join the Group via Invitation */
+router
+    .route("/group/:group_id/settle")
+    .post(authentication(), wrapAsync(startSettlement));
 
 export default router;
