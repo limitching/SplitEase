@@ -59,10 +59,14 @@ const api = {
             return error.response;
         }
     },
-    getGroupDebts: async function (group_id) {
+    getGroupDebts: async function (group_id, jwtToken) {
         try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
             const { data } = await axios.get(
-                `${this.hostname}/debts/${group_id}`
+                `${this.hostname}/debts/${group_id}`,
+                config
             );
             return data;
         } catch (error) {

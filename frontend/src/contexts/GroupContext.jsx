@@ -44,9 +44,9 @@ async function fetchGroupExpenses(group_id, setGroupExpense) {
     }
 }
 
-async function fetchGroupDebts(group_id, setDebts) {
+async function fetchGroupDebts(group_id, setDebts, jwtToken) {
     try {
-        const data = await api.getGroupDebts(group_id);
+        const data = await api.getGroupDebts(group_id, jwtToken);
         setDebts(data);
     } catch (error) {
         console.error(error);
@@ -73,7 +73,7 @@ async function fetchGroupPublicInformation(
 
 const GroupContextProvider = ({ children }) => {
     const location = useLocation();
-    const { userGroups } = useContext(AuthContext);
+    const { userGroups, jwtToken } = useContext(AuthContext);
     const { slug } = useParams();
 
     const [group_id, setGroup_id] = useState(null);
@@ -148,20 +148,20 @@ const GroupContextProvider = ({ children }) => {
             setIsLoading(true);
             fetchMembers(group_id, setMembers);
             fetchGroupExpenses(group_id, setGroupExpense);
-            fetchGroupDebts(group_id, setDebts);
+            fetchGroupDebts(group_id, setDebts, jwtToken);
             setIsLoading(false);
         }
-    }, [group_id]);
+    }, [group_id, jwtToken]);
 
     useEffect(() => {
         if (expensesChanged) {
             setIsLoading(true);
             fetchGroupExpenses(group_id, setGroupExpense);
-            fetchGroupDebts(group_id, setDebts);
+            fetchGroupDebts(group_id, setDebts, jwtToken);
             setIsLoading(false);
             setExpensesChanged(false);
         }
-    }, [expensesChanged, group_id]);
+    }, [expensesChanged, group_id, jwtToken]);
     useEffect(() => {
         if (!debts[group.default_currency]) {
             const newBalance = new Array(members.length).fill(0);
