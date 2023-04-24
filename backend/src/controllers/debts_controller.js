@@ -10,6 +10,7 @@ import {
     getSettlingByGroupId,
 } from "../models/debts_model.js";
 import { minimizeDebts } from "../models/split_model.js";
+
 const getGroupDebts = async (req, res) => {
     const group_id = req.params.group_id;
     const groupMembers = await getMembers(group_id);
@@ -114,6 +115,7 @@ const getSettlingGroupDebts = async (req, res) => {
 
     const groupExpenses = await getSettlingExpensesByGroupId(group_id);
     const settlements = await getSettlingByGroupId(group_id);
+
     // TODO:
     // console.log(settlements);
 
@@ -194,7 +196,9 @@ const getSettlingGroupDebts = async (req, res) => {
                 j++
             ) {
                 const debt = currencyTransactions[currency_option][j];
-                debt[2] = Number(debt[2].toFixed(2));
+
+                // Compare string
+                debt[2] = debt[2].toFixed(2);
                 if (settledDebt.toString() === debt.toString()) {
                     currencyTransactions[currency_option].splice(j, 1);
                     break;
@@ -211,6 +215,8 @@ const getSettlingGroupDebts = async (req, res) => {
             break;
         }
     }
+    // console.log(currencyTransactions);
+    // console.log(isSettled);
 
     if (isSettled && settlements.length !== 0) {
         await updateExpenseStatusToSettled(group_id);
@@ -230,7 +236,7 @@ const settleUpDebts = async (req, res) => {
     }
     const settlementData = req.body;
     settlementData.group_id = group_id;
-    const settlementResult = await createSettlement(settlementData);
+    const settlementResult = await createSettlement(settlementData, user_id);
     if (settlementResult === -1) {
         return res.status(500).json({ error: "Internal Server Error: MySQL" });
     }

@@ -1,10 +1,11 @@
 import { pool } from "../databases/MySQL.database.js";
+import { CURRENCY_MAP } from "../utils/constant.js";
 import dotenv from "dotenv";
 import path from "path";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 dotenv.config({ path: __dirname + "/../../.env" });
 
-const createSettlement = async (settlementData) => {
+const createSettlement = async (settlementData, user_id) => {
     const connection = await pool.getConnection();
     try {
         await connection.query("START TRANSACTION");
@@ -12,6 +13,19 @@ const createSettlement = async (settlementData) => {
             "INSERT INTO `settlements` SET ?",
             settlementData
         );
+
+        // Logs
+        const logData = {
+            user_id: user_id,
+            group_id: settlementData.group_id,
+            event: "marked debt as settled",
+            event_target: `${settlementData.payer_id} to ${settlementData.payee_id}`,
+            event_value: `${
+                CURRENCY_MAP[settlementData.currency_option].symbol
+            } ${settlementData.amount}`,
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
+
         await connection.query("COMMIT");
         return 0;
     } catch (error) {

@@ -214,6 +214,19 @@ const getGroupInformationViaCode = async (slug, invitation_code) => {
     }
 };
 
+const getLogs = async (group_id) => {
+    try {
+        const [logs] = await pool.query(
+            "SELECT * FROM `logs` WHERE group_id = ? ",
+            [group_id]
+        );
+        return logs;
+    } catch (error) {
+        console.error(error);
+        return { error: error };
+    }
+};
+
 export {
     getGroups,
     archiveGroup,
@@ -223,4 +236,5 @@ export {
     editGroup,
     joinGroupViaCode,
     getGroupInformationViaCode,
+    getLogs,
 };

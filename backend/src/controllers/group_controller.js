@@ -2,10 +2,12 @@ import {
     getGroups,
     archiveGroup,
     getMembers,
+    getMember,
     createGroup,
     editGroup,
     joinGroupViaCode,
     getGroupInformationViaCode,
+    getLogs,
 } from "../models/group_model.js";
 import { updateExpenseStatusByGroupId } from "../models/expense_model.js";
 import User from "../models/user_model.js";
@@ -116,8 +118,26 @@ const startSettlement = async (req, res) => {
     if (expenseResult.error) {
         return res.status(500).json("Internal DB error.");
     }
-    // console.log(expenseResult);
     return res.status(200).json("Successfully update expense stage.");
+};
+
+const getGroupLogs = async (req, res) => {
+    const user_id = req.user.id;
+    const group_id = req.params.group_id;
+
+    const member = await getMember(group_id, user_id);
+    if (member.length === 0) {
+        return res.status(400).json({
+            error: "Unauthorized, only group member can access logs.",
+        });
+    }
+
+    const logs = await getLogs(group_id);
+    if (logs.error) {
+        return res.status(500).json({ error: "Internal Server Error (MySQL)" });
+    }
+
+    return res.status(200).json(logs);
 };
 
 export {
@@ -129,4 +149,5 @@ export {
     joinGroup,
     editExistingGroup,
     startSettlement,
+    getGroupLogs,
 };
