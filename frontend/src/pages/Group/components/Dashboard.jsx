@@ -85,6 +85,7 @@ const GroupDashboard = () => {
         indexMap,
         spent,
         usersShare,
+        debts,
     } = useContext(GroupContext);
     const { userGroups, jwtToken, isLogin, joinGroup, user } =
         useContext(AuthContext);
@@ -149,14 +150,36 @@ const GroupDashboard = () => {
     // console.log(indexMap);
     // console.log(userIndex);
     // console.log(usersShare[userIndex]);
+    let isNoDebts = true;
+
+    for (let currency_option in debts) {
+        if (debts[currency_option].length !== 0) {
+            isNoDebts = false;
+            break;
+        }
+    }
+
     return (
         <UserDashboard>
             <DashboardWrapper>
-                <DoughnutWrapper>
-                    <DoughnutChart
-                        shouldPayUser={shouldPayUser}
-                    ></DoughnutChart>
-                </DoughnutWrapper>
+                {isNoDebts ? (
+                    <img
+                        alt=""
+                        src="/assets/noDebt.svg"
+                        style={{
+                            maxWidth: "50%",
+                            minWidth: "300px",
+                            height: "300px",
+                            width: "auto",
+                        }}
+                    ></img>
+                ) : (
+                    <DoughnutWrapper>
+                        <DoughnutChart
+                            shouldPayUser={shouldPayUser}
+                        ></DoughnutChart>
+                    </DoughnutWrapper>
+                )}
 
                 {/* <HorizontalBarChart></HorizontalBarChart> */}
 
