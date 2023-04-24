@@ -15,7 +15,7 @@ import { authentication } from "../utils/util.js";
 /* Expense API */
 router
     .route("/expense")
-    .get(wrapAsync(getGroupExpenses))
+    .get(authentication(), wrapAsync(getGroupExpenses))
     .post(
         authentication(),
         expenseUpload,
