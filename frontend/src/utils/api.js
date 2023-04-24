@@ -89,6 +89,26 @@ const api = {
             return error.response;
         }
     },
+    startSettlingGroupDebts: async function (
+        group_id,
+        startSettlingData,
+        jwtToken
+    ) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.post(
+                `${this.hostname}/group/${group_id}/settle`,
+                startSettlingData,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
     settleUpGroupDebts: async function (group_id, settlementData, jwtToken) {
         try {
             const config = {
@@ -105,6 +125,7 @@ const api = {
             return error.response;
         }
     },
+
     userSignIn: async function (data) {
         try {
             const result = await axios.post(

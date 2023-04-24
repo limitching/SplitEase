@@ -1,5 +1,5 @@
 import DebtsBlock from "./components/DebtsBlock";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
     PageWrapper,
     ListWrapper,
@@ -19,17 +19,63 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Button from "@mui/material-next/Button";
 import { DASHBOARD_BG_COLOR } from "../../../../global/constant";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { api } from "../../../../utils/api";
+import { GroupContext } from "../../../../contexts/GroupContext";
+import { AuthContext } from "../../../../contexts/AuthContext";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 
 const Debts = () => {
     const [alertOpen, setAlertOpen] = useState(false);
+    const { group_id, group } = useContext(GroupContext);
+    const { jwtToken, user } = useContext(AuthContext);
+    const [selectSettlingDate, setSelectSettlingDate] = useState(
+        dayjs(new Date())
+    );
     const handleAlertOpen = () => {
+        setSelectSettlingDate(dayjs(new Date()).startOf("day"));
         setAlertOpen(true);
     };
     const handleAlertClose = () => {
         setAlertOpen(false);
     };
 
-    const handleStartSettling = () => {};
+    const handleStartSettling = async (selectSettlingDate) => {
+        console.log(selectSettlingDate);
+        const formattedDate = selectSettlingDate.toISOString();
+        console.log(formattedDate);
+        const startSettlingData = { deadline: formattedDate };
+        const response = await api.startSettlingGroupDebts(
+            group_id,
+            startSettlingData,
+            jwtToken
+        );
+        console.log(response);
+        if (response.status === 200) {
+            handleAlertClose();
+            MySwal.fire({
+                title: <p>Start Settling Successfully!</p>,
+                icon: "success",
+                timer: 1000,
+                didOpen: () => {
+                    MySwal.showLoading();
+                },
+            });
+        } else {
+            handleAlertClose();
+            const { error } = response.data;
+            MySwal.fire({
+                title: <p>Unauthorized</p>,
+                html: <p>{error}</p>,
+                icon: "error",
+                timer: 2000,
+                didOpen: () => {
+                    MySwal.showLoading();
+                },
+            });
+        }
+    };
     return (
         <>
             <PageWrapper>
@@ -42,7 +88,6 @@ const Debts = () => {
                 <FixedButtonWrapper>
                     <Button
                         color="primary"
-                        disabled={false}
                         size="large"
                         variant="filled"
                         startIcon={<AccessTimeIcon></AccessTimeIcon>}
@@ -54,6 +99,7 @@ const Debts = () => {
                                 opacity: 0.87,
                             },
                         }}
+                        disabled={user.id === group.owner ? false : true}
                     >
                         START SETTLING
                     </Button>
@@ -82,7 +128,8 @@ const Debts = () => {
                     <br></br>
                     <DatePicker
                         label="Select date"
-                        defaultValue={dayjs(new Date())}
+                        value={selectSettlingDate}
+                        onChange={(newValue) => setSelectSettlingDate(newValue)}
                         slotProps={{
                             textField: {
                                 helperText: "Format: MM/DD/YYYY",
@@ -93,7 +140,11 @@ const Debts = () => {
                 </DialogContent>
                 <DialogActions>
                     <MuiButton onClick={handleAlertClose}>Cancel</MuiButton>
-                    <MuiButton onClick={() => handleStartSettling()} autoFocus>
+                    <MuiButton
+                        onClick={() => handleStartSettling(selectSettlingDate)}
+                        autoFocus
+                        disabled={user.id === group.owner ? false : true}
+                    >
                         Confirm
                     </MuiButton>
                 </DialogActions>
