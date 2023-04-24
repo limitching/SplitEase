@@ -36,4 +36,17 @@ const getSettlementsByGroupId = async (group_id) => {
     }
 };
 
-export { createSettlement, getSettlementsByGroupId };
+const getSettlingByGroupId = async (group_id) => {
+    try {
+        const [settlements] = await pool.query(
+            "SELECT * FROM `settlements` WHERE group_id = ? AND status = 0",
+            [group_id]
+        );
+        return settlements;
+    } catch (error) {
+        console.error(error);
+        return { error };
+    }
+};
+
+export { createSettlement, getSettlementsByGroupId, getSettlingByGroupId };
