@@ -87,11 +87,11 @@ const getGroupDebts = async (req, res) => {
                 const payerIndex = settlement[0];
                 const payeeIndex = settlement[1];
                 const amount = settlement[2];
-                graph[payeeIndex][payerIndex] -= amount;
+                graph[payerIndex][payeeIndex] += Number(amount);
             });
         }
         //TODO:
-        // console.log(graph);
+        console.log(graph);
         currencyTransactions[currency_option] = minimizeDebts(graph);
         //TODO:
         if (Object.keys(settlementTransactions).length === 0) {
