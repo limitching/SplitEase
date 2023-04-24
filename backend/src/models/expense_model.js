@@ -70,7 +70,7 @@ const getExpensesByGroupId = async (group_id) => {
             date: -1,
         });
     } catch (error) {
-        return -1;
+        return [];
     }
 };
 

@@ -46,10 +46,15 @@ const archiveGroup = async (group_id, user_id) => {
 };
 
 const getMembers = async (group_id) => {
-    const memberQuery =
-        "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ? ORDER BY user_id";
-    const [members] = await pool.query(memberQuery, [group_id]);
-    return members;
+    try {
+        const memberQuery =
+            "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ? ORDER BY user_id";
+        const [members] = await pool.query(memberQuery, [group_id]);
+        return members;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
 };
 
 const getMember = async (group_id, user_id) => {
