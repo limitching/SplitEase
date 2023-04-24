@@ -211,7 +211,7 @@ const getSettlingGroupDebts = async (req, res) => {
             break;
         }
     }
-    console.log(isSettled);
+
     if (isSettled && settlements.length !== 0) {
         await updateExpenseStatusToSettled(group_id);
     }
