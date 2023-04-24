@@ -290,5 +290,20 @@ const api = {
             return error.response;
         }
     },
+    getGroupLogs: async function (jwtToken, group_id) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const { data } = await axios.get(
+                `${this.hostname}/group/${group_id}/logs`,
+                config
+            );
+            return data;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
 };
 export { api };
