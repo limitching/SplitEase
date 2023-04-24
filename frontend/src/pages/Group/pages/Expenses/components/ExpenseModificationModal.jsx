@@ -219,8 +219,8 @@ const ExpenseModificationModal = () => {
                                     onClick={handleAlertOpen}
                                     className="mb-3"
                                     disabled={
-                                        selectedExpense?.status ??
-                                        "" === "settled"
+                                        (selectedExpense?.status ?? "") ===
+                                        "settled"
                                             ? true
                                             : false
                                     }
