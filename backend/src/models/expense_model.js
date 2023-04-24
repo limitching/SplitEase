@@ -171,6 +171,8 @@ const updateExpenseUsers = async (expense_id, involved_users, date) => {
 };
 
 const updateExpenseStatusByGroupId = async (group_id, deadline) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
         const updateResult = await Expense.updateMany(
             {
@@ -178,40 +180,53 @@ const updateExpenseStatusByGroupId = async (group_id, deadline) => {
                 date: { $lte: new Date(deadline) },
                 status: "unsettled",
             },
-            { $set: { status: "settling" } }
+            { $set: { status: "settling" } },
+            { session }
         );
+        await session.commitTransaction();
         return updateResult;
     } catch (error) {
         console.error(error);
+        await session.abortTransaction();
         return { error: error };
+    } finally {
+        session.endSession();
     }
 };
 
 const deleteExpense = async (expense_id, group_id) => {
     const connection = await pool.getConnection();
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
         await connection.query("START TRANSACTION");
         const deleteExpenseQuery =
             "DELETE FROM expense_users WHERE m_expense_id = ?";
         await connection.query(deleteExpenseQuery, [expense_id]);
 
-        const deleteResult = await Expense.findOneAndDelete({
-            _id: expense_id,
-            attached_group_id: group_id,
-        });
+        const deleteResult = await Expense.findOneAndDelete(
+            {
+                _id: expense_id,
+                attached_group_id: group_id,
+            },
+            { session }
+        );
         if (deleteResult === null) {
             await connection.query("ROLLBACK");
+            await session.abortTransaction();
             return -400;
         }
-
+        await session.commitTransaction();
         await connection.query("COMMIT");
         return 0;
     } catch (error) {
         console.error(error);
+        await session.abortTransaction();
         await connection.query("ROLLBACK");
         return -1;
     } finally {
         await connection.release();
+        session.endSession();
     }
 };
 
