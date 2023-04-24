@@ -20,6 +20,7 @@ const getGroupDebts = async (req, res) => {
     const currencyTransactions = {};
 
     const groupExpenses = await getExpensesByGroupId(group_id);
+    const settlement = await getSettlementsByGroupId(group_id);
 
     groupExpenses.forEach((expense) => {
         if (expense.currency_option in currencyGraph === false) {
@@ -62,8 +63,44 @@ const getGroupDebts = async (req, res) => {
             }
         }
     });
+
+    const settlementTransactions = {};
+    settlement.forEach((settlement) => {
+        if (settlement.currency_option in settlementTransactions === false) {
+            settlementTransactions[settlement.currency_option] = [];
+        }
+        const payerIndex = membersIndexMap.get(settlement.payer_id);
+        const payeeIndex = membersIndexMap.get(settlement.payee_id);
+        settlementTransactions[settlement.currency_option].push([
+            payerIndex,
+            payeeIndex,
+            settlement.amount,
+        ]);
+    });
+
     for (const [currency_option, graph] of Object.entries(currencyGraph)) {
         currencyTransactions[currency_option] = minimizeDebts(graph);
+        if (Object.keys(settlementTransactions).length === 0) {
+            continue;
+        }
+        for (
+            let i = 0;
+            i < settlementTransactions[currency_option].length;
+            i++
+        ) {
+            const settledDebt = settlementTransactions[currency_option][i];
+            for (
+                let j = 0;
+                j < currencyTransactions[currency_option].length;
+                j++
+            ) {
+                const debt = currencyTransactions[currency_option][j];
+                if (settledDebt.toString() === debt.toString()) {
+                    currencyTransactions[currency_option].splice(j, 1);
+                    break;
+                }
+            }
+        }
     }
 
     return res.status(200).json(currencyTransactions);
