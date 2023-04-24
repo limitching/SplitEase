@@ -144,8 +144,12 @@ const getSettlingGroupDebts = async (req, res) => {
     });
     // TODO:
     // console.log(currencyGraph);
+    // console.log(settlementTransactions);
     for (const [currency_option, graph] of Object.entries(currencyGraph)) {
         currencyTransactions[currency_option] = minimizeDebts(graph);
+        if (Object.keys(settlementTransactions).length === 0) {
+            continue;
+        }
         for (
             let i = 0;
             i < settlementTransactions[currency_option].length;
@@ -185,7 +189,7 @@ const settleUpDebts = async (req, res) => {
         return res.status(500).json({ error: "Internal Server Error: MySQL" });
     }
 
-    return res.status(200).json("hello");
+    return res.status(200).json({ status: 200 });
 };
 
 export { getGroupDebts, getSettlingGroupDebts, settleUpDebts };
