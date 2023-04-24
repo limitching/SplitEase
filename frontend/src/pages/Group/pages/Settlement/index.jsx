@@ -21,6 +21,7 @@ import { AuthContext } from "../../../../contexts/AuthContext";
 import { GroupContext } from "../../../../contexts/GroupContext";
 import { CURRENCY_MAP } from "../../../../global/constant";
 import { api } from "../../../../utils/api";
+
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
@@ -29,12 +30,12 @@ const Settlement = () => {
     const [selectDebt, setSelectDebt] = useState({
         payer_id: null,
         payee_id: null,
-        amount: null,
+        amount: 0,
         currency_option: null,
     });
     const [alertOpen, setAlertOpen] = useState(false);
     const { jwtToken } = useContext(AuthContext);
-    const { group_id, setExpensesChanged, memberMap } =
+    const { group_id, setExpensesChanged, memberMap, settlingDebts } =
         useContext(GroupContext);
     const handleAlertOpen = () => {
         setAlertOpen(true);
@@ -75,19 +76,42 @@ const Settlement = () => {
 
         setExpensesChanged(true);
     };
+
+    let isSettled = true;
+
+    for (let currency_option in settlingDebts) {
+        if (settlingDebts[currency_option].length !== 0) {
+            isSettled = false;
+            break;
+        }
+    }
+
     return (
         <>
             <PageWrapper>
-                <HeaderTextContainer>
-                    <h6>Settling debts (Debts in settling process...)</h6>
-                </HeaderTextContainer>
-                <ListWrapper>
-                    <SettlingDebtsBlock
-                        setSelectDebt={setSelectDebt}
-                        handleMarkAsSettled={handleMarkAsSettled}
-                        handleAlertOpen={handleAlertOpen}
-                    ></SettlingDebtsBlock>
-                </ListWrapper>
+                {isSettled ? (
+                    <img
+                        src="/assets/allDone.svg"
+                        alt="All done :)"
+                        width="500px"
+                    ></img>
+                ) : (
+                    <>
+                        {" "}
+                        <HeaderTextContainer>
+                            <h6>
+                                Settling debts (Debts in settling process...)
+                            </h6>
+                        </HeaderTextContainer>
+                        <ListWrapper>
+                            <SettlingDebtsBlock
+                                setSelectDebt={setSelectDebt}
+                                handleMarkAsSettled={handleMarkAsSettled}
+                                handleAlertOpen={handleAlertOpen}
+                            ></SettlingDebtsBlock>
+                        </ListWrapper>
+                    </>
+                )}
             </PageWrapper>
             <Dialog
                 open={alertOpen}
@@ -138,7 +162,7 @@ const Settlement = () => {
                         <Container>
                             <ListItemText
                                 primary={`→`}
-                                secondary={`${selectDebt.amount} ${
+                                secondary={`${selectDebt.amount.toFixed(2)} ${
                                     CURRENCY_MAP[selectDebt.currency_option]
                                         ?.symbol ?? "Unknown"
                                 }`}
