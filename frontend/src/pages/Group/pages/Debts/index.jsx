@@ -28,7 +28,7 @@ const MySwal = withReactContent(Swal);
 
 const Debts = () => {
     const [alertOpen, setAlertOpen] = useState(false);
-    const { group_id, group } = useContext(GroupContext);
+    const { group_id, group, setExpensesChanged } = useContext(GroupContext);
     const { jwtToken, user } = useContext(AuthContext);
     const [selectSettlingDate, setSelectSettlingDate] = useState(
         dayjs(new Date())
@@ -75,6 +75,7 @@ const Debts = () => {
                 },
             });
         }
+        setExpensesChanged(true);
     };
     return (
         <>
