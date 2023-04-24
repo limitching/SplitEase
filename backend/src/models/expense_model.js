@@ -66,7 +66,9 @@ const getCurrencies = async () => {
 
 const getExpensesByGroupId = async (group_id) => {
     try {
-        return await Expense.find({ attached_group_id: group_id });
+        return await Expense.find({ attached_group_id: group_id }).sort({
+            date: -1,
+        });
     } catch (error) {
         return -1;
     }
@@ -174,6 +176,7 @@ const updateExpenseStatusByGroupId = async (group_id, deadline) => {
             {
                 attached_group_id: group_id,
                 date: { $lte: new Date(deadline) },
+                status: "unsettled",
             },
             { $set: { status: "settling" } }
         );
@@ -212,6 +215,22 @@ const deleteExpense = async (expense_id, group_id) => {
     }
 };
 
+const updateExpenseStatusToSettled = async (group_id) => {
+    try {
+        const updateResult = await Expense.updateMany(
+            {
+                attached_group_id: group_id,
+                status: "settling",
+            },
+            { $set: { status: "settled" } }
+        );
+        return updateResult;
+    } catch (error) {
+        console.error(error);
+        return { _id: -1 };
+    }
+};
+
 export {
     getCurrencies,
     getExpensesByGroupId,
@@ -223,4 +242,5 @@ export {
     updateExpenseUsers,
     updateExpenseStatusByGroupId,
     deleteExpense,
+    updateExpenseStatusToSettled,
 };
