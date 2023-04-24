@@ -14,7 +14,7 @@ const ExpenseContext = createContext({
     selectedCurrency: 1,
     selectedCreditor: 0,
     selectedSplitMethod: 0,
-    selectedExpense: null,
+    selectedExpense: { status: "unsettled" },
     expenseTime: localISOTime,
     description: "",
     showTransaction: false,
@@ -43,7 +43,9 @@ const ExpenseContextProvider = ({ children }) => {
     const [selectedCurrency, setSelectedCurrency] = useState(1);
     const [selectedCreditor, setSelectedCreditor] = useState(0);
     const [selectedSplitMethod, setSelectedSplitMethod] = useState(0);
-    const [selectedExpense, setSelectedExpense] = useState(null);
+    const [selectedExpense, setSelectedExpense] = useState({
+        status: "unsettled",
+    });
     const [expenseTime, setExpenseTime] = useState(localISOTime);
     const [description, setDescription] = useState("");
     const [showTransaction, setShowTransaction] = useState(false);

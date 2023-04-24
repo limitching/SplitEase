@@ -9,6 +9,8 @@ import {
     IconButton,
     Tooltip,
 } from "@mui/material";
+
+import { DASHBOARD_BG_COLOR } from "../../../../../global/constant";
 import Button from "@mui/material-next/Button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import SendIcon from "@mui/icons-material/Send";
@@ -151,6 +153,13 @@ const InviteViaLink = () => {
                     variant="filled"
                     startIcon={<ShareIcon></ShareIcon>}
                     onClickCapture={handleCopyLink}
+                    sx={{
+                        bgcolor: DASHBOARD_BG_COLOR,
+                        "&:hover": {
+                            bgcolor: DASHBOARD_BG_COLOR,
+                            opacity: 0.87,
+                        },
+                    }}
                 >
                     SHARE LINK
                 </Button>

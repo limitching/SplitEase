@@ -14,6 +14,7 @@ const GroupContext = createContext({
     indexMap: new Map(),
     groupExpense: [],
     debts: [],
+    settlingDebts: [],
     expensesChanged: false,
     isPublicVisit: false,
     error: null,
@@ -44,10 +45,19 @@ async function fetchGroupExpenses(group_id, setGroupExpense) {
     }
 }
 
-async function fetchGroupDebts(group_id, setDebts) {
+async function fetchGroupDebts(group_id, setDebts, jwtToken) {
     try {
-        const data = await api.getGroupDebts(group_id);
+        const data = await api.getGroupDebts(group_id, jwtToken);
         setDebts(data);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function fetchSettlingGroupDebts(group_id, setSettlingDebts, jwtToken) {
+    try {
+        const data = await api.getSettlingGroupDebts(group_id, jwtToken);
+        setSettlingDebts(data);
     } catch (error) {
         console.error(error);
     }
@@ -73,13 +83,14 @@ async function fetchGroupPublicInformation(
 
 const GroupContextProvider = ({ children }) => {
     const location = useLocation();
-    const { userGroups } = useContext(AuthContext);
+    const { userGroups, jwtToken } = useContext(AuthContext);
     const { slug } = useParams();
 
     const [group_id, setGroup_id] = useState(null);
     const [members, setMembers] = useState([]);
     const [groupExpense, setGroupExpense] = useState([]);
     const [debts, setDebts] = useState([]);
+    const [settlingDebts, setSettlingDebts] = useState([]);
     const [expensesChanged, setExpensesChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [group, setGroup] = useState({});
@@ -147,21 +158,30 @@ const GroupContextProvider = ({ children }) => {
         if (group_id !== null) {
             setIsLoading(true);
             fetchMembers(group_id, setMembers);
+            fetchGroupDebts(group_id, setDebts, jwtToken);
+            fetchSettlingGroupDebts(group_id, setSettlingDebts, jwtToken);
             fetchGroupExpenses(group_id, setGroupExpense);
-            fetchGroupDebts(group_id, setDebts);
             setIsLoading(false);
         }
-    }, [group_id]);
+    }, [group_id, jwtToken]);
 
     useEffect(() => {
-        if (expensesChanged) {
-            setIsLoading(true);
-            fetchGroupExpenses(group_id, setGroupExpense);
-            fetchGroupDebts(group_id, setDebts);
-            setIsLoading(false);
-            setExpensesChanged(false);
-        }
-    }, [expensesChanged, group_id]);
+        const fetchData = async () => {
+            if (expensesChanged) {
+                setIsLoading(true);
+                fetchGroupDebts(group_id, setDebts, jwtToken);
+                await fetchSettlingGroupDebts(
+                    group_id,
+                    setSettlingDebts,
+                    jwtToken
+                );
+                fetchGroupExpenses(group_id, setGroupExpense);
+                setIsLoading(false);
+                setExpensesChanged(false);
+            }
+        };
+        fetchData();
+    }, [expensesChanged, group_id, jwtToken]);
     useEffect(() => {
         if (!debts[group.default_currency]) {
             const newBalance = new Array(members.length).fill(0);
@@ -254,6 +274,7 @@ const GroupContextProvider = ({ children }) => {
                 indexMap,
                 groupExpense,
                 debts,
+                settlingDebts,
                 expensesChanged,
                 isPublicVisit,
                 error,

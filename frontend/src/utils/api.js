@@ -59,10 +59,14 @@ const api = {
             return error.response;
         }
     },
-    getGroupDebts: async function (group_id) {
+    getGroupDebts: async function (group_id, jwtToken) {
         try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
             const { data } = await axios.get(
-                `${this.hostname}/debts/${group_id}`
+                `${this.hostname}/debts/${group_id}`,
+                config
             );
             return data;
         } catch (error) {
@@ -70,6 +74,58 @@ const api = {
             return error.response;
         }
     },
+    getSettlingGroupDebts: async function (group_id, jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const { data } = await axios.get(
+                `${this.hostname}/debts/${group_id}/settling`,
+                config
+            );
+            return data;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    startSettlingGroupDebts: async function (
+        group_id,
+        startSettlingData,
+        jwtToken
+    ) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.post(
+                `${this.hostname}/group/${group_id}/settle`,
+                startSettlingData,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    settleUpGroupDebts: async function (group_id, settlementData, jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const { data } = await axios.post(
+                `${this.hostname}/debts/${group_id}`,
+                settlementData,
+                config
+            );
+            return data;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+
     userSignIn: async function (data) {
         try {
             const result = await axios.post(

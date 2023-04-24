@@ -7,6 +7,7 @@ import {
     joinGroupViaCode,
     getGroupInformationViaCode,
 } from "../models/group_model.js";
+import { updateExpenseStatusByGroupId } from "../models/expense_model.js";
 import User from "../models/user_model.js";
 const getGroupInformation = async (req, res) => {
     const group_id = req.params.group_id;
@@ -91,6 +92,31 @@ const joinGroup = async (req, res) => {
     return res.status(200).json(group);
 };
 
+const startSettlement = async (req, res) => {
+    const user_id = req.user.id;
+    const group_id = req.params.group_id;
+    const { deadline } = req.body;
+
+    const requirement = { group_id };
+    const [groupInformation] = await getGroups(requirement);
+    if (user_id !== groupInformation.owner) {
+        return res.status(400).json({
+            error: "Unauthorized, this feature can only used by group owner.",
+        });
+    }
+    //TODO: Local time issue
+    console.log(new Date(deadline));
+    const expenseResult = await updateExpenseStatusByGroupId(
+        group_id,
+        deadline
+    );
+    if (expenseResult.error) {
+        return res.status(500).json("Internal DB error.");
+    }
+    // console.log(expenseResult);
+    return res.status(200).json("Successfully update expense stage.");
+};
+
 export {
     getGroupInformation,
     archiveExistingGroup,
@@ -99,4 +125,5 @@ export {
     getPublicInformation,
     joinGroup,
     editExistingGroup,
+    startSettlement,
 };

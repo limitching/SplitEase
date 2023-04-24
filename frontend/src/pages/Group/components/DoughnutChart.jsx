@@ -79,10 +79,10 @@ const DoughnutChart = ({ shouldPayUser }) => {
         datasets: [
             {
                 data: balance.map((val) => (val > 0 ? null : val)),
-                backgroundColor: backgroundColors,
-                borderColor: "rgb(33, 150, 243)",
-                borderWidth: 3,
-                hoverBackgroundColor: colors,
+                backgroundColor: colors,
+                borderColor: "white",
+                borderWidth: 1,
+                hoverBackgroundColor: backgroundColors,
                 hidden: negativeCount === 0 ? true : false,
             },
         ],

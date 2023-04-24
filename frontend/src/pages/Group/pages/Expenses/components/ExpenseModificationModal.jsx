@@ -190,6 +190,7 @@ const ExpenseModificationModal = () => {
             });
         }
     };
+
     if (selectedCreditor !== "multi") {
         return (
             <>
@@ -198,6 +199,7 @@ const ExpenseModificationModal = () => {
                     onHide={handleClose}
                     backdrop="static"
                     keyboard={false}
+                    centered
                 >
                     <Form onSubmit={handleExpenseUpdate}>
                         <Modal.Header closeButton as={Row}>
@@ -216,16 +218,32 @@ const ExpenseModificationModal = () => {
                                     variant="light"
                                     onClick={handleAlertOpen}
                                     className="mb-3"
+                                    disabled={
+                                        selectedExpense?.status ??
+                                        "" === "settled"
+                                            ? true
+                                            : false
+                                    }
                                 >
-                                    Delete
+                                    {(selectedExpense?.status ?? "") ===
+                                    "settled"
+                                        ? "This Expense is already settled"
+                                        : "Delete"}
                                 </Button>
                                 <Button
                                     variant="warning"
                                     type="submit"
                                     className="mb-3"
-                                    disabled={amount === 0}
+                                    disabled={
+                                        amount === 0 ||
+                                        (selectedExpense?.status ?? "") ===
+                                            "settled"
+                                    }
                                 >
-                                    Update
+                                    {(selectedExpense?.status ?? "") ===
+                                    "settled"
+                                        ? "This Expense is already settled"
+                                        : "Update"}
                                 </Button>
                             </Container>
                         </Modal.Footer>
@@ -255,6 +273,11 @@ const ExpenseModificationModal = () => {
                                 )
                             }
                             autoFocus
+                            disabled={
+                                (selectedExpense?.status ?? "") === "settled"
+                                    ? true
+                                    : false
+                            }
                         >
                             Delete
                         </Button>
@@ -271,6 +294,7 @@ const ExpenseModificationModal = () => {
                     backdrop="static"
                     keyboard={false}
                     size="xl"
+                    centered
                 >
                     <Form onSubmit={handleExpenseUpdate}>
                         <Modal.Header closeButton as={Row}>
@@ -289,6 +313,12 @@ const ExpenseModificationModal = () => {
                                     variant="light"
                                     onClick={handleAlertOpen}
                                     className="mb-3"
+                                    disabled={
+                                        (selectedExpense?.status ?? "") ===
+                                        "settled"
+                                            ? true
+                                            : false
+                                    }
                                 >
                                     Delete
                                 </Button>
@@ -296,7 +326,11 @@ const ExpenseModificationModal = () => {
                                     variant="warning"
                                     type="submit"
                                     className="mb-3"
-                                    disabled={amount === 0}
+                                    disabled={
+                                        amount === 0 ||
+                                        (selectedExpense?.status ?? "") ===
+                                            "settled"
+                                    }
                                 >
                                     Update
                                 </Button>
@@ -328,6 +362,11 @@ const ExpenseModificationModal = () => {
                                 )
                             }
                             autoFocus
+                            disabled={
+                                (selectedExpense?.status ?? "") === "settled"
+                                    ? true
+                                    : false
+                            }
                         >
                             Delete
                         </Button>

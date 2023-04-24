@@ -1,11 +1,17 @@
 import { useContext } from "react";
-import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
+import { Container, Modal, Form, Col, Row } from "react-bootstrap";
+import { Button as MuiButton } from "@mui/material";
 import styled from "styled-components";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { api } from "../../../../../utils/api";
-import { SPLIT_METHODS } from "../../../../../global/constant";
-
+import {
+    SPLIT_METHODS,
+    DASHBOARD_BG_COLOR,
+} from "../../../../../global/constant";
+// import { Button } from "react-bootstrap";
+import Button from "@mui/material-next/Button";
+import AddIcon from "@mui/icons-material/Add";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import {
     ExpenseContext,
@@ -13,6 +19,7 @@ import {
 } from "../../../../../contexts/ExpenseContext";
 import { AuthContext } from "../../../../../contexts/AuthContext";
 import { TransactionSelector, ModalContent } from "./Modal";
+import { FixedButtonWrapper } from "../../../components/PageWrapper";
 
 const MySwal = withReactContent(Swal);
 
@@ -51,7 +58,6 @@ const Transaction = () => {
         setAmount(0);
         setSelectedExpense(null);
         setChecked([...members]);
-        setShowTransaction(true);
         // TODO: Set default creditor when user is done
         setSelectedCreditor(user.id);
         setSelectedCurrency(group.default_currency);
@@ -59,6 +65,7 @@ const Transaction = () => {
         setDescription("");
         setExpenseTime(localISOTime);
         setSubCredit(Array(members.length).fill(0));
+        setShowTransaction(true);
     };
     const handleExpenseSubmit = async (event) => {
         event.preventDefault();
@@ -157,15 +164,32 @@ const Transaction = () => {
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Add Transaction
-            </Button>
+            <FixedButtonWrapper>
+                <Button
+                    onClickCapture={handleShow}
+                    disabled={false}
+                    size="large"
+                    variant="filled"
+                    startIcon={<AddIcon></AddIcon>}
+                    sx={{
+                        bgcolor: DASHBOARD_BG_COLOR,
+                        "&:hover": {
+                            bgcolor: DASHBOARD_BG_COLOR,
+                            opacity: 0.87,
+                        },
+                    }}
+                >
+                    ADD EXPENSE
+                </Button>
+            </FixedButtonWrapper>
+
             {selectedCreditor !== "multi" ? (
                 <Modal
                     show={showTransaction}
                     onHide={handleClose}
                     backdrop="static"
                     keyboard={false}
+                    centered
                 >
                     <Form onSubmit={handleExpenseSubmit}>
                         <Modal.Header closeButton as={Row}>
@@ -180,13 +204,13 @@ const Transaction = () => {
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
-                                <Button
-                                    variant="warning"
+                                <MuiButton
+                                    variant="contained"
                                     type="submit"
                                     disabled={amount === 0}
                                 >
                                     Save
-                                </Button>
+                                </MuiButton>
                             </Container>
                         </Modal.Footer>
                     </Form>
@@ -198,6 +222,7 @@ const Transaction = () => {
                     backdrop="static"
                     keyboard={false}
                     size="xl"
+                    centered
                 >
                     <Form onSubmit={handleExpenseSubmit}>
                         <Modal.Header closeButton as={Row}>
@@ -212,13 +237,13 @@ const Transaction = () => {
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
-                                <Button
-                                    variant="warning"
+                                <MuiButton
+                                    variant="contained"
                                     type="submit"
                                     disabled={amount === 0}
                                 >
                                     Save
-                                </Button>
+                                </MuiButton>
                             </Container>
                         </Modal.Footer>
                     </Form>

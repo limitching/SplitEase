@@ -1,23 +1,23 @@
 import styled from "styled-components";
 import { Container, Navbar } from "react-bootstrap";
+import { HEADER_BG_COLOR } from "../../global/constant";
 
 const StyledNavbar = styled(Navbar)`
-    height: 5vh;
+    height: 55px;
+    background-color: ${HEADER_BG_COLOR};
 `;
 
 const Footer = () => {
     return (
-        <StyledNavbar bg="warning" expand="lg" fixed="bottom">
+        <StyledNavbar expand="lg" fixed="bottom">
             <Container className="justify-content-md-center">
                 <Navbar.Brand href="#home">
                     <img
-                        src="/logo192.png"
-                        width="30"
+                        src="/assets/logo.svg"
+                        width="auto"
                         height="30"
                         alt="SplitEase logo"
                     />
-                    <span style={{ marginRight: "10px" }}></span>
-                    SplitEase
                 </Navbar.Brand>
 
                 <div className="text-center p-3">
