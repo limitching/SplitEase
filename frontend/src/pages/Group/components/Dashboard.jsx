@@ -220,7 +220,12 @@ const GroupDashboard = () => {
                             </p>
                         ) : null}
 
-                        {members.length === 0 ? null : (
+                        {members.length === 0 ? null : isNoDebts ? (
+                            <>
+                                <h4>No debts !</h4>
+                                <h4>No one should pay</h4>
+                            </>
+                        ) : (
                             <>
                                 <h4>{`${shouldPayUser.name} owes the most money`}</h4>
                                 <h4>{`${shouldPayUser.name} should pay`}</h4>
