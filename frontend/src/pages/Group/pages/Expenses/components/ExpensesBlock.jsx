@@ -152,48 +152,7 @@ const ExpensesBlock = () => {
                                             ? "Expense"
                                             : `${expense.description}`
                                     }
-                                    secondary={
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                flexWrap: "no-wrap",
-                                            }}
-                                        >
-                                            {creditors.name} Paid for{"     "}
-                                            <AvatarGroup total={debtors.length}>
-                                                {debtors.map(
-                                                    (debtor, index) => (
-                                                        <Tooltip
-                                                            key={
-                                                                expense._id +
-                                                                "_debtor_" +
-                                                                index
-                                                            }
-                                                            title={debtor.name}
-                                                        >
-                                                            <Avatar
-                                                                alt={
-                                                                    debtor.name
-                                                                }
-                                                                src={
-                                                                    debtor.image ===
-                                                                    null
-                                                                        ? ".jpg"
-                                                                        : debtor.image
-                                                                }
-                                                                sx={{
-                                                                    width: "20px",
-                                                                    height: "20px",
-                                                                    fontSize:
-                                                                        "12px",
-                                                                }}
-                                                            />
-                                                        </Tooltip>
-                                                    )
-                                                )}
-                                            </AvatarGroup>
-                                        </div>
-                                    }
+                                    secondary={`${creditors.name} Paid for`}
                                 />
                             </Container>
 
@@ -202,6 +161,30 @@ const ExpensesBlock = () => {
                                     id={labelId}
                                     primary={`${currencyOption.symbol} ${expense.amount}`}
                                 />
+                                <AvatarGroup total={debtors.length}>
+                                    {debtors.map((debtor, index) => (
+                                        <Tooltip
+                                            key={
+                                                expense._id + "_debtor_" + index
+                                            }
+                                            title={debtor.name}
+                                        >
+                                            <Avatar
+                                                alt={debtor.name}
+                                                src={
+                                                    debtor.image === null
+                                                        ? ".jpg"
+                                                        : debtor.image
+                                                }
+                                                sx={{
+                                                    width: "20px",
+                                                    height: "20px",
+                                                    fontSize: "12px",
+                                                }}
+                                            />
+                                        </Tooltip>
+                                    ))}
+                                </AvatarGroup>
                             </Container>
                             <Container style={{ maxWidth: "120px" }}>
                                 <StyledListItemTextForAmount
