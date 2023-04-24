@@ -198,6 +198,7 @@ const ExpenseModificationModal = () => {
                     onHide={handleClose}
                     backdrop="static"
                     keyboard={false}
+                    centered
                 >
                     <Form onSubmit={handleExpenseUpdate}>
                         <Modal.Header closeButton as={Row}>
@@ -271,6 +272,7 @@ const ExpenseModificationModal = () => {
                     backdrop="static"
                     keyboard={false}
                     size="xl"
+                    centered
                 >
                     <Form onSubmit={handleExpenseUpdate}>
                         <Modal.Header closeButton as={Row}>

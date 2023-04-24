@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { Container, Modal, Form, Col, Row } from "react-bootstrap";
+import { Button as MuiButton } from "@mui/material";
 import styled from "styled-components";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -188,6 +189,7 @@ const Transaction = () => {
                     onHide={handleClose}
                     backdrop="static"
                     keyboard={false}
+                    centered
                 >
                     <Form onSubmit={handleExpenseSubmit}>
                         <Modal.Header closeButton as={Row}>
@@ -202,13 +204,13 @@ const Transaction = () => {
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
-                                <Button
-                                    variant="warning"
+                                <MuiButton
+                                    variant="contained"
                                     type="submit"
                                     disabled={amount === 0}
                                 >
                                     Save
-                                </Button>
+                                </MuiButton>
                             </Container>
                         </Modal.Footer>
                     </Form>
@@ -220,6 +222,7 @@ const Transaction = () => {
                     backdrop="static"
                     keyboard={false}
                     size="xl"
+                    centered
                 >
                     <Form onSubmit={handleExpenseSubmit}>
                         <Modal.Header closeButton as={Row}>
@@ -234,13 +237,13 @@ const Transaction = () => {
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
-                                <Button
-                                    variant="warning"
+                                <MuiButton
+                                    variant="contained"
                                     type="submit"
                                     disabled={amount === 0}
                                 >
                                     Save
-                                </Button>
+                                </MuiButton>
                             </Container>
                         </Modal.Footer>
                     </Form>

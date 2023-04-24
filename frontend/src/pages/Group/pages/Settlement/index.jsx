@@ -80,7 +80,6 @@ const Settlement = () => {
             <PageWrapper>
                 <HeaderTextContainer>
                     <h6>Settling debts (Debts in settling process...)</h6>
-                    <MuiButton>Hi</MuiButton>
                 </HeaderTextContainer>
                 <ListWrapper>
                     <SettlingDebtsBlock
