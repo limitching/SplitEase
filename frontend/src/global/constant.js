@@ -1,8 +1,12 @@
-// const API_HOST = "http://localhost:3000";
-const API_HOST = "https://api.splitease.cc";
+const API_HOST = "http://localhost:3000";
+// const API_HOST = "https://api.splitease.cc";
 // const WEB_HOST = "http://localhost:3001";
 const WEB_HOST = "https://splitease.cc";
 const LIFF_ID = "1660896460-KPNk7vny";
+
+const HEADER_BG_COLOR = "#F3CA40";
+
+const DASHBOARD_BG_COLOR = "#577590";
 
 const SPLIT_METHODS = [
     "split equally",
@@ -64,6 +68,18 @@ const CURRENCY_OPTIONS = [
     },
 ];
 
+const CURRENCY_MAP = {
+    1: { abbreviation: "TWD", symbol: "NT$" },
+    2: { abbreviation: "USD", symbol: "$" },
+    3: { abbreviation: "USD", symbol: "$" },
+    4: { abbreviation: "JPY", symbol: "¥" },
+    5: { abbreviation: "GBP", symbol: "£" },
+    6: { abbreviation: "AUD", symbol: "A$" },
+    7: { abbreviation: "CAD", symbol: "C$" },
+    8: { abbreviation: "CHF", symbol: "CHF" },
+    9: { abbreviation: "CNY", symbol: "CN¥" },
+    10: { abbreviation: "HKD", symbol: "HK$" },
+};
 const GROUP_TABS = [
     {
         name: "overview",
@@ -112,6 +128,9 @@ export {
     LIFF_ID,
     SPLIT_METHODS,
     CURRENCY_OPTIONS,
+    CURRENCY_MAP,
     GROUP_TABS,
     GROUP_TABS_VISITORS,
+    HEADER_BG_COLOR,
+    DASHBOARD_BG_COLOR,
 };
