@@ -11,6 +11,7 @@
         "bcrypt": "^5.1.0",
         "cookie-parser": "~1.4.4",
         "cors": "^2.8.5",
+        "dayjs": "^1.11.7",
         "debug": "~2.6.9",
         "dotenv": "^16.0.3",
         "express": "^4.18.2",
