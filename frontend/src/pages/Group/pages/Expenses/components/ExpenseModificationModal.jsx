@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { api } from "../../../../../utils/api";
 import { SPLIT_METHODS } from "../../../../../global/constant";
+import { AuthContext } from "../../../../../contexts/AuthContext";
 
 const MySwal = withReactContent(Swal);
 
@@ -37,7 +38,7 @@ const ExpenseModificationModal = () => {
         showModification,
         setShowModification,
     } = useContext(ExpenseContext);
-
+    const { jwtToken } = useContext(AuthContext);
     const [alertOpen, setAlertOpen] = useState(false);
 
     const handleAlertOpen = () => {
@@ -110,7 +111,7 @@ const ExpenseModificationModal = () => {
         //     console.log(`${pair[0]}, ${pair[1]}`);
         // }
 
-        const response = await api.updateExpense(formData);
+        const response = await api.updateExpense(formData, jwtToken);
         if (response.status === 200) {
             setExpensesChanged(true);
             // handleClickVariant("Expense Created successfully!", "success");
@@ -152,7 +153,11 @@ const ExpenseModificationModal = () => {
     const handleExpenseDelete = async (expense_id, group_id) => {
         handleAlertClose();
         console.log(expense_id);
-        const response = await api.deleteExpense(expense_id, group_id);
+        const response = await api.deleteExpense(
+            expense_id,
+            group_id,
+            jwtToken
+        );
         if (response.status === 200) {
             setExpensesChanged(true);
             // handleClickVariant("Expense Created successfully!", "success");

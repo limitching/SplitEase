@@ -13,19 +13,33 @@ const api = {
         const { data } = await axios.get(`${this.hostname}/currencies`);
         return data;
     },
-    createExpense: async function (data) {
+    createExpense: async function (data, jwtToken) {
         try {
-            const result = await axios.post(`${this.hostname}/expense`, data);
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const result = await axios.post(
+                `${this.hostname}/expense`,
+                data,
+                config
+            );
             return result;
         } catch (error) {
             console.error(error);
             return error.response;
         }
     },
-    getGroupExpenses: async function (group_id) {
+    getGroupExpenses: async function (group_id, jwtToken) {
         try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            };
             const { data } = await axios.get(
-                `${this.hostname}/expense?group_id=${group_id}`
+                `${this.hostname}/expense?group_id=${group_id}`,
+                config
             );
             return data;
         } catch (error) {
@@ -33,24 +47,30 @@ const api = {
             return error.response;
         }
     },
-    updateExpense: async function (data) {
+    updateExpense: async function (data, jwtToken) {
         try {
-            const result = await axios.put(`${this.hostname}/expense`, data, {
+            const config = {
                 headers: {
+                    Authorization: `Bearer ${jwtToken}`,
                     "Content-Type": "multipart/form-data",
                 },
-            });
+            };
+            const result = await axios.put(
+                `${this.hostname}/expense`,
+                data,
+                config
+            );
             return result;
         } catch (error) {
             console.error(error);
             return error.response;
         }
     },
-    deleteExpense: async function (expense_id, group_id) {
+    deleteExpense: async function (expense_id, group_id, jwtToken) {
         try {
             const data = { expense_id, group_id };
-            console.log(data);
             const result = await axios.delete(`${this.hostname}/expense`, {
+                headers: { Authorization: `Bearer ${jwtToken}` },
                 data: data,
             });
             return result;

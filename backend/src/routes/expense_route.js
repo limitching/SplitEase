@@ -10,14 +10,25 @@ import {
     deleteGroupExpense,
 } from "../controllers/expense_controller.js";
 import expenseValidator from "../middlewares/validators/expenseValidator.js";
+import { authentication } from "../utils/util.js";
 
 /* Expense API */
 router
     .route("/expense")
     .get(wrapAsync(getGroupExpenses))
-    .post(expenseUpload, expenseValidator, wrapAsync(createGroupExpense))
-    .put(expenseUpload, expenseValidator, wrapAsync(updateGroupExpense))
-    .delete(wrapAsync(deleteGroupExpense));
+    .post(
+        authentication(),
+        expenseUpload,
+        expenseValidator,
+        wrapAsync(createGroupExpense)
+    )
+    .put(
+        authentication(),
+        expenseUpload,
+        expenseValidator,
+        wrapAsync(updateGroupExpense)
+    )
+    .delete(authentication(), wrapAsync(deleteGroupExpense));
 
 /* Currencies API */
 router.route("/currencies").get(wrapAsync(getExpensesCurrencies));
