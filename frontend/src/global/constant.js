@@ -6,7 +6,9 @@ const LIFF_ID = "1660896460-KPNk7vny";
 
 const HEADER_BG_COLOR = "#F3CA40";
 
-const DASHBOARD_BG_COLOR = "#577590";
+const DASHBOARD_BG_COLOR = "#2b2b2b";
+
+const GROUP_BG_COLOR = "#f0f0f0";
 
 const SPLIT_METHODS = [
     "split equally",
@@ -133,4 +135,5 @@ export {
     GROUP_TABS_VISITORS,
     HEADER_BG_COLOR,
     DASHBOARD_BG_COLOR,
+    GROUP_BG_COLOR,
 };
