@@ -158,22 +158,29 @@ const GroupContextProvider = ({ children }) => {
         if (group_id !== null) {
             setIsLoading(true);
             fetchMembers(group_id, setMembers);
-            fetchGroupExpenses(group_id, setGroupExpense);
             fetchGroupDebts(group_id, setDebts, jwtToken);
             fetchSettlingGroupDebts(group_id, setSettlingDebts, jwtToken);
+            fetchGroupExpenses(group_id, setGroupExpense);
             setIsLoading(false);
         }
     }, [group_id, jwtToken]);
 
     useEffect(() => {
-        if (expensesChanged) {
-            setIsLoading(true);
-            fetchGroupExpenses(group_id, setGroupExpense);
-            fetchGroupDebts(group_id, setDebts, jwtToken);
-            fetchSettlingGroupDebts(group_id, setSettlingDebts, jwtToken);
-            setIsLoading(false);
-            setExpensesChanged(false);
-        }
+        const fetchData = async () => {
+            if (expensesChanged) {
+                setIsLoading(true);
+                fetchGroupDebts(group_id, setDebts, jwtToken);
+                await fetchSettlingGroupDebts(
+                    group_id,
+                    setSettlingDebts,
+                    jwtToken
+                );
+                fetchGroupExpenses(group_id, setGroupExpense);
+                setIsLoading(false);
+                setExpensesChanged(false);
+            }
+        };
+        fetchData();
     }, [expensesChanged, group_id, jwtToken]);
     useEffect(() => {
         if (!debts[group.default_currency]) {
