@@ -1,9 +1,10 @@
 import { PageWrapper } from "../../components/PageWrapper";
+import { ActivityBlock } from "./components/ActivityBlock";
+
 const RecentActivities = () => {
     return (
         <PageWrapper>
-            <h1>Recent activities feature</h1>
-            <h1>To be done...</h1>
+            <ActivityBlock></ActivityBlock>
         </PageWrapper>
     );
 };
