@@ -4,7 +4,6 @@ import { GroupContext } from "../../../../../contexts/GroupContext";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import styled from "styled-components";
 import { Container } from "react-bootstrap";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
     List,
     ListItem,
@@ -15,18 +14,9 @@ import {
     AvatarGroup,
     Tooltip,
 } from "@mui/material";
+import Chip from "@mui/material/Chip";
 
 import { CURRENCY_OPTIONS } from "../../../../../global/constant";
-
-const avatarTheme = createTheme({
-    components: {
-        MuiAvatarGroup: {
-            styleOverrides: {
-                avatar: { width: "20px", height: "20px", fontSize: "0.75rem" },
-            },
-        },
-    },
-});
 
 const StyledListItemTextForAmount = styled(ListItemText)`
     text-align: right;
@@ -162,38 +152,61 @@ const ExpensesBlock = () => {
                                             ? "Expense"
                                             : `${expense.description}`
                                     }
-                                    secondary={`${creditors.name} Paid for`}
+                                    secondary={
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexWrap: "no-wrap",
+                                            }}
+                                        >
+                                            {creditors.name} Paid for{"     "}
+                                            <AvatarGroup total={debtors.length}>
+                                                {debtors.map(
+                                                    (debtor, index) => (
+                                                        <Tooltip
+                                                            key={
+                                                                expense._id +
+                                                                "_debtor_" +
+                                                                index
+                                                            }
+                                                            title={debtor.name}
+                                                        >
+                                                            <Avatar
+                                                                alt={
+                                                                    debtor.name
+                                                                }
+                                                                src={
+                                                                    debtor.image ===
+                                                                    null
+                                                                        ? ".jpg"
+                                                                        : debtor.image
+                                                                }
+                                                                sx={{
+                                                                    width: "20px",
+                                                                    height: "20px",
+                                                                    fontSize:
+                                                                        "12px",
+                                                                }}
+                                                            />
+                                                        </Tooltip>
+                                                    )
+                                                )}
+                                            </AvatarGroup>
+                                        </div>
+                                    }
                                 />
                             </Container>
 
-                            <Container>
+                            <Container style={{ maxWidth: "100px" }}>
                                 <StyledListItemTextForAmount
                                     id={labelId}
                                     primary={`${currencyOption.symbol} ${expense.amount}`}
                                 />
-                                <ThemeProvider theme={avatarTheme}>
-                                    <AvatarGroup total={debtors.length}>
-                                        {debtors.map((debtor, index) => (
-                                            <Tooltip
-                                                key={
-                                                    expense._id +
-                                                    "_debtor_" +
-                                                    index
-                                                }
-                                                title={debtor.name}
-                                            >
-                                                <Avatar
-                                                    alt={debtor.name}
-                                                    src={
-                                                        debtor.image === null
-                                                            ? ".jpg"
-                                                            : debtor.image
-                                                    }
-                                                />
-                                            </Tooltip>
-                                        ))}
-                                    </AvatarGroup>
-                                </ThemeProvider>
+                            </Container>
+                            <Container style={{ maxWidth: "120px" }}>
+                                <StyledListItemTextForAmount
+                                    primary={<Chip label={expense.status} />}
+                                />
                             </Container>
                         </ListItemButton>
                     </ListItem>
