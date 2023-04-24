@@ -2,10 +2,12 @@ import { getMembers, getMember } from "../models/group_model.js";
 import {
     getExpensesByGroupId,
     getSettlingExpensesByGroupId,
+    updateExpenseStatusToSettled,
 } from "../models/expense_model.js";
 import {
     createSettlement,
     getSettlementsByGroupId,
+    getSettlingByGroupId,
 } from "../models/debts_model.js";
 import { minimizeDebts } from "../models/split_model.js";
 const getGroupDebts = async (req, res) => {
@@ -79,27 +81,20 @@ const getGroupDebts = async (req, res) => {
     });
 
     for (const [currency_option, graph] of Object.entries(currencyGraph)) {
+        if (settlementTransactions[currency_option]) {
+            settlementTransactions[currency_option].forEach((settlement) => {
+                const payerIndex = settlement[0];
+                const payeeIndex = settlement[1];
+                const amount = settlement[2];
+                graph[payeeIndex][payerIndex] -= amount;
+            });
+        }
+        //TODO:
+        // console.log(graph);
         currencyTransactions[currency_option] = minimizeDebts(graph);
+        //TODO:
         if (Object.keys(settlementTransactions).length === 0) {
             continue;
-        }
-        for (
-            let i = 0;
-            i < settlementTransactions[currency_option].length;
-            i++
-        ) {
-            const settledDebt = settlementTransactions[currency_option][i];
-            for (
-                let j = 0;
-                j < currencyTransactions[currency_option].length;
-                j++
-            ) {
-                const debt = currencyTransactions[currency_option][j];
-                if (settledDebt.toString() === debt.toString()) {
-                    currencyTransactions[currency_option].splice(j, 1);
-                    break;
-                }
-            }
         }
     }
 
@@ -118,9 +113,9 @@ const getSettlingGroupDebts = async (req, res) => {
     const currencyTransactions = {};
 
     const groupExpenses = await getSettlingExpensesByGroupId(group_id);
-    const settlement = await getSettlementsByGroupId(group_id);
+    const settlements = await getSettlingByGroupId(group_id);
     // TODO:
-    // console.log(settlement);
+    // console.log(settlements);
 
     groupExpenses.forEach((expense) => {
         if (expense.currency_option in currencyGraph === false) {
@@ -167,7 +162,7 @@ const getSettlingGroupDebts = async (req, res) => {
     const settlementTransactions = {};
     // TODO:
     // console.log(membersIndexMap);
-    settlement.forEach((settlement) => {
+    settlements.forEach((settlement) => {
         if (settlement.currency_option in settlementTransactions === false) {
             settlementTransactions[settlement.currency_option] = [];
         }
@@ -199,12 +194,26 @@ const getSettlingGroupDebts = async (req, res) => {
                 j++
             ) {
                 const debt = currencyTransactions[currency_option][j];
+                debt[2] = Number(debt[2].toFixed(2));
                 if (settledDebt.toString() === debt.toString()) {
                     currencyTransactions[currency_option].splice(j, 1);
                     break;
                 }
             }
         }
+    }
+    // Check if all settled
+    let isSettled = true;
+
+    for (let currency_option in currencyTransactions) {
+        if (currencyTransactions[currency_option].length !== 0) {
+            isSettled = false;
+            break;
+        }
+    }
+    console.log(isSettled);
+    if (isSettled && settlements.length !== 0) {
+        await updateExpenseStatusToSettled(group_id);
     }
 
     return res.status(200).json(currencyTransactions);
