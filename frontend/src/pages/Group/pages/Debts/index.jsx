@@ -28,7 +28,8 @@ const MySwal = withReactContent(Swal);
 
 const Debts = () => {
     const [alertOpen, setAlertOpen] = useState(false);
-    const { group_id, group, setExpensesChanged } = useContext(GroupContext);
+    const { group_id, group, setExpensesChanged, debts } =
+        useContext(GroupContext);
     const { jwtToken, user } = useContext(AuthContext);
     const [selectSettlingDate, setSelectSettlingDate] = useState(
         dayjs(new Date())
@@ -77,11 +78,21 @@ const Debts = () => {
         }
         setExpensesChanged(true);
     };
+
+    let isNoDebts = true;
+
+    for (let currency_option in debts) {
+        if (debts[currency_option].length !== 0) {
+            isNoDebts = false;
+            break;
+        }
+    }
+
     return (
         <>
             <PageWrapper>
                 <HeaderTextContainer>
-                    <h6>Total debts</h6>
+                    <h6>{isNoDebts ? "No Debts :)" : "Total debts"}</h6>
                 </HeaderTextContainer>
                 <ListWrapper>
                     <DebtsBlock></DebtsBlock>
