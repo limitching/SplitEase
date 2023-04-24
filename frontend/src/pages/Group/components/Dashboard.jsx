@@ -6,13 +6,13 @@ import { Avatar } from "@mui/material";
 import { Container } from "react-bootstrap";
 import DoughnutChart from "./DoughnutChart";
 // import HorizontalBarChart from "./HorizontalBarChart";
-import { CURRENCY_OPTIONS } from "../../../global/constant";
+import { CURRENCY_OPTIONS, DASHBOARD_BG_COLOR } from "../../../global/constant";
 import CountUp from "react-countup";
 
 const Dashboard = styled.div`
     width: 100%;
     height: 300px;
-    background-color: #2196f3;
+    background-color: ${DASHBOARD_BG_COLOR};
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -32,7 +32,7 @@ const UserDashboard = styled(Dashboard)`
     flex-wrap: no-wrap;
     justify-context: center;
     align-items: center;
-    background-color: #2196f3;
+    background-color: ${DASHBOARD_BG_COLOR};
 `;
 
 const DashboardWrapper = styled(Dashboard)`
