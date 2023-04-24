@@ -216,7 +216,12 @@ const deleteExpense = async (expense_id, group_id) => {
 };
 
 const updateExpenseStatusToSettled = async (group_id) => {
+    const connection = await pool.getConnection();
     try {
+        await connection.query(
+            "UPDATE settlements SET `status` = 1 WHERE group_id = ? ",
+            [group_id]
+        );
         const updateResult = await Expense.updateMany(
             {
                 attached_group_id: group_id,
@@ -227,7 +232,10 @@ const updateExpenseStatusToSettled = async (group_id) => {
         return updateResult;
     } catch (error) {
         console.error(error);
+        await connection.query("ROLLBACK");
         return { _id: -1 };
+    } finally {
+        await connection.release();
     }
 };
 
