@@ -19,7 +19,7 @@ import editGroupValidator from "../middlewares/validators/editGroupValidator.js"
 router
     .route("/group/:group_id")
     .get(wrapAsync(getGroupInformation))
-    .put(wrapAsync(archiveExistingGroup));
+    .put(authentication(), wrapAsync(archiveExistingGroup));
 
 router.route("/group/members/:group_id").get(wrapAsync(getGroupMembers));
 

@@ -219,6 +219,7 @@ const api = {
             };
             const response = await axios.put(
                 `${this.hostname}/group/${group_id}`,
+                {},
                 config
             );
             return response;

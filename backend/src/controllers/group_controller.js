@@ -17,8 +17,9 @@ const getGroupInformation = async (req, res) => {
 };
 
 const archiveExistingGroup = async (req, res) => {
+    const user_id = req.user.id;
     const group_id = req.params.group_id;
-    const archiveResult = await archiveGroup(group_id);
+    const archiveResult = await archiveGroup(group_id, user_id);
     if (archiveResult === -1) {
         return res.status(500).json({ error: "Internal server error." });
     }
@@ -38,8 +39,9 @@ const getGroupMembers = async (req, res) => {
 };
 
 const createNewGroup = async (req, res) => {
+    const user_id = req.user.id;
     const newGroupData = req.body;
-    const result = await createGroup(newGroupData);
+    const result = await createGroup(newGroupData, user_id);
     if (result.status === 500) {
         return res
             .status(500)
@@ -49,9 +51,9 @@ const createNewGroup = async (req, res) => {
 };
 
 const editExistingGroup = async (req, res) => {
+    const user_id = req.user.id;
     const modifiedGroupData = req.body;
-
-    const result = await editGroup(modifiedGroupData);
+    const result = await editGroup(modifiedGroupData, user_id);
     if (result.status === 500) {
         return res
             .status(500)
@@ -108,7 +110,8 @@ const startSettlement = async (req, res) => {
     console.log(new Date(deadline));
     const expenseResult = await updateExpenseStatusByGroupId(
         group_id,
-        deadline
+        deadline,
+        user_id
     );
     if (expenseResult.error) {
         return res.status(500).json("Internal DB error.");

@@ -20,7 +20,7 @@ const getGroups = async (requirement) => {
     return groups;
 };
 
-const archiveGroup = async (group_id) => {
+const archiveGroup = async (group_id, user_id) => {
     const connection = await pool.getConnection();
     try {
         await connection.query("START TRANSACTION");
@@ -28,6 +28,12 @@ const archiveGroup = async (group_id) => {
             "UPDATE `groups` SET is_archived = 1 WHERE id = ?",
             [group_id]
         );
+        const logData = {
+            user_id: user_id,
+            group_id: group_id,
+            event: "archive group",
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
         await connection.query("COMMIT");
         return 0;
     } catch (error) {
@@ -53,7 +59,7 @@ const getMember = async (group_id, user_id) => {
     return member;
 };
 
-const createGroup = async (newGroupData) => {
+const createGroup = async (newGroupData, user_id) => {
     if (!newGroupData.slug) {
         newGroupData.slug = uuidV4();
     }
@@ -84,6 +90,13 @@ const createGroup = async (newGroupData) => {
             "INSERT INTO `group_users` SET ?",
             newGroupUserData
         );
+        const logData = {
+            user_id: user_id,
+            group_id: result.insertId,
+            event: "create group",
+            event_target: newGroupData.name,
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
         await connection.query("COMMIT");
 
         return { group: newGroupData };
@@ -96,7 +109,7 @@ const createGroup = async (newGroupData) => {
     }
 };
 
-const editGroup = async (modifiedGroupData) => {
+const editGroup = async (modifiedGroupData, user_id) => {
     const connection = await pool.getConnection();
     try {
         await connection.query("START TRANSACTION");
@@ -104,6 +117,13 @@ const editGroup = async (modifiedGroupData) => {
             modifiedGroupData,
             modifiedGroupData.id,
         ]);
+        const logData = {
+            user_id: user_id,
+            group_id: modifiedGroupData.id,
+            event: "modify group",
+            event_target: modifiedGroupData.name,
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
 
         await connection.query("COMMIT");
 
@@ -140,6 +160,7 @@ const joinGroupViaCode = async (user_id, slug, invitation_code) => {
             "SELECT * FROM `group_users` WHERE group_id = ? AND user_id = ? ",
             [group_id, user_id]
         );
+
         if (group_users.length !== 0) {
             await connection.query("COMMIT");
             return group;
@@ -154,6 +175,13 @@ const joinGroupViaCode = async (user_id, slug, invitation_code) => {
             "INSERT INTO `group_users` SET ?",
             newGroupUserData
         );
+
+        const logData = {
+            user_id: user_id,
+            group_id: group.id,
+            event: "join group via code",
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
 
         await connection.query("COMMIT");
         return group;

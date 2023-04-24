@@ -170,10 +170,12 @@ const updateExpenseUsers = async (expense_id, involved_users, date) => {
     }
 };
 
-const updateExpenseStatusByGroupId = async (group_id, deadline) => {
+const updateExpenseStatusByGroupId = async (group_id, deadline, user_id) => {
+    const connection = await pool.getConnection();
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
+        await connection.query("START TRANSACTION");
         const updateResult = await Expense.updateMany(
             {
                 attached_group_id: group_id,
@@ -183,14 +185,28 @@ const updateExpenseStatusByGroupId = async (group_id, deadline) => {
             { $set: { status: "settling" } },
             { session }
         );
+
+        // Logs
+        const logData = {
+            user_id: user_id,
+            group_id: group_id,
+            event: "update all expenses with a date prior to",
+            event_target: deadline,
+            event_value: "unsettled → settling",
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
+        await connection.query("COMMIT");
+
         await session.commitTransaction();
         return updateResult;
     } catch (error) {
         console.error(error);
+        await connection.query("ROLLBACK");
         await session.abortTransaction();
         return { error: error };
     } finally {
         session.endSession();
+        await connection.release();
     }
 };
 
