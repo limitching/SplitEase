@@ -22,6 +22,7 @@ const GroupContext = createContext({
     balance: [],
     spent: [],
     usersShare: [],
+    logs: [],
     setMembers: () => {},
     setExpensesChanged: () => {},
     setInviteEmail: () => {},
@@ -36,9 +37,9 @@ async function fetchMembers(group_id, setMembers) {
     }
 }
 
-async function fetchGroupExpenses(group_id, setGroupExpense) {
+async function fetchGroupExpenses(group_id, setGroupExpense, jwtToken) {
     try {
-        const data = await api.getGroupExpenses(group_id);
+        const data = await api.getGroupExpenses(group_id, jwtToken);
         setGroupExpense(data);
     } catch (error) {
         console.error(error);
@@ -81,6 +82,15 @@ async function fetchGroupPublicInformation(
     setIsPublicVisit(true);
 }
 
+async function fetchGroupLogs(jwtToken, group_id, setLogs) {
+    try {
+        const data = await api.getGroupLogs(jwtToken, group_id);
+        setLogs(data);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 const GroupContextProvider = ({ children }) => {
     const location = useLocation();
     const { userGroups, jwtToken } = useContext(AuthContext);
@@ -101,6 +111,7 @@ const GroupContextProvider = ({ children }) => {
     const [balance, setBalance] = useState([]);
     const [spent, setSpent] = useState([]);
     const [usersShare, setUsersShare] = useState([]);
+    const [logs, setLogs] = useState([]);
 
     // A map to get member object from memberId
     const memberMap = members
@@ -160,7 +171,8 @@ const GroupContextProvider = ({ children }) => {
             fetchMembers(group_id, setMembers);
             fetchGroupDebts(group_id, setDebts, jwtToken);
             fetchSettlingGroupDebts(group_id, setSettlingDebts, jwtToken);
-            fetchGroupExpenses(group_id, setGroupExpense);
+            fetchGroupExpenses(group_id, setGroupExpense, jwtToken);
+            fetchGroupLogs(jwtToken, group_id, setLogs);
             setIsLoading(false);
         }
     }, [group_id, jwtToken]);
@@ -170,12 +182,13 @@ const GroupContextProvider = ({ children }) => {
             if (expensesChanged) {
                 setIsLoading(true);
                 fetchGroupDebts(group_id, setDebts, jwtToken);
+                fetchGroupLogs(jwtToken, group_id, setLogs);
                 await fetchSettlingGroupDebts(
                     group_id,
                     setSettlingDebts,
                     jwtToken
                 );
-                fetchGroupExpenses(group_id, setGroupExpense);
+                fetchGroupExpenses(group_id, setGroupExpense, jwtToken);
                 setIsLoading(false);
                 setExpensesChanged(false);
             }
@@ -282,6 +295,7 @@ const GroupContextProvider = ({ children }) => {
                 balance,
                 spent,
                 usersShare,
+                logs,
                 setMembers,
                 setExpensesChanged,
                 setInviteEmail,

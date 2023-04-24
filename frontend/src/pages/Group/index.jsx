@@ -8,11 +8,13 @@ import { useContext } from "react";
 import { GroupContext } from "../../contexts/GroupContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/Loading";
+import { GROUP_BG_COLOR } from "../../global/constant";
 
 const WrapperGroupContainer = styled.div`
-    padding-top: 5vh;
+    padding-top: 55px;
     height: 100vh;
-    padding-bottom: 5vh;
+    padding-bottom: 55px;
+    background-color: ${GROUP_BG_COLOR};
 `;
 
 const Group = () => {

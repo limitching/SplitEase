@@ -2,10 +2,12 @@ import {
     getGroups,
     archiveGroup,
     getMembers,
+    getMember,
     createGroup,
     editGroup,
     joinGroupViaCode,
     getGroupInformationViaCode,
+    getLogs,
 } from "../models/group_model.js";
 import { updateExpenseStatusByGroupId } from "../models/expense_model.js";
 import User from "../models/user_model.js";
@@ -17,8 +19,9 @@ const getGroupInformation = async (req, res) => {
 };
 
 const archiveExistingGroup = async (req, res) => {
+    const user_id = req.user.id;
     const group_id = req.params.group_id;
-    const archiveResult = await archiveGroup(group_id);
+    const archiveResult = await archiveGroup(group_id, user_id);
     if (archiveResult === -1) {
         return res.status(500).json({ error: "Internal server error." });
     }
@@ -38,8 +41,9 @@ const getGroupMembers = async (req, res) => {
 };
 
 const createNewGroup = async (req, res) => {
+    const user_id = req.user.id;
     const newGroupData = req.body;
-    const result = await createGroup(newGroupData);
+    const result = await createGroup(newGroupData, user_id);
     if (result.status === 500) {
         return res
             .status(500)
@@ -49,9 +53,9 @@ const createNewGroup = async (req, res) => {
 };
 
 const editExistingGroup = async (req, res) => {
+    const user_id = req.user.id;
     const modifiedGroupData = req.body;
-
-    const result = await editGroup(modifiedGroupData);
+    const result = await editGroup(modifiedGroupData, user_id);
     if (result.status === 500) {
         return res
             .status(500)
@@ -108,13 +112,32 @@ const startSettlement = async (req, res) => {
     console.log(new Date(deadline));
     const expenseResult = await updateExpenseStatusByGroupId(
         group_id,
-        deadline
+        deadline,
+        user_id
     );
     if (expenseResult.error) {
         return res.status(500).json("Internal DB error.");
     }
-    // console.log(expenseResult);
     return res.status(200).json("Successfully update expense stage.");
+};
+
+const getGroupLogs = async (req, res) => {
+    const user_id = req.user.id;
+    const group_id = req.params.group_id;
+
+    const member = await getMember(group_id, user_id);
+    if (member.length === 0) {
+        return res.status(400).json({
+            error: "Unauthorized, only group member can access logs.",
+        });
+    }
+
+    const logs = await getLogs(group_id);
+    if (logs.error) {
+        return res.status(500).json({ error: "Internal Server Error (MySQL)" });
+    }
+
+    return res.status(200).json(logs);
 };
 
 export {
@@ -126,4 +149,5 @@ export {
     joinGroup,
     editExistingGroup,
     startSettlement,
+    getGroupLogs,
 };

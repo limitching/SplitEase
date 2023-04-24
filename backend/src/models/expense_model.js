@@ -70,7 +70,7 @@ const getExpensesByGroupId = async (group_id) => {
             date: -1,
         });
     } catch (error) {
-        return -1;
+        return [];
     }
 };
 
@@ -93,13 +93,36 @@ const getExpensesByExpenseId = async (expense_id) => {
     }
 };
 
-const createExpense = async (expenseObject) => {
+const createExpense = async (expenseObject, user_id) => {
+    const connection = await pool.getConnection();
+    const session = await mongoose.startSession();
     try {
+        await session.startTransaction();
+        await connection.query("START TRANSACTION");
+
         const newExpense = new Expense(expenseObject);
-        return await newExpense.save();
+        const { _id } = await newExpense.save({ session });
+
+        const logData = {
+            user_id: user_id,
+            group_id: expenseObject.attached_group_id,
+            event: "create expense",
+            event_target: expenseObject.description,
+            event_value: expenseObject.amount,
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
+
+        await session.commitTransaction();
+        await connection.query("COMMIT");
+        return { _id };
     } catch (error) {
         console.error(error);
+        await connection.query("ROLLBACK");
+        await session.abortTransaction();
         return { _id: -1 };
+    } finally {
+        await connection.release();
+        session.endSession();
     }
 };
 
@@ -126,19 +149,38 @@ const createExpenseUsers = async (expense_id, involved_users, date) => {
     }
 };
 
-const updateExpense = async (expense_id, updatedExpenseObject) => {
+const updateExpense = async (expense_id, updatedExpenseObject, user_id) => {
+    const connection = await pool.getConnection();
+    const session = await mongoose.startSession();
     try {
-        const updateResult = await Expense.findOneAndUpdate(
-            { _id: expense_id },
-            updatedExpenseObject,
-            {
-                new: true,
-            }
-        );
+        await connection.query("START TRANSACTION");
+        let updateResult;
+        await session.withTransaction(async () => {
+            updateResult = await Expense.findOneAndUpdate(
+                { _id: expense_id },
+                updatedExpenseObject,
+                { new: true },
+                { session }
+            );
+            const logData = {
+                user_id: user_id,
+                group_id: updatedExpenseObject.attached_group_id,
+                event: "update expense",
+                event_target: updatedExpenseObject.description,
+                event_value: updatedExpenseObject.amount,
+            };
+            await connection.query("INSERT INTO `logs` SET ?", logData);
+        });
+        await connection.query("COMMIT");
         return updateResult;
     } catch (error) {
+        await session.abortTransaction();
+        await connection.query("ROLLBACK");
         console.error(error);
         return { _id: -1 };
+    } finally {
+        await connection.release();
+        session.endSession();
     }
 };
 
@@ -170,48 +212,90 @@ const updateExpenseUsers = async (expense_id, involved_users, date) => {
     }
 };
 
-const updateExpenseStatusByGroupId = async (group_id, deadline) => {
+const updateExpenseStatusByGroupId = async (group_id, deadline, user_id) => {
+    const connection = await pool.getConnection();
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
+        await connection.query("START TRANSACTION");
         const updateResult = await Expense.updateMany(
             {
                 attached_group_id: group_id,
                 date: { $lte: new Date(deadline) },
                 status: "unsettled",
             },
-            { $set: { status: "settling" } }
+            { $set: { status: "settling" } },
+            { session }
         );
+
+        // Logs
+        const logData = {
+            user_id: user_id,
+            group_id: group_id,
+            event: "update all expenses with a date prior to",
+            event_target: deadline,
+            event_value: "unsettled → settling",
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
+        await connection.query("COMMIT");
+
+        await session.commitTransaction();
         return updateResult;
     } catch (error) {
         console.error(error);
+        await connection.query("ROLLBACK");
+        await session.abortTransaction();
         return { error: error };
+    } finally {
+        session.endSession();
+        await connection.release();
     }
 };
 
-const deleteExpense = async (expense_id, group_id) => {
+const deleteExpense = async (expense_id, group_id, user_id) => {
     const connection = await pool.getConnection();
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
         await connection.query("START TRANSACTION");
         const deleteExpenseQuery =
             "DELETE FROM expense_users WHERE m_expense_id = ?";
         await connection.query(deleteExpenseQuery, [expense_id]);
 
-        const deleteResult = await Expense.findOneAndDelete({
-            _id: expense_id,
-            attached_group_id: group_id,
-        });
+        const deleteResult = await Expense.findOneAndDelete(
+            {
+                _id: expense_id,
+                attached_group_id: group_id,
+            },
+            { session }
+        );
         if (deleteResult === null) {
             await connection.query("ROLLBACK");
+            await session.abortTransaction();
             return -400;
         }
 
+        // Logs
+        const logData = {
+            user_id: user_id,
+            group_id: group_id,
+            event: "delete expense",
+            event_target: deleteResult.description,
+            event_value: deleteResult.amount,
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
+
+        await session.commitTransaction();
         await connection.query("COMMIT");
         return 0;
     } catch (error) {
         console.error(error);
+        await session.abortTransaction();
         await connection.query("ROLLBACK");
         return -1;
     } finally {
         await connection.release();
+        session.endSession();
     }
 };
 

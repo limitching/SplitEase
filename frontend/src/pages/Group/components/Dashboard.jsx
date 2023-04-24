@@ -55,6 +55,14 @@ const DoughnutWrapper = styled.div`
     max-width: 300px;
 `;
 
+const DashboardText = styled.p`
+    margin-bottom: 0;
+`;
+
+const LargeTextContainer = styled.div`
+    margin-top: 1rem;
+`;
+
 const JoinButton = styled.button`
     background-color: #00b2a5;
     color: #fff;
@@ -186,51 +194,60 @@ const GroupDashboard = () => {
                 <Container>
                     <TextWrapper>
                         <h1>{group.name}</h1>
+                        <div style={{ display: "flex" }}>
+                            <div>
+                                <DashboardText>{`Total group spending: `}</DashboardText>
+                                <DashboardText>{`Total you paid for: `}</DashboardText>
+                            </div>
+                            <div style={{ marginLeft: "2rem" }}>
+                                <DashboardText>
+                                    {`${currencyObject.symbol} `}
+                                    <CountUp
+                                        duration={1}
+                                        end={totalGroupExpense}
+                                        style={{
+                                            fontSize: "1rem",
+                                        }}
+                                    />
+                                </DashboardText>
+                                <DashboardText>
+                                    {`${currencyObject.symbol} `}
+                                    <CountUp
+                                        duration={1}
+                                        end={spent[userIndex]}
+                                        style={{
+                                            fontSize: "1rem",
+                                        }}
+                                    />
+                                </DashboardText>
+                            </div>
+                        </div>
+                        <LargeTextContainer>
+                            {userIndex ? (
+                                <p>
+                                    {`Your total share: ${currencyObject.symbol} `}
+                                    <CountUp
+                                        duration={1}
+                                        end={usersShare[userIndex]}
+                                        style={{
+                                            fontSize: "1rem",
+                                        }}
+                                    />
+                                </p>
+                            ) : null}
 
-                        <p>
-                            {`Total group spending: ${currencyObject.symbol} `}
-                            <CountUp
-                                duration={1}
-                                end={totalGroupExpense}
-                                style={{
-                                    fontSize: "1rem",
-                                }}
-                            />
-                        </p>
-                        <p>
-                            {`Total you paid for: ${currencyObject.symbol} `}
-                            <CountUp
-                                duration={1}
-                                end={spent[userIndex]}
-                                style={{
-                                    fontSize: "1rem",
-                                }}
-                            />
-                        </p>
-                        {userIndex ? (
-                            <p>
-                                {`Your total share: ${currencyObject.symbol} `}
-                                <CountUp
-                                    duration={1}
-                                    end={usersShare[userIndex]}
-                                    style={{
-                                        fontSize: "1rem",
-                                    }}
-                                />
-                            </p>
-                        ) : null}
-
-                        {members.length === 0 ? null : isNoDebts ? (
-                            <>
-                                <h4>No debts !</h4>
-                                <h4>No one should pay</h4>
-                            </>
-                        ) : (
-                            <>
-                                <h4>{`${shouldPayUser.name} owes the most money`}</h4>
-                                <h4>{`${shouldPayUser.name} should pay`}</h4>
-                            </>
-                        )}
+                            {members.length === 0 ? null : isNoDebts ? (
+                                <>
+                                    <h4>No debts !</h4>
+                                    <h4>No one should pay</h4>
+                                </>
+                            ) : (
+                                <>
+                                    <h4>{`${shouldPayUser.name} owes the most money`}</h4>
+                                    <h4>{`${shouldPayUser.name} should pay`}</h4>
+                                </>
+                            )}
+                        </LargeTextContainer>
                     </TextWrapper>
                 </Container>
             </DashboardWrapper>

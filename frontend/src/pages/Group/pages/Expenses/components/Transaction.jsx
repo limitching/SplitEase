@@ -48,7 +48,7 @@ const Transaction = () => {
         setShowTransaction,
         setDescription,
     } = useContext(ExpenseContext);
-    const { user } = useContext(AuthContext);
+    const { user, jwtToken } = useContext(AuthContext);
     const { setSelectedExpense } = useContext(ExpenseContext);
     const { group } = useContext(GroupContext);
 
@@ -123,7 +123,7 @@ const Transaction = () => {
         //     console.log(`${pair[0]}, ${pair[1]}`);
         // }
 
-        const response = await api.createExpense(formData);
+        const response = await api.createExpense(formData, jwtToken);
         if (response.status === 200) {
             setExpensesChanged(true);
             // handleClickVariant("Expense Created successfully!", "success");

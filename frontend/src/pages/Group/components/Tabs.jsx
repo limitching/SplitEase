@@ -83,7 +83,7 @@ function NavTabs() {
     };
 
     return (
-        <Container>
+        <Container style={{ marginTop: "0.25rem" }}>
             <Box sx={{ width: "100%" }}>
                 <Tabs
                     value={value}

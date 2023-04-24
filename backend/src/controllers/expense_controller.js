@@ -20,7 +20,7 @@ const getExpensesCurrencies = async (req, res, next) => {
     }
 };
 
-const getGroupExpenses = async (req, res, next) => {
+const getGroupExpenses = async (req, res) => {
     const group_id = req.query.group_id;
     const expenses = await getExpensesByGroupId(group_id);
     if (expenses === -1) {
@@ -32,7 +32,8 @@ const getGroupExpenses = async (req, res, next) => {
     }
 };
 
-const createGroupExpense = async (req, res, next) => {
+const createGroupExpense = async (req, res) => {
+    const user_id = req.user.id;
     const {
         amount,
         description,
@@ -93,7 +94,7 @@ const createGroupExpense = async (req, res, next) => {
         debtors_adjustment,
     };
     // Insert Expense into MongoDB
-    const { _id } = await createExpense(expenseObject);
+    const { _id } = await createExpense(expenseObject, user_id);
     if (_id === -1) {
         return res.status(500).json({ errors: [{ msg: "MongoDB Error" }] });
     }
@@ -111,7 +112,8 @@ const createGroupExpense = async (req, res, next) => {
         .json({ msg: `New expense_id: ${_id} was created!!` });
 };
 
-const updateGroupExpense = async (req, res, next) => {
+const updateGroupExpense = async (req, res) => {
+    const user_id = req.user.id;
     const {
         expense_id,
         amount,
@@ -175,7 +177,11 @@ const updateGroupExpense = async (req, res, next) => {
     };
 
     // Update Expense in MongoDB
-    const { _id } = await updateExpense(expense_id, updatedExpenseObject);
+    const { _id } = await updateExpense(
+        expense_id,
+        updatedExpenseObject,
+        user_id
+    );
     if (_id === -1) {
         return res.status(500).json({ errors: [{ msg: "MongoDB Error" }] });
     }
@@ -190,9 +196,10 @@ const updateGroupExpense = async (req, res, next) => {
     }
     return res.status(200).json({ msg: `Successfully modified expense!` });
 };
-const deleteGroupExpense = async (req, res, next) => {
+const deleteGroupExpense = async (req, res) => {
+    const user_id = req.user.id;
     const { expense_id, group_id } = req.body;
-    const deleteResult = await deleteExpense(expense_id, group_id);
+    const deleteResult = await deleteExpense(expense_id, group_id, user_id);
     if (deleteResult === -400) {
         return res.status(400).json({ errors: [{ msg: "Client side Error" }] });
     } else if (deleteResult === -1) {
