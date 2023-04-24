@@ -1,7 +1,12 @@
 import { CURRENCY_OPTIONS } from "../../../../../global/constant";
 import { useContext } from "react";
 import { GroupContext } from "../../../../../contexts/GroupContext";
+
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import VerifiedIcon from "@mui/icons-material/Verified";
+
 import {
+    IconButton,
     List,
     ListItem,
     ListItemButton,
@@ -12,7 +17,8 @@ import {
     Tooltip,
 } from "@mui/material";
 import { Container } from "react-bootstrap";
-const SettlingDebtsBlock = () => {
+
+const SettlingDebtsBlock = ({ handleAlertOpen, setSelectDebt }) => {
     const { members, settlingDebts } = useContext(GroupContext);
 
     return (
@@ -61,10 +67,12 @@ const SettlingDebtsBlock = () => {
                                                 )}`}
                                             />
                                         </Container>
-                                        <Container>
+                                        <Container style={{ maxWidth: "30px" }}>
                                             <ListItemText
                                                 primary="→"
-                                                sx={{ textAlign: "center" }}
+                                                sx={{
+                                                    textAlign: "center",
+                                                }}
                                             />
                                         </Container>
                                         <Container>
@@ -86,6 +94,42 @@ const SettlingDebtsBlock = () => {
                                                 />
                                             </Tooltip>
                                         </ListItemAvatar>
+
+                                        <Container
+                                            style={{
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                display: "flex",
+                                            }}
+                                        >
+                                            <Tooltip
+                                                title={`Marked as settled`}
+                                            >
+                                                <IconButton
+                                                    onClick={(event) => {
+                                                        setSelectDebt({
+                                                            payer_id: debtor.id,
+                                                            payee_id:
+                                                                creditor.id,
+                                                            amount: debtAmounts,
+                                                            currency_option:
+                                                                currency.id,
+                                                        });
+
+                                                        handleAlertOpen(event);
+                                                    }}
+                                                >
+                                                    <VerifiedIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip
+                                                title={`Remind ${debtor.name}`}
+                                            >
+                                                <IconButton>
+                                                    <NotificationsActiveIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Container>
                                     </ListItemButton>
                                 </ListItem>
                             </div>
