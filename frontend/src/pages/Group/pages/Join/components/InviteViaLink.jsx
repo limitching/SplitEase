@@ -10,7 +10,7 @@ import {
     Tooltip,
 } from "@mui/material";
 
-import { DASHBOARD_BG_COLOR } from "../../../../../global/constant";
+import { DASHBOARD_BG_COLOR, WEB_HOST } from "../../../../../global/constant";
 import Button from "@mui/material-next/Button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import SendIcon from "@mui/icons-material/Send";
@@ -51,7 +51,7 @@ const InviteViaLink = () => {
     const [isCheck, setIsCheck] = useState(true);
 
     useEffect(() => {
-        const invitation_link = `http://localhost:3001/group/${slug}/join?invitation_code=${group.invitation_code}`;
+        const invitation_link = `${WEB_HOST}/${slug}/join?invitation_code=${group.invitation_code}`;
         setLink(invitation_link);
     }, [group, slug]);
 
