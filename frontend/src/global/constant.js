@@ -170,6 +170,8 @@ const HOVER_CHART_COLOR = [
     "rgba(204, 204, 204, 0.64)",
 ];
 
+const AWS_CLOUDFRONT_HOST = "https://dxkgfgg79h3hz.cloudfront.net/";
+
 export {
     API_HOST,
     WEB_HOST,
@@ -184,4 +186,5 @@ export {
     GROUP_BG_COLOR,
     CHART_COLOR,
     HOVER_CHART_COLOR,
+    AWS_CLOUDFRONT_HOST,
 };
