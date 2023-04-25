@@ -305,5 +305,48 @@ const api = {
             return error.response;
         }
     },
+    getPresignedUrl: async function (jwtToken) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const { data } = await axios.get(`${this.hostname}/s3Url`, config);
+            return data;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    putImageToS3: async function (url, imageFile) {
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": imageFile.type,
+                },
+            };
+            await axios.put(url, imageFile, config);
+            const imageUrl = url.split("?")[0];
+            return { imageUrl };
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    updateProfile: async function (jwtToken, modifiedUserData) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const result = await axios.post(
+                `${this.hostname}/user`,
+                modifiedUserData,
+                config
+            );
+            return result;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
 };
 export { api };
