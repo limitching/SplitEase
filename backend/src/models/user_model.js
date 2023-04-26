@@ -156,6 +156,7 @@ const lineSignIn = async (name, email, image, line_id) => {
         await connection.query("COMMIT");
         user.id = userId;
         console.log(user);
+        user.line_binding_code = hashids.encode(userId);
         return { user };
     } catch (error) {
         await connection.query("ROLLBACK");
