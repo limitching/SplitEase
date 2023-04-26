@@ -338,7 +338,7 @@ const api = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
             const result = await axios.post(
-                `${this.hostname}/user`,
+                `${this.hostname}/user/profile`,
                 modifiedUserData,
                 config
             );
