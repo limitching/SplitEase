@@ -25,6 +25,8 @@ const AuthContext = createContext({
     setLoading: () => {},
     setGroupChange: () => {},
     joinGroup: () => {},
+    setJwtToken: () => {},
+    setUser: () => {},
 });
 
 const AuthContextProvider = ({ children }) => {
@@ -397,6 +399,8 @@ const AuthContextProvider = ({ children }) => {
                 setLoading,
                 setGroupChange,
                 joinGroup,
+                setJwtToken,
+                setUser,
             }}
         >
             {children}

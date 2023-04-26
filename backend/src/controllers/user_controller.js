@@ -2,7 +2,6 @@ import User from "../models/user_model.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import path from "path";
-
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 dotenv.config({ path: __dirname + "/../../.env" });
 const { TOKEN_EXPIRE, TOKEN_SECRET } = process.env;
@@ -28,6 +27,7 @@ const signUp = async (req, res) => {
             name: user.name,
             email: user.email,
             image: user.image,
+            line_binding_code: user.line_binding_code,
         },
         TOKEN_SECRET,
         { expiresIn: TOKEN_EXPIRE }
@@ -42,6 +42,7 @@ const signUp = async (req, res) => {
             provider: user.provider,
             name: user.name,
             email: user.email,
+            line_binding_code: user.line_binding_code,
         },
     });
 };
@@ -78,6 +79,7 @@ const signIn = async (req, res) => {
             name: user.name,
             email: user.email,
             image: user.image,
+            line_binding_code: user.line_binding_code,
         },
         TOKEN_SECRET,
         { expiresIn: TOKEN_EXPIRE }
@@ -93,6 +95,7 @@ const signIn = async (req, res) => {
             name: user.name,
             email: user.email,
             image: user.image,
+            line_binding_code: user.line_binding_code,
         },
     });
 };
@@ -160,6 +163,33 @@ const getUserProfile = async (req, res) => {
         email: req.user.email,
         name: req.user.name,
         image: req.user.image,
+        line_binding_code: req.user.line_binding_code,
     });
 };
-export { signUp, signIn, getUserGroups, getUserProfile };
+
+const updateUserProfile = async (req, res) => {
+    const user_id = req.user.id;
+    const modifiedUserProfile = req.body;
+    const profile = await User.updateProfile(user_id, modifiedUserProfile);
+
+    if (profile.error) {
+        return res.status(500).json({ error: "Internal Server Error (MySQL)" });
+    }
+    const user = {
+        id: req.user.id,
+        provider: req.user.provider,
+        email: req.user.email,
+        ...profile.data,
+    };
+
+    const accessToken = jwt.sign(user, TOKEN_SECRET, {
+        expiresIn: TOKEN_EXPIRE,
+    });
+    return res.status(200).json({
+        access_token: accessToken,
+        access_expired: TOKEN_EXPIRE,
+        user: user,
+    });
+};
+
+export { signUp, signIn, getUserGroups, getUserProfile, updateUserProfile };
