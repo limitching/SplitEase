@@ -14,8 +14,11 @@ import userRouter from "./src/routes/user_route.js";
 import groupRouter from "./src/routes/group_route.js";
 import expenseRouter from "./src/routes/expense_route.js";
 import debtsRouter from "./src/routes/debts_route.js";
+import botRouter from "./src/routes/bot_route.js";
 
 const app = express();
+// API routes
+app.use("/api/" + API_VERSION, [botRouter]);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
