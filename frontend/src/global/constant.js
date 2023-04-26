@@ -2,6 +2,8 @@ const API_HOST = "http://localhost:3000";
 // const API_HOST = "https://api.splitease.cc";
 // const WEB_HOST = "http://localhost:3001";
 const WEB_HOST = "https://splitease.cc";
+
+const AWS_CLOUDFRONT_HOST = "https://dxkgfgg79h3hz.cloudfront.net/";
 const LIFF_ID = "1660896460-KPNk7vny";
 
 const HEADER_BG_COLOR = "#F3CA40";
@@ -169,8 +171,6 @@ const HOVER_CHART_COLOR = [
     "rgba(0, 204, 255, 0.64)",
     "rgba(204, 204, 204, 0.64)",
 ];
-
-const AWS_CLOUDFRONT_HOST = "https://dxkgfgg79h3hz.cloudfront.net/";
 
 export {
     API_HOST,
