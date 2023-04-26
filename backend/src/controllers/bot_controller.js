@@ -2,12 +2,14 @@ import { bot } from "../services/line_connection.js";
 import path from "path";
 import fs from "fs";
 import dotenv from "dotenv";
-import e from "express";
+import { attachGroup } from "../models/group_model.js";
 dotenv.config();
 const { BASE_URL } = process.env;
 
+import User from "../models/user_model.js";
+
 function handleEvent(event) {
-    console.log("event", event);
+    // console.log("event", event);
     if (eventTypeHandlerMap[event.type]) {
         eventTypeHandlerMap[event.type](event);
     } else {
@@ -17,7 +19,25 @@ function handleEvent(event) {
 
 const messageTypeHandlerMap = { text: handleText, image: handleImage };
 
-function handleText(message, replyToken, source) {
+async function handleText(message, replyToken, source) {
+    console.log("message", message);
+    console.log("event.replyToken", replyToken);
+    console.log("source", source);
+
+    if (message.text.startsWith("/bind") || message.text.startsWith("/綁定")) {
+        return textMap.bind(message, replyToken, source);
+    }
+    if (
+        message.text.startsWith("/attach") ||
+        message.text.startsWith("/連接")
+    ) {
+        return textMap.attach(message, replyToken, source);
+    }
+
+    if (message.text.startsWith("/expense")) {
+        return textMap.expense(message, replyToken, source);
+    }
+
     switch (message.text) {
         case "測試1":
             return bot.replyMessage(replyToken, [
@@ -83,6 +103,145 @@ function handleText(message, replyToken, source) {
             return bot.replyMessage(replyToken, echo);
     }
 }
+
+//===========================================
+
+const textMap = {
+    bind: handleBinding,
+    attach: handleAttachment,
+    expense: handleExpense,
+};
+
+async function handleBinding(message, replyToken, source) {
+    const line_binding_code = message.text.split(" ")[1];
+    if (line_binding_code === undefined) {
+        const reply = {
+            type: "text",
+            text: "Example：(請自行替換)\n/綁定 [你的個人綁定碼] \n/bind [your binding code]",
+        };
+
+        return bot.replyMessage(replyToken, reply);
+    }
+
+    const binding = await User.bindingLineUser(line_binding_code, source);
+    if (binding.result === -1) {
+        const reply = {
+            type: "text",
+            text: "Error: Internal Server Error (MySQL).",
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+    if (binding.result === 0) {
+        const reply = {
+            type: "text",
+            text: "Error: Invalid binding code.",
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+    if (binding.result === 1) {
+        const { name } = binding;
+
+        const reply = {
+            type: "text",
+            text: `User:${name} \nBinding successfully!`,
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+}
+
+async function handleAttachment(message, replyToken, source) {
+    // Make sure this operation within LINE groups
+    if (!source.groupId) {
+        const reply = {
+            type: "text",
+            text: "Invalid operation: \nCan only be operated within LINE groups",
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+
+    //Check if user is binding
+    const user = await User.getBindingUser(source);
+    if (user.result === 0) {
+        const reply = {
+            type: "text",
+            text: `Invalid operation:\nPlease bind your LINE via binding code to unlock more features.\nExample:\n/bind [your binding code]`,
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+    if (user.error || user.result === -1) {
+        const reply = {
+            type: "text",
+            text: "Error: Internal Server Error (MySQL).",
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+
+    const invitation_code = message.text.split(" ")[1];
+    if (invitation_code === undefined) {
+        const reply = {
+            type: "text",
+            text: "Example: \n/attach [group invitation code]\n/連接 [你的群組邀請碼]",
+        };
+
+        return bot.replyMessage(replyToken, reply);
+    }
+
+    const attachment = await attachGroup(invitation_code, source);
+    if (attachment.result === -1) {
+        const reply = {
+            type: "text",
+            text: "Error: Internal Server Error (MySQL).",
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+    if (attachment.result === 0) {
+        const reply = {
+            type: "text",
+            text: "Error: Invalid invitation code.",
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+    if (attachment.result === 1) {
+        const { name } = attachment;
+        const groupSummary = await bot.getGroupSummary(source.groupId);
+        console.log(groupSummary);
+        const reply = {
+            type: "text",
+            text: `Group:${name}\nLINE group: ${groupSummary.groupName}\nAttach successfully!`,
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+}
+
+async function handleExpense(message, replyToken, source) {
+    // Make sure this operation within LINE groups
+    if (!source.groupId) {
+        const reply = {
+            type: "text",
+            text: "Invalid operation: \nCan only be operated within LINE groups",
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+    // Check if user is binding
+    const user = await User.getBindingUser(source);
+    if (user.result === 0) {
+        const reply = {
+            type: "text",
+            text: `Invalid operation:\nPlease bind your LINE via binding code to unlock more features.\nExample:\n/bind [your binding code]`,
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+    if (user.error || user.result === -1) {
+        const reply = {
+            type: "text",
+            text: "Error: Internal Server Error (MySQL).",
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+    // Check if group is binding
+}
+
+//===========================================
 
 async function handleImage(message, replyToken) {
     let getContent;
@@ -155,8 +314,6 @@ const eventTypeHandlerMap = {
 
 function handleMessageEvent(event) {
     const message = event.message;
-
-    console.log(message, event.replyToken, event.source);
 
     if (messageTypeHandlerMap[message.type]) {
         messageTypeHandlerMap[message.type](
