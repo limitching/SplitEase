@@ -3,8 +3,8 @@ import { Container, Modal, Button, Form, Row } from "react-bootstrap";
 import { TextField, IconButton, InputAdornment } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { AWS_CLOUDFRONT_HOST } from "../../global/constant";
-import { useContext, useState } from "react";
+import { AWS_CLOUDFRONT_HOST, GROUP_BG_COLOR } from "../../global/constant";
+import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 
 import { api } from "../../utils/api";
@@ -29,15 +29,21 @@ const StyledButton = styled(Button)`
     height: 2.5rem;
 `;
 
-const ProfileModal = ({ showProfileModal, handleCloseProfileModal }) => {
-    const { user, jwtToken, logout } = useContext(AuthContext);
-    const [modifiedUserName, setModifiedUserName] = useState(user.name);
-    const [modifiedUserImage, setModifiedUserImage] = useState(user.image);
+const ProfileModal = ({
+    showProfileModal,
+    handleCloseProfileModal,
+    modifiedUserName,
+    modifiedUserImage,
+    setModifiedUserName,
+    setModifiedUserImage,
+}) => {
+    const { user, jwtToken, logout, setJwtToken, setUser } =
+        useContext(AuthContext);
 
     useEffect(() => {
         setModifiedUserName(user.name);
         setModifiedUserImage(user.image);
-    }, [user]);
+    }, [user, setModifiedUserName, setModifiedUserImage]);
 
     function handleUserDataChange(event) {
         setModifiedUserName(event.target.value);
@@ -50,7 +56,34 @@ const ProfileModal = ({ showProfileModal, handleCloseProfileModal }) => {
             image: modifiedUserImage,
         };
 
-        const response = await api.updateProfile(jwtToken, modifiedUserData);
+        const data = await api.updateProfile(jwtToken, modifiedUserData);
+
+        if (data.errors || data.error) {
+            return MySwal.fire({
+                title: <p>Bad request</p>,
+                html: (
+                    <div>
+                        {data.errors.map((error) => <p>{error.msg}</p>) ||
+                            data.error}
+                    </div>
+                ),
+                icon: "error",
+                timer: 1000,
+                showConfirmButton: false,
+            });
+        }
+
+        MySwal.fire({
+            title: <p>Update Successfully</p>,
+            icon: "success",
+            timer: 1000,
+            showConfirmButton: false,
+        });
+        setJwtToken(data.access_token);
+        window.localStorage.setItem("jwtToken", data.access_token);
+        setUser(data.user);
+
+        handleCloseProfileModal();
     };
 
     const handleCopyCode = () => {
@@ -89,7 +122,6 @@ const ProfileModal = ({ showProfileModal, handleCloseProfileModal }) => {
             return console.error(uploadResponse.error);
         }
         const imageUrl = AWS_CLOUDFRONT_HOST + imageName;
-        console.log(imageUrl);
         setModifiedUserImage(imageUrl);
     };
 
@@ -103,10 +135,10 @@ const ProfileModal = ({ showProfileModal, handleCloseProfileModal }) => {
                 size="md"
                 centered
             >
-                <Form>
+                <Form onSubmit={updateUser}>
                     <Modal.Header closeButton as={Row}>
                         <Container className="modal-header-text ml-0 pl-0">
-                            <h4>Edit profile</h4>
+                            <h4>Profile</h4>
                         </Container>
                     </Modal.Header>
                     <StyledModalBody>
@@ -115,20 +147,23 @@ const ProfileModal = ({ showProfileModal, handleCloseProfileModal }) => {
                                 width: "100%",
                                 height: "300px",
                                 position: "relative",
-                                backgroundColor: "lightgrey",
+                                backgroundColor: GROUP_BG_COLOR,
                                 padding: "0 12px",
+                                overflow: "hidden",
                             }}
                         >
                             <img
                                 src={modifiedUserImage}
                                 alt={user.name}
                                 style={{
-                                    width: "100%",
-                                    maxWidth: "100%",
-                                    height: "auto",
                                     position: "absolute",
+                                    top: "0",
+                                    left: "0",
                                     bottom: "0",
                                     right: "0",
+                                    margin: "auto",
+                                    maxWidth: "100%",
+                                    maxHeight: "100%",
                                 }}
                             />
                             <IconButton
