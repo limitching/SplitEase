@@ -284,7 +284,7 @@ const notifyUserDebt = async (req, res) => {
     }
     const [user] = groupUsers.filter((user) => user.id === user_id);
     const [debtor] = groupUsers.filter((user) => user.id === debtor_id);
-    const [creditor] = groupUsers.filter((user) => user.id === debtor_id);
+    const [creditor] = groupUsers.filter((user) => user.id === creditor_id);
     if (!user || !debtor || !creditor) {
         return res.status(400).json({ error: "Bad Request. User not exist." });
     }

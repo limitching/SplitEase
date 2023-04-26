@@ -72,7 +72,7 @@ const generateDebtNotify = (debtorName, creditorName, currency, amount) => {
                                     contents: [
                                         {
                                             type: "span",
-                                            text: "煒晴",
+                                            text: debtorName,
                                             weight: "bold",
                                             color: "#000000",
                                             size: "lg",
@@ -114,7 +114,7 @@ const generateDebtNotify = (debtorName, creditorName, currency, amount) => {
                                         },
                                         {
                                             type: "text",
-                                            text: "NT$9000",
+                                            text: `${currency} ${amount}`,
                                             size: "md",
                                             color: "#171970",
                                             weight: "bold",
@@ -181,7 +181,7 @@ const generateDebtNotify = (debtorName, creditorName, currency, amount) => {
                                     contents: [
                                         {
                                             type: "span",
-                                            text: "耀中",
+                                            text: creditorName,
                                             weight: "bold",
                                             color: "#000000",
                                             size: "lg",
@@ -223,7 +223,7 @@ const generateDebtNotify = (debtorName, creditorName, currency, amount) => {
                                         },
                                         {
                                             type: "text",
-                                            text: "NT$9000",
+                                            text: `${currency} ${amount}`,
                                             size: "md",
                                             color: "#171970",
                                             weight: "bold",
