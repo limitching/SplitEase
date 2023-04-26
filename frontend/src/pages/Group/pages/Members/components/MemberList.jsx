@@ -12,7 +12,10 @@ import { Container } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { AuthContext } from "../../../../../contexts/AuthContext";
 import { useContext } from "react";
-import { CURRENCY_OPTIONS } from "../../../../../global/constant";
+import {
+    CURRENCY_OPTIONS,
+    ANIMAL_AVATAR,
+} from "../../../../../global/constant";
 
 const MemberList = () => {
     const { members, group, balance, spent } = useContext(GroupContext);
@@ -43,7 +46,11 @@ const MemberList = () => {
                                     <Tooltip title={user.name}>
                                         <Avatar
                                             alt={user.name}
-                                            src={user.image}
+                                            src={
+                                                user.image
+                                                    ? user.image
+                                                    : ANIMAL_AVATAR[index]
+                                            }
                                             sx={{ width: 50, height: 50 }}
                                         />
                                     </Tooltip>

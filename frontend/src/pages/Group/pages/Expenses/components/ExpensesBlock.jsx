@@ -16,7 +16,10 @@ import {
 } from "@mui/material";
 import Chip from "@mui/material/Chip";
 
-import { CURRENCY_OPTIONS } from "../../../../../global/constant";
+import {
+    CURRENCY_OPTIONS,
+    ANIMAL_AVATAR,
+} from "../../../../../global/constant";
 
 const StyledListItemTextForAmount = styled(ListItemText)`
     text-align: right;
@@ -27,6 +30,7 @@ const StyledListItemTextForAmount = styled(ListItemText)`
 const ExpensesBlock = () => {
     const { members, memberMap, indexMap, groupExpense } =
         useContext(GroupContext);
+
     const {
         setAmount,
         setChecked,
@@ -139,7 +143,13 @@ const ExpensesBlock = () => {
                                 <Tooltip title={creditors.name}>
                                     <Avatar
                                         alt={creditors.name}
-                                        src={creditors.image}
+                                        src={
+                                            creditors.image
+                                                ? creditors.image
+                                                : ANIMAL_AVATAR[
+                                                      indexMap.get(creditors.id)
+                                                  ]
+                                        }
                                         sx={{ width: 50, height: 50 }}
                                     />
                                 </Tooltip>
@@ -172,9 +182,13 @@ const ExpensesBlock = () => {
                                             <Avatar
                                                 alt={debtor.name}
                                                 src={
-                                                    debtor.image === null
-                                                        ? ".jpg"
-                                                        : debtor.image
+                                                    debtor.image
+                                                        ? debtor.image
+                                                        : ANIMAL_AVATAR[
+                                                              indexMap.get(
+                                                                  debtor.id
+                                                              )
+                                                          ]
                                                 }
                                                 sx={{
                                                     width: "20px",

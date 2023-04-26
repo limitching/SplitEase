@@ -14,6 +14,7 @@ import {
     Tooltip,
 } from "@mui/material";
 import styled from "styled-components";
+import { ANIMAL_AVATAR } from "../../../../../global/constant";
 
 const ActivitiesContainer = styled(Container)`
     padding: 0px 16px;
@@ -27,7 +28,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const ActivityBlock = () => {
-    const { logs, memberMap } = useContext(GroupContext);
+    const { logs, memberMap, indexMap } = useContext(GroupContext);
 
     return (
         <ActivitiesContainer>
@@ -99,8 +100,8 @@ const ActivityBlock = () => {
                     };
 
                     return (
-                        <>
-                            <LogContainer key={`activity-list ${index}`}>
+                        <div key={`activity-list ${index}`}>
+                            <LogContainer>
                                 <ListItem>
                                     <ListItemAvatar>
                                         <ListItemAvatar>
@@ -108,9 +109,13 @@ const ActivityBlock = () => {
                                                 <Avatar
                                                     alt={user.name}
                                                     src={
-                                                        user.image === null
-                                                            ? user.name
-                                                            : user.image
+                                                        user.image
+                                                            ? user.image
+                                                            : ANIMAL_AVATAR[
+                                                                  indexMap.get(
+                                                                      user.id
+                                                                  )
+                                                              ]
                                                     }
                                                     sx={{
                                                         width: 50,
@@ -137,7 +142,7 @@ const ActivityBlock = () => {
                                 </ListItem>
                             </LogContainer>
                             <Divider />
-                        </>
+                        </div>
                     );
                 })}
             </List>

@@ -2,7 +2,10 @@ import SplitMethodSelector from "./SplitMethodSelector";
 import { Container, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
-import { CURRENCY_OPTIONS } from "../../../../../global/constant";
+import {
+    CURRENCY_OPTIONS,
+    ANIMAL_AVATAR,
+} from "../../../../../global/constant";
 import { useContext, useState } from "react";
 import { TextField } from "@mui/material";
 import { TbPlusMinus } from "react-icons/tb";
@@ -307,7 +310,11 @@ const DebtorsBlock = () => {
                                         <ListItemAvatar>
                                             <Avatar
                                                 alt={`${member.name}`}
-                                                src={`${member.image}.jpg`}
+                                                src={`${
+                                                    member.image
+                                                        ? member.image
+                                                        : ANIMAL_AVATAR[index]
+                                                }`}
                                             />
                                         </ListItemAvatar>
                                         <ListItemText

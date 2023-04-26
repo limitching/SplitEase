@@ -1,7 +1,7 @@
 const API_HOST = "http://localhost:3000";
 // const API_HOST = "https://api.splitease.cc";
-// const WEB_HOST = "http://localhost:3001";
-const WEB_HOST = "https://splitease.cc";
+const WEB_HOST = "http://localhost:3001";
+// const WEB_HOST = "https://splitease.cc";
 
 const AWS_CLOUDFRONT_HOST = "https://dxkgfgg79h3hz.cloudfront.net/";
 const LIFF_ID = "1660896460-KPNk7vny";
@@ -172,6 +172,17 @@ const HOVER_CHART_COLOR = [
     "rgba(204, 204, 204, 0.64)",
 ];
 
+const ANIMAL_AVATAR = [
+    AWS_CLOUDFRONT_HOST + "avatars/dog_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/fox_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/gorilla_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/koala_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/lion_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/rabbit_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/tiger_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/wolf_avatar.jpg",
+];
+
 export {
     API_HOST,
     WEB_HOST,
@@ -187,4 +198,5 @@ export {
     CHART_COLOR,
     HOVER_CHART_COLOR,
     AWS_CLOUDFRONT_HOST,
+    ANIMAL_AVATAR,
 };
