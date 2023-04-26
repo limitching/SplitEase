@@ -27,6 +27,7 @@ const signUp = async (req, res) => {
             name: user.name,
             email: user.email,
             image: user.image,
+            line_binding_code: user.line_binding_code,
         },
         TOKEN_SECRET,
         { expiresIn: TOKEN_EXPIRE }
@@ -41,6 +42,7 @@ const signUp = async (req, res) => {
             provider: user.provider,
             name: user.name,
             email: user.email,
+            line_binding_code: user.line_binding_code,
         },
     });
 };
@@ -77,6 +79,7 @@ const signIn = async (req, res) => {
             name: user.name,
             email: user.email,
             image: user.image,
+            line_binding_code: user.line_binding_code,
         },
         TOKEN_SECRET,
         { expiresIn: TOKEN_EXPIRE }
@@ -92,6 +95,7 @@ const signIn = async (req, res) => {
             name: user.name,
             email: user.email,
             image: user.image,
+            line_binding_code: user.line_binding_code,
         },
     });
 };
@@ -159,6 +163,7 @@ const getUserProfile = async (req, res) => {
         email: req.user.email,
         name: req.user.name,
         image: req.user.image,
+        line_binding_code: req.user.line_binding_code,
     });
 };
 
