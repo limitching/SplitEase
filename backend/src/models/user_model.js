@@ -122,7 +122,7 @@ const lineSignIn = async (name, email, image, line_id) => {
             login_at: loginAt,
         };
         const [users] = await connection.query(
-            "SELECT id FROM users WHERE email = ? AND provider = 'line'",
+            "SELECT id FROM users WHERE email = ?",
             [email]
         );
         let userId;
@@ -149,8 +149,8 @@ const lineSignIn = async (name, email, image, line_id) => {
             // Exist user login
             userId = users[0].id;
             await connection.query(
-                "UPDATE users SET login_at = ? WHERE id = ?",
-                [loginAt, userId]
+                "UPDATE users SET line_id = ? , login_at = ? WHERE id = ?",
+                [line_id, loginAt, userId]
             );
         }
         await connection.query("COMMIT");
