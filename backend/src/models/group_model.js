@@ -221,6 +221,7 @@ const getGroupInformationViaCode = async (slug, invitation_code) => {
 
 const getLogs = async (group_id) => {
     try {
+        //TODO: remember to order by time
         const [logs] = await pool.query(
             "SELECT * FROM `logs` WHERE group_id = ? ",
             [group_id]
@@ -252,6 +253,34 @@ const attachGroup = async (invitation_code, source) => {
     }
 };
 
+const getGroupUsersInformation = async (group_id) => {
+    try {
+        const [usersInformation] = await pool.query(
+            `
+            SELECT id,name,email,image,line_id FROM group_users 
+            INNER JOIN users ON group_users.user_id = users.id
+            WHERE group_id = ?
+            `,
+            [group_id]
+        );
+        return usersInformation;
+    } catch (error) {
+        return { error };
+    }
+};
+
+const getGroupInformationById = async (group_id) => {
+    try {
+        const [groupInformation] = await pool.query(
+            "SELECT * FROM `groups` WHERE id = ?",
+            [group_id]
+        );
+        return groupInformation[0];
+    } catch (error) {
+        return { error };
+    }
+};
+
 export {
     getGroups,
     archiveGroup,
@@ -263,4 +292,6 @@ export {
     getGroupInformationViaCode,
     getLogs,
     attachGroup,
+    getGroupUsersInformation,
+    getGroupInformationById,
 };
