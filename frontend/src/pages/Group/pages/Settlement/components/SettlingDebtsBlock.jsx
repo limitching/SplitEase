@@ -2,8 +2,9 @@ import {
     CURRENCY_OPTIONS,
     ANIMAL_AVATAR,
 } from "../../../../../global/constant";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { GroupContext } from "../../../../../contexts/GroupContext";
+import { AuthContext } from "../../../../../contexts/AuthContext";
 
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import VerifiedIcon from "@mui/icons-material/Verified";
@@ -20,9 +21,48 @@ import {
     Tooltip,
 } from "@mui/material";
 import { Container } from "react-bootstrap";
+import { api } from "../../../../../utils/api";
+
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 
 const SettlingDebtsBlock = ({ handleAlertOpen, setSelectDebt }) => {
-    const { members, settlingDebts, indexMap } = useContext(GroupContext);
+    const { members, settlingDebts, indexMap, group_id } =
+        useContext(GroupContext);
+    const { jwtToken } = useContext(AuthContext);
+    const [notifyData, setNotifyData] = useState({
+        debtor_id: 0,
+        creditor_id: 0,
+        amount: 0,
+        currency_option: 1,
+    });
+
+    const handleNotify = async (event) => {
+        event.preventDefault();
+        const response = await api.notifyDebtor(jwtToken, notifyData, group_id);
+        console.log(response);
+        if (response.error) {
+            return MySwal.fire({
+                title: <p>Error</p>,
+                html: <p>{response.error}</p>,
+                icon: "error",
+                timer: 1000,
+                didOpen: () => {
+                    MySwal.showLoading();
+                },
+            });
+        }
+
+        MySwal.fire({
+            title: <p>Successfully Notify!</p>,
+            icon: "success",
+            timer: 1000,
+            didOpen: () => {
+                MySwal.showLoading();
+            },
+        });
+    };
 
     return (
         <>
@@ -48,7 +88,17 @@ const SettlingDebtsBlock = ({ handleAlertOpen, setSelectDebt }) => {
                                 <div key={"settlingDebtsList" + index}>
                                     <Divider></Divider>
                                     <ListItem>
-                                        <ListItemButton>
+                                        <ListItemButton
+                                            onMouseEnter={() => {
+                                                setNotifyData({
+                                                    debtor_id: debtor.id,
+                                                    creditor_id: creditor.id,
+                                                    amount: debtAmounts,
+                                                    currency_option:
+                                                        currency.id,
+                                                });
+                                            }}
+                                        >
                                             <ListItemAvatar>
                                                 <Tooltip title={debtor.name}>
                                                     <Avatar
@@ -150,7 +200,11 @@ const SettlingDebtsBlock = ({ handleAlertOpen, setSelectDebt }) => {
                                                 <Tooltip
                                                     title={`Remind ${debtor.name}`}
                                                 >
-                                                    <IconButton>
+                                                    <IconButton
+                                                        onClick={(event) => {
+                                                            handleNotify(event);
+                                                        }}
+                                                    >
                                                         <NotificationsActiveIcon />
                                                     </IconButton>
                                                 </Tooltip>
