@@ -124,7 +124,6 @@ const ProfileModal = ({
         const imageUrl = AWS_CLOUDFRONT_HOST + imageName;
         setModifiedUserImage(imageUrl);
     };
-
     return (
         <>
             <Modal
@@ -142,49 +141,56 @@ const ProfileModal = ({
                         </Container>
                     </Modal.Header>
                     <StyledModalBody>
-                        <Container
-                            style={{
-                                width: "100%",
-                                height: "300px",
-                                position: "relative",
-                                backgroundColor: GROUP_BG_COLOR,
-                                padding: "0 12px",
-                                overflow: "hidden",
-                            }}
-                        >
-                            <img
-                                src={modifiedUserImage}
-                                alt={user.name}
+                        <Container>
+                            <Container
                                 style={{
-                                    position: "absolute",
-                                    top: "0",
-                                    left: "0",
-                                    bottom: "0",
-                                    right: "0",
-                                    margin: "auto",
-                                    maxWidth: "100%",
-                                    maxHeight: "100%",
-                                }}
-                            />
-                            <IconButton
-                                color="primary"
-                                aria-label="upload picture"
-                                component="label"
-                                style={{
-                                    position: "absolute",
-                                    bottom: "10px",
-                                    right: "10px",
+                                    width: "100%",
+                                    height: "300px",
+                                    position: "relative",
+                                    backgroundColor: GROUP_BG_COLOR,
+                                    padding: "0 12px",
+                                    overflow: "hidden",
                                 }}
                             >
-                                <input
-                                    hidden
-                                    accept="image/*"
-                                    type="file"
-                                    onChange={handlingUpload}
+                                <img
+                                    src={
+                                        modifiedUserImage === null
+                                            ? `${AWS_CLOUDFRONT_HOST}fbe9690656549edd75c5cdb1786d667f`
+                                            : modifiedUserImage
+                                    }
+                                    alt=""
+                                    style={{
+                                        position: "absolute",
+                                        top: "0",
+                                        left: "0",
+                                        bottom: "0",
+                                        right: "0",
+                                        margin: "auto",
+                                        maxWidth: "100%",
+                                        maxHeight: "100%",
+                                    }}
                                 />
-                                <PhotoCamera />
-                            </IconButton>
+                                <IconButton
+                                    color="primary"
+                                    aria-label="upload picture"
+                                    component="label"
+                                    style={{
+                                        position: "absolute",
+                                        bottom: "10px",
+                                        right: "10px",
+                                    }}
+                                >
+                                    <input
+                                        hidden
+                                        accept="image/*"
+                                        type="file"
+                                        onChange={handlingUpload}
+                                    />
+                                    <PhotoCamera />
+                                </IconButton>
+                            </Container>
                         </Container>
+
                         <Container>
                             <TextField
                                 name="name"
@@ -218,7 +224,7 @@ const ProfileModal = ({
                                 label="Line binding code"
                                 type="text"
                                 variant="standard"
-                                value={user.id}
+                                value={user.line_binding_code}
                                 onClick={handleCopyCode}
                                 fullWidth
                                 aria-readonly

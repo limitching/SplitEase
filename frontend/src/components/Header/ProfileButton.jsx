@@ -1,5 +1,5 @@
 import { Avatar, ListItemButton, ListItemText } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import ProfileModal from "./ProfileModal";
 
@@ -7,8 +7,12 @@ const ProfileButton = () => {
     const { user } = useContext(AuthContext);
 
     const [showProfileModal, setShowProfileModal] = useState(false);
-    const [modifiedUserName, setModifiedUserName] = useState(user.name);
+    const [modifiedUserName, setModifiedUserName] = useState("");
     const [modifiedUserImage, setModifiedUserImage] = useState(user.image);
+
+    useEffect(() => {
+        setModifiedUserName(user.name);
+    }, [user]);
 
     const handleOpenProfileModal = () => {
         setModifiedUserName(user.name);
