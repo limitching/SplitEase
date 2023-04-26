@@ -194,6 +194,19 @@ const getGroupsInformation = async (groupsIds, is_archived) => {
     return groups;
 };
 
+const updateProfile = async (user_id, modifiedUserProfile) => {
+    try {
+        await pool.query("UPDATE users SET ? WHERE id = ?", [
+            modifiedUserProfile,
+            user_id,
+        ]);
+        return { data: modifiedUserProfile };
+    } catch (error) {
+        console.error(error);
+        return { error };
+    }
+};
+
 export default {
     getUsers,
     signUp,
@@ -202,4 +215,5 @@ export default {
     lineSignIn,
     getUserGroupsIds,
     getGroupsInformation,
+    updateProfile,
 };
