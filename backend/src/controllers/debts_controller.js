@@ -1,4 +1,9 @@
-import { getMembers, getMember } from "../models/group_model.js";
+import {
+    getMembers,
+    getMember,
+    getGroupUsersInformation,
+    getGroupInformationById,
+} from "../models/group_model.js";
 import {
     getExpensesByGroupId,
     getSettlingExpensesByGroupId,
@@ -9,7 +14,16 @@ import {
     getSettlementsByGroupId,
     getSettlingByGroupId,
 } from "../models/debts_model.js";
+import { generateDebtNotify } from "../models/bot_model.js";
 import { minimizeDebts } from "../models/split_model.js";
+import { CURRENCY_MAP } from "../utils/constant.js";
+import axios from "axios";
+import dotenv from "dotenv";
+import path from "path";
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+dotenv.config({ path: __dirname + "/../../.env" });
+
+const { LINE_CHANNEL_ACCESS_TOKEN } = process.env;
 
 const getGroupDebts = async (req, res) => {
     const group_id = req.params.group_id;
@@ -244,4 +258,71 @@ const settleUpDebts = async (req, res) => {
     return res.status(200).json({ status: 200 });
 };
 
-export { getGroupDebts, getSettlingGroupDebts, settleUpDebts };
+const notifyUserDebt = async (req, res) => {
+    const user_id = req.user.id;
+    const group_id = req.params.group_id;
+    const { debtor_id, creditor_id, currency_option, amount } = req.body;
+
+    const group = await getGroupInformationById(group_id);
+    if (!group) {
+        return res.status(400).json({ error: "Bad Request. Group not exist." });
+    }
+    if (group.error) {
+        return res
+            .status(500)
+            .json({ error: "Internal Server Error (MySQL)." });
+    }
+
+    const groupUsers = await getGroupUsersInformation(group_id);
+    if (groupUsers.length < 2) {
+        return res.status(400).json({ error: "Bad Request. User not exist." });
+    }
+    if (groupUsers.error) {
+        return res
+            .status(500)
+            .json({ error: "Internal Server Error (MySQL)." });
+    }
+    const [user] = groupUsers.filter((user) => user.id === user_id);
+    const [debtor] = groupUsers.filter((user) => user.id === debtor_id);
+    const [creditor] = groupUsers.filter((user) => user.id === debtor_id);
+    if (!user || !debtor || !creditor) {
+        return res.status(400).json({ error: "Bad Request. User not exist." });
+    }
+
+    const replyBody = generateDebtNotify(
+        debtor.name,
+        creditor.name,
+        CURRENCY_MAP[currency_option].symbol,
+        amount
+    );
+
+    const message = {
+        to: debtor.line_id,
+        messages: [
+            {
+                type: "flex",
+                altText: "[Important] Debt Notification",
+                contents: replyBody,
+            },
+        ],
+    };
+
+    try {
+        const config = {
+            headers: { Authorization: `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}` },
+        };
+        const { data } = await axios.post(
+            `https://api.line.me/v2/bot/message/push`,
+            message,
+            config
+        );
+        return res.status(200).json({ msg: "Successfully notify" });
+    } catch (error) {
+        console.error(error.response);
+        return res
+            .status(500)
+            .json({ error: "Server side error. (LINE Server error)" });
+    }
+};
+
+export { getGroupDebts, getSettlingGroupDebts, settleUpDebts, notifyUserDebt };
