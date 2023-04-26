@@ -162,4 +162,29 @@ const getUserProfile = async (req, res) => {
     });
 };
 
-export { signUp, signIn, getUserGroups, getUserProfile };
+const updateUserProfile = async (req, res) => {
+    const user_id = req.user.id;
+    const modifiedUserProfile = req.body;
+    const profile = await User.updateProfile(user_id, modifiedUserProfile);
+
+    if (profile.error) {
+        return res.status(500).json({ error: "Internal Server Error (MySQL)" });
+    }
+    const user = {
+        id: req.user.id,
+        provider: req.user.provider,
+        email: req.user.email,
+        ...profile.data,
+    };
+
+    const accessToken = jwt.sign(user, TOKEN_SECRET, {
+        expiresIn: TOKEN_EXPIRE,
+    });
+    return res.status(200).json({
+        access_token: accessToken,
+        access_expired: TOKEN_EXPIRE,
+        user: user,
+    });
+};
+
+export { signUp, signIn, getUserGroups, getUserProfile, updateUserProfile };
