@@ -13,9 +13,14 @@ const {
     WEB_DEPLOY_URI,
 } = process.env;
 
+const { HASH_ID_SALT } = process.env;
+import Hashids from "hashids";
+const hashids = new Hashids(HASH_ID_SALT, 10);
+
 const signUp = async (name, email, password) => {
     const connection = await pool.getConnection();
     try {
+        await connection.query("START TRANSACTION");
         const loginAt = new Date();
 
         // Hash password
@@ -38,9 +43,21 @@ const signUp = async (name, email, password) => {
         );
         user.id = result.insertId;
 
+        const code = hashids.encode(result.insertId);
+        const lineBindingCode = {
+            line_binding_code: code,
+        };
+        // Insert line binding code via user_id
+        await connection.query("UPDATE `users` SET ? WHERE id = ?", [
+            lineBindingCode,
+            result.insertId,
+        ]);
+        user.line_binding_code = code;
+        await connection.query("COMMIT");
         return { user };
     } catch (error) {
         console.log(error);
+        await connection.query("ROLLBACK");
         return {
             error: "Request Error: Email Already Exists",
             status: 403,
@@ -109,6 +126,7 @@ const lineSignIn = async (name, email, image, line_id) => {
             [email]
         );
         let userId;
+        await connection.query("START TRANSACTION");
         if (users.length === 0) {
             // Create new user
             const [result] = await connection.query(
@@ -116,6 +134,17 @@ const lineSignIn = async (name, email, image, line_id) => {
                 user
             );
             userId = result.insertId;
+
+            const code = hashids.encode(result.insertId);
+            const lineBindingCode = {
+                line_binding_code: code,
+            };
+            // Insert line binding code via user_id
+            await connection.query("UPDATE `users` SET ? WHERE id = ?", [
+                lineBindingCode,
+                result.insertId,
+            ]);
+            user.line_binding_code = code;
         } else {
             // Exist user login
             userId = users[0].id;
@@ -124,9 +153,12 @@ const lineSignIn = async (name, email, image, line_id) => {
                 [loginAt, userId]
             );
         }
+        await connection.query("COMMIT");
         user.id = userId;
+        console.log(user);
         return { user };
     } catch (error) {
+        await connection.query("ROLLBACK");
         return { error };
     } finally {
         await connection.release();
