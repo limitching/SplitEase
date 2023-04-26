@@ -337,15 +337,15 @@ const api = {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const result = await axios.post(
+            const { data } = await axios.post(
                 `${this.hostname}/user/profile`,
                 modifiedUserData,
                 config
             );
-            return result;
+            return data;
         } catch (error) {
             console.error(error);
-            return error.response;
+            return error.response.data;
         }
     },
 };
