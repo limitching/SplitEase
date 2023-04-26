@@ -240,6 +240,42 @@ const updateProfile = async (user_id, modifiedUserProfile) => {
     }
 };
 
+const bindingLineUser = async (line_binding_code, source) => {
+    try {
+        const line_idData = { line_id: source.userId };
+        const [result] = await pool.query(
+            "UPDATE users SET ? WHERE line_binding_code =?",
+            [line_idData, line_binding_code]
+        );
+        const [user] = await pool.query(
+            "SELECT * FROM users WHERE line_binding_code = ?",
+            [line_binding_code]
+        );
+        const user_name = user[0].name;
+
+        return { result: result.affectedRows, name: user_name };
+    } catch (error) {
+        console.log(error);
+        return { error, result: -1 };
+    }
+};
+
+const getBindingUser = async (source) => {
+    try {
+        const [user] = await pool.query(
+            "SELECT * FROM users WHERE line_id = ?",
+            [source.userId]
+        );
+        if (user.length === 0) {
+            return { result: 0 };
+        }
+        return user[0];
+    } catch (error) {
+        console.log(error);
+        return { error, result: -1 };
+    }
+};
+
 export default {
     getUsers,
     signUp,
@@ -249,4 +285,6 @@ export default {
     getUserGroupsIds,
     getGroupsInformation,
     updateProfile,
+    bindingLineUser,
+    getBindingUser,
 };

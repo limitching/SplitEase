@@ -232,6 +232,26 @@ const getLogs = async (group_id) => {
     }
 };
 
+const attachGroup = async (invitation_code, source) => {
+    try {
+        const groupLine_idData = { line_id: source.groupId };
+        const [result] = await pool.query(
+            "UPDATE `groups` SET ? WHERE invitation_code =?",
+            [groupLine_idData, invitation_code]
+        );
+        const [group] = await pool.query(
+            "SELECT * FROM `groups` WHERE invitation_code = ?",
+            [invitation_code]
+        );
+        const group_name = group[0]?.name;
+
+        return { result: result.affectedRows, name: group_name };
+    } catch (error) {
+        console.log(error);
+        return { error, result: -1 };
+    }
+};
+
 export {
     getGroups,
     archiveGroup,
@@ -242,4 +262,5 @@ export {
     joinGroupViaCode,
     getGroupInformationViaCode,
     getLogs,
+    attachGroup,
 };
