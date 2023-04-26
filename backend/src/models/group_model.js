@@ -223,7 +223,7 @@ const getLogs = async (group_id) => {
     try {
         //TODO: remember to order by time
         const [logs] = await pool.query(
-            "SELECT * FROM `logs` WHERE group_id = ? ",
+            "SELECT * FROM `logs` WHERE group_id = ? ORDER BY log_time DESC LIMIT 100",
             [group_id]
         );
         return logs;
