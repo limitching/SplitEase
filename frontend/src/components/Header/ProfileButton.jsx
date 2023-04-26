@@ -7,8 +7,12 @@ const ProfileButton = () => {
     const { user } = useContext(AuthContext);
 
     const [showProfileModal, setShowProfileModal] = useState(false);
+    const [modifiedUserName, setModifiedUserName] = useState(user.name);
+    const [modifiedUserImage, setModifiedUserImage] = useState(user.image);
 
     const handleOpenProfileModal = () => {
+        setModifiedUserName(user.name);
+        setModifiedUserImage(user.image);
         setShowProfileModal(true);
     };
 
@@ -42,6 +46,10 @@ const ProfileButton = () => {
             <ProfileModal
                 showProfileModal={showProfileModal}
                 handleCloseProfileModal={handleCloseProfileModal}
+                modifiedUserName={modifiedUserName}
+                modifiedUserImage={modifiedUserImage}
+                setModifiedUserName={setModifiedUserName}
+                setModifiedUserImage={setModifiedUserImage}
             ></ProfileModal>
         </>
     );
