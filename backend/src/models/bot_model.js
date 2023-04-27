@@ -334,7 +334,58 @@ const generateGroupsMenu = async (groups) => {
     return body;
 };
 
-const generateGroupOverView = () => {
+const generateGroupOverView = (
+    group,
+    groupMembers,
+    membersIndexMap,
+    groupExpenses,
+    userDebts,
+    userCredits,
+    user,
+    user_index,
+    groupCurrency,
+    graph
+) => {
+    const totalGroupSpending = groupExpenses.reduce(
+        (acc, { amount }) => acc + amount,
+        0
+    );
+    const totalUserPaidFor = groupExpenses.reduce(
+        (acc, { creditors_amounts }) => {
+            if (creditors_amounts[user.id]) {
+                return acc + creditors_amounts[user.id];
+            }
+            return acc;
+        },
+        0
+    );
+    const totalUserShare = groupExpenses.reduce(
+        (acc, { debtors_weight, debtors_adjustment, amount }) => {
+            const totalWeight = Array.from(debtors_weight.values()).reduce(
+                (acc, curr) => acc + curr,
+                0
+            );
+
+            const totalAdjustments = Array.from(
+                debtors_adjustment.values()
+            ).reduce((acc, curr) => acc + curr, 0);
+
+            if (debtors_weight.get(user.id.toString())) {
+                return (
+                    acc +
+                    ((amount - totalAdjustments) *
+                        debtors_weight.get(user.id.toString())) /
+                        totalWeight +
+                    (debtors_adjustment.get(user.id.toString())
+                        ? debtors_adjustment.get(user.id.toString())
+                        : 0)
+                );
+            }
+            return acc;
+        },
+        0
+    );
+
     const body = {
         type: "bubble",
         body: {
@@ -343,24 +394,38 @@ const generateGroupOverView = () => {
             contents: [
                 {
                     type: "text",
-                    text: "GROUP OVERVIEW",
+                    text: `${user.name}'S GROUP OVERVIEW`,
                     weight: "bold",
                     color: "#1DB446",
                     size: "sm",
                 },
                 {
                     type: "text",
-                    text: "{{group name}}",
+                    text: group.name,
                     weight: "bold",
                     size: "xxl",
                     margin: "md",
                 },
                 {
-                    type: "text",
-                    text: "Miraina Tower, 4-1-6 Shinjuku, Tokyo",
-                    size: "xs",
-                    color: "#aaaaaa",
-                    wrap: true,
+                    type: "box",
+                    layout: "horizontal",
+                    contents: [
+                        {
+                            type: "text",
+                            text: "Default currency",
+                            size: "xs",
+                            color: "#aaaaaa",
+                            wrap: true,
+                        },
+                        {
+                            type: "text",
+                            text: groupCurrency.abbreviation,
+                            size: "xs",
+                            color: "#aaaaaa",
+                            wrap: true,
+                            align: "end",
+                        },
+                    ],
                 },
                 {
                     type: "separator",
@@ -369,9 +434,15 @@ const generateGroupOverView = () => {
                 {
                     type: "box",
                     layout: "vertical",
-                    margin: "xxl",
-                    spacing: "sm",
+                    margin: "lg",
                     contents: [
+                        {
+                            type: "text",
+                            text: "General Information",
+                            size: "sm",
+                            color: "#555555",
+                            weight: "bold",
+                        },
                         {
                             type: "box",
                             layout: "horizontal",
@@ -385,7 +456,28 @@ const generateGroupOverView = () => {
                                 },
                                 {
                                     type: "text",
-                                    text: "$2.99",
+                                    text: `${groupCurrency.symbol} ${totalGroupSpending}`,
+                                    size: "sm",
+                                    color: "#111111",
+                                    align: "end",
+                                },
+                            ],
+                            margin: "sm",
+                        },
+                        {
+                            type: "box",
+                            layout: "horizontal",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "Total expense you paid for",
+                                    size: "sm",
+                                    color: "#555555",
+                                    flex: 0,
+                                },
+                                {
+                                    type: "text",
+                                    text: `${groupCurrency.symbol} ${totalUserPaidFor}`,
                                     size: "sm",
                                     color: "#111111",
                                     align: "end",
@@ -398,34 +490,14 @@ const generateGroupOverView = () => {
                             contents: [
                                 {
                                     type: "text",
-                                    text: "Total you paid for:",
+                                    text: "Your total share",
                                     size: "sm",
                                     color: "#555555",
                                     flex: 0,
                                 },
                                 {
                                     type: "text",
-                                    text: "$0.99",
-                                    size: "sm",
-                                    color: "#111111",
-                                    align: "end",
-                                },
-                            ],
-                        },
-                        {
-                            type: "box",
-                            layout: "horizontal",
-                            contents: [
-                                {
-                                    type: "text",
-                                    text: "Your total share:",
-                                    size: "sm",
-                                    color: "#555555",
-                                    flex: 0,
-                                },
-                                {
-                                    type: "text",
-                                    text: "$3.33",
+                                    text: `${groupCurrency.symbol} ${totalUserShare}`,
                                     size: "sm",
                                     color: "#111111",
                                     align: "end",
@@ -434,84 +506,120 @@ const generateGroupOverView = () => {
                         },
                         {
                             type: "separator",
-                            margin: "xxl",
+                            margin: "lg",
                         },
+                    ],
+                },
+                {
+                    type: "box",
+                    layout: "vertical",
+                    margin: "lg",
+                    spacing: "sm",
+                    contents: [
                         {
                             type: "box",
                             layout: "horizontal",
-                            margin: "xxl",
+                            margin: "none",
                             contents: [
                                 {
                                     type: "text",
-                                    text: "ITEMS",
+                                    text: "Current Settling Debts",
                                     size: "sm",
                                     color: "#555555",
-                                },
-                                {
-                                    type: "text",
-                                    text: "3",
-                                    size: "sm",
-                                    color: "#111111",
-                                    align: "end",
+                                    weight: "bold",
                                 },
                             ],
                         },
                         {
                             type: "box",
-                            layout: "horizontal",
-                            contents: [
-                                {
-                                    type: "text",
-                                    text: "TOTAL",
-                                    size: "sm",
-                                    color: "#555555",
-                                },
-                                {
-                                    type: "text",
-                                    text: "$7.31",
-                                    size: "sm",
-                                    color: "#111111",
-                                    align: "end",
-                                },
-                            ],
+                            layout: "vertical",
+                            margin: "sm",
+                            contents:
+                                userDebts.length === 0
+                                    ? [
+                                          {
+                                              type: "box",
+                                              layout: "horizontal",
+                                              contents: [
+                                                  {
+                                                      type: "text",
+                                                      text: "NO DEBTS 🎉",
+                                                      size: "sm",
+                                                      color: "#555555",
+                                                      align: "start",
+                                                      margin: "none",
+                                                  },
+                                              ],
+                                              margin: "sm",
+                                          },
+                                      ]
+                                    : userDebts.map(
+                                          ([
+                                              debtorIndex,
+                                              creditorIndex,
+                                              amount,
+                                          ]) => {
+                                              const text = {
+                                                  type: "box",
+                                                  layout: "horizontal",
+                                                  margin: "none",
+                                                  contents: [
+                                                      {
+                                                          type: "text",
+                                                          text: `You owe ${groupMembers[creditorIndex].name}`,
+                                                          size: "sm",
+                                                          color: "#555555",
+                                                      },
+                                                      {
+                                                          type: "text",
+                                                          text: `${groupCurrency.symbol} ${amount}`,
+                                                          size: "sm",
+                                                          color: "#111111",
+                                                          align: "end",
+                                                      },
+                                                  ],
+                                              };
+                                              return text;
+                                          }
+                                      ),
                         },
+
                         {
                             type: "box",
-                            layout: "horizontal",
-                            contents: [
-                                {
-                                    type: "text",
-                                    text: "CASH",
-                                    size: "sm",
-                                    color: "#555555",
-                                },
-                                {
-                                    type: "text",
-                                    text: "$8.0",
-                                    size: "sm",
-                                    color: "#111111",
-                                    align: "end",
-                                },
-                            ],
-                        },
-                        {
-                            type: "box",
-                            layout: "horizontal",
-                            contents: [
-                                {
-                                    type: "text",
-                                    text: "CHANGE",
-                                    size: "sm",
-                                    color: "#555555",
-                                },
-                                {
-                                    type: "text",
-                                    text: "$0.69",
-                                    size: "sm",
-                                    color: "#111111",
-                                    align: "end",
-                                },
-                            ],
+                            layout: "vertical",
+                            margin: "none",
+                            contents:
+                                userCredits.length === 0
+                                    ? []
+                                    : userCredits.map(
+                                          ([
+                                              debtorIndex,
+                                              creditorIndex,
+                                              amount,
+                                          ]) => {
+                                              const text = {
+                                                  type: "box",
+                                                  layout: "horizontal",
+                                                  margin: "none",
+                                                  contents: [
+                                                      {
+                                                          type: "text",
+                                                          text: `${groupMembers[debtorIndex].name} owe You`,
+                                                          size: "sm",
+                                                          color: "#555555",
+                                                      },
+                                                      {
+                                                          type: "text",
+                                                          text: `${groupCurrency.symbol} ${amount}`,
+                                                          size: "sm",
+                                                          color: "#111111",
+                                                          align: "end",
+                                                      },
+                                                  ],
+                                              };
+                                              return text;
+                                          }
+                                      ),
                         },
                     ],
                 },
@@ -521,22 +629,22 @@ const generateGroupOverView = () => {
                 },
                 {
                     type: "box",
-                    layout: "horizontal",
+                    layout: "vertical",
                     margin: "md",
                     contents: [
                         {
                             type: "text",
-                            text: "PAYMENT ID",
+                            text: "Show default currency debts only",
                             size: "xs",
                             color: "#aaaaaa",
                             flex: 0,
                         },
                         {
                             type: "text",
-                            text: "#743289384279",
-                            color: "#aaaaaa",
+                            text: "Visit the group page For more debts : )",
                             size: "xs",
-                            align: "end",
+                            color: "#aaaaaa",
+                            flex: 0,
                         },
                     ],
                 },
@@ -548,5 +656,6 @@ const generateGroupOverView = () => {
             },
         },
     };
+    return body;
 };
-export { generateDebtNotify, generateGroupsMenu };
+export { generateDebtNotify, generateGroupsMenu, generateGroupOverView };
