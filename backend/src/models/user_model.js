@@ -251,7 +251,10 @@ const bindingLineUser = async (line_binding_code, source) => {
             "SELECT * FROM users WHERE line_binding_code = ?",
             [line_binding_code]
         );
-        const user_name = user[0].name;
+        if (!user[0]?.name) {
+            throw new Error("User not exist.");
+        }
+        const user_name = user[0]?.name;
 
         return { result: result.affectedRows, name: user_name };
     } catch (error) {
