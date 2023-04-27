@@ -1,15 +1,35 @@
 import { bot } from "../services/line_connection.js";
 import path from "path";
-import fs from "fs";
+import fs, { access } from "fs";
 import dotenv from "dotenv";
-import { attachGroup } from "../models/group_model.js";
+import {
+    attachGroup,
+    getGroupsByUserId,
+    getMember,
+    getMembers,
+    getGroupInformationById,
+} from "../models/group_model.js";
+import {
+    getExpensesByGroupId,
+    getSettlingExpensesByGroupId,
+    updateExpenseStatusToSettled,
+} from "../models/expense_model.js";
+import {
+    createCurrencyGraph,
+    getSettlingByGroupId,
+} from "../models/debts_model.js";
 dotenv.config();
 const { BASE_URL } = process.env;
+import { CURRENCY_MAP } from "../utils/constant.js";
+
+import { generateGroupsMenu } from "../models/bot_model.js";
 
 import User from "../models/user_model.js";
+import { group } from "console";
 
 function handleEvent(event) {
-    // console.log("event", event);
+    console.log("event", event);
+    console.log("==================");
     if (eventTypeHandlerMap[event.type]) {
         eventTypeHandlerMap[event.type](event);
     } else {
@@ -17,7 +37,10 @@ function handleEvent(event) {
     }
 }
 
-const messageTypeHandlerMap = { text: handleText, image: handleImage };
+const messageTypeHandlerMap = {
+    text: handleText,
+    image: handleImage,
+};
 
 async function handleText(message, replyToken, source) {
     console.log("message", message);
@@ -36,6 +59,10 @@ async function handleText(message, replyToken, source) {
 
     if (message.text.startsWith("/expense")) {
         return textMap.expense(message, replyToken, source);
+    }
+
+    if (message.text.startsWith("/groups")) {
+        return textMap.groups(message, replyToken, source);
     }
 
     switch (message.text) {
@@ -110,14 +137,24 @@ const textMap = {
     bind: handleBinding,
     attach: handleAttachment,
     expense: handleExpense,
+    groups: handleGetGroup,
 };
 
 async function handleBinding(message, replyToken, source) {
+    const user = await User.getBindingUser(source);
+    if (user.result !== 0) {
+        const reply = {
+            type: "text",
+            text: "[Invalid operation]: This LINE id has already been bound.",
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+
     const line_binding_code = message.text.split(" ")[1];
     if (line_binding_code === undefined) {
         const reply = {
             type: "text",
-            text: "Example：(請自行替換)\n/綁定 [你的個人綁定碼] \n/bind [your binding code]",
+            text: "[Example]:(請自行替換)\n/bind [your binding code]\n/綁定 [你的個人綁定碼]",
         };
 
         return bot.replyMessage(replyToken, reply);
@@ -127,14 +164,14 @@ async function handleBinding(message, replyToken, source) {
     if (binding.result === -1) {
         const reply = {
             type: "text",
-            text: "Error: Internal Server Error (MySQL).",
+            text: "[Error]: Internal Server Error (MySQL).",
         };
         return bot.replyMessage(replyToken, reply);
     }
     if (binding.result === 0) {
         const reply = {
             type: "text",
-            text: "Error: Invalid binding code.",
+            text: "[Error]: Invalid binding code.",
         };
         return bot.replyMessage(replyToken, reply);
     }
@@ -143,74 +180,109 @@ async function handleBinding(message, replyToken, source) {
 
         const reply = {
             type: "text",
-            text: `User:${name} \nBinding successfully!`,
+            text: `[User]:${name} \nBinding successfully!`,
         };
         return bot.replyMessage(replyToken, reply);
     }
 }
 
 async function handleAttachment(message, replyToken, source) {
-    // Make sure this operation within LINE groups
-    if (!source.groupId) {
-        const reply = {
-            type: "text",
-            text: "Invalid operation: \nCan only be operated within LINE groups",
-        };
-        return bot.replyMessage(replyToken, reply);
-    }
-
     //Check if user is binding
     const user = await User.getBindingUser(source);
     if (user.result === 0) {
         const reply = {
             type: "text",
-            text: `Invalid operation:\nPlease bind your LINE via binding code to unlock more features.\nExample:\n/bind [your binding code]`,
+            text: `[Invalid operation]:\nPlease bind your LINE via binding code to unlock more features.\nExample:\n/bind [your binding code]`,
         };
         return bot.replyMessage(replyToken, reply);
     }
     if (user.error || user.result === -1) {
         const reply = {
             type: "text",
-            text: "Error: Internal Server Error (MySQL).",
+            text: "[Error]: Internal Server Error (MySQL).",
         };
         return bot.replyMessage(replyToken, reply);
     }
 
+    // Make sure this operation within LINE groups
+    if (!source.groupId) {
+        const reply = {
+            type: "text",
+            text: "[Invalid operation]: \nCan only be operated within LINE groups",
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+
+    // Start processing attachment
     const invitation_code = message.text.split(" ")[1];
     if (invitation_code === undefined) {
         const reply = {
             type: "text",
-            text: "Example: \n/attach [group invitation code]\n/連接 [你的群組邀請碼]",
+            text: "[Example]: \n/attach [group invitation code]\n/連接 [你的群組邀請碼]",
         };
 
         return bot.replyMessage(replyToken, reply);
     }
 
+    // If MySQL error
     const attachment = await attachGroup(invitation_code, source);
     if (attachment.result === -1) {
         const reply = {
             type: "text",
-            text: "Error: Internal Server Error (MySQL).",
+            text: "[Error]: Internal Server Error (MySQL).",
         };
         return bot.replyMessage(replyToken, reply);
     }
+    // When no group match invitation code
     if (attachment.result === 0) {
         const reply = {
             type: "text",
-            text: "Error: Invalid invitation code.",
+            text: "[Error]: Invalid invitation code.",
         };
         return bot.replyMessage(replyToken, reply);
     }
+    // If match
     if (attachment.result === 1) {
         const { name } = attachment;
         const groupSummary = await bot.getGroupSummary(source.groupId);
         console.log(groupSummary);
         const reply = {
             type: "text",
-            text: `Group:${name}\nLINE group: ${groupSummary.groupName}\nAttach successfully!`,
+            text: `[Group]:${name}\nLINE group: ${groupSummary.groupName}\nAttach successfully!`,
         };
         return bot.replyMessage(replyToken, reply);
     }
+}
+
+async function handleGetGroup(message, replyToken, source) {
+    //Check if user is binding
+    const user = await User.getBindingUser(source);
+    if (user.result === 0) {
+        const reply = {
+            type: "text",
+            text: `[Invalid operation]:\nPlease bind your LINE via binding code to unlock more features.\nExample:\n/bind [your binding code]`,
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+    if (user.error || user.result === -1) {
+        const reply = {
+            type: "text",
+            text: "[Error]: Internal Server Error (MySQL).",
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+
+    const groups = await getGroupsByUserId(user.id);
+
+    const replyBody = await generateGroupsMenu(groups);
+
+    const flexMessage = {
+        type: "flex",
+        altText: "Carousel",
+        contents: replyBody,
+    };
+
+    return bot.replyMessage(replyToken, flexMessage);
 }
 
 async function handleExpense(message, replyToken, source) {
@@ -286,6 +358,7 @@ async function handleImage(message, replyToken) {
     }
 }
 
+//===========================================
 async function downloadContent(messageId, downloadPath) {
     try {
         const stream = await bot.getMessageContent(messageId);
@@ -310,6 +383,7 @@ const eventTypeHandlerMap = {
     leave: handleLeaveEvent,
     memberJoined: handleMemberJoined,
     memberLeft: handleMemberLeft,
+    postback: handlePostBackEvent,
 };
 
 function handleMessageEvent(event) {
@@ -362,6 +436,83 @@ function handleMemberLeft(event) {
     return bot.replyMessage(event.replyToken, {
         type: "text",
         text: `MemberLeft ${event.source.type}`,
+    });
+}
+//===========================================
+
+async function handlePostBackEvent(event) {
+    let data = JSON.parse(event.postback.data);
+
+    if (data.action === "accessGroup") {
+        return postBackMap.accessGroup(data, event.replyToken, event.source);
+    }
+}
+
+const postBackMap = {
+    accessGroup: accessGroupPostBack,
+};
+
+async function accessGroupPostBack(data, replyToken, source) {
+    const { group_id } = data;
+
+    // Check if user is binding
+    const user = await User.getBindingUser(source);
+    if (user.result === 0) {
+        const reply = {
+            type: "text",
+            text: `[Invalid operation]:\nPlease bind your LINE via binding code to unlock more features.\nExample:\n/bind [your binding code]`,
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+    if (user.error || user.result === -1) {
+        const reply = {
+            type: "text",
+            text: "[Error]: Internal Server Error (MySQL).",
+        };
+        return bot.replyMessage(replyToken, reply);
+    }
+
+    // Check user in this group
+    const groupUsers = await getMember(group_id, user.id);
+    if (groupUsers.length === 0) {
+        return bot.replyMessage(replyToken, {
+            type: "text",
+            text: "[Error]: Sorry, you don't have the right to access this group.",
+        });
+    }
+
+    //Get group information
+    const group = await getGroupInformationById(group_id);
+
+    // Get groupMembers
+    const groupMembers = await getMembers(group_id);
+    const membersIndexMap = new Map();
+    groupMembers.forEach((member, index) =>
+        membersIndexMap.set(member.user_id, index)
+    );
+
+    const currencyGraph = {};
+    const currencyTransactions = {};
+
+    const groupExpenses = await getSettlingExpensesByGroupId(group_id);
+    const settlements = await getSettlingByGroupId(group_id);
+    const groupCurrency = CURRENCY_MAP[group.default_currency];
+    console.log(groupCurrency);
+
+    await createCurrencyGraph(
+        groupMembers,
+        membersIndexMap,
+        groupExpenses,
+        currencyGraph,
+        currencyTransactions
+    );
+    console.log(membersIndexMap);
+
+    console.log(currencyGraph);
+
+    return bot.replyMessage(replyToken, {
+        type: "text",
+        text: "Hi",
     });
 }
 
