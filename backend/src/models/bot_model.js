@@ -1,3 +1,5 @@
+import { AWS_CLOUDFRONT_HOST } from "../utils/constant.js";
+
 const generateDebtNotify = (debtorName, creditorName, currency, amount) => {
     const body = {
         type: "bubble",
@@ -250,4 +252,301 @@ const generateDebtNotify = (debtorName, creditorName, currency, amount) => {
 
     return body;
 };
-export { generateDebtNotify };
+
+const generateGroupsMenu = async (groups) => {
+    const body = {
+        type: "carousel",
+        contents: groups.map((group) => {
+            const defaultDescription = "No description available.";
+            const content = {
+                type: "bubble",
+                hero: {
+                    type: "image",
+                    size: "full",
+                    aspectRatio: "20:13",
+                    aspectMode: "cover",
+                    url:
+                        group.image ||
+                        `${AWS_CLOUDFRONT_HOST}group_image_default/${Math.ceil(
+                            Math.random() * 30
+                        )}.jpg`,
+                },
+                body: {
+                    type: "box",
+                    layout: "vertical",
+                    spacing: "sm",
+                    contents: [
+                        {
+                            type: "text",
+                            text: group.name,
+                            wrap: true,
+                            weight: "bold",
+                            size: "xl",
+                        },
+                        {
+                            type: "box",
+                            layout: "baseline",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text:
+                                        group.description || defaultDescription,
+                                    wrap: true,
+                                    weight: "bold",
+                                    size: "xl",
+                                    flex: 0,
+                                },
+                            ],
+                        },
+                    ],
+                },
+                footer: {
+                    type: "box",
+                    layout: "vertical",
+                    spacing: "sm",
+                    contents: [
+                        {
+                            type: "button",
+                            style: "primary",
+                            action: {
+                                type: "postback",
+                                label: "Group Overview",
+                                data: JSON.stringify({
+                                    action: "accessGroup",
+                                    group_id: group.id,
+                                }),
+                            },
+                        },
+                        {
+                            type: "button",
+                            action: {
+                                type: "uri",
+                                label: "Group Page",
+                                uri: `https://splitease.cc/group/${group.slug}/overview`,
+                            },
+                        },
+                    ],
+                },
+            };
+            return content;
+        }),
+    };
+    return body;
+};
+
+const generateGroupOverView = () => {
+    const body = {
+        type: "bubble",
+        body: {
+            type: "box",
+            layout: "vertical",
+            contents: [
+                {
+                    type: "text",
+                    text: "GROUP OVERVIEW",
+                    weight: "bold",
+                    color: "#1DB446",
+                    size: "sm",
+                },
+                {
+                    type: "text",
+                    text: "{{group name}}",
+                    weight: "bold",
+                    size: "xxl",
+                    margin: "md",
+                },
+                {
+                    type: "text",
+                    text: "Miraina Tower, 4-1-6 Shinjuku, Tokyo",
+                    size: "xs",
+                    color: "#aaaaaa",
+                    wrap: true,
+                },
+                {
+                    type: "separator",
+                    margin: "xxl",
+                },
+                {
+                    type: "box",
+                    layout: "vertical",
+                    margin: "xxl",
+                    spacing: "sm",
+                    contents: [
+                        {
+                            type: "box",
+                            layout: "horizontal",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "Total group spending",
+                                    size: "sm",
+                                    color: "#555555",
+                                    flex: 0,
+                                },
+                                {
+                                    type: "text",
+                                    text: "$2.99",
+                                    size: "sm",
+                                    color: "#111111",
+                                    align: "end",
+                                },
+                            ],
+                        },
+                        {
+                            type: "box",
+                            layout: "horizontal",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "Total you paid for:",
+                                    size: "sm",
+                                    color: "#555555",
+                                    flex: 0,
+                                },
+                                {
+                                    type: "text",
+                                    text: "$0.99",
+                                    size: "sm",
+                                    color: "#111111",
+                                    align: "end",
+                                },
+                            ],
+                        },
+                        {
+                            type: "box",
+                            layout: "horizontal",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "Your total share:",
+                                    size: "sm",
+                                    color: "#555555",
+                                    flex: 0,
+                                },
+                                {
+                                    type: "text",
+                                    text: "$3.33",
+                                    size: "sm",
+                                    color: "#111111",
+                                    align: "end",
+                                },
+                            ],
+                        },
+                        {
+                            type: "separator",
+                            margin: "xxl",
+                        },
+                        {
+                            type: "box",
+                            layout: "horizontal",
+                            margin: "xxl",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "ITEMS",
+                                    size: "sm",
+                                    color: "#555555",
+                                },
+                                {
+                                    type: "text",
+                                    text: "3",
+                                    size: "sm",
+                                    color: "#111111",
+                                    align: "end",
+                                },
+                            ],
+                        },
+                        {
+                            type: "box",
+                            layout: "horizontal",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "TOTAL",
+                                    size: "sm",
+                                    color: "#555555",
+                                },
+                                {
+                                    type: "text",
+                                    text: "$7.31",
+                                    size: "sm",
+                                    color: "#111111",
+                                    align: "end",
+                                },
+                            ],
+                        },
+                        {
+                            type: "box",
+                            layout: "horizontal",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "CASH",
+                                    size: "sm",
+                                    color: "#555555",
+                                },
+                                {
+                                    type: "text",
+                                    text: "$8.0",
+                                    size: "sm",
+                                    color: "#111111",
+                                    align: "end",
+                                },
+                            ],
+                        },
+                        {
+                            type: "box",
+                            layout: "horizontal",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: "CHANGE",
+                                    size: "sm",
+                                    color: "#555555",
+                                },
+                                {
+                                    type: "text",
+                                    text: "$0.69",
+                                    size: "sm",
+                                    color: "#111111",
+                                    align: "end",
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    type: "separator",
+                    margin: "xxl",
+                },
+                {
+                    type: "box",
+                    layout: "horizontal",
+                    margin: "md",
+                    contents: [
+                        {
+                            type: "text",
+                            text: "PAYMENT ID",
+                            size: "xs",
+                            color: "#aaaaaa",
+                            flex: 0,
+                        },
+                        {
+                            type: "text",
+                            text: "#743289384279",
+                            color: "#aaaaaa",
+                            size: "xs",
+                            align: "end",
+                        },
+                    ],
+                },
+            ],
+        },
+        styles: {
+            footer: {
+                separator: true,
+            },
+        },
+    };
+};
+export { generateDebtNotify, generateGroupsMenu };
