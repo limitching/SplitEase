@@ -277,7 +277,7 @@ const getGroupUsersInformation = async (group_id) => {
             `
             SELECT id,name,email,image,line_id FROM group_users 
             INNER JOIN users ON group_users.user_id = users.id
-            WHERE group_id = ?
+            WHERE group_id = ? ORDER BY users.id
             `,
             [group_id]
         );

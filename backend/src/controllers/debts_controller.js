@@ -142,9 +142,9 @@ const getSettlingGroupDebts = async (req, res) => {
         currencyTransactions
     );
 
-    const settlementTransactions = {};
     // TODO:
     // console.log(membersIndexMap);
+    const settlementTransactions = {};
     settlements.forEach((settlement) => {
         if (settlement.currency_option in settlementTransactions === false) {
             settlementTransactions[settlement.currency_option] = [];
