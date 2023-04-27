@@ -10,4 +10,7 @@ const CURRENCY_MAP = {
     9: { abbreviation: "CNY", symbol: "CN¥" },
     10: { abbreviation: "HKD", symbol: "HK$" },
 };
-export { CURRENCY_MAP };
+
+const AWS_CLOUDFRONT_HOST = "https://dxkgfgg79h3hz.cloudfront.net/";
+
+export { CURRENCY_MAP, AWS_CLOUDFRONT_HOST };
