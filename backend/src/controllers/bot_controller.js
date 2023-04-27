@@ -8,6 +8,7 @@ import {
     getMember,
     getMembers,
     getGroupInformationById,
+    getGroupUsersInformation,
 } from "../models/group_model.js";
 import {
     getExpensesByGroupId,
@@ -22,7 +23,11 @@ dotenv.config();
 const { BASE_URL } = process.env;
 import { CURRENCY_MAP } from "../utils/constant.js";
 
-import { generateGroupsMenu } from "../models/bot_model.js";
+import {
+    generateGroupsMenu,
+    generateGroupOverView,
+} from "../models/bot_model.js";
+import { minimizeDebts } from "../models/split_model.js";
 
 import User from "../models/user_model.js";
 import { group } from "console";
@@ -485,10 +490,10 @@ async function accessGroupPostBack(data, replyToken, source) {
     const group = await getGroupInformationById(group_id);
 
     // Get groupMembers
-    const groupMembers = await getMembers(group_id);
+    const groupMembers = await getGroupUsersInformation(group_id);
     const membersIndexMap = new Map();
     groupMembers.forEach((member, index) =>
-        membersIndexMap.set(member.user_id, index)
+        membersIndexMap.set(member.id, index)
     );
 
     const currencyGraph = {};
@@ -497,7 +502,6 @@ async function accessGroupPostBack(data, replyToken, source) {
     const groupExpenses = await getSettlingExpensesByGroupId(group_id);
     const settlements = await getSettlingByGroupId(group_id);
     const groupCurrency = CURRENCY_MAP[group.default_currency];
-    console.log(groupCurrency);
 
     await createCurrencyGraph(
         groupMembers,
@@ -506,14 +510,80 @@ async function accessGroupPostBack(data, replyToken, source) {
         currencyGraph,
         currencyTransactions
     );
-    console.log(membersIndexMap);
 
-    console.log(currencyGraph);
-
-    return bot.replyMessage(replyToken, {
-        type: "text",
-        text: "Hi",
+    const settlementTransactions = {};
+    settlements.forEach((settlement) => {
+        if (settlement.currency_option in settlementTransactions === false) {
+            settlementTransactions[settlement.currency_option] = [];
+        }
+        const payerIndex = membersIndexMap.get(settlement.payer_id);
+        const payeeIndex = membersIndexMap.get(settlement.payee_id);
+        settlementTransactions[settlement.currency_option].push([
+            payerIndex,
+            payeeIndex,
+            settlement.amount,
+        ]);
     });
+
+    for (const [currency_option, graph] of Object.entries(currencyGraph)) {
+        currencyTransactions[currency_option] = minimizeDebts(graph);
+        if (Object.keys(settlementTransactions).length === 0) {
+            continue;
+        }
+        for (
+            let i = 0;
+            i < settlementTransactions[currency_option].length;
+            i++
+        ) {
+            const settledDebt = settlementTransactions[currency_option][i];
+            for (
+                let j = 0;
+                j < currencyTransactions[currency_option].length;
+                j++
+            ) {
+                const debt = currencyTransactions[currency_option][j];
+
+                // Compare string
+                debt[2] = debt[2].toFixed(2);
+                if (settledDebt.toString() === debt.toString()) {
+                    currencyTransactions[currency_option].splice(j, 1);
+                    break;
+                }
+            }
+        }
+    }
+
+    const user_index = membersIndexMap.get(user.id);
+
+    const debts = currencyTransactions[group.default_currency];
+
+    const userDebts = debts
+        ? debts.filter(([debtor, creditor, amount]) => debtor === user_index)
+        : [];
+    const userCredits = debts
+        ? debts.filter(([debtor, creditor, amount]) => creditor === user_index)
+        : [];
+
+    const replyBody = generateGroupOverView(
+        group,
+        groupMembers,
+        membersIndexMap,
+        groupExpenses,
+        userDebts,
+        userCredits,
+        user,
+        user_index,
+        groupCurrency,
+        currencyGraph[group.default_currency]
+    );
+
+    const flexMessage = {
+        type: "flex",
+        altText: "Group overview",
+        contents: replyBody,
+    };
+
+    return bot.replyMessage(replyToken, flexMessage);
 }
 
 export { handleEvent };
