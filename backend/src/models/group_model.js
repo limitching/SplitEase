@@ -20,6 +20,19 @@ const getGroups = async (requirement) => {
     return groups;
 };
 
+const getGroupsByUserId = async (user_id) => {
+    try {
+        const [groups] = await pool.query(
+            "SELECT `groups`.*, add_date FROM `group_users` INNER JOIN `groups` ON group_users.group_id = groups.id WHERE user_id = ?",
+            [user_id]
+        );
+        return groups;
+    } catch (error) {
+        console.error(error);
+        return { error };
+    }
+};
+
 const archiveGroup = async (group_id, user_id) => {
     const connection = await pool.getConnection();
     try {
@@ -58,10 +71,15 @@ const getMembers = async (group_id) => {
 };
 
 const getMember = async (group_id, user_id) => {
-    const memberQuery =
-        "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ? AND user_id = ?";
-    const [member] = await pool.query(memberQuery, [group_id, user_id]);
-    return member;
+    try {
+        const memberQuery =
+            "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ? AND user_id = ?";
+        const [member] = await pool.query(memberQuery, [group_id, user_id]);
+        return member;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
 };
 
 const createGroup = async (newGroupData, user_id) => {
@@ -283,6 +301,7 @@ const getGroupInformationById = async (group_id) => {
 
 export {
     getGroups,
+    getGroupsByUserId,
     archiveGroup,
     getMembers,
     getMember,
