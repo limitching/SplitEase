@@ -133,7 +133,13 @@ const Login = () => {
 
     useEffect(() => {
         if (isLogin) {
-            navigate("/home");
+            if (localStorage.getItem("lastPageUrl")) {
+                const lastPageUrl = localStorage.getItem("lastPageUrl");
+                localStorage.removeItem("lastPageUrl");
+                window.location.replace(lastPageUrl);
+            } else {
+                navigate("/home");
+            }
         }
     }, [isLogin, navigate]);
 

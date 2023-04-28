@@ -2,7 +2,8 @@ import styled from "styled-components";
 import { Container, Button, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import ProfileButton from "./ProfileButton";
 import { HEADER_BG_COLOR } from "../../global/constant";
 
@@ -36,6 +37,15 @@ const StyledNav = styled(Nav)`
 
 const Header = () => {
     const { isLogin, logout } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const handleStartClick = () => {
+        if (window.location.href.includes("group")) {
+            localStorage.setItem("lastPageUrl", window.location.href);
+        }
+        navigate("/login");
+    };
+
     return (
         <StyledNavbar expand="lg" fixed="top">
             <StyledContainer>
@@ -88,9 +98,14 @@ const Header = () => {
                     </StyledNav>
                 ) : (
                     <StyledNav>
-                        <Link to="/login">
-                            <StyledButton variant="light">Start</StyledButton>
-                        </Link>
+                        {/* <Link to="/login"> */}
+                        <StyledButton
+                            variant="light"
+                            onClick={handleStartClick}
+                        >
+                            Start
+                        </StyledButton>
+                        {/* </Link> */}
                     </StyledNav>
                 )}
             </StyledContainer>
