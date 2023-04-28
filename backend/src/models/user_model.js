@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import path from "path";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
+import { AVATAR_LINK, DEFAULT_AVATAR } from "../utils/constant.js";
 dotenv.config({ path: __dirname + "/../../.env" });
 const {
     PASSWORD_HASH_TIMES,
@@ -35,6 +36,11 @@ const signUp = async (name, email, password) => {
             email: email,
             password: hashedPassword,
             login_at: loginAt,
+            image:
+                AVATAR_LINK +
+                DEFAULT_AVATAR[
+                    Math.ceil(Math.random() * DEFAULT_AVATAR.length)
+                ],
         };
 
         const [result] = await connection.query(

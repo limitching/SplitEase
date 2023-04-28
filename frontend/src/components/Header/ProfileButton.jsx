@@ -2,6 +2,7 @@ import { Avatar, ListItemButton, ListItemText } from "@mui/material";
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import ProfileModal from "./ProfileModal";
+import { AVATAR_LINK, DEFAULT_AVATAR } from "../../global/constant";
 
 const ProfileButton = () => {
     const { user } = useContext(AuthContext);
@@ -43,7 +44,12 @@ const ProfileButton = () => {
                 />
                 <Avatar
                     alt={user.name}
-                    src={user.image}
+                    src={
+                        user.image
+                            ? user.image
+                            : AVATAR_LINK +
+                              DEFAULT_AVATAR[user.id % DEFAULT_AVATAR.length]
+                    }
                     sx={{ border: "1px solid white" }}
                 />
             </ListItemButton>
