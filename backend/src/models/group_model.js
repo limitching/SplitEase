@@ -7,6 +7,7 @@ dotenv.config({ path: __dirname + "/../../.env" });
 const { HASH_ID_SALT } = process.env;
 import Hashids from "hashids";
 const hashids = new Hashids(HASH_ID_SALT, 10);
+import { AWS_CLOUDFRONT_HOST } from "../utils/constant.js";
 
 const getGroups = async (requirement) => {
     const condition = { sql: "", binding: [] };
@@ -85,6 +86,11 @@ const getMember = async (group_id, user_id) => {
 const createGroup = async (newGroupData, user_id) => {
     if (!newGroupData.slug) {
         newGroupData.slug = uuidV4();
+    }
+    if (!newGroupData.photo) {
+        newGroupData.photo = `${AWS_CLOUDFRONT_HOST}group_image_default/${Math.ceil(
+            Math.random() * 30
+        )}.jpg`;
     }
 
     const connection = await pool.getConnection();

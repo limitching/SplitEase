@@ -266,7 +266,7 @@ const generateGroupsMenu = async (groups) => {
                     aspectRatio: "20:13",
                     aspectMode: "cover",
                     url:
-                        group.image ||
+                        group.photo ||
                         `${AWS_CLOUDFRONT_HOST}group_image_default/${Math.ceil(
                             Math.random() * 30
                         )}.jpg`,
@@ -658,4 +658,161 @@ const generateGroupOverView = (
     };
     return body;
 };
-export { generateDebtNotify, generateGroupsMenu, generateGroupOverView };
+
+const generateStartSettlingNotification = (group, user, deadline) => {
+    const date = new Date(deadline).toLocaleDateString();
+
+    const body = {
+        type: "bubble",
+        body: {
+            type: "box",
+            layout: "vertical",
+            contents: [
+                {
+                    type: "box",
+                    layout: "horizontal",
+                    contents: [
+                        {
+                            type: "box",
+                            layout: "vertical",
+                            contents: [
+                                {
+                                    type: "image",
+                                    url:
+                                        group.photo ||
+                                        `${AWS_CLOUDFRONT_HOST}group_image_default/${Math.ceil(
+                                            Math.random() * 30
+                                        )}.jpg`,
+                                    aspectMode: "cover",
+                                    size: "full",
+                                },
+                            ],
+                            cornerRadius: "100px",
+                            width: "72px",
+                            height: "72px",
+                        },
+                        {
+                            type: "box",
+                            layout: "vertical",
+                            contents: [
+                                {
+                                    type: "text",
+                                    contents: [
+                                        {
+                                            type: "span",
+                                            text: group.name,
+                                            weight: "bold",
+                                            color: "#000000",
+                                            size: "lg",
+                                        },
+                                    ],
+                                    size: "sm",
+                                    wrap: true,
+                                },
+                                {
+                                    type: "text",
+                                    contents: [
+                                        {
+                                            type: "span",
+                                            text: user.name,
+                                            weight: "bold",
+                                            color: "#000000",
+                                            size: "lg",
+                                        },
+                                        {
+                                            type: "span",
+                                            text: " ",
+                                            weight: "bold",
+                                            color: "#000000",
+                                            size: "lg",
+                                        },
+                                        {
+                                            type: "span",
+                                            text: "Start a",
+                                            weight: "regular",
+                                            color: "#000000",
+                                            size: "md",
+                                        },
+                                        {
+                                            type: "span",
+                                            text: " ",
+                                            weight: "bold",
+                                            color: "#000000",
+                                            size: "lg",
+                                        },
+                                        {
+                                            type: "span",
+                                            text: "New  Settling Event",
+                                            weight: "regular",
+                                            color: "#000000",
+                                            size: "md",
+                                            decoration: "underline",
+                                        },
+                                    ],
+                                    size: "sm",
+                                    wrap: true,
+                                },
+                            ],
+                        },
+                    ],
+                    spacing: "xl",
+                    paddingAll: "20px",
+                },
+                {
+                    type: "box",
+                    layout: "horizontal",
+                    contents: [
+                        {
+                            type: "box",
+                            layout: "baseline",
+                            contents: [
+                                {
+                                    type: "text",
+                                    text: `All expenses before ${date}`,
+                                    size: "sm",
+                                    color: "#bcbcbc",
+                                },
+                            ],
+                            spacing: "none",
+                            margin: "md",
+                        },
+                    ],
+                    spacing: "xl",
+                    paddingAll: "20px",
+                    paddingTop: "0px",
+                    paddingBottom: "0px",
+                },
+            ],
+            paddingAll: "0px",
+        },
+        footer: {
+            type: "box",
+            layout: "vertical",
+            contents: [
+                {
+                    type: "box",
+                    layout: "horizontal",
+                    contents: [
+                        {
+                            type: "button",
+                            action: {
+                                type: "uri",
+                                label: "Click here to check",
+                                uri: `https://splitease.cc/group/${group.slug}/expenses`,
+                            },
+                            style: "primary",
+                            color: "#2b2b2b",
+                        },
+                    ],
+                },
+            ],
+        },
+    };
+    return body;
+};
+export {
+    generateDebtNotify,
+    generateGroupsMenu,
+    generateGroupOverView,
+    generateStartSettlingNotification,
+};
