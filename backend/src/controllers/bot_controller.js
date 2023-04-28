@@ -253,7 +253,7 @@ async function handleAttachment(message, replyToken, source) {
         console.log(groupSummary);
         const reply = {
             type: "text",
-            text: `[Group]:${name}\nLINE group: ${groupSummary.groupName}\nAttach successfully!`,
+            text: `[Group]:\nSplitEase group: ${name}\nLINE group: ${groupSummary.groupName}\nAttach successfully!`,
         };
         return bot.replyMessage(replyToken, reply);
     }
@@ -281,13 +281,18 @@ async function handleGetGroup(message, replyToken, source) {
 
     const replyBody = await generateGroupsMenu(groups);
 
+    const textMessage = {
+        type: "text",
+        text: `Dear ${user.name}, here is your active groups list.`,
+    };
+
     const flexMessage = {
         type: "flex",
-        altText: "Carousel",
+        altText: `${user.name}'s Group List`,
         contents: replyBody,
     };
 
-    return bot.replyMessage(replyToken, flexMessage);
+    return bot.replyMessage(replyToken, [textMessage, flexMessage]);
 }
 
 async function handleExpense(message, replyToken, source) {
