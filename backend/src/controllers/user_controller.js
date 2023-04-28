@@ -42,6 +42,7 @@ const signUp = async (req, res) => {
             provider: user.provider,
             name: user.name,
             email: user.email,
+            image: user.image,
             line_binding_code: user.line_binding_code,
         },
     });

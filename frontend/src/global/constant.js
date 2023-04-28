@@ -1,7 +1,9 @@
-const API_HOST = "http://localhost:3000";
-// const API_HOST = "https://api.splitease.cc";
+// const API_HOST = "http://localhost:3000";
+const API_HOST = "https://api.splitease.cc";
 // const WEB_HOST = "http://localhost:3001";
 const WEB_HOST = "https://splitease.cc";
+
+const AWS_CLOUDFRONT_HOST = "https://dxkgfgg79h3hz.cloudfront.net/";
 const LIFF_ID = "1660896460-KPNk7vny";
 
 const HEADER_BG_COLOR = "#F3CA40";
@@ -169,8 +171,62 @@ const HOVER_CHART_COLOR = [
     "rgba(0, 204, 255, 0.64)",
     "rgba(204, 204, 204, 0.64)",
 ];
+const AVATAR_LINK = "https://dxkgfgg79h3hz.cloudfront.net/avatars/";
+const DEFAULT_AVATAR = [
+    "bear.png",
+    "dolphin.png",
+    "koala_avatar.jpg",
+    "sheep.png",
+    "beaver.png",
+    "duck.png",
+    "lion_avatar.jpg",
+    "sloth.png",
+    "bird.png",
+    "fox_avatar.jpg",
+    "mouse.png",
+    "stegosaurus.png",
+    "cat.png",
+    "frog.png",
+    "owl.png",
+    "tiger.png",
+    "chicken.png",
+    "ganesha.png",
+    "panda.png",
+    "tiger_avatar.jpg",
+    "cow1.png",
+    "giraffe.png",
+    "parrot.png",
+    "turtle.png",
+    "cow2.png",
+    "gorilla.png",
+    "penguin.png",
+    "weasel.png",
+    "crab.png",
+    "gorilla_avatar.jpg",
+    "pig.png",
+    "whale.png",
+    "deer.png",
+    "hedgehog.png",
+    "puffer-fish.png",
+    "wolf_avatar.jpg",
+    "dog.png",
+    "hippo.png",
+    "rabbit_avatar.jpg",
+    "dog_avatar.jpg",
+    "jellyfish.png",
+    "sea-lion.png",
+];
 
-const AWS_CLOUDFRONT_HOST = "https://dxkgfgg79h3hz.cloudfront.net/";
+const ANIMAL_AVATAR = [
+    AWS_CLOUDFRONT_HOST + "avatars/dog_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/fox_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/gorilla_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/koala_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/lion_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/rabbit_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/tiger_avatar.jpg",
+    AWS_CLOUDFRONT_HOST + "avatars/wolf_avatar.jpg",
+];
 
 export {
     API_HOST,
@@ -187,4 +243,7 @@ export {
     CHART_COLOR,
     HOVER_CHART_COLOR,
     AWS_CLOUDFRONT_HOST,
+    ANIMAL_AVATAR,
+    DEFAULT_AVATAR,
+    AVATAR_LINK,
 };

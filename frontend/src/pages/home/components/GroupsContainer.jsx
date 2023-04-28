@@ -12,6 +12,7 @@ import {
     Avatar,
     Paper,
 } from "@mui/material";
+import { AWS_CLOUDFRONT_HOST } from "../../../global/constant";
 
 const GroupsWrapper = styled(Paper)`
     width: 40%;
@@ -79,10 +80,13 @@ const GroupsContainer = () => {
                                     <ListItemAvatar>
                                         <Avatar
                                             alt={`${group.name}`}
-                                            src={`${group.image}.jpg`}
+                                            src={`${group.photo}`}
                                         />
                                     </ListItemAvatar>
-                                    <ListItemText primary={`${group.name}`} />
+                                    <ListItemText
+                                        primary={`${group.name}`}
+                                        secondary={group.description}
+                                    />
                                 </ListItemButton>
                             </ListItem>
                         </GroupLink>
@@ -91,7 +95,10 @@ const GroupsContainer = () => {
                 <ListItem alignItems="center" disablePadding>
                     <ListItemButton onClick={handleOpenCreateGroupModal}>
                         <ListItemAvatar>
-                            <Avatar alt={`+`} src={`.jpg`} />
+                            <Avatar
+                                alt={`+`}
+                                src={`${AWS_CLOUDFRONT_HOST}group_image_default/plus.png`}
+                            />
                         </ListItemAvatar>
                         <CustomListItemText
                             primary={`Create a new group`}

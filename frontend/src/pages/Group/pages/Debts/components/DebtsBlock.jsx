@@ -1,4 +1,7 @@
-import { CURRENCY_OPTIONS } from "../../../../../global/constant";
+import {
+    CURRENCY_OPTIONS,
+    ANIMAL_AVATAR,
+} from "../../../../../global/constant";
 import { useContext } from "react";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import {
@@ -13,7 +16,7 @@ import {
 } from "@mui/material";
 import { Container } from "react-bootstrap";
 const DebtsBlock = () => {
-    const { members, debts } = useContext(GroupContext);
+    const { members, debts, indexMap } = useContext(GroupContext);
     return (
         <List
             dense
@@ -43,7 +46,15 @@ const DebtsBlock = () => {
                                             <Tooltip title={debtor.name}>
                                                 <Avatar
                                                     alt={`${debtor.name}`}
-                                                    src={debtor.image}
+                                                    src={
+                                                        debtor.image
+                                                            ? debtor.image
+                                                            : ANIMAL_AVATAR[
+                                                                  indexMap.get(
+                                                                      debtor.id
+                                                                  )
+                                                              ]
+                                                    }
                                                     sx={{
                                                         width: 50,
                                                         height: 50,
@@ -79,7 +90,15 @@ const DebtsBlock = () => {
                                             <Tooltip title={creditor.name}>
                                                 <Avatar
                                                     alt={creditor.name}
-                                                    src={creditor.image}
+                                                    src={
+                                                        creditor.image
+                                                            ? creditor.image
+                                                            : ANIMAL_AVATAR[
+                                                                  indexMap.get(
+                                                                      creditor.id
+                                                                  )
+                                                              ]
+                                                    }
                                                     sx={{
                                                         width: 50,
                                                         height: 50,

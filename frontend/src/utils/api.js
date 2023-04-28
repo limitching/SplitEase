@@ -348,5 +348,21 @@ const api = {
             return error.response.data;
         }
     },
+    notifyDebtor: async function (jwtToken, notifyData, group_id) {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            };
+            const response = await axios.post(
+                `${this.hostname}/debts/${group_id}/notification`,
+                notifyData,
+                config
+            );
+            return response;
+        } catch (error) {
+            console.error(error.response);
+            return error.response.data;
+        }
+    },
 };
 export { api };

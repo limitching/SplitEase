@@ -6,6 +6,7 @@ import {
     getGroupDebts,
     getSettlingGroupDebts,
     settleUpDebts,
+    notifyUserDebt,
 } from "../controllers/debts_controller.js";
 
 /* GET debts data */
@@ -15,5 +16,9 @@ router
     .post(authentication(), wrapAsync(settleUpDebts));
 
 router.route("/debts/:group_id/settling").get(wrapAsync(getSettlingGroupDebts));
+
+router
+    .route("/debts/:group_id/notification")
+    .post(authentication(), wrapAsync(notifyUserDebt));
 
 export default router;

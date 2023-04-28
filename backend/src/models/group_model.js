@@ -7,6 +7,7 @@ dotenv.config({ path: __dirname + "/../../.env" });
 const { HASH_ID_SALT } = process.env;
 import Hashids from "hashids";
 const hashids = new Hashids(HASH_ID_SALT, 10);
+import { AWS_CLOUDFRONT_HOST } from "../utils/constant.js";
 
 const getGroups = async (requirement) => {
     const condition = { sql: "", binding: [] };
@@ -18,6 +19,19 @@ const getGroups = async (requirement) => {
         "SELECT * FROM `groups` " + condition.sql + " ORDER BY name ";
     const [groups] = await pool.query(groupQuery, condition.binding);
     return groups;
+};
+
+const getGroupsByUserId = async (user_id) => {
+    try {
+        const [groups] = await pool.query(
+            "SELECT `groups`.*, add_date FROM `group_users` INNER JOIN `groups` ON group_users.group_id = groups.id WHERE user_id = ?",
+            [user_id]
+        );
+        return groups;
+    } catch (error) {
+        console.error(error);
+        return { error };
+    }
 };
 
 const archiveGroup = async (group_id, user_id) => {
@@ -58,15 +72,25 @@ const getMembers = async (group_id) => {
 };
 
 const getMember = async (group_id, user_id) => {
-    const memberQuery =
-        "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ? AND user_id = ?";
-    const [member] = await pool.query(memberQuery, [group_id, user_id]);
-    return member;
+    try {
+        const memberQuery =
+            "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ? AND user_id = ?";
+        const [member] = await pool.query(memberQuery, [group_id, user_id]);
+        return member;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
 };
 
 const createGroup = async (newGroupData, user_id) => {
     if (!newGroupData.slug) {
         newGroupData.slug = uuidV4();
+    }
+    if (!newGroupData.photo) {
+        newGroupData.photo = `${AWS_CLOUDFRONT_HOST}group_image_default/${Math.ceil(
+            Math.random() * 30
+        )}.jpg`;
     }
 
     const connection = await pool.getConnection();
@@ -221,8 +245,9 @@ const getGroupInformationViaCode = async (slug, invitation_code) => {
 
 const getLogs = async (group_id) => {
     try {
+        //TODO: remember to order by time
         const [logs] = await pool.query(
-            "SELECT * FROM `logs` WHERE group_id = ? ",
+            "SELECT * FROM `logs` WHERE group_id = ? ORDER BY log_time DESC LIMIT 100",
             [group_id]
         );
         return logs;
@@ -232,8 +257,57 @@ const getLogs = async (group_id) => {
     }
 };
 
+const attachGroup = async (invitation_code, source) => {
+    try {
+        const groupLine_idData = { line_id: source.groupId };
+        const [result] = await pool.query(
+            "UPDATE `groups` SET ? WHERE invitation_code =?",
+            [groupLine_idData, invitation_code]
+        );
+        const [group] = await pool.query(
+            "SELECT * FROM `groups` WHERE invitation_code = ?",
+            [invitation_code]
+        );
+        const group_name = group[0]?.name;
+
+        return { result: result.affectedRows, name: group_name };
+    } catch (error) {
+        console.log(error);
+        return { error, result: -1 };
+    }
+};
+
+const getGroupUsersInformation = async (group_id) => {
+    try {
+        const [usersInformation] = await pool.query(
+            `
+            SELECT id,name,email,image,line_id FROM group_users 
+            INNER JOIN users ON group_users.user_id = users.id
+            WHERE group_id = ? ORDER BY users.id
+            `,
+            [group_id]
+        );
+        return usersInformation;
+    } catch (error) {
+        return { error };
+    }
+};
+
+const getGroupInformationById = async (group_id) => {
+    try {
+        const [groupInformation] = await pool.query(
+            "SELECT * FROM `groups` WHERE id = ?",
+            [group_id]
+        );
+        return groupInformation[0];
+    } catch (error) {
+        return { error };
+    }
+};
+
 export {
     getGroups,
+    getGroupsByUserId,
     archiveGroup,
     getMembers,
     getMember,
@@ -242,4 +316,7 @@ export {
     joinGroupViaCode,
     getGroupInformationViaCode,
     getLogs,
+    attachGroup,
+    getGroupUsersInformation,
+    getGroupInformationById,
 };

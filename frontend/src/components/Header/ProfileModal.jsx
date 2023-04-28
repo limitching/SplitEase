@@ -87,7 +87,7 @@ const ProfileModal = ({
     };
 
     const handleCopyCode = () => {
-        navigator.clipboard.writeText(user.id).then(
+        navigator.clipboard.writeText(user.line_binding_code).then(
             () => {
                 // alert("Link copied to clipboard!");
                 MySwal.fire({

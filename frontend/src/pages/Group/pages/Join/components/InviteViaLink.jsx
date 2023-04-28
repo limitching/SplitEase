@@ -51,7 +51,7 @@ const InviteViaLink = () => {
     const [isCheck, setIsCheck] = useState(true);
 
     useEffect(() => {
-        const invitation_link = `${WEB_HOST}/${slug}/join?invitation_code=${group.invitation_code}`;
+        const invitation_link = `${WEB_HOST}/group/${slug}/join?invitation_code=${group.invitation_code}`;
         setLink(invitation_link);
     }, [group, slug]);
 

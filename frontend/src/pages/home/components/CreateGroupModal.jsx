@@ -1,4 +1,5 @@
 import { Container, Modal, Button, Form, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { TextField, MenuItem } from "@mui/material";
 import { CURRENCY_OPTIONS } from "../../../global/constant";
@@ -21,6 +22,7 @@ const CreateGroupModal = ({
     showCreateGroupModal,
     handleCloseCreateGroupModal,
 }) => {
+    const navigate = useNavigate();
     const { user, jwtToken, setLoading, setGroupChange } =
         useContext(AuthContext);
     const [newGroupData, setNewGroupData] = useState({
@@ -75,7 +77,7 @@ const CreateGroupModal = ({
                         ))}
                     </div>
                 ),
-                icon: "success",
+                icon: "error",
                 timer: 2000,
                 didOpen: () => {
                     MySwal.showLoading();
@@ -91,7 +93,7 @@ const CreateGroupModal = ({
                 </div>
             ),
             icon: "success",
-            timer: 2000,
+            timer: 1000,
             didOpen: () => {
                 MySwal.showLoading();
             },
@@ -104,6 +106,7 @@ const CreateGroupModal = ({
         });
         handleCloseCreateGroupModal();
         setGroupChange(true);
+        navigate(`/group/${response.data.slug}/overview`);
         setLoading(false);
     };
 
