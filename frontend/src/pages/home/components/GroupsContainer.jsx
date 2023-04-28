@@ -79,10 +79,13 @@ const GroupsContainer = () => {
                                     <ListItemAvatar>
                                         <Avatar
                                             alt={`${group.name}`}
-                                            src={`${group.image}.jpg`}
+                                            src={`${group.photo}`}
                                         />
                                     </ListItemAvatar>
-                                    <ListItemText primary={`${group.name}`} />
+                                    <ListItemText
+                                        primary={`${group.name}`}
+                                        secondary={group.description}
+                                    />
                                 </ListItemButton>
                             </ListItem>
                         </GroupLink>
