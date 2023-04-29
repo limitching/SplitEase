@@ -11,14 +11,14 @@ const Footer = () => {
     return (
         <StyledNavbar expand="lg" fixed="bottom">
             <Container className="justify-content-md-center">
-                <Navbar.Brand href="#home">
+                {/* <Navbar.Brand href="#home">
                     <img
                         src="/assets/logo.svg"
                         width="auto"
                         height="30"
                         alt="SplitEase logo"
                     />
-                </Navbar.Brand>
+                </Navbar.Brand> */}
 
                 <div className="text-center p-3">
                     © 2023 Copyright:
