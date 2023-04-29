@@ -14,6 +14,7 @@ import Settlement from "./pages/Group/pages/Settlement";
 import Members from "./pages/Group/pages/Members";
 import Activities from "./pages/Group/pages/Activities";
 import Join from "./pages/Group/pages/Join";
+import Index from "./pages/Index";
 
 // import reportWebVitals from "./reportWebVitals";
 
@@ -27,8 +28,9 @@ root.render(
     <BrowserRouter>
         <Routes>
             <Route path="/" element={<App />}>
-                {/* <Route index element={<Home />} /> */}
+                <Route index element={<Index />} />
                 <Route path="group/:slug" element={<Group />}>
+                    <Route index element={<Overview />} />
                     <Route path="overview" element={<Overview />} />
                     <Route path="expenses" element={<Expenses />} />
                     <Route path="debts" element={<Debts />} />
