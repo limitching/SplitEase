@@ -40,6 +40,9 @@ const ProfileButton = () => {
                     sx={{
                         textAlign: "right",
                         paddingRight: "1rem",
+                        "@media (max-width: 768px)": {
+                            display: "none",
+                        },
                     }}
                 />
                 <Avatar

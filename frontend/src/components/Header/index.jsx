@@ -10,11 +10,16 @@ import { HEADER_BG_COLOR } from "../../global/constant";
 
 const StyledNavbar = styled(Navbar)`
     height: 55px;
+    padding: 0;
+    width: 100vw;
     background-color: ${HEADER_BG_COLOR};
 `;
 const StyledContainer = styled(Container)`
     display: flex;
-    align-items: space-between;
+    flex-wrap: no-wrap;
+    justify-content: space-around;
+    width: 100%;
+    align-items: space-around;
     @media (min-width: 1400px) {
         max-width: 95vw;
     }
@@ -23,6 +28,9 @@ const StyledButton = styled(Button)`
     width: 5vw;
     min-width: 85px;
     height: 2.5rem;
+    @media (max-width: 767px) {
+        display: none;
+    }
 `;
 
 const StyledLink = styled(Link)`
@@ -52,18 +60,23 @@ const Header = () => {
     return (
         <StyledNavbar expand="lg" fixed="top">
             <StyledContainer>
-                <StyledLink to={isLogin ? "/home" : "/"}>
-                    <Navbar.Brand>
-                        <img
-                            src="/assets/logo.svg"
-                            width="auto"
-                            height="30"
-                            alt="SplitEase logo"
-                        />
-                    </Navbar.Brand>
-                </StyledLink>
+                <div>
+                    <Navbar.Toggle
+                        aria-controls="basic-navbar-nav"
+                        style={{ border: "none", maxWidth: "54px" }}
+                    />
+                    <StyledLink to={isLogin ? "/home" : "/"}>
+                        <Navbar.Brand>
+                            <img
+                                src="/assets/logo.svg"
+                                width="auto"
+                                height="30"
+                                alt="SplitEase logo"
+                            />
+                        </Navbar.Brand>
+                    </StyledLink>
+                </div>
 
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 {isLogin ? null : (
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">

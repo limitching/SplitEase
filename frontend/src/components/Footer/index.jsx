@@ -4,7 +4,16 @@ import { HEADER_BG_COLOR } from "../../global/constant";
 
 const StyledNavbar = styled(Navbar)`
     height: 55px;
+    padding: 0;
     background-color: ${HEADER_BG_COLOR};
+    width: 100vw;
+    @media (max-width: 768px) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        bottom: auto;
+    }
 `;
 
 const Footer = () => {
@@ -29,11 +38,11 @@ const Footer = () => {
                         Limitching
                     </a>
                 </div>
-                <div className="footer__social-media">
+                {/* <div className="footer__social-media">
                     <div className="footer__social-media-line" />
                     <div className="footer__social-media-twitter" />
                     <div className="footer__social-media-facebook" />
-                </div>
+                </div> */}
             </Container>
         </StyledNavbar>
     );

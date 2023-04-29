@@ -2,15 +2,21 @@ import styled from "styled-components";
 import { Paper } from "@mui/material";
 
 const PageWrapper = styled(Paper)`
-    width: 45%;
-    height: 50vh;
+    width: 90%;
+    height: 48vh;
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: center;
     background-color: white;
-    margin: 2rem auto;
+    margin: 1rem auto;
     overflow: scroll;
+
+    @media (min-width: 768px) {
+        width: 45%;
+        height: 50vh;
+        margin: 2rem auto;
+    }
 `;
 
 const ListWrapper = styled.div`

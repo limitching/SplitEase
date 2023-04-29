@@ -88,8 +88,9 @@ function NavTabs() {
                 <Tabs
                     value={value}
                     onChange={handleChange}
-                    aria-label="nav tabs example"
                     centered
+                    scrollButtons={true}
+                    allowScrollButtonsMobile
                 >
                     {filterResult.length === 0
                         ? GROUP_TABS_VISITORS.map(

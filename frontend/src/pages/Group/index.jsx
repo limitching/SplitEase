@@ -13,8 +13,8 @@ import Invitation from "./components/Invitation";
 
 const WrapperGroupContainer = styled.div`
     padding-top: 55px;
+    width: 100vw;
     height: 100vh;
-    padding-bottom: 55px;
     background-color: ${GROUP_BG_COLOR};
 `;
 

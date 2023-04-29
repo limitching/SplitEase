@@ -59,6 +59,12 @@ const LargeTextContainer = styled.div`
     margin-top: 1rem;
 `;
 
+const TextContainer = styled(Container)`
+    @media (max-width: 768px) {
+        display: none;
+    }
+`;
+
 const GroupDashboard = () => {
     const {
         group,
@@ -136,7 +142,7 @@ const GroupDashboard = () => {
 
                 {/* <HorizontalBarChart></HorizontalBarChart> */}
 
-                <Container>
+                <TextContainer>
                     <TextWrapper>
                         <h1>{group.name}</h1>
                         <div style={{ display: "flex" }}>
@@ -194,7 +200,7 @@ const GroupDashboard = () => {
                             )}
                         </LargeTextContainer>
                     </TextWrapper>
-                </Container>
+                </TextContainer>
             </DashboardWrapper>
         </UserDashboard>
     );
