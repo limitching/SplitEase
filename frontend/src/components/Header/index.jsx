@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Container, Button, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
+import { GroupContext } from "../../contexts/GroupContext";
 import { Link, useNavigate } from "react-router-dom";
 
 import ProfileButton from "./ProfileButton";
@@ -37,12 +38,14 @@ const StyledNav = styled(Nav)`
 
 const Header = () => {
     const { isLogin, logout } = useContext(AuthContext);
+    const { setInvitation_code } = useContext(GroupContext);
     const navigate = useNavigate();
 
     const handleStartClick = () => {
         if (window.location.href.includes("group")) {
             localStorage.setItem("lastPageUrl", window.location.href);
         }
+        setInvitation_code(null);
         navigate("/login");
     };
 
@@ -98,14 +101,12 @@ const Header = () => {
                     </StyledNav>
                 ) : (
                     <StyledNav>
-                        {/* <Link to="/login"> */}
                         <StyledButton
                             variant="light"
                             onClick={handleStartClick}
                         >
                             Start
                         </StyledButton>
-                        {/* </Link> */}
                     </StyledNav>
                 )}
             </StyledContainer>
