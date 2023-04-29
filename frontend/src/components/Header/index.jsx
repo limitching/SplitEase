@@ -12,7 +12,8 @@ const StyledNavbar = styled(Navbar)`
     height: 55px;
     padding: 0;
     width: 100vw;
-    background-color: ${HEADER_BG_COLOR};
+    background-color: ${(props) =>
+        props.transparent ? "transparent" : HEADER_BG_COLOR};
 `;
 const StyledContainer = styled(Container)`
     display: flex;
@@ -57,73 +58,82 @@ const Header = () => {
         navigate("/login");
     };
 
+    // Check if at root
+    const isAtRoot = window.location.pathname === "/";
+
     return (
-        <StyledNavbar expand="lg" fixed="top">
-            <StyledContainer>
-                <div>
-                    <Navbar.Toggle
-                        aria-controls="basic-navbar-nav"
-                        style={{ border: "none", maxWidth: "54px" }}
-                    />
-                    <StyledLink to={isLogin ? "/home" : "/"}>
-                        <Navbar.Brand>
-                            <img
-                                src="/assets/logo.svg"
-                                width="auto"
-                                height="30"
-                                alt="SplitEase logo"
-                            />
-                        </Navbar.Brand>
-                    </StyledLink>
-                </div>
+        <>
+            <StyledNavbar
+                expand="lg"
+                fixed="top"
+                transparent={isAtRoot.toString()}
+            >
+                <StyledContainer>
+                    <div>
+                        <Navbar.Toggle
+                            aria-controls="basic-navbar-nav"
+                            style={{ border: "none", maxWidth: "54px" }}
+                        />
+                        <StyledLink to={isLogin ? "/home" : "/"}>
+                            <Navbar.Brand>
+                                <img
+                                    src="/assets/logo.svg"
+                                    width="auto"
+                                    height="30"
+                                    alt="SplitEase logo"
+                                />
+                            </Navbar.Brand>
+                        </StyledLink>
+                    </div>
 
-                {isLogin ? null : (
-                    <Navbar.Collapse id="responsive-navbar-nav">
-                        <Nav className="me-auto">
-                            <Nav.Link href="#features">Features</Nav.Link>
-                            <Nav.Link href="#pricing">Pricing</Nav.Link>
-                            <NavDropdown
-                                title="Dropdown"
-                                id="collasible-nav-dropdown"
+                    {isLogin ? null : (
+                        <Navbar.Collapse id="responsive-navbar-nav">
+                            <Nav className="me-auto">
+                                <Nav.Link href="#features">Features</Nav.Link>
+                                <Nav.Link href="#pricing">Pricing</Nav.Link>
+                                <NavDropdown
+                                    title="Dropdown"
+                                    id="collasible-nav-dropdown"
+                                >
+                                    <NavDropdown.Item href="#action/3.1">
+                                        Action
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item href="#action/3.2">
+                                        Another action
+                                    </NavDropdown.Item>
+                                    er
+                                    <NavDropdown.Item href="#action/3.3">
+                                        Something
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Divider />
+                                    <NavDropdown.Item href="#action/3.4">
+                                        Separated link
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            </Nav>
+                        </Navbar.Collapse>
+                    )}
+
+                    {isLogin ? (
+                        <StyledNav>
+                            <ProfileButton></ProfileButton>
+                            <StyledButton variant="light" onClick={logout}>
+                                Logout
+                            </StyledButton>
+                        </StyledNav>
+                    ) : (
+                        <StyledNav>
+                            <StyledButton
+                                variant="light"
+                                onClick={handleStartClick}
                             >
-                                <NavDropdown.Item href="#action/3.1">
-                                    Action
-                                </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.2">
-                                    Another action
-                                </NavDropdown.Item>
-                                er
-                                <NavDropdown.Item href="#action/3.3">
-                                    Something
-                                </NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item href="#action/3.4">
-                                    Separated link
-                                </NavDropdown.Item>
-                            </NavDropdown>
-                        </Nav>
-                    </Navbar.Collapse>
-                )}
-
-                {isLogin ? (
-                    <StyledNav>
-                        <ProfileButton></ProfileButton>
-                        <StyledButton variant="light" onClick={logout}>
-                            Logout
-                        </StyledButton>
-                    </StyledNav>
-                ) : (
-                    <StyledNav>
-                        <StyledButton
-                            variant="light"
-                            onClick={handleStartClick}
-                        >
-                            Start
-                        </StyledButton>
-                    </StyledNav>
-                )}
-            </StyledContainer>
-        </StyledNavbar>
+                                Start
+                            </StyledButton>
+                        </StyledNav>
+                    )}
+                </StyledContainer>
+            </StyledNavbar>
+        </>
     );
 };
 export default Header;
