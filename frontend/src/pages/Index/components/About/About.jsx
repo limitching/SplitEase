@@ -6,7 +6,7 @@ const About = () => {
     return (
         <>
             {/* Diversified splitting methods */}
-            <section id="about" className="about-area pt-70">
+            <section id="features" className="about-area pt-70">
                 <div className="container">
                     <div className="row">
                         <div

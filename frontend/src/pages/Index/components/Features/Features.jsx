@@ -22,7 +22,7 @@ const StyledContainer = styled(Container)`
 const Features = () => {
     return (
         <div>
-            <section id="features" className="services-area pt-120">
+            <section id="intros" className="services-area pt-120">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-lg-10">

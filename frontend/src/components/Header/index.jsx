@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { Container, Button, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { GroupContext } from "../../contexts/GroupContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import ProfileButton from "./ProfileButton";
 import { HEADER_BG_COLOR } from "../../global/constant";
@@ -11,7 +11,7 @@ import { HEADER_BG_COLOR } from "../../global/constant";
 const StyledNavbar = styled(Navbar)`
     height: 55px;
     padding: 0;
-    width: 100vw;
+    width: calc(100vw);
     background-color: ${(props) =>
         props.transparent ? "transparent" : HEADER_BG_COLOR};
 `;
@@ -46,9 +46,46 @@ const StyledNav = styled(Nav)`
 `;
 
 const Header = () => {
+    const location = useLocation();
     const { isLogin, logout } = useContext(AuthContext);
     const { setInvitation_code } = useContext(GroupContext);
     const navigate = useNavigate();
+
+    const [scrollPosition, setScrollPosition] = useState(0);
+    const [isAtRoot, setIsAtRoot] = useState(location.pathname === "/");
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentPosition = window.pageYOffset;
+            if (currentPosition > 60) {
+                const opacity = Math.min((currentPosition - 100) / 100, 1);
+                console.log(document.getElementById("header"));
+                document.getElementById(
+                    "header"
+                ).style.backgroundColor = `rgba(243,202,64,${opacity})`;
+            } else {
+                document.getElementById("header").style.backgroundColor =
+                    "transparent";
+            }
+
+            setScrollPosition(currentPosition);
+        };
+        if (isAtRoot) {
+            window.addEventListener("scroll", handleScroll);
+
+            return () => {
+                window.removeEventListener("scroll", handleScroll);
+            };
+        } else {
+            document.getElementById(
+                "header"
+            ).style.backgroundColor = `rgb(243,202,64)`;
+        }
+    }, [isAtRoot]);
+
+    useEffect(() => {
+        setIsAtRoot(location.pathname === "/");
+    }, [location]);
 
     const handleStartClick = () => {
         if (window.location.href.includes("group")) {
@@ -58,15 +95,14 @@ const Header = () => {
         navigate("/login");
     };
 
-    // Check if at root
-    const isAtRoot = window.location.pathname === "/";
-
     return (
-        <>
+        <div>
             <StyledNavbar
+                id="header"
+                // className={isAtRoot ? "container" : undefined}
                 expand="lg"
                 fixed="top"
-                transparent={isAtRoot ? "true" : undefined}
+                // transparent={isAtRoot ? "true" : undefined}
             >
                 <StyledContainer>
                     <div>
@@ -90,26 +126,8 @@ const Header = () => {
                         <Navbar.Collapse id="responsive-navbar-nav">
                             <Nav className="me-auto">
                                 <Nav.Link href="#features">Features</Nav.Link>
-                                <Nav.Link href="#pricing">Pricing</Nav.Link>
-                                <NavDropdown
-                                    title="Dropdown"
-                                    id="collasible-nav-dropdown"
-                                >
-                                    <NavDropdown.Item href="#action/3.1">
-                                        Action
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item href="#action/3.2">
-                                        Another action
-                                    </NavDropdown.Item>
-                                    er
-                                    <NavDropdown.Item href="#action/3.3">
-                                        Something
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Divider />
-                                    <NavDropdown.Item href="#action/3.4">
-                                        Separated link
-                                    </NavDropdown.Item>
-                                </NavDropdown>
+                                <Nav.Link href="#team">Teams</Nav.Link>
+                                <Nav.Link href="#blog">Blogs</Nav.Link>
                             </Nav>
                         </Navbar.Collapse>
                     )}
@@ -133,7 +151,7 @@ const Header = () => {
                     )}
                 </StyledContainer>
             </StyledNavbar>
-        </>
+        </div>
     );
 };
 export default Header;
