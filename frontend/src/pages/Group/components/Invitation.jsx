@@ -26,7 +26,7 @@ const WrapperRow = styled.div`
     align-items: center;
     height: 100%;
     width: 100%;
-    border: 1px solid blue;
+    // border: 1px solid blue;
 `;
 
 const WrapperInvitationContainer = styled.div`
@@ -36,7 +36,7 @@ const WrapperInvitationContainer = styled.div`
     align-items: center;
     height: 100%;
 
-    border: 1px solid blue;
+    // border: 1px solid blue;
 
     @media (min-width: 768px) {
         flex-direction: row;
@@ -51,7 +51,7 @@ const InvitationContext = styled.div`
     justify-content: center;
     align-items: center;
     height: 100%;
-    border: 1px solid black;
+    // border: 1px solid black;
     text-align: center;
     padding: 1rem;
     flex: 1;
@@ -69,7 +69,7 @@ const ImageContainer = styled.div`
     justify-content: center;
     align-items: start;
     height: 100%;
-    border: 1px solid black;
+    // border: 1px solid black;
     padding: 1rem;
     width: 100%;
     flex: 1;
