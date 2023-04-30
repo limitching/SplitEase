@@ -1,0 +1,72 @@
+/*===========================
+       07.TEAM css 
+===========================*/
+.single-team {
+    -webkit-box-shadow: 0px 0px 30px 0px rgba(167, 167, 167, 0.16);
+    -moz-box-shadow: 0px 0px 30px 0px rgba(167, 167, 167, 0.16);
+    box-shadow: 0px 0px 30px 0px rgba(167, 167, 167, 0.16);
+    overflow: hidden;
+    border-radius: 10px;
+}
+.single-team .team-image {
+    position: relative;
+}
+.single-team .team-image img {
+    width: 100%;
+}
+.single-team .team-image .social {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 25px;
+}
+.single-team .team-image .social ul {
+    background-color: rgba(255, 255, 255, 0.23);
+    display: inline-block;
+    border-radius: 50px;
+    padding: 0 13px;
+    position: relative;
+    z-index: 5;
+    overflow: hidden;
+}
+.single-team .team-image .social ul::before {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    background: -webkit-linear-gradient(#fe8464 0%, #fe6e9a 100%);
+    background: -o-linear-gradient(#fe8464 0%, #fe6e9a 100%);
+    background: linear-gradient(#fe8464 0%, #fe6e9a 100%);
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+}
+.single-team .team-image .social ul li {
+    display: inline-block;
+}
+.single-team .team-image .social ul li a {
+    padding: 15px 13px;
+    color: #fff;
+}
+.single-team .team-content {
+    padding: 30px;
+}
+.single-team .team-content .holder-name a {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2e2e2e;
+}
+.single-team .team-content .text {
+    margin-top: 5px;
+}
+.single-team:hover .team-image .social ul::before {
+    opacity: 1;
+    visibility: visible;
+}
