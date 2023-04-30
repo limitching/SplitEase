@@ -74,7 +74,6 @@ const Features = () => {
                                             with SplitEase, saving you time and
                                             energy.
                                         </p>
-                                        <LearnMore className="more"></LearnMore>
                                     </div>
                                 </div>
                             </Col>
@@ -93,7 +92,7 @@ const Features = () => {
                                         />
                                         <img
                                             className="shape-1"
-                                            src="assets/images/services-shape-2.svg"
+                                            src="assets/images/services-shape-1.svg"
                                             alt="shape"
                                         />
                                         <img
@@ -115,7 +114,6 @@ const Features = () => {
                                             makes bill splitting accessible to
                                             everyone.
                                         </p>
-                                        <LearnMore className="more"></LearnMore>
                                     </div>
                                 </div>
                             </Col>
@@ -134,7 +132,7 @@ const Features = () => {
                                         />
                                         <img
                                             className="shape-1"
-                                            src="assets/images/services-shape-3.svg"
+                                            src="assets/images/services-shape-1.svg"
                                             alt="shape"
                                         />
                                         <img
@@ -156,7 +154,6 @@ const Features = () => {
                                             SplitEase's straightforward design
                                             and easy-to-use features.
                                         </p>
-                                        <LearnMore className="more"></LearnMore>
                                     </div>
                                 </div>
                             </Col>
@@ -175,7 +172,7 @@ const Features = () => {
                                         />
                                         <img
                                             className="shape-1"
-                                            src="assets/images/services-shape-4.svg"
+                                            src="assets/images/services-shape-1.svg"
                                             alt="shape"
                                         />
                                         <img
@@ -197,7 +194,6 @@ const Features = () => {
                                             with SplitEase's advanced
                                             calculation technology.
                                         </p>
-                                        <LearnMore className="more"></LearnMore>
                                     </div>
                                 </div>
                             </Col>

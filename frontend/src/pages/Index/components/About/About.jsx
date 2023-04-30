@@ -96,7 +96,12 @@ const About = () => {
                                         </div>
                                     </li>
                                 </ul>
-                                <a href="#" className="main-btn">
+                                <a
+                                    href="#"
+                                    className="main-btn"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
                                     Try it Free
                                 </a>
                             </div>
@@ -150,7 +155,12 @@ const About = () => {
                                     and more cost-effective way to pay off
                                     debts.
                                 </p>
-                                <a href="#" className="main-btn">
+                                <a
+                                    href="#"
+                                    className="main-btn"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
                                     Try it Free
                                 </a>
                             </div>
@@ -206,8 +216,13 @@ const About = () => {
                                 </p>
                                 <p>Try SplitEase now.</p>
 
-                                <a href="#" className="main-btn">
-                                    Try it Free
+                                <a
+                                    href="https://line.me/R/ti/p/@757qejcl"
+                                    className="main-btn"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Add Chatbot as Friend
                                 </a>
                             </div>
                         </div>

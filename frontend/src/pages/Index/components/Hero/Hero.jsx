@@ -3,6 +3,7 @@ import "./hero.css";
 import "./animate.css";
 import styled from "styled-components";
 import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const HeroButton = styled(Button)`
     background-color: #0066cc;
@@ -20,7 +21,12 @@ const HeroButton = styled(Button)`
     }
 `;
 
+const HeroText = styled.p`
+    font-size: 1.25rem;
+`;
+
 function Hero() {
+    const navigate = useNavigate();
     return (
         <div
             id="home"
@@ -34,34 +40,33 @@ function Hero() {
                 <div className="row justify-content-center">
                     <div className="col-lg-8">
                         <div className="header-hero-content text-center">
-                            <h2
-                                className="header-title wow fadeInUp"
+                            <h1
+                                className="wow fadeInUp"
                                 data-wow-duration="1s"
                                 data-wow-delay="0.1s"
                             >
-                                Splitting expenses made simple with SplitEase
-                            </h2>
-                            <h3
-                                className="header-sub-title wow fadeInUp"
+                                <strong>Splitting expenses made simple</strong>
+                            </h1>
+                            <br></br>
+                            <HeroText
+                                className="wow fadeInUp"
                                 data-wow-duration="1s"
                                 data-wow-delay="0.3s"
                             >
                                 <strong>
                                     Track expenses and settle up effortlessly
+                                    with the ultimate expense-splitting
+                                    solution.
                                 </strong>
-                            </h3>
-                            <p
-                                className="text wow fadeInUp"
-                                data-wow-duration="1s"
-                                data-wow-delay="0.5s"
-                            >
-                                <strong>SplitEase</strong> - The ultimate
-                                expense-splitting solution. Try it now!
-                            </p>
+                            </HeroText>
+
                             <HeroButton
                                 className="main-btn wow fadeInUp"
                                 data-wow-duration="1s"
                                 data-wow-delay="0.7s"
+                                onClick={() => {
+                                    navigate("/login");
+                                }}
                             >
                                 Get Started
                             </HeroButton>
