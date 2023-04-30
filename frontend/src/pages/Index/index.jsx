@@ -30,7 +30,7 @@ const Index = () => {
             <FooterBlock></FooterBlock>
             <a
                 href="#"
-                class="back-to-top"
+                className="back-to-top"
                 onClick={() => scroll.scrollToTop()}
             >
                 <BiArrowToTop></BiArrowToTop>

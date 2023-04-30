@@ -59,7 +59,6 @@ const Header = () => {
             const currentPosition = window.pageYOffset;
             if (currentPosition > 60) {
                 const opacity = Math.min((currentPosition - 100) / 100, 1);
-                console.log(document.getElementById("header"));
                 document.getElementById(
                     "header"
                 ).style.backgroundColor = `rgba(243,202,64,${opacity})`;
