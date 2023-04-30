@@ -7,7 +7,7 @@ import {
     FixedButtonWrapper,
 } from "../../components/PageWrapper";
 import {
-    Button as MuiButton,
+    Button,
     Dialog,
     DialogActions,
     DialogContent,
@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import Button from "@mui/material-next/Button";
+
 import { DASHBOARD_BG_COLOR } from "../../../../global/constant";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { api } from "../../../../utils/api";
@@ -105,13 +105,23 @@ const Debts = () => {
                         startIcon={<AccessTimeIcon></AccessTimeIcon>}
                         onClickCapture={handleAlertOpen}
                         sx={{
-                            bgcolor: DASHBOARD_BG_COLOR,
+                            bgcolor:
+                                user.id === group.owner
+                                    ? DASHBOARD_BG_COLOR
+                                    : "transparent",
                             "&:hover": {
-                                bgcolor: DASHBOARD_BG_COLOR,
+                                bgcolor:
+                                    user.id === group.owner
+                                        ? DASHBOARD_BG_COLOR
+                                        : "transparent",
                                 opacity: 0.87,
                             },
+                            border: "1px solid black",
+                            borderRadius: "100px",
+                            color: "white",
+                            padding: "12px 26px",
                         }}
-                        disabled={user.id === group.owner ? false : true}
+                        disabled={user.id !== group.owner}
                     >
                         START SETTLING
                     </Button>
@@ -151,14 +161,14 @@ const Debts = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <MuiButton onClick={handleAlertClose}>Cancel</MuiButton>
-                    <MuiButton
+                    <Button onClick={handleAlertClose}>Cancel</Button>
+                    <Button
                         onClick={() => handleStartSettling(selectSettlingDate)}
                         autoFocus
                         disabled={user.id === group.owner ? false : true}
                     >
                         Confirm
-                    </MuiButton>
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>

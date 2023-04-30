@@ -9,11 +9,9 @@ const StyledNavbar = styled(Navbar)`
     background-color: ${HEADER_BG_COLOR};
     width: 100vw;
     @media (max-width: 768px) {
-        display: flex;
+        display: none;
         justify-content: center;
         align-items: center;
-        position: relative;
-        bottom: auto;
     }
 `;
 

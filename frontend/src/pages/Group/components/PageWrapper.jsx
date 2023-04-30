@@ -34,7 +34,7 @@ const FixedButtonWrapper = styled.div`
     position: fixed;
     display: flex;
     justify-content: center;
-    bottom: 7rem;
+    bottom: 80px;
     left: 0;
     width: 100%;
     padding: 20px;
