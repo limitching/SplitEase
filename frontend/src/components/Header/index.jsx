@@ -66,7 +66,7 @@ const Header = () => {
             <StyledNavbar
                 expand="lg"
                 fixed="top"
-                transparent={isAtRoot.toString()}
+                transparent={isAtRoot ? "true" : undefined}
             >
                 <StyledContainer>
                     <div>

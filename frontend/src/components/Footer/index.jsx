@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useLocation } from "react-router-dom";
 import { Container, Navbar } from "react-bootstrap";
 import { HEADER_BG_COLOR } from "../../global/constant";
 
@@ -17,8 +18,14 @@ const StyledNavbar = styled(Navbar)`
 `;
 
 const Footer = () => {
+    const location = useLocation();
+    const isNotRoot = location.pathname !== "/";
     return (
-        <StyledNavbar expand="lg" fixed="bottom">
+        <StyledNavbar
+            expand="lg"
+            fixed="bottom"
+            style={{ display: isNotRoot ? "block" : "none" }}
+        >
             <Container className="justify-content-md-center">
                 {/* <Navbar.Brand href="#home">
                     <img
