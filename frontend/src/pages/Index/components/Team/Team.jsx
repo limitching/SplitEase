@@ -23,7 +23,7 @@ const Team = () => {
                         <div
                             className="single-team text-center mt-30 wow fadeIn"
                             data-wow-duration="1s"
-                            data-wow-delay="0.5s"
+                            data-wow-delay="0.3s"
                         >
                             <div className="team-image">
                                 <img

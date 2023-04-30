@@ -20,7 +20,7 @@ const Blog = () => {
                         <div
                             className="single-blog mt-30 wow fadeIn"
                             data-wow-duration="1s"
-                            data-wow-delay="0.5s"
+                            data-wow-delay="0.2s"
                         >
                             <div className="blog-image">
                                 <img
@@ -113,7 +113,7 @@ const Blog = () => {
                         <div
                             className="single-blog mt-30 wow fadeIn"
                             data-wow-duration="1s"
-                            data-wow-delay="0.8s"
+                            data-wow-delay="0.2s"
                         >
                             <div className="blog-image">
                                 <img

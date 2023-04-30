@@ -21,7 +21,7 @@ const About = () => {
                             <div
                                 className="about-content mt-50 wow fadeInLeftBig"
                                 data-wow-duration="1s"
-                                data-wow-delay="0.5s"
+                                data-wow-delay="0.3s"
                             >
                                 <div className="section-title">
                                     <div className="line"></div>
@@ -110,7 +110,7 @@ const About = () => {
                             <div
                                 className="about-image text-center mt-50 wow fadeInRightBig"
                                 data-wow-duration="1s"
-                                data-wow-delay="0.5s"
+                                data-wow-delay="0.3s"
                             >
                                 <img
                                     src="assets/images/select-animate.svg"
@@ -135,7 +135,7 @@ const About = () => {
                             <div
                                 className="about-content mt-50 wow fadeInLeftBig"
                                 data-wow-duration="1s"
-                                data-wow-delay="0.5s"
+                                data-wow-delay="0.3s"
                             >
                                 <div className="section-title">
                                     <div className="line"></div>
@@ -169,7 +169,7 @@ const About = () => {
                             <div
                                 className="about-image text-center mt-50 wow fadeInRightBig"
                                 data-wow-duration="1s"
-                                data-wow-delay="0.5s"
+                                data-wow-delay="0.3s"
                             >
                                 <img
                                     src="assets/images/paid-idea-animate.svg"
@@ -196,7 +196,7 @@ const About = () => {
                             <div
                                 className="about-content mt-50 wow fadeInLeftBig"
                                 data-wow-duration="1s"
-                                data-wow-delay="0.5s"
+                                data-wow-delay="0.3s"
                             >
                                 <div className="section-title">
                                     <div className="line"></div>
@@ -230,7 +230,7 @@ const About = () => {
                             <div
                                 className="about-image text-center mt-50 wow fadeInRightBig"
                                 data-wow-duration="1s"
-                                data-wow-delay="0.5s"
+                                data-wow-delay="0.3s"
                             >
                                 <img
                                     src="assets/images/push-notifications-animate.svg"

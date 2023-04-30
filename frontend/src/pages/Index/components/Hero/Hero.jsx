@@ -33,7 +33,6 @@ function Hero() {
             className="header-hero bg_cover"
             style={{
                 backgroundImage: "url(/assets/images/banner-bg.svg)",
-                // height: "800px",
             }}
         >
             <div className="container">
