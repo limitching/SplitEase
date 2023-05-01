@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import Preloader from "../../components/Preloader/Preloader";
 import Hero from "./components/Hero/Hero";
 import Features from "./components/Features/Features";
 import FooterBlock from "./components/FooterBlock/FooterBlock";

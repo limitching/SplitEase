@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Container, Button, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Container, Button, Nav, Navbar } from "react-bootstrap";
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { GroupContext } from "../../contexts/GroupContext";
@@ -51,7 +51,6 @@ const Header = () => {
     const { setInvitation_code } = useContext(GroupContext);
     const navigate = useNavigate();
 
-    const [scrollPosition, setScrollPosition] = useState(0);
     const [isAtRoot, setIsAtRoot] = useState(location.pathname === "/");
 
     useEffect(() => {
@@ -66,8 +65,6 @@ const Header = () => {
                 document.getElementById("header").style.backgroundColor =
                     "transparent";
             }
-
-            setScrollPosition(currentPosition);
         };
         if (isAtRoot) {
             window.addEventListener("scroll", handleScroll);

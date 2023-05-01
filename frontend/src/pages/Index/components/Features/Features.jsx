@@ -1,7 +1,7 @@
 import "./features.css";
 import styled from "styled-components";
-import LearnMore from "../LearnMore";
-import { Col, Container, Row } from "react-bootstrap";
+
+import { Col, Container } from "react-bootstrap";
 
 const StyledContainer = styled(Container)`
     width: 90vw;
