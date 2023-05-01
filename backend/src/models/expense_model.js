@@ -170,7 +170,9 @@ const updateExpense = async (expense_id, updatedExpenseObject, user_id) => {
                 group_id: updatedExpenseObject.attached_group_id,
                 event: "update expense",
                 event_target: updatedExpenseObject.description,
-                event_value: updatedExpenseObject.amount,
+                event_value: `${
+                    CURRENCY_MAP[updatedExpenseObject.currency_option].symbol
+                } ${updatedExpenseObject.amount}`,
             };
             await connection.query("INSERT INTO `logs` SET ?", logData);
         });
@@ -284,7 +286,9 @@ const deleteExpense = async (expense_id, group_id, user_id) => {
             group_id: group_id,
             event: "delete expense",
             event_target: deleteResult.description,
-            event_value: deleteResult.amount,
+            event_value: `${
+                CURRENCY_MAP[deleteResult.currency_option].symbol
+            } ${deleteResult.amount}`,
         };
         await connection.query("INSERT INTO `logs` SET ?", logData);
 
