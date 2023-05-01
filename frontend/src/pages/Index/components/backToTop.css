@@ -1,0 +1,28 @@
+/*===== BACK TO TOP =====*/
+.back-to-top {
+    font-size: 20px;
+    color: #fff;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 5px;
+    background: -webkit-linear-gradient(left, #f3ca40 0%, #ffb11b 100%);
+    background: -o-linear-gradient(left, #f3ca40 0%, #ffb11b 100%);
+    background: linear-gradient(to right, #f3ca40 0%, #ffb11b 100%);
+    text-align: center;
+    z-index: 99;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+    display: none;
+    border: 1px solid white;
+    scroll-behavior: smooth;
+}
+.back-to-top:hover {
+    color: #fff;
+}

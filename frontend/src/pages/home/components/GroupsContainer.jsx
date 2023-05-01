@@ -15,7 +15,7 @@ import {
 import { AWS_CLOUDFRONT_HOST } from "../../../global/constant";
 
 const GroupsWrapper = styled(Paper)`
-    width: 40%;
+    width: 90%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,6 +26,11 @@ const GroupsWrapper = styled(Paper)`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    padding: 1rem 0;
+
+    @media (min-width: 768px) {
+        width: 40%;
+    }
 `;
 
 const CustomListItemText = styled(ListItemText)`
@@ -40,10 +45,11 @@ const GroupLink = styled(Link)`
     color: inherit;
 `;
 
-const GroupsHeader = styled.h3`
-    padding-top: 2rem;
+const GroupsHeader = styled.h6`
     text-decoration: none;
     color: inherit;
+    font-weight: bold;
+    margin-bottom: 0px;
 `;
 
 const GroupsContainer = () => {
@@ -86,6 +92,10 @@ const GroupsContainer = () => {
                                     <ListItemText
                                         primary={`${group.name}`}
                                         secondary={group.description}
+                                        primaryTypographyProps={{
+                                            fontSize: "1rem",
+                                        }}
+                                        // sx={[{ color: "blue" }]}
                                     />
                                 </ListItemButton>
                             </ListItem>
@@ -100,14 +110,7 @@ const GroupsContainer = () => {
                                 src={`${AWS_CLOUDFRONT_HOST}group_image_default/plus.png`}
                             />
                         </ListItemAvatar>
-                        <CustomListItemText
-                            primary={`Create a new group`}
-                            sx={[
-                                { fontWeight: "bold" },
-                                { fontSize: "26px" },
-                                { color: "blue" },
-                            ]}
-                        />
+                        <CustomListItemText primary={`Create a new group`} />
                     </ListItemButton>
                 </ListItem>
             </List>

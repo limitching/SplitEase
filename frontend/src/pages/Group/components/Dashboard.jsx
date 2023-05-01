@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useContext, useEffect, useState } from "react";
 import { GroupContext } from "../../../contexts/GroupContext";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { Avatar } from "@mui/material";
+
 import { Container } from "react-bootstrap";
 import DoughnutChart from "./DoughnutChart";
 // import HorizontalBarChart from "./HorizontalBarChart";
@@ -20,10 +20,6 @@ const Dashboard = styled.div`
 `;
 const TextWrapper = styled.div`
     color: white;
-`;
-
-const VisitorDashboard = styled(Dashboard)`
-    background-color: #f4f4f4;
 `;
 
 const UserDashboard = styled(Dashboard)`
@@ -63,21 +59,9 @@ const LargeTextContainer = styled.div`
     margin-top: 1rem;
 `;
 
-const JoinButton = styled.button`
-    background-color: #00b2a5;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: all 0.2s ease-in-out;
-    &:hover {
-        background-color: #008c7d;
-    }
-    &:active {
-        transform: scale(0.98);
+const TextContainer = styled(Container)`
+    @media (max-width: 768px) {
+        display: none;
     }
 `;
 
@@ -85,8 +69,6 @@ const GroupDashboard = () => {
     const {
         group,
         members,
-        invitation_code,
-        slug,
         balance,
         groupExpense,
         isLoading,
@@ -95,8 +77,7 @@ const GroupDashboard = () => {
         usersShare,
         debts,
     } = useContext(GroupContext);
-    const { userGroups, jwtToken, isLogin, joinGroup, user } =
-        useContext(AuthContext);
+    const { user } = useContext(AuthContext);
     const [shouldPayUser, setShouldPayUser] = useState({});
     const userIndex = indexMap.get(user.id);
 
@@ -120,41 +101,11 @@ const GroupDashboard = () => {
         }
         return sum;
     }, 0);
-    const [owner] = members.filter((user) => user.id === group.owner);
-
-    const filterResult = userGroups.filter(
-        (userGroup) => userGroup.id === group.id
-    );
 
     if (isLoading) {
         return <></>;
     }
 
-    if (filterResult.length === 0) {
-        return (
-            <VisitorDashboard>
-                <Avatar
-                    alt={owner.name}
-                    src={owner.image}
-                    sx={{ width: 100, height: 100, fontSize: "3rem" }}
-                ></Avatar>
-                <h3>{`${owner.name} wants to invite you to a group`} </h3>
-                <h1>{group.name}</h1>
-                <h3>{group.description}</h3>
-                {isLogin ? (
-                    <JoinButton
-                        onClick={() =>
-                            joinGroup(slug, invitation_code, jwtToken)
-                        }
-                    >
-                        Join Group
-                    </JoinButton>
-                ) : (
-                    <JoinButton disabled>Please Login</JoinButton>
-                )}
-            </VisitorDashboard>
-        );
-    }
     // console.log(indexMap);
     // console.log(userIndex);
     // console.log(usersShare[userIndex]);
@@ -191,7 +142,7 @@ const GroupDashboard = () => {
 
                 {/* <HorizontalBarChart></HorizontalBarChart> */}
 
-                <Container>
+                <TextContainer>
                     <TextWrapper>
                         <h1>{group.name}</h1>
                         <div style={{ display: "flex" }}>
@@ -249,7 +200,7 @@ const GroupDashboard = () => {
                             )}
                         </LargeTextContainer>
                     </TextWrapper>
-                </Container>
+                </TextContainer>
             </DashboardWrapper>
         </UserDashboard>
     );

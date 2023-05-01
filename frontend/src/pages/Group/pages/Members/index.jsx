@@ -6,7 +6,7 @@ import {
 } from "../../components/PageWrapper";
 import MemberList from "./components/MemberList";
 import { DASHBOARD_BG_COLOR } from "../../../../global/constant";
-import Button from "@mui/material-next/Button";
+import { Button } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useNavigate } from "react-router-dom";
 
@@ -38,6 +38,9 @@ const Members = () => {
                             bgcolor: DASHBOARD_BG_COLOR,
                             opacity: 0.87,
                         },
+                        borderRadius: "100px",
+                        color: "white",
+                        padding: "12px 26px",
                     }}
                 >
                     INVITE FRIENDS

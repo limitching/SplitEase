@@ -26,6 +26,7 @@ const GroupContext = createContext({
     setMembers: () => {},
     setExpensesChanged: () => {},
     setInviteEmail: () => {},
+    setInvitation_code: () => {},
 });
 
 async function fetchMembers(group_id, setMembers) {
@@ -299,6 +300,7 @@ const GroupContextProvider = ({ children }) => {
                 setMembers,
                 setExpensesChanged,
                 setInviteEmail,
+                setInvitation_code,
             }}
         >
             {children}

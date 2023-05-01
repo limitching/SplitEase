@@ -1,0 +1,113 @@
+/*===========================
+      04.SERVICES css 
+===========================*/
+.single-services {
+    background-color: #fff;
+    -webkit-box-shadow: 0px 5px 30px 0px rgba(167, 167, 167, 0.16);
+    -moz-box-shadow: 0px 5px 30px 0px rgba(167, 167, 167, 0.16);
+    box-shadow: 0px 5px 30px 0px rgba(167, 167, 167, 0.16);
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+    padding: 50px 30px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+}
+@media (max-width: 767px) {
+    .single-services {
+        padding: 20px 20px 30px;
+    }
+}
+.single-services .services-icon {
+    display: inline-block;
+    position: relative;
+}
+.single-services .services-icon img {
+    -webkit-transition: all 0.4s ease-out 0s;
+    -moz-transition: all 0.4s ease-out 0s;
+    -ms-transition: all 0.4s ease-out 0s;
+    -o-transition: all 0.4s ease-out 0s;
+    transition: all 0.4s ease-out 0s;
+}
+.single-services .services-icon .shape-1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+.single-services .services-icon i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    font-size: 34px;
+    color: #fff;
+}
+.single-services .services-content .services-title a {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2e2e2e;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+}
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+    .single-services .services-content .services-title a {
+        font-size: 24px;
+    }
+}
+@media (max-width: 767px) {
+    .single-services .services-content .services-title a {
+        font-size: 20px;
+    }
+}
+.single-services .services-content .services-title a:hover {
+    color: #361cc1;
+}
+.single-services .services-content .text {
+    margin-top: 30px;
+}
+@media (max-width: 767px) {
+    .single-services .services-content .text {
+        margin-top: 20px;
+    }
+}
+.single-services .services-content .more {
+    margin-top: 30px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #2e2e2e;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+}
+.single-services .services-content .more i {
+    margin-left: 10px;
+}
+.single-services .services-content .more:hover {
+    color: #361cc1;
+}
+.single-services:hover {
+    border-color: #fe7a7b;
+}
+.single-services:hover .services-icon .shape {
+    -webkit-transform: rotate(25deg);
+    -moz-transform: rotate(25deg);
+    -ms-transform: rotate(25deg);
+    -o-transform: rotate(25deg);
+    transform: rotate(25deg);
+}

@@ -7,6 +7,7 @@ const AWS_CLOUDFRONT_HOST = "https://dxkgfgg79h3hz.cloudfront.net/";
 const LIFF_ID = "1660896460-KPNk7vny";
 
 const HEADER_BG_COLOR = "#F3CA40";
+const CONTRAST_COLOR = "#1f39be";
 
 const DASHBOARD_BG_COLOR = "#2b2b2b";
 
@@ -246,4 +247,5 @@ export {
     ANIMAL_AVATAR,
     DEFAULT_AVATAR,
     AVATAR_LINK,
+    CONTRAST_COLOR,
 };

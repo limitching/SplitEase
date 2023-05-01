@@ -1,24 +1,38 @@
 import styled from "styled-components";
+import { useLocation } from "react-router-dom";
 import { Container, Navbar } from "react-bootstrap";
 import { HEADER_BG_COLOR } from "../../global/constant";
 
 const StyledNavbar = styled(Navbar)`
     height: 55px;
+    padding: 0;
     background-color: ${HEADER_BG_COLOR};
+    width: 100vw;
+    @media (max-width: 768px) {
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
 `;
 
 const Footer = () => {
+    const location = useLocation();
+    const isNotRoot = location.pathname !== "/";
     return (
-        <StyledNavbar expand="lg" fixed="bottom">
+        <StyledNavbar
+            expand="lg"
+            fixed="bottom"
+            style={{ display: isNotRoot ? "block" : "none" }}
+        >
             <Container className="justify-content-md-center">
-                <Navbar.Brand href="#home">
+                {/* <Navbar.Brand href="#home">
                     <img
                         src="/assets/logo.svg"
                         width="auto"
                         height="30"
                         alt="SplitEase logo"
                     />
-                </Navbar.Brand>
+                </Navbar.Brand> */}
 
                 <div className="text-center p-3">
                     © 2023 Copyright:
@@ -29,11 +43,11 @@ const Footer = () => {
                         Limitching
                     </a>
                 </div>
-                <div className="footer__social-media">
+                {/* <div className="footer__social-media">
                     <div className="footer__social-media-line" />
                     <div className="footer__social-media-twitter" />
                     <div className="footer__social-media-facebook" />
-                </div>
+                </div> */}
             </Container>
         </StyledNavbar>
     );

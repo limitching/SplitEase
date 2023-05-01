@@ -1,0 +1,44 @@
+/*===========================
+       09.BLOG  css 
+===========================*/
+.single-blog .blog-image img {
+    border-radius: 10px;
+    width: 100%;
+}
+
+.single-blog .blog-content {
+    padding-top: 25px;
+}
+.single-blog .blog-content .meta li {
+    font-size: 16px;
+    color: #6a6972;
+    display: inline-block;
+    margin-left: 50px;
+}
+.single-blog .blog-content .meta li:first-child {
+    margin-left: 0;
+}
+.single-blog .blog-content .meta li a {
+    color: #6a6972;
+}
+.single-blog .blog-content .text {
+    font-size: 23px;
+    font-weight: 400;
+    line-height: 30px;
+    color: #2e2e2e;
+    margin-top: 15px;
+}
+@media (max-width: 767px) {
+    .single-blog .blog-content .text {
+        font-size: 20px;
+        line-height: 30px;
+    }
+}
+.single-blog .blog-content .more {
+    font-size: 16px;
+    color: #fe7e71;
+    margin-top: 30px;
+}
+.single-blog .blog-content .more i {
+    margin-left: 5px;
+}

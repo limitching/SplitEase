@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 
 import { DASHBOARD_BG_COLOR, WEB_HOST } from "../../../../../global/constant";
-import Button from "@mui/material-next/Button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import SendIcon from "@mui/icons-material/Send";
 import ShareIcon from "@mui/icons-material/Share";
@@ -146,7 +145,7 @@ const InviteViaLink = () => {
                 </NormalButton>
             </InvitationMethodContainer>
             <FixedButtonWrapper>
-                <Button
+                <NormalButton
                     color="primary"
                     disabled={false}
                     size="large"
@@ -159,10 +158,13 @@ const InviteViaLink = () => {
                             bgcolor: DASHBOARD_BG_COLOR,
                             opacity: 0.87,
                         },
+                        borderRadius: "100px",
+                        color: "white",
+                        padding: "12px 26px",
                     }}
                 >
                     SHARE LINK
-                </Button>
+                </NormalButton>
             </FixedButtonWrapper>
         </>
     );

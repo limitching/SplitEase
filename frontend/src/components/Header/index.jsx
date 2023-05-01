@@ -1,19 +1,26 @@
 import styled from "styled-components";
-import { Container, Button, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { useContext } from "react";
+import { Container, Button, Nav, Navbar } from "react-bootstrap";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { GroupContext } from "../../contexts/GroupContext";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import ProfileButton from "./ProfileButton";
 import { HEADER_BG_COLOR } from "../../global/constant";
 
 const StyledNavbar = styled(Navbar)`
     height: 55px;
-    background-color: ${HEADER_BG_COLOR};
+    padding: 0;
+    width: calc(100vw);
+    background-color: ${(props) =>
+        props.transparent ? "transparent" : HEADER_BG_COLOR};
 `;
 const StyledContainer = styled(Container)`
     display: flex;
-    align-items: space-between;
+    flex-wrap: no-wrap;
+    justify-content: space-around;
+    width: 100%;
+    align-items: space-around;
     @media (min-width: 1400px) {
         max-width: 95vw;
     }
@@ -22,6 +29,9 @@ const StyledButton = styled(Button)`
     width: 5vw;
     min-width: 85px;
     height: 2.5rem;
+    @media (max-width: 767px) {
+        display: none;
+    }
 `;
 
 const StyledLink = styled(Link)`
@@ -36,80 +46,108 @@ const StyledNav = styled(Nav)`
 `;
 
 const Header = () => {
+    const location = useLocation();
     const { isLogin, logout } = useContext(AuthContext);
+    const { setInvitation_code } = useContext(GroupContext);
     const navigate = useNavigate();
+
+    const [isAtRoot, setIsAtRoot] = useState(location.pathname === "/");
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentPosition = window.pageYOffset;
+            if (currentPosition > 60) {
+                const opacity = Math.min((currentPosition - 100) / 100, 1);
+                document.getElementById(
+                    "header"
+                ).style.backgroundColor = `rgba(243,202,64,${opacity})`;
+            } else {
+                document.getElementById("header").style.backgroundColor =
+                    "transparent";
+            }
+        };
+        if (isAtRoot) {
+            window.addEventListener("scroll", handleScroll);
+
+            return () => {
+                window.removeEventListener("scroll", handleScroll);
+            };
+        } else {
+            document.getElementById(
+                "header"
+            ).style.backgroundColor = `rgb(243,202,64)`;
+        }
+    }, [isAtRoot]);
+
+    useEffect(() => {
+        setIsAtRoot(location.pathname === "/");
+    }, [location]);
 
     const handleStartClick = () => {
         if (window.location.href.includes("group")) {
             localStorage.setItem("lastPageUrl", window.location.href);
         }
+        setInvitation_code(null);
         navigate("/login");
     };
 
     return (
-        <StyledNavbar expand="lg" fixed="top">
-            <StyledContainer>
-                <StyledLink to={isLogin ? "/home" : "/"}>
-                    <Navbar.Brand>
-                        <img
-                            src="/assets/logo.svg"
-                            width="auto"
-                            height="30"
-                            alt="SplitEase logo"
+        <div>
+            <StyledNavbar
+                id="header"
+                // className={isAtRoot ? "container" : undefined}
+                expand="lg"
+                fixed="top"
+                // transparent={isAtRoot ? "true" : undefined}
+            >
+                <StyledContainer>
+                    <div>
+                        <Navbar.Toggle
+                            aria-controls="basic-navbar-nav"
+                            style={{ border: "none", maxWidth: "54px" }}
                         />
-                    </Navbar.Brand>
-                </StyledLink>
+                        <StyledLink to={isLogin ? "/home" : "/"}>
+                            <Navbar.Brand>
+                                <img
+                                    src="/assets/logo.svg"
+                                    width="auto"
+                                    height="30"
+                                    alt="SplitEase logo"
+                                />
+                            </Navbar.Brand>
+                        </StyledLink>
+                    </div>
 
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                {isLogin ? null : (
-                    <Navbar.Collapse id="responsive-navbar-nav">
-                        <Nav className="me-auto">
-                            <Nav.Link href="#features">Features</Nav.Link>
-                            <Nav.Link href="#pricing">Pricing</Nav.Link>
-                            <NavDropdown
-                                title="Dropdown"
-                                id="collasible-nav-dropdown"
+                    {isLogin ? null : (
+                        <Navbar.Collapse id="responsive-navbar-nav">
+                            <Nav className="me-auto">
+                                <Nav.Link href="#features">Features</Nav.Link>
+                                <Nav.Link href="#team">Teams</Nav.Link>
+                                <Nav.Link href="#blog">Blogs</Nav.Link>
+                            </Nav>
+                        </Navbar.Collapse>
+                    )}
+
+                    {isLogin ? (
+                        <StyledNav>
+                            <ProfileButton></ProfileButton>
+                            <StyledButton variant="light" onClick={logout}>
+                                Logout
+                            </StyledButton>
+                        </StyledNav>
+                    ) : (
+                        <StyledNav>
+                            <StyledButton
+                                variant="light"
+                                onClick={handleStartClick}
                             >
-                                <NavDropdown.Item href="#action/3.1">
-                                    Action
-                                </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.2">
-                                    Another action
-                                </NavDropdown.Item>
-                                er
-                                <NavDropdown.Item href="#action/3.3">
-                                    Something
-                                </NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item href="#action/3.4">
-                                    Separated link
-                                </NavDropdown.Item>
-                            </NavDropdown>
-                        </Nav>
-                    </Navbar.Collapse>
-                )}
-
-                {isLogin ? (
-                    <StyledNav>
-                        <ProfileButton></ProfileButton>
-                        <StyledButton variant="light" onClick={logout}>
-                            Logout
-                        </StyledButton>
-                    </StyledNav>
-                ) : (
-                    <StyledNav>
-                        {/* <Link to="/login"> */}
-                        <StyledButton
-                            variant="light"
-                            onClick={handleStartClick}
-                        >
-                            Start
-                        </StyledButton>
-                        {/* </Link> */}
-                    </StyledNav>
-                )}
-            </StyledContainer>
-        </StyledNavbar>
+                                Start
+                            </StyledButton>
+                        </StyledNav>
+                    )}
+                </StyledContainer>
+            </StyledNavbar>
+        </div>
     );
 };
 export default Header;

@@ -6,7 +6,7 @@ const HomeContainer = styled.div`
     padding-top: 5vh;
     height: 100vh;
     padding-bottom: 5vh;
-    background-color: skyblue;
+    background-color: #2b2b2b;
     margin: 0 auto;
     position: absolute;
     top: 50%;

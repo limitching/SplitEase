@@ -9,16 +9,17 @@ import { GroupContext } from "../../contexts/GroupContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/Loading";
 import { GROUP_BG_COLOR } from "../../global/constant";
+import Invitation from "./components/Invitation";
 
 const WrapperGroupContainer = styled.div`
     padding-top: 55px;
+    width: 100vw;
     height: 100vh;
-    padding-bottom: 55px;
     background-color: ${GROUP_BG_COLOR};
 `;
 
 const Group = () => {
-    const { group, isLoading } = useContext(GroupContext);
+    const { group, isLoading, isPublicVisit } = useContext(GroupContext);
     const { loading } = useContext(AuthContext);
     if (isLoading || loading) {
         return <Loading />;
@@ -27,11 +28,17 @@ const Group = () => {
     return (
         <ExpenseContextProvider>
             {Object.keys(group).length !== 0 ? (
-                <WrapperGroupContainer>
-                    <GroupDashboard></GroupDashboard>
-                    <Tabs></Tabs>
-                    <Outlet></Outlet>
-                </WrapperGroupContainer>
+                isPublicVisit ? (
+                    <WrapperGroupContainer>
+                        <Invitation></Invitation>
+                    </WrapperGroupContainer>
+                ) : (
+                    <WrapperGroupContainer>
+                        <GroupDashboard></GroupDashboard>
+                        <Tabs></Tabs>
+                        <Outlet></Outlet>
+                    </WrapperGroupContainer>
+                )
             ) : (
                 <WrapperGroupContainer>
                     <Error></Error>

@@ -285,7 +285,7 @@ const AuthContextProvider = ({ children }) => {
             );
             if (response.status === 200) {
                 MySwal.fire({
-                    title: <p>Login Successfully!</p>,
+                    title: <p>Join Successfully!</p>,
                     icon: "success",
                     timer: 1000,
                     didOpen: () => {
@@ -297,7 +297,7 @@ const AuthContextProvider = ({ children }) => {
             } else if (response.status === 400) {
                 const { error } = response.data;
                 MySwal.fire({
-                    title: <p>Server Side Error</p>,
+                    title: <p>Client Side Error</p>,
                     html: <p>{error}</p>,
                     icon: "error",
                     timer: 2000,
