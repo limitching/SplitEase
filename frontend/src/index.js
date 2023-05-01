@@ -7,7 +7,7 @@ import Login from "./pages/Login";
 import Liff from "./pages/Liff";
 import Home from "./pages/Home/index.jsx";
 import Group from "./pages/Group";
-import Overview from "./pages/Group/pages/Overview";
+// import Overview from "./pages/Group/pages/Overview";
 import Expenses from "./pages/Group/pages/Expenses";
 import Debts from "./pages/Group/pages/Debts";
 import Settlement from "./pages/Group/pages/Settlement";
@@ -30,8 +30,8 @@ root.render(
             <Route path="/" element={<App />}>
                 <Route index element={<Index />} />
                 <Route path="group/:slug" element={<Group />}>
-                    <Route index element={<Overview />} />
-                    <Route path="overview" element={<Overview />} />
+                    <Route index element={<Expenses />} />
+                    {/* <Route path="overview" element={<Overview />} /> */}
                     <Route path="expenses" element={<Expenses />} />
                     <Route path="debts" element={<Debts />} />
                     <Route path="settlement" element={<Settlement />} />

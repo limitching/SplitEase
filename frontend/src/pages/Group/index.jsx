@@ -17,7 +17,7 @@ const WrapperGroupContainer = styled.div`
     width: 100vw;
     height: 100vh;
     background-color: ${GROUP_BG_COLOR};
-    border: 2px solid black;
+    // border: 2px solid black;
 `;
 
 const Group = () => {
