@@ -4,20 +4,21 @@ import { GroupContext } from "../../../../../contexts/GroupContext";
 import {
     Button as NormalButton,
     TextField,
-    Checkbox,
-    FormControlLabel,
     IconButton,
     Tooltip,
 } from "@mui/material";
+// import { Checkbox, FormControlLabel } from "@mui/material";
+import QrCodeBlock from "./QrCodeBlock";
 
 import { DASHBOARD_BG_COLOR, WEB_HOST } from "../../../../../global/constant";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import SendIcon from "@mui/icons-material/Send";
+// import SendIcon from "@mui/icons-material/Send";
 import ShareIcon from "@mui/icons-material/Share";
 import {
     FixedButtonWrapper,
     HeaderTextContainer,
 } from "../../../components/PageWrapper";
+import Divider from "@mui/material/Divider";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
@@ -33,21 +34,22 @@ const InvitationMethodContainer = styled.div`
     margin-bottom: 1rem;
 `;
 
-const CheckboxContainer = styled.div`
-    width: 95%;
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center;
-    gap: 1rem;
-`;
+// const CheckboxContainer = styled.div`
+//     width: 95%;
+//     display: flex;
+//     flex-direction: row;
+//     justify-content: start;
+//     align-items: center;
+//     gap: 1rem;
+// `;
 
 const InviteViaLink = () => {
-    const { group, slug, inviteEmail, setInviteEmail } =
-        useContext(GroupContext);
+    const { group, slug } = useContext(GroupContext);
+
+    // const { inviteEmail, setInviteEmail } = useContext(GroupContext);
 
     const [link, setLink] = useState("");
-    const [isCheck, setIsCheck] = useState(true);
+    // const [isCheck, setIsCheck] = useState(true);
 
     useEffect(() => {
         const invitation_link = `${WEB_HOST}/group/${slug}/join?invitation_code=${group.invitation_code}`;
@@ -76,17 +78,17 @@ const InviteViaLink = () => {
         );
     };
 
-    const handleInviteEmailChange = (event) => {
-        setInviteEmail(event.target.value);
-    };
+    // const handleInviteEmailChange = (event) => {
+    //     setInviteEmail(event.target.value);
+    // };
 
-    const handleChecked = (event) => {
-        if (isCheck) {
-            setIsCheck(false);
-        } else {
-            setIsCheck(true);
-        }
-    };
+    // const handleChecked = (event) => {
+    //     if (isCheck) {
+    //         setIsCheck(false);
+    //     } else {
+    //         setIsCheck(true);
+    //     }
+    // };
 
     // TODO:
     // function emailIsValid(email) {
@@ -98,7 +100,8 @@ const InviteViaLink = () => {
             <HeaderTextContainer>
                 <h6>Invite via link</h6>
             </HeaderTextContainer>
-            <CheckboxContainer>
+            <Divider variant="fullWidth"></Divider>
+            {/* <CheckboxContainer>
                 <FormControlLabel
                     control={
                         <Checkbox checked={isCheck} onChange={handleChecked} />
@@ -109,7 +112,7 @@ const InviteViaLink = () => {
                             : "Joining this group via link is disabled"
                     }
                 />
-            </CheckboxContainer>
+            </CheckboxContainer> */}
             <InvitationMethodContainer>
                 <TextField
                     variant="outlined"
@@ -124,7 +127,13 @@ const InviteViaLink = () => {
                     </IconButton>
                 </Tooltip>
             </InvitationMethodContainer>
+
             <HeaderTextContainer>
+                <h6>Invite via QR code</h6>
+            </HeaderTextContainer>
+            <div style={{ marginTop: "3rem" }}></div>
+            <QrCodeBlock url={link}></QrCodeBlock>
+            {/* <HeaderTextContainer>
                 <h6>Invite via email</h6>
             </HeaderTextContainer>
             <InvitationMethodContainer>
@@ -143,7 +152,7 @@ const InviteViaLink = () => {
                 >
                     Invite
                 </NormalButton>
-            </InvitationMethodContainer>
+            </InvitationMethodContainer> */}
             <FixedButtonWrapper>
                 <NormalButton
                     color="primary"

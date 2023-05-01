@@ -23,10 +23,21 @@ const StyledModalBody = styled(Modal.Body)`
     gap: 0.5rem;
 `;
 
-const StyledButton = styled(Button)`
+const LogoutButton = styled(Button)`
     width: 5vw;
     min-width: 85px;
     height: 2.5rem;
+    color: #1f39be;
+`;
+
+const SaveButton = styled(Button)`
+    background-color: #f3ca40;
+    border-color: #f3ca40;
+
+    &:hover {
+        background-color: #f5d67d;
+        border-color: #f5d67d;
+    }
 `;
 
 const ProfileModal = ({
@@ -139,6 +150,9 @@ const ProfileModal = ({
                         <Container className="modal-header-text ml-0 pl-0">
                             <h4>Profile</h4>
                         </Container>
+                        <LogoutButton variant="light" onClick={logout}>
+                            Logout
+                        </LogoutButton>
                     </Modal.Header>
                     <StyledModalBody>
                         <Container>
@@ -246,12 +260,9 @@ const ProfileModal = ({
                     </StyledModalBody>
                     <Modal.Footer>
                         <Container className="d-grid">
-                            <StyledButton variant="light" onClick={logout}>
-                                Logout
-                            </StyledButton>
-                            <Button variant="warning" type="submit">
+                            <SaveButton variant="warning" type="submit">
                                 Save
-                            </Button>
+                            </SaveButton>
                         </Container>
                     </Modal.Footer>
                 </Form>

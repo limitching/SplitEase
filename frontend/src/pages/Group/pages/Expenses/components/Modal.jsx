@@ -84,7 +84,7 @@ const ModalContent = () => {
                 <CreditorsBlock />
                 <DebtorsBlock />
                 <ExpenseDescription />
-                <ExpenseImage />
+                {/* <ExpenseImage /> */}
                 <ExpenseDatetime />
             </>
         );
@@ -98,7 +98,7 @@ const ModalContent = () => {
                     <DebtorsBlock />
                 </div>
                 <ExpenseDescription />
-                <ExpenseImage />
+                {/* <ExpenseImage /> */}
                 <ExpenseDatetime />
             </>
         );

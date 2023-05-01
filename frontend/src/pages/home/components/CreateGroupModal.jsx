@@ -106,7 +106,7 @@ const CreateGroupModal = ({
         });
         handleCloseCreateGroupModal();
         setGroupChange(true);
-        navigate(`/group/${response.data.slug}/overview`);
+        navigate(`/group/${response.data.slug}/expenses`);
         setLoading(false);
     };
 

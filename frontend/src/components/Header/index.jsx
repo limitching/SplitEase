@@ -47,7 +47,8 @@ const StyledNav = styled(Nav)`
 
 const Header = () => {
     const location = useLocation();
-    const { isLogin, logout } = useContext(AuthContext);
+    const { isLogin } = useContext(AuthContext);
+    // const { logout } = useContext(AuthContext);
     const { setInvitation_code } = useContext(GroupContext);
     const navigate = useNavigate();
 
@@ -131,9 +132,9 @@ const Header = () => {
                     {isLogin ? (
                         <StyledNav>
                             <ProfileButton></ProfileButton>
-                            <StyledButton variant="light" onClick={logout}>
+                            {/* <StyledButton variant="light" onClick={logout}>
                                 Logout
-                            </StyledButton>
+                            </StyledButton> */}
                         </StyledNav>
                     ) : (
                         <StyledNav>

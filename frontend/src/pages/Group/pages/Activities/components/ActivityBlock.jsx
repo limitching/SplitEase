@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import styled from "styled-components";
 import { ANIMAL_AVATAR } from "../../../../../global/constant";
+import { HeaderTextContainer } from "../../../components/PageWrapper";
 
 const ActivitiesContainer = styled(Container)`
     padding: 0px 16px;
@@ -31,122 +32,141 @@ const ActivityBlock = () => {
     const { logs, memberMap, indexMap } = useContext(GroupContext);
 
     return (
-        <ActivitiesContainer>
-            <List
-                dense
-                sx={{
-                    width: "100%",
-                    maxWidth: "100%",
-                    bgcolor: "background.paper",
-                }}
-            >
-                {logs.map((log, index) => {
-                    const user = memberMap.get(log.user_id);
-                    const formattedDate = dayjs
-                        .utc(log.log_time)
-                        .tz("Asia/Taipei")
-                        .format("MM/DD/YYYY, h:mm:ss A");
+        <>
+            <HeaderTextContainer>
+                <h6>{"Activities"}</h6>
+            </HeaderTextContainer>
+            <ActivitiesContainer>
+                <List
+                    dense
+                    sx={{
+                        width: "100%",
+                        maxWidth: "100%",
+                        bgcolor: "background.paper",
+                    }}
+                >
+                    {logs.map((log, index) => {
+                        const user = memberMap.get(log.user_id);
+                        const formattedDate = dayjs
+                            .utc(log.log_time)
+                            .tz("Asia/Taipei")
+                            .format("MM/DD/YYYY, h:mm:ss A");
 
-                    const eventTargetText = (event, event_target) => {
-                        if (
-                            event === "update all expenses with a date prior to"
-                        ) {
-                            return dayjs
-                                .utc(log.event.target)
-                                .tz("Asia/Taipei")
-                                .format("MM/DD/YYYY");
-                        }
-                        if (
-                            event === "create expense" ||
-                            event === "update expense" ||
-                            event === "delete expense"
-                        ) {
-                            return "Expense";
-                        }
-                        if (event === "marked debt as settled") {
-                            const match = event_target.match(/(\d+) to (\d+)/);
-                            const payer_id = parseInt(match?.[1] ?? 0);
-                            const payee_id = parseInt(match?.[2] ?? 0);
-                            let payer = memberMap.get(payer_id) ?? {
-                                name: "",
-                            };
-                            let payee = memberMap.get(payee_id) ?? {
-                                name: "",
-                            };
-                            return `${payer.name}→${payee.name}` ?? "";
-                        }
-                        if (
-                            event === "create group" ||
-                            event === "join group via code" ||
-                            event === "archive group"
-                        ) {
-                            return "";
-                        }
-                    };
+                        const eventTargetText = (event, event_target) => {
+                            if (
+                                event ===
+                                "update all expenses with a date prior to"
+                            ) {
+                                return dayjs
+                                    .utc(log.event.target)
+                                    .tz("Asia/Taipei")
+                                    .format("MM/DD/YYYY");
+                            }
+                            if (
+                                event === "create expense" ||
+                                event === "update expense" ||
+                                event === "delete expense"
+                            ) {
+                                if (event_target) {
+                                    return event_target;
+                                } else {
+                                    return "Expense";
+                                }
+                            }
+                            if (event === "marked debt as settled") {
+                                const match =
+                                    event_target.match(/(\d+) to (\d+)/);
+                                const payer_id = parseInt(match?.[1] ?? 0);
+                                const payee_id = parseInt(match?.[2] ?? 0);
+                                let payer = memberMap.get(payer_id) ?? {
+                                    name: "",
+                                };
+                                let payee = memberMap.get(payee_id) ?? {
+                                    name: "",
+                                };
+                                return `${payer.name}→${payee.name}` ?? "";
+                            }
+                            if (
+                                event === "create group" ||
+                                event === "join group via code" ||
+                                event === "archive group"
+                            ) {
+                                return "";
+                            }
 
-                    const eventValueText = (event, event_value) => {
-                        if (event_value === null) {
-                            return "";
-                        }
-                        if (
-                            event === "create group" ||
-                            event === "join group via code" ||
-                            event === "archive group"
-                        ) {
-                            return "";
-                        } else {
-                            return `(${event_value})`;
-                        }
-                    };
+                            if (event === "modify group") {
+                                if (event_target) {
+                                    return event_target;
+                                } else {
+                                    return "Expense";
+                                }
+                            }
+                        };
 
-                    return (
-                        <div key={`activity-list ${index}`}>
-                            <LogContainer>
-                                <ListItem>
-                                    <ListItemAvatar>
+                        const eventValueText = (event, event_value) => {
+                            if (event_value === null) {
+                                return "";
+                            }
+                            if (
+                                event === "create group" ||
+                                event === "join group via code" ||
+                                event === "archive group"
+                            ) {
+                                return "";
+                            } else {
+                                return `(${event_value})`;
+                            }
+                        };
+
+                        return (
+                            <div key={`activity-list ${index}`}>
+                                <LogContainer>
+                                    <ListItem>
                                         <ListItemAvatar>
-                                            <Tooltip title={user.name}>
-                                                <Avatar
-                                                    alt={user.name}
-                                                    src={
-                                                        user.image
-                                                            ? user.image
-                                                            : ANIMAL_AVATAR[
-                                                                  indexMap.get(
-                                                                      user.id
-                                                                  )
-                                                              ]
-                                                    }
-                                                    sx={{
-                                                        width: 50,
-                                                        height: 50,
-                                                    }}
-                                                />
-                                            </Tooltip>
+                                            <ListItemAvatar>
+                                                <Tooltip title={user.name}>
+                                                    <Avatar
+                                                        alt={user.name}
+                                                        src={
+                                                            user.image
+                                                                ? user.image
+                                                                : ANIMAL_AVATAR[
+                                                                      indexMap.get(
+                                                                          user.id
+                                                                      )
+                                                                  ]
+                                                        }
+                                                        sx={{
+                                                            width: 50,
+                                                            height: 50,
+                                                        }}
+                                                    />
+                                                </Tooltip>
+                                            </ListItemAvatar>
                                         </ListItemAvatar>
-                                    </ListItemAvatar>
-                                    <Container>
-                                        <ListItemText
-                                            primary={`${user.name} ${
-                                                log.event
-                                            } ${eventTargetText(
-                                                log.event,
-                                                log.event_target
-                                            )} ${eventValueText(
-                                                log.event,
-                                                log.event_value
-                                            )}`}
-                                            secondary={formattedDate}
-                                        />
-                                    </Container>
-                                </ListItem>
-                            </LogContainer>
-                            <Divider />
-                        </div>
-                    );
-                })}
-            </List>
-        </ActivitiesContainer>
+                                        <Container>
+                                            <ListItemText
+                                                primary={`${user.name} ${
+                                                    log.event
+                                                } ${eventTargetText(
+                                                    log.event,
+                                                    log.event_target
+                                                )} ${eventValueText(
+                                                    log.event,
+                                                    log.event_value
+                                                )}`}
+                                                secondary={formattedDate}
+                                            />
+                                        </Container>
+                                    </ListItem>
+                                </LogContainer>
+                                <Divider />
+                            </div>
+                        );
+                    })}
+                </List>
+            </ActivitiesContainer>
+        </>
     );
 };
 

@@ -27,6 +27,8 @@ const GroupsWrapper = styled(Paper)`
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 1rem 0;
+    max-height: 50vh;
+    overflow: scroll;
 
     @media (min-width: 768px) {
         width: 40%;
@@ -79,7 +81,7 @@ const GroupsContainer = () => {
                     return (
                         <GroupLink
                             key={group.slug}
-                            to={`/group/${group.slug}/overview`}
+                            to={`/group/${group.slug}/expenses`}
                         >
                             <ListItem alignItems="center" disablePadding>
                                 <ListItemButton>
