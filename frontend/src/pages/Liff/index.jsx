@@ -15,6 +15,7 @@ const Liff = () => {
                 if (!isLoggedIn) {
                     liff.login({
                         scope: ["profile", "email"],
+                        botPrompt: "aggressive",
                     });
                 }
             })();
