@@ -1,5 +1,6 @@
 import { pool } from "../databases/MySQL.database.js";
 import { mongoose } from "../databases/Mongo.database.js";
+import { CURRENCY_MAP } from "../utils/constant.js";
 
 const ExpenseSchema = new mongoose.Schema({
     description: { type: String },
@@ -108,7 +109,9 @@ const createExpense = async (expenseObject, user_id) => {
             group_id: expenseObject.attached_group_id,
             event: "create expense",
             event_target: expenseObject.description,
-            event_value: expenseObject.amount,
+            event_value: `${
+                CURRENCY_MAP[expenseObject.currency_option].symbol
+            } ${expenseObject.amount}`,
         };
         await connection.query("INSERT INTO `logs` SET ?", logData);
 

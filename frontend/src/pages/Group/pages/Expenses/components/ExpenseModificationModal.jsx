@@ -20,7 +20,8 @@ import { AuthContext } from "../../../../../contexts/AuthContext";
 const MySwal = withReactContent(Swal);
 
 const StyledModalBody = styled(Modal.Body)`
-    height: 700px;
+    // height: 57vh;
+    max-height: 70vh;
     overflow: scroll;
 `;
 

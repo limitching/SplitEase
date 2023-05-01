@@ -90,14 +90,18 @@ const Settlement = () => {
         <>
             <PageWrapper>
                 {isSettled ? (
-                    <img
-                        src="/assets/allDone.svg"
-                        alt="All done :)"
-                        width="500px"
-                    ></img>
+                    <>
+                        <HeaderTextContainer>
+                            <h6>No Settling debts </h6>
+                        </HeaderTextContainer>
+                        <img
+                            src="/assets/allDone.svg"
+                            alt="All done :)"
+                            width="500px"
+                        ></img>
+                    </>
                 ) : (
                     <>
-                        {" "}
                         <HeaderTextContainer>
                             <h6>
                                 Settling debts (Debts in settling process...)

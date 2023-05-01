@@ -15,6 +15,7 @@ import {
     Tooltip,
 } from "@mui/material";
 import Chip from "@mui/material/Chip";
+import { HeaderTextContainer } from "../../../components/PageWrapper";
 
 import {
     CURRENCY_OPTIONS,
@@ -104,112 +105,125 @@ const ExpensesBlock = () => {
     }
 
     return (
-        <List
-            dense
-            sx={{
-                width: "100%",
-                maxWidth: "100%",
-                bgcolor: "background.paper",
-            }}
-        >
-            {groupExpense.map((expense, index) => {
-                const labelId = `checkbox-list-secondary-label-${expense._id}`;
-                let creditors;
-                if (Object.keys(expense.creditors_amounts).length === 1) {
-                    const creditorId = Object.keys(
-                        expense.creditors_amounts
-                    )[0];
-                    creditors = memberMap.get(Number(creditorId));
-                } else {
-                    creditors = { name: "Multiple Members" };
-                }
-                const [currencyOption] = CURRENCY_OPTIONS.filter(
-                    (currency) => currency.id === expense.currency_option
-                );
-
-                const debtors = Object.keys(expense.debtors_weight).map(
-                    (debtorId) => {
-                        return memberMap.get(Number(debtorId));
+        <>
+            <HeaderTextContainer>
+                <h6>
+                    {groupExpense.length === 0 ? "No Expense :)" : "Expenses"}
+                </h6>
+            </HeaderTextContainer>
+            <List
+                dense
+                sx={{
+                    width: "100%",
+                    maxWidth: "100%",
+                    bgcolor: "background.paper",
+                }}
+            >
+                {groupExpense.map((expense, index) => {
+                    const labelId = `checkbox-list-secondary-label-${expense._id}`;
+                    let creditors;
+                    if (Object.keys(expense.creditors_amounts).length === 1) {
+                        const creditorId = Object.keys(
+                            expense.creditors_amounts
+                        )[0];
+                        creditors = memberMap.get(Number(creditorId));
+                    } else {
+                        creditors = { name: "Multiple Members" };
                     }
-                );
+                    const [currencyOption] = CURRENCY_OPTIONS.filter(
+                        (currency) => currency.id === expense.currency_option
+                    );
 
-                return (
-                    <ListItem
-                        key={expense._id}
-                        onClick={() => handleExpenseItemClick(expense)}
-                    >
-                        <ListItemButton>
-                            <ListItemAvatar>
-                                <Tooltip title={creditors.name}>
-                                    <Avatar
-                                        alt={creditors.name}
-                                        src={
-                                            creditors.image
-                                                ? creditors.image
-                                                : ANIMAL_AVATAR[
-                                                      indexMap.get(creditors.id)
-                                                  ]
-                                        }
-                                        sx={{ width: 50, height: 50 }}
-                                    />
-                                </Tooltip>
-                            </ListItemAvatar>
-                            <Container>
-                                <ListItemText
-                                    id={labelId}
-                                    primary={
-                                        expense.description === ""
-                                            ? "Expense"
-                                            : `${expense.description}`
-                                    }
-                                    secondary={`${creditors.name} Paid for`}
-                                />
-                            </Container>
+                    const debtors = Object.keys(expense.debtors_weight).map(
+                        (debtorId) => {
+                            return memberMap.get(Number(debtorId));
+                        }
+                    );
 
-                            <Container style={{ maxWidth: "100px" }}>
-                                <StyledListItemTextForAmount
-                                    id={labelId}
-                                    primary={`${currencyOption.symbol} ${expense.amount}`}
-                                />
-                                <AvatarGroup total={debtors.length}>
-                                    {debtors.map((debtor, index) => (
-                                        <Tooltip
-                                            key={
-                                                expense._id + "_debtor_" + index
+                    return (
+                        <ListItem
+                            key={expense._id}
+                            onClick={() => handleExpenseItemClick(expense)}
+                        >
+                            <ListItemButton>
+                                <ListItemAvatar>
+                                    <Tooltip title={creditors.name}>
+                                        <Avatar
+                                            alt={creditors.name}
+                                            src={
+                                                creditors.image
+                                                    ? creditors.image
+                                                    : ANIMAL_AVATAR[
+                                                          indexMap.get(
+                                                              creditors.id
+                                                          )
+                                                      ]
                                             }
-                                            title={debtor.name}
-                                        >
-                                            <Avatar
-                                                alt={debtor.name}
-                                                src={
-                                                    debtor.image
-                                                        ? debtor.image
-                                                        : ANIMAL_AVATAR[
-                                                              indexMap.get(
-                                                                  debtor.id
-                                                              )
-                                                          ]
+                                            sx={{ width: 50, height: 50 }}
+                                        />
+                                    </Tooltip>
+                                </ListItemAvatar>
+                                <Container>
+                                    <ListItemText
+                                        id={labelId}
+                                        primary={
+                                            expense.description === ""
+                                                ? "Expense"
+                                                : `${expense.description}`
+                                        }
+                                        secondary={`${creditors.name} Paid for`}
+                                    />
+                                </Container>
+
+                                <Container style={{ maxWidth: "100px" }}>
+                                    <StyledListItemTextForAmount
+                                        id={labelId}
+                                        primary={`${currencyOption.symbol} ${expense.amount}`}
+                                    />
+                                    <AvatarGroup total={debtors.length}>
+                                        {debtors.map((debtor, index) => (
+                                            <Tooltip
+                                                key={
+                                                    expense._id +
+                                                    "_debtor_" +
+                                                    index
                                                 }
-                                                sx={{
-                                                    width: "20px",
-                                                    height: "20px",
-                                                    fontSize: "12px",
-                                                }}
-                                            />
-                                        </Tooltip>
-                                    ))}
-                                </AvatarGroup>
-                            </Container>
-                            <Container style={{ maxWidth: "120px" }}>
-                                <StyledListItemTextForAmount
-                                    primary={<Chip label={expense.status} />}
-                                />
-                            </Container>
-                        </ListItemButton>
-                    </ListItem>
-                );
-            })}
-        </List>
+                                                title={debtor.name}
+                                            >
+                                                <Avatar
+                                                    alt={debtor.name}
+                                                    src={
+                                                        debtor.image
+                                                            ? debtor.image
+                                                            : ANIMAL_AVATAR[
+                                                                  indexMap.get(
+                                                                      debtor.id
+                                                                  )
+                                                              ]
+                                                    }
+                                                    sx={{
+                                                        width: "20px",
+                                                        height: "20px",
+                                                        fontSize: "12px",
+                                                    }}
+                                                />
+                                            </Tooltip>
+                                        ))}
+                                    </AvatarGroup>
+                                </Container>
+                                <Container style={{ maxWidth: "120px" }}>
+                                    <StyledListItemTextForAmount
+                                        primary={
+                                            <Chip label={expense.status} />
+                                        }
+                                    />
+                                </Container>
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
+            </List>
+        </>
     );
 };
 export default ExpensesBlock;

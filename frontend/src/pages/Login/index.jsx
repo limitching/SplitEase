@@ -6,6 +6,17 @@ import { FaLine } from "react-icons/fa";
 import { GoMail } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { useLiff } from "react-liff";
+import {
+    DASHBOARD_BG_COLOR,
+    GRAY_1,
+    GRAY_2,
+    GRAY_3,
+    GRAY_4,
+    GRAY_5,
+    GRAY_6,
+    GRAY_7,
+    GRAY_8,
+} from "../../global/constant";
 
 import { AuthContext } from "../../contexts/AuthContext";
 
@@ -16,7 +27,15 @@ const WrapperLoginContainer = styled.div`
     padding-top: 5vh;
     height: 100vh;
     padding-bottom: 5vh;
-    background-color: grey;
+    // background-color: ${DASHBOARD_BG_COLOR};
+    // background-color: ${GRAY_1};
+    // background-color: ${GRAY_2};
+    // background-color: ${GRAY_3};
+    // background-color: ${GRAY_4};
+    // background-color: ${GRAY_5};
+    // background-color: ${GRAY_6};
+    // background-color: ${GRAY_7};
+    background-color: ${GRAY_8};
 `;
 
 const LoginBox = styled.div`

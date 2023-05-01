@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import GroupsContainer from "./components/GroupsContainer";
+import { GRAY_8 } from "../../global/constant";
 
 const HomeContainer = styled.div`
     width: 100%;
     padding-top: 5vh;
     height: 100vh;
     padding-bottom: 5vh;
-    background-color: #2b2b2b;
+    background-color: ${GRAY_8};
     margin: 0 auto;
     position: absolute;
     top: 50%;

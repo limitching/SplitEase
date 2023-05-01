@@ -12,10 +12,12 @@ import { GROUP_BG_COLOR } from "../../global/constant";
 import Invitation from "./components/Invitation";
 
 const WrapperGroupContainer = styled.div`
-    padding-top: 55px;
+    padding-top: 53px;
+    padding-bottom: 55px;
     width: 100vw;
     height: 100vh;
     background-color: ${GROUP_BG_COLOR};
+    // border: 2px solid black;
 `;
 
 const Group = () => {
