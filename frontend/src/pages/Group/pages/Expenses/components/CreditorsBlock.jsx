@@ -1,7 +1,10 @@
 import { Container, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
-import { CURRENCY_OPTIONS } from "../../../../../global/constant";
+import {
+    CURRENCY_OPTIONS,
+    ANIMAL_AVATAR,
+} from "../../../../../global/constant";
 import CurrencySelector from "./CurrencySelector";
 import { useContext } from "react";
 import {
@@ -152,7 +155,11 @@ const CreditorsBlock = () => {
                                         <ListItemAvatar>
                                             <Avatar
                                                 alt={`${member.name}`}
-                                                src={`${member.image}.jpg`}
+                                                src={`${
+                                                    member.image
+                                                        ? member.image
+                                                        : ANIMAL_AVATAR[index]
+                                                }`}
                                             />
                                         </ListItemAvatar>
 

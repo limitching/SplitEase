@@ -328,6 +328,7 @@ const DebtorsBlock = () => {
                                 </ListItem>
                             );
                         } else {
+                            console.log(member);
                             return (
                                 <ListItem
                                     alignItems="center"
@@ -338,7 +339,11 @@ const DebtorsBlock = () => {
                                         <ListItemAvatar>
                                             <Avatar
                                                 alt={`${member.name}`}
-                                                src={`${member.image}.jpg`}
+                                                src={`${
+                                                    member.image
+                                                        ? member.image
+                                                        : ANIMAL_AVATAR[index]
+                                                }`}
                                             />
                                         </ListItemAvatar>
                                         {selectedSplitMethod === 1 ? (

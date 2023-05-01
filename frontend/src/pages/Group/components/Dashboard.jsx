@@ -11,7 +11,9 @@ import CountUp from "react-countup";
 
 const Dashboard = styled.div`
     width: 100%;
-    height: 300px;
+    // height: 300px;
+    height: 30vh;
+    min-height: 300px;
     background-color: ${DASHBOARD_BG_COLOR};
     display: flex;
     flex-direction: column;
