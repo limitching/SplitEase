@@ -70,70 +70,70 @@ async function handleText(message, replyToken, source) {
         return textMap.groups(message, replyToken, source);
     }
 
-    switch (message.text) {
-        case "測試1":
-            return bot.replyMessage(replyToken, [
-                {
-                    type: "sticker",
-                    packageId: "1",
-                    stickerId: "1",
-                },
-            ]);
-        case "Menu":
-            return bot.replyMessage(replyToken, {
-                type: "text",
-                text: "Quick reply sample ?",
-                quickReply: {
-                    items: [
-                        {
-                            type: "action",
-                            action: {
-                                type: "postback",
-                                label: "ithome Clarence 鐵人賽",
-                                data: "action=url&item=clarence",
-                                text: "ithome Clarence 鐵人賽",
-                            },
-                        },
-                        {
-                            type: "action",
-                            action: {
-                                type: "message",
-                                label: "ithome Clarence",
-                                text: "https://ithelp.ithome.com.tw/users/20117701",
-                            },
-                        },
-                        {
-                            type: "action",
-                            action: {
-                                type: "camera",
-                                label: "Send camera",
-                            },
-                        },
-                        {
-                            type: "action",
-                            action: {
-                                type: "cameraRoll",
-                                label: "Send camera roll",
-                            },
-                        },
-                        {
-                            type: "action",
-                            action: {
-                                type: "location",
-                                label: "Send location",
-                            },
-                        },
-                    ],
-                },
-            });
-        default:
-            console.log(`Echo message to ${replyToken}: ${message.text}`);
-            const echo = {
-                type: "text",
-                text: message.text,
-            };
-            return bot.replyMessage(replyToken, echo);
-    }
+    // switch (message.text) {
+    //     case "測試1":
+    //         return bot.replyMessage(replyToken, [
+    //             {
+    //                 type: "sticker",
+    //                 packageId: "1",
+    //                 stickerId: "1",
+    //             },
+    //         ]);
+    //     case "Menu":
+    //         return bot.replyMessage(replyToken, {
+    //             type: "text",
+    //             text: "Quick reply sample ?",
+    //             quickReply: {
+    //                 items: [
+    //                     {
+    //                         type: "action",
+    //                         action: {
+    //                             type: "postback",
+    //                             label: "ithome Clarence 鐵人賽",
+    //                             data: "action=url&item=clarence",
+    //                             text: "ithome Clarence 鐵人賽",
+    //                         },
+    //                     },
+    //                     {
+    //                         type: "action",
+    //                         action: {
+    //                             type: "message",
+    //                             label: "ithome Clarence",
+    //                             text: "https://ithelp.ithome.com.tw/users/20117701",
+    //                         },
+    //                     },
+    //                     {
+    //                         type: "action",
+    //                         action: {
+    //                             type: "camera",
+    //                             label: "Send camera",
+    //                         },
+    //                     },
+    //                     {
+    //                         type: "action",
+    //                         action: {
+    //                             type: "cameraRoll",
+    //                             label: "Send camera roll",
+    //                         },
+    //                     },
+    //                     {
+    //                         type: "action",
+    //                         action: {
+    //                             type: "location",
+    //                             label: "Send location",
+    //                         },
+    //                     },
+    //                 ],
+    //             },
+    //         });
+    //     default:
+    //         console.log(`Echo message to ${replyToken}: ${message.text}`);
+    //         const echo = {
+    //             type: "text",
+    //             text: message.text,
+    //         };
+    //         return bot.replyMessage(replyToken, echo);
+    // }
 }
 
 //===========================================
