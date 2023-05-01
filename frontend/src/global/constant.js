@@ -11,6 +11,15 @@ const CONTRAST_COLOR = "#1f39be";
 
 const DASHBOARD_BG_COLOR = "#2b2b2b";
 
+const GRAY_1 = "#DCDCDC";
+const GRAY_2 = "#D3D3D3";
+const GRAY_3 = "#C0C0C0";
+const GRAY_4 = "#A9A9A9";
+const GRAY_5 = "#808080";
+const GRAY_6 = "#696969";
+const GRAY_7 = "#464646";
+const GRAY_8 = "#3C3C3C";
+
 const GROUP_BG_COLOR = "#f0f0f0";
 
 const SPLIT_METHODS = [
@@ -86,10 +95,10 @@ const CURRENCY_MAP = {
     10: { abbreviation: "HKD", symbol: "HK$" },
 };
 const GROUP_TABS = [
-    {
-        name: "overview",
-        displayText: "Overview",
-    },
+    // {
+    //     name: "overview",
+    //     displayText: "Overview",
+    // },
     {
         name: "expenses",
         displayText: "Expenses",
@@ -248,4 +257,12 @@ export {
     DEFAULT_AVATAR,
     AVATAR_LINK,
     CONTRAST_COLOR,
+    GRAY_1,
+    GRAY_2,
+    GRAY_3,
+    GRAY_4,
+    GRAY_5,
+    GRAY_6,
+    GRAY_7,
+    GRAY_8,
 };

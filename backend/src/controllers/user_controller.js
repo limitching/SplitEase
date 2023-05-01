@@ -176,10 +176,12 @@ const updateUserProfile = async (req, res) => {
     if (profile.error) {
         return res.status(500).json({ error: "Internal Server Error (MySQL)" });
     }
+
     const user = {
         id: req.user.id,
         provider: req.user.provider,
         email: req.user.email,
+        line_binding_code: req.user.line_binding_code,
         ...profile.data,
     };
 
