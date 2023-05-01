@@ -103,7 +103,7 @@ const AuthContextProvider = ({ children }) => {
     }, [groupChange]);
 
     useEffect(() => {
-        if (isReady && isLoggedIn && isLogin === false) {
+        if (isReady && isLoggedIn && !window.localStorage.getItem("jwtToken")) {
             const handleLIFFSignInResponse = async () => {
                 try {
                     const profile = await liff.getDecodedIDToken();
@@ -114,7 +114,6 @@ const AuthContextProvider = ({ children }) => {
                         image: profile.picture,
                         line_id: profile.sub,
                     };
-                    console.log("liff data", data);
                     const result = await api.userSignIn(data);
                     if (result.status === 200) {
                         MySwal.fire({
