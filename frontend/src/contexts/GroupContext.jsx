@@ -2,7 +2,7 @@ import { createContext, useState, useEffect, useContext, useMemo } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import { api } from "../utils/api";
-import Loading from "../components/Loading";
+import Loading from "../components/Preloader/Preloader";
 
 const GroupContext = createContext({
     slug: null,
