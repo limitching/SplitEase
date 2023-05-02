@@ -147,15 +147,15 @@ const ExpensesBlock = () => {
                         >
                             <ListItemButton>
                                 <ListItemAvatar>
-                                    <Tooltip title={creditors.name}>
+                                    <Tooltip title={creditors?.name}>
                                         <Avatar
-                                            alt={creditors.name}
+                                            alt={creditors?.name}
                                             src={
-                                                creditors.image
+                                                creditors?.image
                                                     ? creditors.image
                                                     : ANIMAL_AVATAR[
                                                           indexMap.get(
-                                                              creditors.id
+                                                              creditors?.id
                                                           )
                                                       ]
                                             }
@@ -181,23 +181,23 @@ const ExpensesBlock = () => {
                                         primary={`${currencyOption.symbol} ${expense.amount}`}
                                     />
                                     <AvatarGroup total={debtors.length}>
-                                        {debtors.map((debtor, index) => (
+                                        {debtors?.map((debtor, index) => (
                                             <Tooltip
                                                 key={
                                                     expense._id +
                                                     "_debtor_" +
                                                     index
                                                 }
-                                                title={debtor.name}
+                                                title={debtor?.name}
                                             >
                                                 <Avatar
-                                                    alt={debtor.name}
+                                                    alt={debtor?.name}
                                                     src={
-                                                        debtor.image
+                                                        debtor?.image
                                                             ? debtor.image
                                                             : ANIMAL_AVATAR[
                                                                   indexMap.get(
-                                                                      debtor.id
+                                                                      debtor?.id
                                                                   )
                                                               ]
                                                     }

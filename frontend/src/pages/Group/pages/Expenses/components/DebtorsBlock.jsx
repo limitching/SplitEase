@@ -328,7 +328,6 @@ const DebtorsBlock = () => {
                                 </ListItem>
                             );
                         } else {
-                            console.log(member);
                             return (
                                 <ListItem
                                     alignItems="center"
