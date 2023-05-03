@@ -25,6 +25,10 @@ const StyledModalBody = styled(Modal.Body)`
     overflow: scroll;
 `;
 
+const ModalHeader = styled.h4`
+    margin-bottom: 0px;
+`;
+
 const ExpenseModificationModal = () => {
     const { memberMap, group_id, setExpensesChanged, members } =
         useContext(GroupContext);
@@ -211,7 +215,7 @@ const ExpenseModificationModal = () => {
                         <Modal.Header closeButton as={Row}>
                             <Container className="transaction-method ml-0 pl-0">
                                 <Col lg="6">
-                                    <h3>Expense detail</h3>
+                                    <ModalHeader>Expense detail</ModalHeader>
                                 </Col>
                             </Container>
                         </Modal.Header>
@@ -306,7 +310,7 @@ const ExpenseModificationModal = () => {
                         <Modal.Header closeButton as={Row}>
                             <Container className="transaction-method ml-0 pl-0">
                                 <Col lg="6">
-                                    <h3>Expense detail</h3>
+                                    <ModalHeader>Expense detail</ModalHeader>
                                 </Col>
                             </Container>
                         </Modal.Header>

@@ -18,7 +18,7 @@ import {
     localISOTime,
 } from "../../../../../contexts/ExpenseContext";
 import { AuthContext } from "../../../../../contexts/AuthContext";
-import { TransactionSelector, ModalContent } from "./Modal";
+import { ModalContent } from "./Modal";
 import { FixedButtonWrapper } from "../../../components/PageWrapper";
 
 const MySwal = withReactContent(Swal);
@@ -26,6 +26,10 @@ const MySwal = withReactContent(Swal);
 const StyledModalBody = styled(Modal.Body)`
     max-height: 800px;
     overflow: scroll;
+`;
+
+const ModalHeader = styled.h4`
+    margin-bottom: 0px;
 `;
 
 const Transaction = () => {
@@ -198,7 +202,8 @@ const Transaction = () => {
                         <Modal.Header closeButton as={Row}>
                             <Container className="transaction-method ml-0 pl-0">
                                 <Col lg="6">
-                                    <TransactionSelector />
+                                    {/* <TransactionSelector /> */}
+                                    <ModalHeader>New Expense</ModalHeader>
                                 </Col>
                             </Container>
                         </Modal.Header>
@@ -231,7 +236,8 @@ const Transaction = () => {
                         <Modal.Header closeButton as={Row}>
                             <Container className="transaction-method ml-0 pl-0">
                                 <Col lg="6">
-                                    <TransactionSelector />
+                                    {/* <TransactionSelector /> */}
+                                    <ModalHeader>New Expense</ModalHeader>
                                 </Col>
                             </Container>
                         </Modal.Header>

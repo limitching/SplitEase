@@ -268,10 +268,25 @@ const DebtorsBlock = () => {
     return (
         <div className="debtor-list" style={{ width: "100%" }}>
             <Container as={Row} className="debtor-header-container">
-                <Form.Label column lg="6">
+                {selectedCreditor === "multi" ? (
+                    <Container style={{ height: "72px" }}></Container>
+                ) : null}
+
+                <Form.Label
+                    column
+                    lg="6"
+                    style={{ display: "flex", alignItems: "center" }}
+                >
                     For whom
                 </Form.Label>
-                <Col lg="6">
+                <Col
+                    lg="6"
+                    style={{
+                        display: "flex",
+                        justifyContent: "end",
+                        padding: 0,
+                    }}
+                >
                     <SplitMethodSelector />
                 </Col>
             </Container>
