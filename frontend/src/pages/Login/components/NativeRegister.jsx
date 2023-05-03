@@ -5,9 +5,9 @@ import TextField from "@mui/material/TextField";
 import validator from "validator";
 
 const WelcomeImage = styled.img`
-    height: 120px;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    width: 250px;
+    // margin-top: 2rem;
+    // margin-bottom: 2rem;
 `;
 
 const RegisterContentContainer = styled.div`
@@ -28,7 +28,7 @@ const LoginFormContainer = styled.form`
     padding-top: 2rem;
     padding-bottom: 2rem;
     background-color: #ffffff;
-    border-radius: 4px;
+    border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
@@ -52,6 +52,7 @@ const LoginButton = styled.button`
     background-color: #008cba;
     border: none;
     border-radius: 4px;
+    margin-top: 1rem;
     color: #fff;
     font-size: 16px;
     cursor: pointer;
@@ -134,7 +135,7 @@ const NativeRegister = () => {
                     nativeSignUp(signUpForm);
                 }}
             >
-                <WelcomeImage src="/greeting.svg"></WelcomeImage>
+                <WelcomeImage src="/assets/images/hand-holding-pen-pana.svg"></WelcomeImage>
                 <RegisterContentContainer>
                     <InputField
                         type="text"

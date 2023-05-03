@@ -6,9 +6,9 @@ import validator from "validator";
 import { HEADER_BG_COLOR } from "../../../global/constant";
 
 const WelcomeImage = styled.img`
-    height: 120px;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    width: 250px;
+    // margin-top: 2rem;
+    // margin-bottom: 2rem;
 `;
 
 const LoginFormContainer = styled.form`
@@ -20,7 +20,7 @@ const LoginFormContainer = styled.form`
     padding-top: 2rem;
     padding-bottom: 2rem;
     background-color: #ffffff;
-    border-radius: 4px;
+    border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
@@ -53,6 +53,7 @@ const LoginButton = styled.button`
     background-color: ${HEADER_BG_COLOR};
     border: none;
     border-radius: 4px;
+    margin-top: 1rem;
     color: #fff;
     font-size: 16px;
     cursor: pointer;
@@ -137,7 +138,7 @@ const NativeLogin = () => {
                     nativeSignIn(signInForm);
                 }}
             >
-                <WelcomeImage src="/summer.svg"></WelcomeImage>
+                <WelcomeImage src="/assets/images/trip-pana.svg"></WelcomeImage>
                 <LoginContentContainer>
                     <InputField
                         type="text"

@@ -40,17 +40,22 @@ const WrapperLoginContainer = styled.div`
 
 const LoginBox = styled.div`
     background-color: white;
-    padding: 20px;
+    padding: 2rem;
     border-radius: 10px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
+    max-width: 400px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `;
 
 const WelcomeImage = styled.img`
-    height: 160px;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    height: 250px;
+    width: 250px;
+    // margin-top: 2rem;
+    // margin-bottom: 2rem;
 `;
 
 const LoginMethod = styled.div`
@@ -58,6 +63,7 @@ const LoginMethod = styled.div`
     gap: 1rem;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     margin-bottom: 20px;
 `;
 
@@ -70,6 +76,7 @@ const LoginButton = styled.button`
     border-radius: 5px;
     margin-right: 10px;
     cursor: pointer;
+    width: 320px;
 
     &:hover {
         background-color: ${({ isActive }) =>
@@ -86,6 +93,7 @@ const LineLoginButton = styled.button`
     border-radius: 5px;
     margin-right: 10px;
     cursor: pointer;
+    width: 320px;
 
     &:hover {
         background-color: rgba(6, 199, 85, 0.9);
@@ -120,7 +128,7 @@ const LoginTerms = styled.div`
 `;
 
 const HaveAccountAlready = styled.a`
-    margin-top: 20px;
+    margin-top: 1rem;
     display: flex;
     font-size: 14px;
     cursor: pointer;
@@ -178,7 +186,7 @@ const Login = () => {
                 loginMethod === null ? (
                     <LoginBox>
                         <LoginMethod>
-                            <WelcomeImage src="/mornings.svg"></WelcomeImage>
+                            <WelcomeImage src="/assets/images/welcome-aboard-amico.svg"></WelcomeImage>
 
                             <LineLoginButton
                                 isActive={loginMethod === "line"}
@@ -196,19 +204,18 @@ const Login = () => {
                                 <span> </span>
                                 Sign in with Email
                             </LoginButton>
-
-                            <LoginTerms>
-                                By continuing, you are indicating that you
-                                accept our
-                                <br /> <a href="/">Terms of Service</a> and{" "}
-                                <a href="/">Privacy Policy</a>.
-                            </LoginTerms>
-                            <HaveAccountAlready
-                                onClick={() => setHaveAccount(false)}
-                            >
-                                Don't have an account yet?
-                            </HaveAccountAlready>
                         </LoginMethod>
+                        <LoginTerms>
+                            By continuing, you are indicating that you accept
+                            our
+                            <br /> <a href="/">Terms of Service</a> and{" "}
+                            <a href="/">Privacy Policy</a>.
+                        </LoginTerms>
+                        <HaveAccountAlready
+                            onClick={() => setHaveAccount(false)}
+                        >
+                            Don't have an account yet?
+                        </HaveAccountAlready>
                     </LoginBox>
                 ) : (
                     <WrapperLoginContainer>
