@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
+import TextField from "@mui/material/TextField";
+import validator from "validator";
+import { HEADER_BG_COLOR } from "../../../global/constant";
 
 const WelcomeImage = styled.img`
     height: 120px;
@@ -14,13 +17,23 @@ const LoginFormContainer = styled.form`
     justify-content: center;
     align-items: center;
     width: 400px;
-    height: 500px;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
     background-color: #ffffff;
     border-radius: 4px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-const InputField = styled.input`
+const LoginContentContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+`;
+
+const InputField = styled(TextField)`
     width: 80%;
     padding: 10px;
     margin-bottom: 20px;
@@ -37,14 +50,14 @@ const InputField = styled.input`
 const LoginButton = styled.button`
     width: 80%;
     padding: 10px;
-    background-color: #008cba;
+    background-color: ${HEADER_BG_COLOR};
     border: none;
     border-radius: 4px;
     color: #fff;
     font-size: 16px;
     cursor: pointer;
     &:hover {
-        background-color: #006d87;
+        background-color: #cdae21;
     }
 `;
 
@@ -67,6 +80,10 @@ const OtherLoginMethod = styled.a`
 `;
 
 const NativeLogin = () => {
+    const [errors, setErrors] = useState({
+        email: undefined,
+        password: undefined,
+    });
     const { setHaveAccount, setLoginMethod, nativeSignIn } =
         useContext(AuthContext);
     const [signInForm, setSignInForm] = useState({
@@ -77,8 +94,41 @@ const NativeLogin = () => {
 
     const handleSignInChange = (event) => {
         const key = event.target.name;
+
+        const newError = { ...errors };
+
+        if (key === "email") {
+            // Validate email
+            if (!validator.isEmail(event.target.value)) {
+                newError.email = "Please enter a valid email address";
+            } else {
+                newError.email = undefined;
+            }
+        }
+        if (key === "password") {
+            // Validate password
+            if (
+                !validator.isStrongPassword(event.target.value, {
+                    minLength: 8,
+                    maxLength: 16,
+                    minLowercase: 1,
+                    minUppercase: 1,
+                    minNumbers: 1,
+                    minSymbols: 1,
+                })
+            ) {
+                newError.password =
+                    "Password must contain 1 uppercase letter, 1 lowercase letter, 1 number and 1 special symbol, and be 8-16 characters long";
+            } else {
+                newError.password = undefined;
+            }
+        }
+
+        setErrors(newError);
+
         setSignInForm({ ...signInForm, [key]: event.target.value });
     };
+
     return (
         <>
             <LoginFormContainer
@@ -88,25 +138,37 @@ const NativeLogin = () => {
                 }}
             >
                 <WelcomeImage src="/summer.svg"></WelcomeImage>
-                <InputField
-                    type="text"
-                    name="email"
-                    placeholder="Email"
-                    value={signInForm.email}
-                    onChange={handleSignInChange}
-                    autoComplete="on"
-                    required
-                />
-                <InputField
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={signInForm.password}
-                    onChange={handleSignInChange}
-                    autoComplete="on"
-                    required
-                />
-                <LoginButton>Login</LoginButton>
+                <LoginContentContainer>
+                    <InputField
+                        type="text"
+                        name="email"
+                        label="Email"
+                        placeholder="(ex: splitease@splitease.com)"
+                        value={signInForm.email}
+                        onChange={handleSignInChange}
+                        autoComplete="on"
+                        required
+                        variant="standard"
+                        error={errors.email !== undefined}
+                        helperText={errors.email}
+                    />
+                    <InputField
+                        type="password"
+                        name="password"
+                        label="Password"
+                        placeholder="Password"
+                        value={signInForm.password}
+                        onChange={handleSignInChange}
+                        autoComplete="on"
+                        required
+                        variant="standard"
+                        // helperText="1 uppercase, 1 lowercase, 1 digit, 1 special symbol"
+                        error={errors.password !== undefined}
+                        helperText={errors.password}
+                    />
+                    <LoginButton type="submit">Login</LoginButton>
+                </LoginContentContainer>
+
                 <HaveAccountAlready onClick={() => setHaveAccount(false)}>
                     Don't have an account yet?
                 </HaveAccountAlready>
