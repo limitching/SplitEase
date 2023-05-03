@@ -4,6 +4,9 @@ import DebtorsBlock from "./DebtorsBlock";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import styled from "styled-components";
 import { useContext } from "react";
+import dayjs from "dayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import Typography from "@mui/material/Typography";
 
 const StyledExpenseImage = styled.img`
     width: 400px;
@@ -58,26 +61,59 @@ const ExpenseImage = () => {
     );
 };
 
-const ExpenseDatetime = () => {
+const ExpenseDatetime = ({ hasError, setHasError }) => {
     const { expenseTime, setExpenseTime } = useContext(ExpenseContext);
-    const handleExpenseTimeChange = (event) => {
-        setExpenseTime(event.target.value);
+
+    const validateExpenseTime = (date) => {
+        const now = dayjs();
+        if (date.isAfter(now)) {
+            // 日期在未来，无效
+            setHasError(true);
+        } else {
+            // 日期在当前时间或之前，有效
+            setHasError(false);
+        }
     };
+
+    const handleExpenseTimeChange = (value) => {
+        // console.log(value.target.value);
+        // console.log(value.format("YYYY-MM-DDTHH:mm"));
+        // setExpenseTime(value.target.value);
+        const date = dayjs(value);
+        validateExpenseTime(date);
+        setExpenseTime(value.format("YYYY-MM-DDTHH:mm"));
+    };
+
     return (
         <Container className="expense-datetime mb-3">
             <Form.Label>Date &amp; time</Form.Label>
-            <Form.Control
+            {/* <Form.Control
                 type="datetime-local"
                 name="date"
-                defaultValue={expenseTime}
+                value={expenseTime}
                 onChange={handleExpenseTimeChange}
+            /> */}
+            <br></br>
+            <DateTimePicker
+                // name="date"
+                value={dayjs(expenseTime)}
+                label="Select date"
+                onChange={(value) => handleExpenseTimeChange(value)}
+                disableFuture
+                error={hasError}
             />
+            {hasError && (
+                <Typography variant="body2" color="error">
+                    Invalid date format (Date cannot be future)
+                </Typography>
+            )}
         </Container>
     );
 };
 
-const ModalContent = () => {
+const ModalContent = ({ hasError, setHasError }) => {
     const { selectedCreditor } = useContext(ExpenseContext);
+
     if (selectedCreditor !== "multi") {
         return (
             <>
@@ -85,7 +121,10 @@ const ModalContent = () => {
                 <DebtorsBlock />
                 <ExpenseDescription />
                 {/* <ExpenseImage /> */}
-                <ExpenseDatetime />
+                <ExpenseDatetime
+                    hasError={hasError}
+                    setHasError={setHasError}
+                />
             </>
         );
     } else {
@@ -99,7 +138,10 @@ const ModalContent = () => {
                 </div>
                 <ExpenseDescription />
                 {/* <ExpenseImage /> */}
-                <ExpenseDatetime />
+                <ExpenseDatetime
+                    hasError={hasError}
+                    setHasError={setHasError}
+                />
             </>
         );
     }

@@ -41,10 +41,12 @@ const ExpenseModificationModal = () => {
         selectedSplitMethod,
         selectedExpense,
         showModification,
+        expenseTime,
         setShowModification,
     } = useContext(ExpenseContext);
     const { jwtToken } = useContext(AuthContext);
     const [alertOpen, setAlertOpen] = useState(false);
+    const [hasError, setHasError] = useState(false);
 
     const handleAlertOpen = () => {
         setAlertOpen(true);
@@ -104,6 +106,7 @@ const ExpenseModificationModal = () => {
             JSON.stringify([...creditorsAmounts])
         );
         formData.append("debtorsWeight", JSON.stringify([...debtorsWeight]));
+        formData.append("date", expenseTime);
         if (selectedSplitMethod === 4) {
             formData.append(
                 "debtorsAdjustment",
@@ -220,7 +223,10 @@ const ExpenseModificationModal = () => {
                             </Container>
                         </Modal.Header>
                         <StyledModalBody>
-                            <ModalContent />
+                            <ModalContent
+                                hasError={hasError}
+                                setHasError={setHasError}
+                            />
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
@@ -247,12 +253,15 @@ const ExpenseModificationModal = () => {
                                     disabled={
                                         amount === 0 ||
                                         (selectedExpense?.status ?? "") ===
-                                            "settled"
+                                            "settled" ||
+                                        hasError
                                     }
                                 >
                                     {(selectedExpense?.status ?? "") ===
                                     "settled"
                                         ? "This Expense is already settled"
+                                        : hasError
+                                        ? "Invalid Input"
                                         : "Update"}
                                 </Button>
                             </Container>
@@ -315,7 +324,10 @@ const ExpenseModificationModal = () => {
                             </Container>
                         </Modal.Header>
                         <StyledModalBody>
-                            <ModalContent />
+                            <ModalContent
+                                hasError={hasError}
+                                setHasError={setHasError}
+                            />
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
@@ -339,7 +351,8 @@ const ExpenseModificationModal = () => {
                                     disabled={
                                         amount === 0 ||
                                         (selectedExpense?.status ?? "") ===
-                                            "settled"
+                                            "settled" ||
+                                        hasError
                                     }
                                 >
                                     Update

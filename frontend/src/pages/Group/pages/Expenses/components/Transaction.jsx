@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Container, Modal, Form, Col, Row } from "react-bootstrap";
 import { Button } from "@mui/material";
 import styled from "styled-components";
@@ -42,6 +42,7 @@ const Transaction = () => {
         amount,
         selectedCreditor,
         showTransaction,
+        expenseTime,
         setChecked,
         setSubCredit,
         setSelectedSplitMethod,
@@ -55,6 +56,7 @@ const Transaction = () => {
     const { user, jwtToken } = useContext(AuthContext);
     const { setSelectedExpense } = useContext(ExpenseContext);
     const { group } = useContext(GroupContext);
+    const [hasError, setHasError] = useState(false);
 
     const handleClose = () => setShowTransaction(false);
     // When Transaction window is opened, set amount = 0
@@ -122,6 +124,7 @@ const Transaction = () => {
                 JSON.stringify([...debtorsAdjustment])
             );
         }
+        formData.append("date", expenseTime);
         // TODO: debug;
         // for (const pair of formData.entries()) {
         //     console.log(`${pair[0]}, ${pair[1]}`);
@@ -208,16 +211,19 @@ const Transaction = () => {
                             </Container>
                         </Modal.Header>
                         <StyledModalBody>
-                            <ModalContent />
+                            <ModalContent
+                                hasError={hasError}
+                                setHasError={setHasError}
+                            />
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
                                 <Button
                                     variant="contained"
                                     type="submit"
-                                    disabled={amount === 0}
+                                    disabled={amount === 0 || hasError}
                                 >
-                                    Save
+                                    {hasError ? "Invalid Input" : "Save"}
                                 </Button>
                             </Container>
                         </Modal.Footer>
@@ -242,16 +248,19 @@ const Transaction = () => {
                             </Container>
                         </Modal.Header>
                         <StyledModalBody>
-                            <ModalContent />
+                            <ModalContent
+                                hasError={hasError}
+                                setHasError={setHasError}
+                            />
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
                                 <Button
                                     variant="contained"
                                     type="submit"
-                                    disabled={amount === 0}
+                                    disabled={amount === 0 || hasError}
                                 >
-                                    Save
+                                    {hasError ? "Invalid Input" : "Save"}
                                 </Button>
                             </Container>
                         </Modal.Footer>
