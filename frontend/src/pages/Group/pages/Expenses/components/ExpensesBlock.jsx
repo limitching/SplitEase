@@ -171,7 +171,7 @@ const ExpensesBlock = () => {
                                                 ? "Expense"
                                                 : `${expense.description}`
                                         }
-                                        secondary={`${creditors.name} Paid for`}
+                                        secondary={`${creditors?.name} Paid for`}
                                     />
                                 </Container>
 
