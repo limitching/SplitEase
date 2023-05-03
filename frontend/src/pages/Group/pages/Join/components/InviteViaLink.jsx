@@ -153,7 +153,7 @@ const InviteViaLink = () => {
                     Invite
                 </NormalButton>
             </InvitationMethodContainer> */}
-            <FixedButtonWrapper>
+            {/* <FixedButtonWrapper>
                 <NormalButton
                     color="primary"
                     disabled={false}
@@ -174,7 +174,7 @@ const InviteViaLink = () => {
                 >
                     SHARE LINK
                 </NormalButton>
-            </FixedButtonWrapper>
+            </FixedButtonWrapper> */}
         </>
     );
 };
