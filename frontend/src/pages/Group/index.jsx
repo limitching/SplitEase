@@ -10,14 +10,31 @@ import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/Loading";
 import { GROUP_BG_COLOR } from "../../global/constant";
 import Invitation from "./components/Invitation";
+import Footer from "../../components/Footer";
 
 const WrapperGroupContainer = styled.div`
     padding-top: 53px;
-    padding-bottom: 55px;
+    // padding-bottom: 55px;
     width: 100vw;
-    height: 100vh;
+    // height: auto;
+    // min-hight: 100vh;
+    // height: calc(100vh - 55px);
     background-color: ${GROUP_BG_COLOR};
     // border: 2px solid black;
+`;
+const WrapperOutlet = styled.div`
+    // padding-bottom: 55px;
+    width: 100vw;
+    // height: auto;
+    // min-hight: 100vh;
+    height: calc(100vh - 56px - 300px - 48px);
+    // background-color: ${GROUP_BG_COLOR};
+    overflow: scroll;
+    border: 2px solid black;
+
+    @media (min-width: 768px) {
+        height: calc(100vh - 55px - 30vh - 48px);
+    }
 `;
 
 const Group = () => {
@@ -38,7 +55,10 @@ const Group = () => {
                     <WrapperGroupContainer>
                         <GroupDashboard></GroupDashboard>
                         <Tabs></Tabs>
-                        <Outlet></Outlet>
+                        <WrapperOutlet>
+                            <Outlet></Outlet>
+                            <Footer></Footer>
+                        </WrapperOutlet>
                     </WrapperGroupContainer>
                 )
             ) : (

@@ -3,7 +3,7 @@ import { Paper } from "@mui/material";
 
 const PageWrapper = styled(Paper)`
     width: 90%;
-    height: 48vh;
+    min-height: 42vh;
     display: flex;
     flex-direction: column;
     justify-content: start;
@@ -14,14 +14,8 @@ const PageWrapper = styled(Paper)`
 
     @media (min-width: 768px) {
         width: 45%;
-        height: 50vh;
+        min-height: calc(50vh + 56px);
         margin: 1.5rem auto;
-    }
-
-    @media (max-height: 800px) {
-        width: 45%;
-        height: calc(100vh - 55px - 55px - 300px - 1rem - 48px - 2rem);
-        margin: 1rem auto;
     }
 `;
 
