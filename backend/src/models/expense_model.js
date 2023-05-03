@@ -220,13 +220,16 @@ const updateExpenseUsers = async (expense_id, involved_users, date) => {
 const updateExpenseStatusByGroupId = async (group_id, deadline, user_id) => {
     const connection = await pool.getConnection();
     const session = await mongoose.startSession();
+    const queryDeadline = new Date(deadline).setDate(
+        new Date(deadline).getDate() + 1
+    );
     session.startTransaction();
     try {
         await connection.query("START TRANSACTION");
         const updateResult = await Expense.updateMany(
             {
                 attached_group_id: group_id,
-                date: { $lte: new Date(deadline) },
+                date: { $lte: queryDeadline },
                 status: "unsettled",
             },
             { $set: { status: "settling" } },
