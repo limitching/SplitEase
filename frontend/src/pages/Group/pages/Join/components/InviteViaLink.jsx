@@ -1,23 +1,15 @@
 import { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { GroupContext } from "../../../../../contexts/GroupContext";
-import {
-    Button as NormalButton,
-    TextField,
-    IconButton,
-    Tooltip,
-} from "@mui/material";
+import { TextField, IconButton, Tooltip } from "@mui/material";
 // import { Checkbox, FormControlLabel } from "@mui/material";
 import QrCodeBlock from "./QrCodeBlock";
 
-import { DASHBOARD_BG_COLOR, WEB_HOST } from "../../../../../global/constant";
+import { WEB_HOST } from "../../../../../global/constant";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 // import SendIcon from "@mui/icons-material/Send";
-import ShareIcon from "@mui/icons-material/Share";
-import {
-    FixedButtonWrapper,
-    HeaderTextContainer,
-} from "../../../components/PageWrapper";
+
+import { HeaderTextContainer } from "../../../components/PageWrapper";
 import Divider from "@mui/material/Divider";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
