@@ -43,12 +43,16 @@ const LoginBox = styled.div`
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
+    max-width: 450px;
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    @media (max-width: 768px) {
+        width: 90%;
+        margin: 0 auto;
+    }
 `;
 
 const WelcomeImage = styled.img`
@@ -56,6 +60,11 @@ const WelcomeImage = styled.img`
     width: 250px;
     // margin-top: 2rem;
     // margin-bottom: 2rem;
+    @media (max-width: 768px) {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+    }
 `;
 
 const LoginMethod = styled.div`
@@ -65,6 +74,8 @@ const LoginMethod = styled.div`
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+    max-width: 450px;
+    width: 100%;
 `;
 
 const LoginButton = styled.button`
@@ -76,7 +87,8 @@ const LoginButton = styled.button`
     border-radius: 5px;
     margin-right: 10px;
     cursor: pointer;
-    width: 320px;
+    width: 90%;
+    max-width: 400px;
 
     &:hover {
         background-color: ${({ isActive }) =>
@@ -93,7 +105,8 @@ const LineLoginButton = styled.button`
     border-radius: 5px;
     margin-right: 10px;
     cursor: pointer;
-    width: 320px;
+    width: 90%;
+    max-width: 400px;
 
     &:hover {
         background-color: rgba(6, 199, 85, 0.9);
@@ -123,7 +136,7 @@ const LoginTerms = styled.div`
         }
     }
     @media (max-width: 768px) {
-        text-align: left;
+        // text-align: left;
     }
 `;
 

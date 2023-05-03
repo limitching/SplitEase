@@ -6,9 +6,15 @@ import validator from "validator";
 import { HEADER_BG_COLOR } from "../../../global/constant";
 
 const WelcomeImage = styled.img`
-    width: 250px;
+    width: 100%;
+    max-width: 250px;
     // margin-top: 2rem;
     // margin-bottom: 2rem;
+    @media (max-width: 768px) {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+    }
 `;
 
 const LoginFormContainer = styled.form`
@@ -16,25 +22,34 @@ const LoginFormContainer = styled.form`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 400px;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    width: 450px;
+    padding: 2rem 1rem;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    @media (max-width: 768px) {
+        width: 100%;
+        margin: 0 auto;
+    }
 `;
 
 const LoginContentContainer = styled.div`
     display: flex;
+    flex: 1;
     flex-direction: column;
-    width: 400px;
+    width: 100%;
     justify-content: center;
     align-items: center;
     gap: 1rem;
+    @media (max-width: 768px) {
+        width: 100%;
+        margin: 0 auto;
+    }
 `;
 
 const InputField = styled(TextField)`
-    width: 80%;
+    width: 90%;
+    max-width: 400px;
     padding: 10px;
     margin-bottom: 20px;
     border: none;
@@ -42,13 +57,20 @@ const InputField = styled(TextField)`
     outline: none;
     font-size: 16px;
     color: #444;
+    flex: 1;
     &::placeholder {
         color: #999;
+    }
+    @media (max-width: 768px) {
+        width:100%
+        max-width: 100%;
+        margin: 0 auto;
     }
 `;
 
 const LoginButton = styled.button`
-    width: 80%;
+    width: 90%;
+    max-width: 400px;
     padding: 10px;
     background-color: ${HEADER_BG_COLOR};
     border: none;
