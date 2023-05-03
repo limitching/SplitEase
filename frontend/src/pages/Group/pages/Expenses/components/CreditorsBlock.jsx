@@ -126,7 +126,7 @@ const CreditorsBlock = () => {
                         className="mb-3"
                         label="Amount (Read only)"
                         type="text"
-                        helperText="This amount will automatically update when edit sub-amount of creditor."
+                        helperText="Amount will automatically update when edit sub-amounts."
                         value={amount}
                         InputProps={{
                             readOnly: true,
