@@ -198,15 +198,28 @@ const SettlingDebtsBlock = ({ handleAlertOpen, setSelectDebt }) => {
                                                     </IconButton>
                                                 </Tooltip>
                                                 <Tooltip
-                                                    title={`Remind ${debtor.name}`}
+                                                    title={
+                                                        debtor.line_id
+                                                            ? `Remind ${debtor.name}`
+                                                            : `${debtor.name} haven't binding LINE account`
+                                                    }
                                                 >
-                                                    <IconButton
-                                                        onClick={(event) => {
-                                                            handleNotify(event);
-                                                        }}
-                                                    >
-                                                        <NotificationsActiveIcon />
-                                                    </IconButton>
+                                                    <div>
+                                                        <IconButton
+                                                            onClick={(
+                                                                event
+                                                            ) => {
+                                                                handleNotify(
+                                                                    event
+                                                                );
+                                                            }}
+                                                            disabled={
+                                                                !debtor.line_id
+                                                            }
+                                                        >
+                                                            <NotificationsActiveIcon />
+                                                        </IconButton>
+                                                    </div>
                                                 </Tooltip>
                                             </Container>
                                         </ListItemButton>
