@@ -83,13 +83,25 @@ function NavTabs() {
     };
 
     return (
-        <Container style={{ marginTop: "0.25rem" }}>
-            <Box sx={{ width: "100%" }}>
+        <Container
+            style={{
+                marginTop: "0.25rem",
+            }}
+        >
+            <Box
+                sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
                 <Tabs
                     value={value}
                     onChange={handleChange}
-                    centered
-                    scrollButtons={true}
+                    variant="scrollable"
+                    // centered
+                    scrollButtons="auto"
                     allowScrollButtonsMobile
                 >
                     {filterResult.length === 0
