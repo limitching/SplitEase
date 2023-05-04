@@ -4,7 +4,7 @@ import { TextField, IconButton, InputAdornment } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { AWS_CLOUDFRONT_HOST, GROUP_BG_COLOR } from "../../global/constant";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 
 import { api } from "../../utils/api";
@@ -50,6 +50,7 @@ const ProfileModal = ({
 }) => {
     const { user, jwtToken, logout, setJwtToken, setUser } =
         useContext(AuthContext);
+    const [error, setError] = useState(undefined);
 
     useEffect(() => {
         setModifiedUserName(user.name);
@@ -57,6 +58,11 @@ const ProfileModal = ({
     }, [user, setModifiedUserName, setModifiedUserImage]);
 
     function handleUserDataChange(event) {
+        if (event.target.value.length > 50) {
+            setError("User name too long.");
+        } else {
+            setError(undefined);
+        }
         setModifiedUserName(event.target.value);
     }
 
@@ -216,6 +222,8 @@ const ProfileModal = ({
                                 onChange={handleUserDataChange}
                                 required
                                 fullWidth
+                                error={Boolean(error)}
+                                helperText={error}
                             />
                         </Container>
 
@@ -260,8 +268,12 @@ const ProfileModal = ({
                     </StyledModalBody>
                     <Modal.Footer>
                         <Container className="d-grid">
-                            <SaveButton variant="warning" type="submit">
-                                Save
+                            <SaveButton
+                                variant="warning"
+                                type="submit"
+                                disabled={error}
+                            >
+                                {error ? "Invalid Input" : "Save"}
                             </SaveButton>
                         </Container>
                     </Modal.Footer>

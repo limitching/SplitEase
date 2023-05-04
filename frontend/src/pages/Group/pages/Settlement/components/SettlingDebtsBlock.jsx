@@ -127,6 +127,13 @@ const SettlingDebtsBlock = ({ handleAlertOpen, setSelectDebt }) => {
                                                     } ${Number(
                                                         debtAmounts.toFixed(2)
                                                     )}`}
+                                                    primaryTypographyProps={{
+                                                        maxWidth: "10vw",
+                                                        overflow: "hidden",
+                                                        textOverflow:
+                                                            "ellipsis",
+                                                        whiteSpace: "nowrap",
+                                                    }}
                                                 />
                                             </Container>
                                             <Container
@@ -143,6 +150,13 @@ const SettlingDebtsBlock = ({ handleAlertOpen, setSelectDebt }) => {
                                                 <ListItemText
                                                     primary={creditor.name}
                                                     sx={{ textAlign: "right" }}
+                                                    primaryTypographyProps={{
+                                                        maxWidth: "10vw",
+                                                        overflow: "hidden",
+                                                        textOverflow:
+                                                            "ellipsis",
+                                                        whiteSpace: "nowrap",
+                                                    }}
                                                 />
                                             </Container>
 

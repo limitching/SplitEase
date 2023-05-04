@@ -3,7 +3,7 @@ import CreditorsBlock from "./CreditorsBlock";
 import DebtorsBlock from "./DebtorsBlock";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import styled from "styled-components";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import dayjs from "dayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import Typography from "@mui/material/Typography";
@@ -29,6 +29,8 @@ const TransactionSelector = () => {
 
 const ExpenseDescription = () => {
     const { selectedExpense } = useContext(ExpenseContext);
+
+    const [error, setError] = useState(undefined);
     return (
         <Container className="expense-description mb-3">
             <Form.Label>Description</Form.Label>
@@ -47,7 +49,16 @@ const ExpenseDescription = () => {
                 defaultValue={
                     selectedExpense ? selectedExpense.description : ""
                 }
+                onChange={(event) => {
+                    event.target.value.length <= 50
+                        ? setError(undefined)
+                        : setError(
+                              "Expense description cannot exceed 50 characters"
+                          );
+                }}
                 placeholder="Description of this expense"
+                error={Boolean(error)}
+                helperText={error}
             ></TextField>
         </Container>
     );

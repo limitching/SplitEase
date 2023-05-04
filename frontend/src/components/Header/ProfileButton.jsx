@@ -37,6 +37,18 @@ const ProfileButton = () => {
                     id={"profile-button-text"}
                     primary={user.name}
                     secondary={user.email}
+                    primaryTypographyProps={{
+                        maxWidth: "12vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                    }}
+                    secondaryTypographyProps={{
+                        maxWidth: "15vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                    }}
                     sx={{
                         textAlign: "right",
                         paddingRight: "1rem",
