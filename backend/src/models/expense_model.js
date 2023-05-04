@@ -69,6 +69,7 @@ const getExpensesByGroupId = async (group_id) => {
     try {
         return await Expense.find({ attached_group_id: group_id }).sort({
             date: -1,
+            createTime: -1,
         });
     } catch (error) {
         return [];
