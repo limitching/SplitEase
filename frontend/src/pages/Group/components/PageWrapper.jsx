@@ -35,10 +35,11 @@ const FixedButtonWrapper = styled.div`
     position: fixed;
     display: flex;
     justify-content: center;
-    bottom: 80px;
+    bottom: 3.5vh;
     left: 0;
     width: 100%;
     padding: 20px;
+    z-index: 10;
 `;
 
 const HeaderTextContainer = styled.div`
