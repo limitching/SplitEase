@@ -4,7 +4,7 @@ import Error from "./components/Error";
 import { ExpenseContextProvider } from "../../contexts/ExpenseContext";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import { useContext } from "react";
+import { useContext, useState, useRef } from "react";
 import { GroupContext } from "../../contexts/GroupContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/Loading";
@@ -38,10 +38,57 @@ const WrapperOutlet = styled.div`
 `;
 
 const Group = () => {
-    const { group, isLoading, isPublicVisit } = useContext(GroupContext);
+    const {
+        group,
+        isLoading,
+        isPublicVisit,
+        wrapperOutletRef,
+        setShowFixedButton,
+    } = useContext(GroupContext);
     const { loading } = useContext(AuthContext);
+    const timeoutRef = useRef(null);
+    const [scrollOffset, setScrollOffset] = useState(0);
+
     if (isLoading || loading) {
         return <Loading />;
+    }
+
+    function handleScroll() {
+        const wrapperElement = wrapperOutletRef.current;
+        const currentScrollOffset = wrapperElement.scrollTop;
+        // console.log(currentScrollOffset);
+        // console.log(currentScrollOffset - scrollOffset);
+
+        if (timeoutRef.current !== null) {
+            clearTimeout(timeoutRef.current);
+
+            // calculate scroll div
+            const delta = Math.abs(currentScrollOffset - scrollOffset);
+            if (delta > 5) {
+                if (currentScrollOffset > scrollOffset) {
+                    // console.log(
+                    //     "Scroll offset difference is greater than 5px! delta>0"
+                    // );
+                    setShowFixedButton(false);
+                } else {
+                    // console.log(
+                    //     "Scroll offset difference is greater than 5px! delta<0"
+                    // );
+                    setShowFixedButton(true);
+                }
+            }
+
+            timeoutRef.current = null;
+        }
+
+        setScrollOffset(currentScrollOffset);
+
+        // If still on scrolling, wait 0.2 sec
+        if (timeoutRef.current === null) {
+            timeoutRef.current = setTimeout(() => {
+                timeoutRef.current = null;
+            }, 200);
+        }
     }
 
     return (
@@ -55,7 +102,10 @@ const Group = () => {
                     <WrapperGroupContainer>
                         <GroupDashboard></GroupDashboard>
                         <Tabs></Tabs>
-                        <WrapperOutlet>
+                        <WrapperOutlet
+                            ref={wrapperOutletRef}
+                            onScroll={handleScroll}
+                        >
                             <Outlet></Outlet>
                             <Footer></Footer>
                         </WrapperOutlet>
