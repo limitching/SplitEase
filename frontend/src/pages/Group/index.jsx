@@ -13,7 +13,7 @@ import Invitation from "./components/Invitation";
 import Footer from "../../components/Footer";
 
 const WrapperGroupContainer = styled.div`
-    padding-top: 53px;
+    padding-top: 55px;
     // padding-bottom: 55px;
     width: 100vw;
     // height: auto;
@@ -27,13 +27,13 @@ const WrapperOutlet = styled.div`
     width: 100vw;
     // height: auto;
     // min-hight: 100vh;
-    height: calc(100vh - 56px - 300px - 48px);
+    height: calc(100vh - 55px - 300px - 52px);
     // background-color: ${GROUP_BG_COLOR};
     overflow: scroll;
-    border: 2px solid black;
+    // border: 2px solid black;
 
     @media (min-width: 768px) {
-        height: calc(100vh - 55px - 30vh - 48px);
+        height: calc(100vh - 55px - 30vh - 52px);
     }
 `;
 

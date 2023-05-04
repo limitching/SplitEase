@@ -8,6 +8,7 @@ import { api } from "../../../../../utils/api";
 import {
     SPLIT_METHODS,
     DASHBOARD_BG_COLOR,
+    HEADER_BG_COLOR,
 } from "../../../../../global/constant";
 // import { Button } from "react-bootstrap";
 // import Button from "@mui/material-next/Button";
@@ -28,7 +29,7 @@ const StyledModalBody = styled(Modal.Body)`
     overflow: scroll;
 `;
 
-const ModalHeader = styled.h4`
+const ModalHeader = styled.h5`
     margin-bottom: 0px;
 `;
 
@@ -222,6 +223,13 @@ const Transaction = () => {
                                     variant="contained"
                                     type="submit"
                                     disabled={amount === 0 || hasError}
+                                    disableElevation
+                                    sx={{
+                                        backgroundColor: HEADER_BG_COLOR,
+                                        "&:hover": {
+                                            backgroundColor: "#cdae21",
+                                        },
+                                    }}
                                 >
                                     {hasError ? "Invalid Input" : "Save"}
                                 </Button>
@@ -259,6 +267,13 @@ const Transaction = () => {
                                     variant="contained"
                                     type="submit"
                                     disabled={amount === 0 || hasError}
+                                    disableElevation
+                                    sx={{
+                                        backgroundColor: HEADER_BG_COLOR,
+                                        "&:hover": {
+                                            backgroundColor: "#cdae21",
+                                        },
+                                    }}
                                 >
                                     {hasError ? "Invalid Input" : "Save"}
                                 </Button>

@@ -52,6 +52,7 @@ const SplitMethodSelector = () => {
             label="Split method"
             onChange={handleSplitMethodChange}
             value={selectedSplitMethod}
+            style={{ width: "100%" }}
         >
             {SPLIT_METHODS.map((method, index) => (
                 <MenuItem key={index} value={index}>

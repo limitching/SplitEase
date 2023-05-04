@@ -89,7 +89,11 @@ const CreditorsBlock = () => {
                         </option>
                     </Form.Select>
                 </Container>
-                <Container className="creditor-total-amount" as={Row}>
+                <Container
+                    className="creditor-total-amount"
+                    as={Row}
+                    style={{ margin: 0, padding: 0 }}
+                >
                     <Col lg="8">
                         <TextField
                             name="amount"
@@ -112,7 +116,9 @@ const CreditorsBlock = () => {
                             padding: 0,
                         }}
                     >
-                        <CurrencySelector />
+                        <Container>
+                            <CurrencySelector />
+                        </Container>
                     </Col>
                 </Container>
             </div>

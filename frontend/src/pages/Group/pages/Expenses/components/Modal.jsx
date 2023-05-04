@@ -67,10 +67,8 @@ const ExpenseDatetime = ({ hasError, setHasError }) => {
     const validateExpenseTime = (date) => {
         const now = dayjs();
         if (date.isAfter(now)) {
-            // 日期在未来，无效
             setHasError(true);
         } else {
-            // 日期在当前时间或之前，有效
             setHasError(false);
         }
     };
@@ -97,10 +95,11 @@ const ExpenseDatetime = ({ hasError, setHasError }) => {
             <DateTimePicker
                 // name="date"
                 value={dayjs(expenseTime)}
-                label="Select date"
+                // label="Select date"
                 onChange={(value) => handleExpenseTimeChange(value)}
                 disableFuture
                 error={hasError}
+                sx={{ width: "100%" }}
             />
             {hasError && (
                 <Typography variant="body2" color="error">

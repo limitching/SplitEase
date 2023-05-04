@@ -14,7 +14,8 @@ const PageWrapper = styled(Paper)`
 
     @media (min-width: 768px) {
         width: 45%;
-        min-height: calc(50vh + 56px);
+        // min-height: calc(50vh + 56px);
+        min-height: calc(100vh - 55px - 30vh - 52px - 1.5rem - 1.5rem);
         margin: 1.5rem auto;
     }
 `;

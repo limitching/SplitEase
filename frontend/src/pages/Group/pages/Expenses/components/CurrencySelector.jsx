@@ -17,6 +17,7 @@ const CurrencySelector = () => {
             variant="standard"
             value={selectedCurrency}
             onChange={handleCurrencyOptionChange}
+            style={{ width: "100%" }}
         >
             {CURRENCY_OPTIONS.map((option) => (
                 <MenuItem key={option.id} value={option.id}>
