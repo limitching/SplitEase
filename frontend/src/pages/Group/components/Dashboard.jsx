@@ -8,6 +8,7 @@ import DoughnutChart from "./DoughnutChart";
 // import HorizontalBarChart from "./HorizontalBarChart";
 import { CURRENCY_OPTIONS, DASHBOARD_BG_COLOR } from "../../../global/constant";
 import CountUp from "react-countup";
+import { Hidden } from "@mui/material";
 
 const Dashboard = styled.div`
     width: 100%;
@@ -146,7 +147,15 @@ const GroupDashboard = () => {
 
                 <TextContainer>
                     <TextWrapper>
-                        <h1>{group.name}</h1>
+                        <h1
+                            style={{
+                                overflow: "hidden",
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                            }}
+                        >
+                            {group.name}
+                        </h1>
                         <div style={{ display: "flex" }}>
                             <div>
                                 <DashboardText>{`Total group spending: `}</DashboardText>
@@ -197,7 +206,7 @@ const GroupDashboard = () => {
                             ) : (
                                 <>
                                     <h4>{`${shouldPayUser.name} owes the most money`}</h4>
-                                    <h4>{`${shouldPayUser.name} should pay`}</h4>
+                                    <h4>{`Recommend ${shouldPayUser.name} to pay`}</h4>
                                 </>
                             )}
                         </LargeTextContainer>

@@ -1,8 +1,15 @@
-import { createContext, useState, useEffect, useContext, useMemo } from "react";
+import {
+    createContext,
+    useState,
+    useEffect,
+    useContext,
+    useMemo,
+    useRef,
+} from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import { api } from "../utils/api";
-import Loading from "../components/Loading";
+import Loading from "../components/Preloader/Preloader";
 
 const GroupContext = createContext({
     slug: null,
@@ -23,10 +30,13 @@ const GroupContext = createContext({
     spent: [],
     usersShare: [],
     logs: [],
+    wrapperOutletRef: null,
+    showFixedButton: true,
     setMembers: () => {},
     setExpensesChanged: () => {},
     setInviteEmail: () => {},
     setInvitation_code: () => {},
+    setShowFixedButton: () => {},
 });
 
 async function fetchMembers(group_id, setMembers) {
@@ -113,6 +123,9 @@ const GroupContextProvider = ({ children }) => {
     const [spent, setSpent] = useState([]);
     const [usersShare, setUsersShare] = useState([]);
     const [logs, setLogs] = useState([]);
+
+    const wrapperOutletRef = useRef(null);
+    const [showFixedButton, setShowFixedButton] = useState(true);
 
     // A map to get member object from memberId
     const memberMap = members
@@ -297,10 +310,13 @@ const GroupContextProvider = ({ children }) => {
                 spent,
                 usersShare,
                 logs,
+                wrapperOutletRef,
+                showFixedButton,
                 setMembers,
                 setExpensesChanged,
                 setInviteEmail,
                 setInvitation_code,
+                setShowFixedButton,
             }}
         >
             {children}

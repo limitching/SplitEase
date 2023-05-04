@@ -1,9 +1,10 @@
 import styled from "styled-components";
-import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
+import { Container, Modal, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import { ModalContent } from "./Modal";
 import { useContext, useState } from "react";
+import { Button } from "@mui/material";
 import {
     Dialog,
     DialogActions,
@@ -14,7 +15,7 @@ import {
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { api } from "../../../../../utils/api";
-import { SPLIT_METHODS } from "../../../../../global/constant";
+import { SPLIT_METHODS, HEADER_BG_COLOR } from "../../../../../global/constant";
 import { AuthContext } from "../../../../../contexts/AuthContext";
 
 const MySwal = withReactContent(Swal);
@@ -23,6 +24,10 @@ const StyledModalBody = styled(Modal.Body)`
     // height: 57vh;
     max-height: 70vh;
     overflow: scroll;
+`;
+
+const ModalHeader = styled.h5`
+    margin-bottom: 0px;
 `;
 
 const ExpenseModificationModal = () => {
@@ -37,10 +42,12 @@ const ExpenseModificationModal = () => {
         selectedSplitMethod,
         selectedExpense,
         showModification,
+        expenseTime,
         setShowModification,
     } = useContext(ExpenseContext);
     const { jwtToken } = useContext(AuthContext);
     const [alertOpen, setAlertOpen] = useState(false);
+    const [hasError, setHasError] = useState(false);
 
     const handleAlertOpen = () => {
         setAlertOpen(true);
@@ -100,6 +107,7 @@ const ExpenseModificationModal = () => {
             JSON.stringify([...creditorsAmounts])
         );
         formData.append("debtorsWeight", JSON.stringify([...debtorsWeight]));
+        formData.append("date", expenseTime);
         if (selectedSplitMethod === 4) {
             formData.append(
                 "debtorsAdjustment",
@@ -153,7 +161,6 @@ const ExpenseModificationModal = () => {
 
     const handleExpenseDelete = async (expense_id, group_id) => {
         handleAlertClose();
-        console.log(expense_id);
         const response = await api.deleteExpense(
             expense_id,
             group_id,
@@ -209,46 +216,78 @@ const ExpenseModificationModal = () => {
                 >
                     <Form onSubmit={handleExpenseUpdate}>
                         <Modal.Header closeButton as={Row}>
-                            <Container className="transaction-method ml-0 pl-0">
-                                <Col lg="6">
-                                    <h3>Expense detail</h3>
+                            <Container
+                                as={Row}
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    flexWrap: "nowrap",
+                                    width: "100%",
+                                }}
+                            >
+                                <Col lg="6" sm="6" xs="6">
+                                    <ModalHeader>Expense detail</ModalHeader>
+                                </Col>
+                                <Col
+                                    lg="6"
+                                    sm="6"
+                                    xs="6"
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <Button
+                                        variant="outlined"
+                                        onClick={handleAlertOpen}
+                                        disabled={
+                                            (selectedExpense?.status ?? "") ===
+                                            "settled"
+                                                ? true
+                                                : false
+                                        }
+                                        disableElevation
+                                    >
+                                        {(selectedExpense?.status ?? "") ===
+                                        "settled"
+                                            ? "Already settled"
+                                            : "Delete"}
+                                    </Button>
                                 </Col>
                             </Container>
                         </Modal.Header>
                         <StyledModalBody>
-                            <ModalContent />
+                            <ModalContent
+                                hasError={hasError}
+                                setHasError={setHasError}
+                            />
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
                                 <Button
-                                    variant="light"
-                                    onClick={handleAlertOpen}
-                                    className="mb-3"
-                                    disabled={
-                                        (selectedExpense?.status ?? "") ===
-                                        "settled"
-                                            ? true
-                                            : false
-                                    }
-                                >
-                                    {(selectedExpense?.status ?? "") ===
-                                    "settled"
-                                        ? "This Expense is already settled"
-                                        : "Delete"}
-                                </Button>
-                                <Button
-                                    variant="warning"
+                                    variant="contained"
                                     type="submit"
-                                    className="mb-3"
                                     disabled={
                                         amount === 0 ||
                                         (selectedExpense?.status ?? "") ===
-                                            "settled"
+                                            "settled" ||
+                                        hasError
                                     }
+                                    disableElevation
+                                    sx={{
+                                        backgroundColor: HEADER_BG_COLOR,
+                                        "&:hover": {
+                                            backgroundColor: "#cdae21",
+                                        },
+                                    }}
                                 >
                                     {(selectedExpense?.status ?? "") ===
                                     "settled"
                                         ? "This Expense is already settled"
+                                        : hasError
+                                        ? "Invalid Input"
                                         : "Update"}
                                 </Button>
                             </Container>
@@ -266,7 +305,7 @@ const ExpenseModificationModal = () => {
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            Do you wish to delete this transaction?
+                            Do you wish to delete this expense?
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
@@ -306,17 +345,20 @@ const ExpenseModificationModal = () => {
                         <Modal.Header closeButton as={Row}>
                             <Container className="transaction-method ml-0 pl-0">
                                 <Col lg="6">
-                                    <h3>Expense detail</h3>
+                                    <ModalHeader>Expense detail</ModalHeader>
                                 </Col>
                             </Container>
                         </Modal.Header>
                         <StyledModalBody>
-                            <ModalContent />
+                            <ModalContent
+                                hasError={hasError}
+                                setHasError={setHasError}
+                            />
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
                                 <Button
-                                    variant="light"
+                                    variant="outlined"
                                     onClick={handleAlertOpen}
                                     className="mb-3"
                                     disabled={
@@ -325,18 +367,27 @@ const ExpenseModificationModal = () => {
                                             ? true
                                             : false
                                     }
+                                    disableElevation
                                 >
                                     Delete
                                 </Button>
                                 <Button
-                                    variant="warning"
+                                    variant="contained"
                                     type="submit"
                                     className="mb-3"
                                     disabled={
                                         amount === 0 ||
                                         (selectedExpense?.status ?? "") ===
-                                            "settled"
+                                            "settled" ||
+                                        hasError
                                     }
+                                    disableElevation
+                                    sx={{
+                                        backgroundColor: HEADER_BG_COLOR,
+                                        "&:hover": {
+                                            backgroundColor: "#cdae21",
+                                        },
+                                    }}
                                 >
                                     Update
                                 </Button>
@@ -355,7 +406,7 @@ const ExpenseModificationModal = () => {
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            Do you wish to delete this transaction?
+                            Do you wish to delete this expense?
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>

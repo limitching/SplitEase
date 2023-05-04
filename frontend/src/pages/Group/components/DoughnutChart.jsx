@@ -12,7 +12,7 @@ import {
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const DoughnutCenterText = styled.h4`
+const DoughnutCenterText = styled.h6`
     color: white;
 `;
 
@@ -177,9 +177,11 @@ const DoughnutChart = ({ shouldPayUser }) => {
             {negativeCount === 0 ? null : (
                 <CenterDiv>
                     <DoughnutCenterText>
+                        Recommend
+                        <br />
                         {shouldPayUser.name}
                         <br />
-                        Should pay
+                        to pay
                     </DoughnutCenterText>
                 </CenterDiv>
             )}

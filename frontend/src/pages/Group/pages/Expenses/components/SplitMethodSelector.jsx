@@ -29,8 +29,8 @@ const SplitMethodSelector = () => {
     const handleSplitMethodChange = (event) => {
         const previousMethod = selectedSplitMethod;
         setSelectedSplitMethod(Number(event.target.value));
-        console.log(event.target.value, typeof event.target.value);
-        console.log(SPLIT_METHODS[event.target.value]);
+        // console.log(event.target.value, typeof event.target.value);
+        // console.log(SPLIT_METHODS[event.target.value]);
         if (event.target.value === 1) {
             setSubValues(Array(members.length).fill(amount / members.length));
         } else if (event.target.value === 2) {
@@ -49,8 +49,10 @@ const SplitMethodSelector = () => {
         <TextField
             select
             variant="standard"
+            label="Split method"
             onChange={handleSplitMethodChange}
             value={selectedSplitMethod}
+            style={{ width: "100%" }}
         >
             {SPLIT_METHODS.map((method, index) => (
                 <MenuItem key={index} value={index}>

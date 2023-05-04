@@ -45,6 +45,7 @@ const ActivityBlock = () => {
                         bgcolor: "background.paper",
                     }}
                 >
+                    <Divider></Divider>
                     {logs.map((log, index) => {
                         const user = memberMap.get(log.user_id);
                         const formattedDate = dayjs

@@ -13,7 +13,9 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Tooltip,
 } from "@mui/material";
+
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
@@ -28,7 +30,7 @@ const MySwal = withReactContent(Swal);
 
 const Debts = () => {
     const [alertOpen, setAlertOpen] = useState(false);
-    const { group_id, group, setExpensesChanged, debts } =
+    const { group_id, group, setExpensesChanged, debts, showFixedButton } =
         useContext(GroupContext);
     const { jwtToken, user } = useContext(AuthContext);
     const [selectSettlingDate, setSelectSettlingDate] = useState(
@@ -97,34 +99,51 @@ const Debts = () => {
                 <ListWrapper>
                     <DebtsBlock></DebtsBlock>
                 </ListWrapper>
-                <FixedButtonWrapper>
-                    <Button
-                        color="primary"
-                        size="large"
-                        variant="filled"
-                        startIcon={<AccessTimeIcon></AccessTimeIcon>}
-                        onClickCapture={handleAlertOpen}
-                        sx={{
-                            bgcolor:
-                                user.id === group.owner
-                                    ? DASHBOARD_BG_COLOR
-                                    : "transparent",
-                            "&:hover": {
-                                bgcolor:
-                                    user.id === group.owner
-                                        ? DASHBOARD_BG_COLOR
-                                        : "transparent",
-                                opacity: 0.87,
-                            },
-                            border: "1px solid black",
-                            borderRadius: "100px",
-                            color: "white",
-                            padding: "12px 26px",
-                        }}
-                        disabled={user.id !== group.owner}
+                <FixedButtonWrapper
+                    style={{
+                        transition:
+                            "transform 0.5s ease-out, opacity 0.5s ease-out",
+                        transform: showFixedButton
+                            ? "translateY(0)"
+                            : "translateY(120%)",
+                        opacity: showFixedButton ? 1 : 0,
+                    }}
+                >
+                    <Tooltip
+                        title={"Only group owner can start settling"}
+                        placement="top"
                     >
-                        START SETTLING
-                    </Button>
+                        <div>
+                            <Button
+                                color="primary"
+                                size="large"
+                                variant="filled"
+                                startIcon={<AccessTimeIcon></AccessTimeIcon>}
+                                onClickCapture={handleAlertOpen}
+                                sx={{
+                                    bgcolor:
+                                        user.id === group.owner
+                                            ? DASHBOARD_BG_COLOR
+                                            : "transparent",
+                                    "&:hover": {
+                                        bgcolor:
+                                            user.id === group.owner
+                                                ? DASHBOARD_BG_COLOR
+                                                : "transparent",
+                                        opacity: 0.87,
+                                    },
+                                    border: "1px solid black",
+                                    borderRadius: "100px",
+                                    color: "white",
+                                    padding: "12px 26px",
+                                    display: isNoDebts ? "none" : "flex",
+                                }}
+                                disabled={user.id !== group.owner}
+                            >
+                                START SETTLING
+                            </Button>
+                        </div>
+                    </Tooltip>
                 </FixedButtonWrapper>
             </PageWrapper>
             <Dialog

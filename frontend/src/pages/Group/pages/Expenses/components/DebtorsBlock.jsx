@@ -267,12 +267,33 @@ const DebtorsBlock = () => {
     };
     return (
         <div className="debtor-list" style={{ width: "100%" }}>
-            <Container as={Row} className="debtor-header-container">
-                <Form.Label column lg="6">
+            <Container
+                as={Row}
+                className="debtor-header-container"
+                style={{ margin: 0, padding: 0 }}
+            >
+                {selectedCreditor === "multi" ? (
+                    <Container style={{ height: "72px" }}></Container>
+                ) : null}
+
+                <Form.Label
+                    column
+                    lg="8"
+                    style={{ display: "flex", alignItems: "center" }}
+                >
                     For whom
                 </Form.Label>
-                <Col lg="6">
-                    <SplitMethodSelector />
+                <Col
+                    lg="4"
+                    style={{
+                        display: "flex",
+                        justifyContent: "end",
+                        padding: 0,
+                    }}
+                >
+                    <Container>
+                        <SplitMethodSelector />
+                    </Container>
                 </Col>
             </Container>
             <Container className="debtor-list-container">
@@ -328,7 +349,6 @@ const DebtorsBlock = () => {
                                 </ListItem>
                             );
                         } else {
-                            console.log(member);
                             return (
                                 <ListItem
                                     alignItems="center"

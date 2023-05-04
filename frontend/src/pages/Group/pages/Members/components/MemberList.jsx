@@ -37,6 +37,7 @@ const MemberList = () => {
                 bgcolor: "background.paper",
             }}
         >
+            <Divider></Divider>
             {members.map((user, index) => {
                 return (
                     <div key={"Member " + user.id}>
@@ -63,6 +64,12 @@ const MemberList = () => {
                                                 ? ``
                                                 : `Spent ${currencyObject.symbol} ${spent[index]}`
                                         }
+                                        primaryTypographyProps={{
+                                            maxWidth: "15vw",
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
+                                        }}
                                     />
                                 </Container>
                                 <Container>

@@ -8,22 +8,14 @@ const StyledNavbar = styled(Navbar)`
     padding: 0;
     background-color: ${HEADER_BG_COLOR};
     width: 100vw;
-    @media (max-width: 768px) {
-        display: none;
-        justify-content: center;
-        align-items: center;
-    }
 `;
 
 const Footer = () => {
     const location = useLocation();
-    const isNotRoot = location.pathname !== "/";
+    const isHome = location.pathname === "/home";
+    const isLogin = location.pathname === "/login";
     return (
-        <StyledNavbar
-            expand="lg"
-            fixed="bottom"
-            style={{ display: isNotRoot ? "block" : "none" }}
-        >
+        <StyledNavbar expand="lg" fixed={isHome || isLogin ? "bottom" : false}>
             <Container className="justify-content-md-center">
                 {/* <Navbar.Brand href="#home">
                     <img

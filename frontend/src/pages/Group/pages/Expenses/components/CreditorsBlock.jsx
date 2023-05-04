@@ -89,7 +89,11 @@ const CreditorsBlock = () => {
                         </option>
                     </Form.Select>
                 </Container>
-                <Container className="creditor-total-amount" as={Row}>
+                <Container
+                    className="creditor-total-amount"
+                    as={Row}
+                    style={{ margin: 0, padding: 0 }}
+                >
                     <Col lg="8">
                         <TextField
                             name="amount"
@@ -101,10 +105,20 @@ const CreditorsBlock = () => {
                                 amountFormatter(event);
                                 handleAmountChange(event);
                             }}
+                            fullWidth
                         />
                     </Col>
-                    <Col lg="4">
-                        <CurrencySelector />
+                    <Col
+                        lg="4"
+                        style={{
+                            display: "flex",
+                            justifyContent: "end",
+                            padding: 0,
+                        }}
+                    >
+                        <Container>
+                            <CurrencySelector />
+                        </Container>
                     </Col>
                 </Container>
             </div>
@@ -113,24 +127,34 @@ const CreditorsBlock = () => {
         return (
             <div className="creditor-block" style={{ width: "100%" }}>
                 <Container className="creditor-header-container" as={Row}>
-                    <Form.Label column lg="6">
-                        Who paid
-                    </Form.Label>
+                    <TextField
+                        name="amount"
+                        className="mb-3"
+                        label="Amount (Read only)"
+                        type="text"
+                        helperText="Amount will automatically update when edit sub-amounts."
+                        value={amount}
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                        fullWidth
+                    />
                 </Container>
                 <Container className="creditor-total-amount" as={Row}>
                     <Col lg="8">
-                        <TextField
-                            name="amount"
-                            className="mb-3"
-                            label="Amount"
-                            type="text"
-                            value={amount}
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        />
+                        {" "}
+                        <Form.Label column lg="6">
+                            Who paid
+                        </Form.Label>
                     </Col>
-                    <Col lg="4">
+                    <Col
+                        lg="4"
+                        style={{
+                            display: "flex",
+                            justifyContent: "end",
+                            padding: 0,
+                        }}
+                    >
                         <CurrencySelector />
                     </Col>
                 </Container>
@@ -162,12 +186,10 @@ const CreditorsBlock = () => {
                                                 }`}
                                             />
                                         </ListItemAvatar>
-
                                         <ListItemText
                                             id={labelId}
                                             primary={`${member.name}`}
                                         />
-
                                         <TextField
                                             type="text"
                                             variant="standard"
@@ -189,8 +211,7 @@ const CreditorsBlock = () => {
                                             sx={{ width: "30%" }}
                                         />
                                         <ListItemText
-                                            id={labelId}
-                                            primary={`${selectedCurrencyObj.abbreviation}`}
+                                            primary={` ${selectedCurrencyObj.abbreviation}`}
                                             style={{ maxWidth: "2rem" }}
                                         />
                                     </ListItemButton>

@@ -38,6 +38,10 @@ const ModifyGroupModal = ({
     const [isCheck, setIsCheck] = useState(
         Boolean(Number(group.minimized_debts))
     );
+    const [error, setError] = useState({
+        name: undefined,
+        description: undefined,
+    });
     const [alertOpen, setAlertOpen] = useState(false);
 
     const [modifiedGroupData, setModifiedGroupData] = useState({
@@ -83,6 +87,24 @@ const ModifyGroupModal = ({
 
     function handleGroupDataChange(event) {
         const key = event.target.name;
+        const newError = { ...error };
+        if (key === "name") {
+            if (event.target.value.length > 50) {
+                newError.name = "Group name must less than 50 characters.";
+            } else {
+                newError.name = undefined;
+            }
+        }
+        if (key === "description") {
+            console.log(event.target.value);
+            if (event.target.value.length > 50) {
+                newError.description =
+                    "Group description must less than 50 characters.";
+            } else {
+                newError.description = undefined;
+            }
+        }
+        setError(newError);
         setModifiedGroupData({
             ...modifiedGroupData,
             [key]: event.target.value,
@@ -200,6 +222,8 @@ const ModifyGroupModal = ({
                                 variant="standard"
                                 fullWidth
                                 required
+                                helperText={error.name}
+                                error={Boolean(error.name)}
                             />
                         </Container>
                         <Container>
@@ -246,6 +270,8 @@ const ModifyGroupModal = ({
                                 fullWidth
                                 multiline
                                 rows={3}
+                                helperText={error.description}
+                                error={Boolean(error.description)}
                             />
                         </Container>
                         {user.id === group.owner ? (
@@ -261,8 +287,14 @@ const ModifyGroupModal = ({
                     </StyledModalBody>
                     <Modal.Footer>
                         <Container className="d-grid">
-                            <Button variant="warning" type="submit">
-                                Save
+                            <Button
+                                variant="warning"
+                                type="submit"
+                                disabled={error.name || error.description}
+                            >
+                                {error.name || error.description
+                                    ? "Invalid Input"
+                                    : "Save"}
                             </Button>
                         </Container>
                     </Modal.Footer>

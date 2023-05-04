@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Container, Modal, Form, Col, Row } from "react-bootstrap";
 import { Button } from "@mui/material";
 import styled from "styled-components";
@@ -8,6 +8,7 @@ import { api } from "../../../../../utils/api";
 import {
     SPLIT_METHODS,
     DASHBOARD_BG_COLOR,
+    HEADER_BG_COLOR,
 } from "../../../../../global/constant";
 // import { Button } from "react-bootstrap";
 // import Button from "@mui/material-next/Button";
@@ -18,7 +19,7 @@ import {
     localISOTime,
 } from "../../../../../contexts/ExpenseContext";
 import { AuthContext } from "../../../../../contexts/AuthContext";
-import { TransactionSelector, ModalContent } from "./Modal";
+import { ModalContent } from "./Modal";
 import { FixedButtonWrapper } from "../../../components/PageWrapper";
 
 const MySwal = withReactContent(Swal);
@@ -26,6 +27,10 @@ const MySwal = withReactContent(Swal);
 const StyledModalBody = styled(Modal.Body)`
     max-height: 800px;
     overflow: scroll;
+`;
+
+const ModalHeader = styled.h5`
+    margin-bottom: 0px;
 `;
 
 const Transaction = () => {
@@ -38,6 +43,7 @@ const Transaction = () => {
         amount,
         selectedCreditor,
         showTransaction,
+        expenseTime,
         setChecked,
         setSubCredit,
         setSelectedSplitMethod,
@@ -50,7 +56,8 @@ const Transaction = () => {
     } = useContext(ExpenseContext);
     const { user, jwtToken } = useContext(AuthContext);
     const { setSelectedExpense } = useContext(ExpenseContext);
-    const { group } = useContext(GroupContext);
+    const { group, showFixedButton } = useContext(GroupContext);
+    const [hasError, setHasError] = useState(false);
 
     const handleClose = () => setShowTransaction(false);
     // When Transaction window is opened, set amount = 0
@@ -64,6 +71,11 @@ const Transaction = () => {
         setSelectedSplitMethod(0);
         setDescription("");
         setExpenseTime(localISOTime);
+        setExpenseTime(
+            new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                .toISOString()
+                .substring(0, 16)
+        );
         setSubCredit(Array(members.length).fill(0));
         setShowTransaction(true);
     };
@@ -118,6 +130,7 @@ const Transaction = () => {
                 JSON.stringify([...debtorsAdjustment])
             );
         }
+        formData.append("date", expenseTime);
         // TODO: debug;
         // for (const pair of formData.entries()) {
         //     console.log(`${pair[0]}, ${pair[1]}`);
@@ -164,7 +177,16 @@ const Transaction = () => {
 
     return (
         <>
-            <FixedButtonWrapper>
+            <FixedButtonWrapper
+                style={{
+                    transition:
+                        "transform 0.5s ease-out, opacity 0.5s ease-out",
+                    transform: showFixedButton
+                        ? "translateY(0)"
+                        : "translateY(120%)",
+                    opacity: showFixedButton ? 1 : 0,
+                }}
+            >
                 <Button
                     onClickCapture={handleShow}
                     disabled={false}
@@ -198,21 +220,32 @@ const Transaction = () => {
                         <Modal.Header closeButton as={Row}>
                             <Container className="transaction-method ml-0 pl-0">
                                 <Col lg="6">
-                                    <TransactionSelector />
+                                    {/* <TransactionSelector /> */}
+                                    <ModalHeader>New Expense</ModalHeader>
                                 </Col>
                             </Container>
                         </Modal.Header>
                         <StyledModalBody>
-                            <ModalContent />
+                            <ModalContent
+                                hasError={hasError}
+                                setHasError={setHasError}
+                            />
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
                                 <Button
                                     variant="contained"
                                     type="submit"
-                                    disabled={amount === 0}
+                                    disabled={amount === 0 || hasError}
+                                    disableElevation
+                                    sx={{
+                                        backgroundColor: HEADER_BG_COLOR,
+                                        "&:hover": {
+                                            backgroundColor: "#cdae21",
+                                        },
+                                    }}
                                 >
-                                    Save
+                                    {hasError ? "Invalid Input" : "Save"}
                                 </Button>
                             </Container>
                         </Modal.Footer>
@@ -231,21 +264,32 @@ const Transaction = () => {
                         <Modal.Header closeButton as={Row}>
                             <Container className="transaction-method ml-0 pl-0">
                                 <Col lg="6">
-                                    <TransactionSelector />
+                                    {/* <TransactionSelector /> */}
+                                    <ModalHeader>New Expense</ModalHeader>
                                 </Col>
                             </Container>
                         </Modal.Header>
                         <StyledModalBody>
-                            <ModalContent />
+                            <ModalContent
+                                hasError={hasError}
+                                setHasError={setHasError}
+                            />
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
                                 <Button
                                     variant="contained"
                                     type="submit"
-                                    disabled={amount === 0}
+                                    disabled={amount === 0 || hasError}
+                                    disableElevation
+                                    sx={{
+                                        backgroundColor: HEADER_BG_COLOR,
+                                        "&:hover": {
+                                            backgroundColor: "#cdae21",
+                                        },
+                                    }}
                                 >
-                                    Save
+                                    {hasError ? "Invalid Input" : "Save"}
                                 </Button>
                             </Container>
                         </Modal.Footer>

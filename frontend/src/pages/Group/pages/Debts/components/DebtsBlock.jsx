@@ -70,6 +70,12 @@ const DebtsBlock = () => {
                                                 } ${Number(
                                                     debtAmounts.toFixed(2)
                                                 )}`}
+                                                primaryTypographyProps={{
+                                                    maxWidth: "15vw",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    whiteSpace: "nowrap",
+                                                }}
                                             />
                                         </Container>
                                         <Container>
@@ -83,6 +89,12 @@ const DebtsBlock = () => {
                                             <ListItemText
                                                 primary={creditor.name}
                                                 sx={{ textAlign: "right" }}
+                                                primaryTypographyProps={{
+                                                    maxWidth: "15vw",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    whiteSpace: "nowrap",
+                                                }}
                                             />
                                         </Container>
 

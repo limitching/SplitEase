@@ -1,5 +1,5 @@
 import "./App.css";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { AuthContextProvider } from "./contexts/AuthContext";
@@ -10,6 +10,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 function App() {
+    const location = useLocation();
+    const isHome = location.pathname === "/home";
+    const isLogin = location.pathname === "/login";
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -18,7 +21,7 @@ function App() {
                         <GroupContextProvider>
                             <Header></Header>
                             <Outlet />
-                            <Footer></Footer>
+                            {isHome || isLogin ? <Footer></Footer> : null}
                         </GroupContextProvider>
                     </AuthContextProvider>
                 </LiffProvider>

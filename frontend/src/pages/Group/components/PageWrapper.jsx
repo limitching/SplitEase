@@ -3,7 +3,7 @@ import { Paper } from "@mui/material";
 
 const PageWrapper = styled(Paper)`
     width: 90%;
-    height: 48vh;
+    min-height: 42vh;
     display: flex;
     flex-direction: column;
     justify-content: start;
@@ -14,14 +14,9 @@ const PageWrapper = styled(Paper)`
 
     @media (min-width: 768px) {
         width: 45%;
-        height: 50vh;
+        // min-height: calc(50vh + 56px);
+        min-height: calc(100vh - 55px - 30vh - 52px - 1.5rem - 1.5rem);
         margin: 1.5rem auto;
-    }
-
-    @media (max-height: 800px) {
-        width: 45%;
-        height: calc(100vh - 55px - 55px - 300px - 1rem - 48px - 2rem);
-        margin: 1rem auto;
     }
 `;
 
@@ -40,10 +35,11 @@ const FixedButtonWrapper = styled.div`
     position: fixed;
     display: flex;
     justify-content: center;
-    bottom: 80px;
+    bottom: 3.5vh;
     left: 0;
     width: 100%;
     padding: 20px;
+    z-index: 10;
 `;
 
 const HeaderTextContainer = styled.div`

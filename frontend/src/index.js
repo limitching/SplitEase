@@ -15,6 +15,7 @@ import Members from "./pages/Group/pages/Members";
 import Activities from "./pages/Group/pages/Activities";
 import Join from "./pages/Group/pages/Join";
 import Index from "./pages/Index";
+import { Navigate } from "react-router-dom";
 
 // import reportWebVitals from "./reportWebVitals";
 
@@ -42,6 +43,7 @@ root.render(
                 <Route path="login" element={<Login />}></Route>
                 <Route path="liff" element={<Liff />}></Route>
                 <Route path="home" element={<Home />}></Route>
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
         </Routes>
     </BrowserRouter>

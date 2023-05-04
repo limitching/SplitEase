@@ -1,7 +1,7 @@
 import { createContext, useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
-import Loading from "../components/Loading";
+import Loading from "../components/Preloader/Preloader";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // import liff from "@line/liff";
