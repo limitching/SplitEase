@@ -56,7 +56,7 @@ const Transaction = () => {
     } = useContext(ExpenseContext);
     const { user, jwtToken } = useContext(AuthContext);
     const { setSelectedExpense } = useContext(ExpenseContext);
-    const { group } = useContext(GroupContext);
+    const { group, showFixedButton } = useContext(GroupContext);
     const [hasError, setHasError] = useState(false);
 
     const handleClose = () => setShowTransaction(false);
@@ -71,6 +71,11 @@ const Transaction = () => {
         setSelectedSplitMethod(0);
         setDescription("");
         setExpenseTime(localISOTime);
+        setExpenseTime(
+            new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                .toISOString()
+                .substring(0, 16)
+        );
         setSubCredit(Array(members.length).fill(0));
         setShowTransaction(true);
     };
@@ -172,7 +177,16 @@ const Transaction = () => {
 
     return (
         <>
-            <FixedButtonWrapper>
+            <FixedButtonWrapper
+                style={{
+                    transition:
+                        "transform 0.5s ease-out, opacity 0.5s ease-out",
+                    transform: showFixedButton
+                        ? "translateY(0)"
+                        : "translateY(120%)",
+                    opacity: showFixedButton ? 1 : 0,
+                }}
+            >
                 <Button
                     onClickCapture={handleShow}
                     disabled={false}

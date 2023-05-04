@@ -9,9 +9,13 @@ import { DASHBOARD_BG_COLOR } from "../../../../global/constant";
 import { Button } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { GroupContext } from "../../../../contexts/GroupContext";
 
 const Members = () => {
     const navigate = useNavigate();
+    const { showFixedButton } = useContext(GroupContext);
+
     return (
         <>
             <PageWrapper>
@@ -22,7 +26,16 @@ const Members = () => {
                     <MemberList></MemberList>
                 </ListWrapper>
             </PageWrapper>
-            <FixedButtonWrapper>
+            <FixedButtonWrapper
+                style={{
+                    transition:
+                        "transform 0.5s ease-out, opacity 0.5s ease-out",
+                    transform: showFixedButton
+                        ? "translateY(0)"
+                        : "translateY(120%)",
+                    opacity: showFixedButton ? 1 : 0,
+                }}
+            >
                 <Button
                     color="primary"
                     disabled={false}

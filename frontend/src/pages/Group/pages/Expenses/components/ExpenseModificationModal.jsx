@@ -161,7 +161,6 @@ const ExpenseModificationModal = () => {
 
     const handleExpenseDelete = async (expense_id, group_id) => {
         handleAlertClose();
-        console.log(expense_id);
         const response = await api.deleteExpense(
             expense_id,
             group_id,

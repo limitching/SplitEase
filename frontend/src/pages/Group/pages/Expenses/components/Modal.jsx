@@ -7,6 +7,7 @@ import { useContext } from "react";
 import dayjs from "dayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
 
 const StyledExpenseImage = styled.img`
     width: 400px;
@@ -31,14 +32,23 @@ const ExpenseDescription = () => {
     return (
         <Container className="expense-description mb-3">
             <Form.Label>Description</Form.Label>
-            <Form.Control
+            {/* <Form.Control
                 as="textarea"
-                name="description"
+                // name="description"
                 rows={3}
                 defaultValue={
                     selectedExpense ? selectedExpense.description : ""
                 }
-            />
+            /> */}
+            <TextField
+                name="description"
+                fullWidth
+                multiline
+                defaultValue={
+                    selectedExpense ? selectedExpense.description : ""
+                }
+                placeholder="Description of this expense"
+            ></TextField>
         </Container>
     );
 };
