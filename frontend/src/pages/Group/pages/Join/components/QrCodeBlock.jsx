@@ -6,7 +6,7 @@ function QrCodeBlock({ url }) {
         <div>
             <QRCodeCanvas
                 value={url}
-                size={128}
+                size={200}
                 level="Q"
                 bgColor="#ffffff"
                 fgColor="#000000"

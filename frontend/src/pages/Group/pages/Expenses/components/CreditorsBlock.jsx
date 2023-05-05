@@ -15,7 +15,10 @@ import {
     ListItemAvatar,
     Avatar,
     TextField,
+    Tooltip,
 } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { amountFormatter } from "../../../../../utils/formatter";
 
 const CreditorsBlock = () => {
@@ -30,6 +33,7 @@ const CreditorsBlock = () => {
         setSubCredit,
         setSelectedCreditor,
         setAmount,
+        setCurrencyIntroOpen,
     } = useContext(ExpenseContext);
     if (members.length === 0) {
         return <div>Loading...</div>;
@@ -94,7 +98,7 @@ const CreditorsBlock = () => {
                     as={Row}
                     style={{ margin: 0, padding: 0 }}
                 >
-                    <Col lg="8">
+                    <Col lg="6" xs="6">
                         <TextField
                             name="amount"
                             className="mb-3"
@@ -109,7 +113,8 @@ const CreditorsBlock = () => {
                         />
                     </Col>
                     <Col
-                        lg="4"
+                        lg="6"
+                        xs="6"
                         style={{
                             display: "flex",
                             justifyContent: "end",
@@ -118,6 +123,21 @@ const CreditorsBlock = () => {
                     >
                         <Container>
                             <CurrencySelector />
+                        </Container>
+                        <Container
+                            as={Col}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Tooltip title="Currency Q & A" placement="top">
+                                <IconButton
+                                    onClick={() => setCurrencyIntroOpen(true)}
+                                >
+                                    <HelpOutlineIcon></HelpOutlineIcon>
+                                </IconButton>
+                            </Tooltip>
                         </Container>
                     </Col>
                 </Container>
@@ -141,14 +161,14 @@ const CreditorsBlock = () => {
                     />
                 </Container>
                 <Container className="creditor-total-amount" as={Row}>
-                    <Col lg="8">
-                        {" "}
+                    <Col lg="7" xs="7">
                         <Form.Label column lg="6">
                             Who paid
                         </Form.Label>
                     </Col>
                     <Col
-                        lg="4"
+                        lg="5"
+                        xs="5"
                         style={{
                             display: "flex",
                             justifyContent: "end",
@@ -156,6 +176,21 @@ const CreditorsBlock = () => {
                         }}
                     >
                         <CurrencySelector />
+                        <Container
+                            as={Col}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Tooltip title="Currency Q & A" placement="top">
+                                <IconButton
+                                    onClick={() => setCurrencyIntroOpen(true)}
+                                >
+                                    <HelpOutlineIcon></HelpOutlineIcon>
+                                </IconButton>
+                            </Tooltip>
+                        </Container>
                     </Col>
                 </Container>
                 <Container className="creditor-list-container" as={Row}>

@@ -92,7 +92,7 @@ const Settlement = () => {
                 {isSettled ? (
                     <>
                         <HeaderTextContainer>
-                            <h6>No Settling debts </h6>
+                            <h5>No Settling debts </h5>
                         </HeaderTextContainer>
                         <img
                             src="/assets/allDone.svg"

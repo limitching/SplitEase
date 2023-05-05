@@ -22,7 +22,10 @@ import {
     ListItemAvatar,
     Checkbox,
     Avatar,
+    Tooltip,
 } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 const DebtorsBlock = () => {
     const { members } = useContext(GroupContext);
@@ -36,7 +39,9 @@ const DebtorsBlock = () => {
         setChecked,
         setSubValues,
         setAmount,
+        setSplitIntroOpen,
     } = useContext(ExpenseContext);
+
     const [modifiedIndices, setModifiedIndices] = useState([]);
 
     if (members.length === 0) {
@@ -273,18 +278,20 @@ const DebtorsBlock = () => {
                 style={{ margin: 0, padding: 0 }}
             >
                 {selectedCreditor === "multi" ? (
-                    <Container style={{ height: "72px" }}></Container>
+                    <Container style={{ height: "94.41px" }}></Container>
                 ) : null}
 
                 <Form.Label
                     column
-                    lg="8"
+                    lg="6"
+                    xs="6"
                     style={{ display: "flex", alignItems: "center" }}
                 >
                     For whom
                 </Form.Label>
                 <Col
-                    lg="4"
+                    lg="6"
+                    xs="6"
                     style={{
                         display: "flex",
                         justifyContent: "end",
@@ -293,6 +300,23 @@ const DebtorsBlock = () => {
                 >
                     <Container>
                         <SplitMethodSelector />
+                    </Container>
+
+                    <Container
+                        as={Col}
+                        style={{
+                            display: "flex",
+                            alignItems: "end",
+                        }}
+                    >
+                        <Tooltip
+                            title="Introduction of split methods"
+                            placement="top"
+                        >
+                            <IconButton onClick={() => setSplitIntroOpen(true)}>
+                                <HelpOutlineIcon></HelpOutlineIcon>
+                            </IconButton>
+                        </Tooltip>
                     </Container>
                 </Col>
             </Container>

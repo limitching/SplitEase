@@ -108,9 +108,9 @@ const ExpensesBlock = () => {
     return (
         <>
             <HeaderTextContainer>
-                <h6>
+                <h5>
                     {groupExpense.length === 0 ? "No Expense :)" : "Expenses"}
-                </h6>
+                </h5>
             </HeaderTextContainer>
 
             <List
@@ -147,6 +147,7 @@ const ExpensesBlock = () => {
                         <div key={expense._id}>
                             <ListItem
                                 onClick={() => handleExpenseItemClick(expense)}
+                                id={index === 0 ? "expense-button" : null}
                             >
                                 <ListItemButton>
                                     <ListItemAvatar>

@@ -20,7 +20,7 @@ const Members = () => {
         <>
             <PageWrapper>
                 <HeaderTextContainer>
-                    <h6>Members</h6>
+                    <h5>Members</h5>
                 </HeaderTextContainer>
                 <ListWrapper>
                     <MemberList></MemberList>

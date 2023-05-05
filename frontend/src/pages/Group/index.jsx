@@ -2,15 +2,21 @@ import GroupDashboard from "./components/Dashboard";
 import Tabs from "./components/Tabs";
 import Error from "./components/Error";
 import { ExpenseContextProvider } from "../../contexts/ExpenseContext";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useContext, useState, useRef } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import { GroupContext } from "../../contexts/GroupContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/Loading";
 import { GROUP_BG_COLOR } from "../../global/constant";
 import Invitation from "./components/Invitation";
 import Footer from "../../components/Footer";
+
+import TourIcon from "@mui/icons-material/Tour";
+import JoyRide from "react-joyride";
+import { handleJoyrideCallback, STEP, STYLES } from "../../utils/joyride";
+
+import Fab from "@mui/material/Fab";
 
 const WrapperGroupContainer = styled.div`
     padding-top: 55px;
@@ -44,10 +50,52 @@ const Group = () => {
         isPublicVisit,
         wrapperOutletRef,
         setShowFixedButton,
+        slug,
     } = useContext(GroupContext);
     const { loading } = useContext(AuthContext);
     const timeoutRef = useRef(null);
     const [scrollOffset, setScrollOffset] = useState(0);
+    const [joyrideState, setJoyrideState] = useState({
+        run: false,
+        steps: STEP,
+        stepIndex: 0,
+        paused: false, // 新增 paused 屬性
+        redirectToExpenses: false, // 新增 redirectToExpenses 屬性
+        redirectToDebts: false,
+        redirectToSettlement: false,
+        redirectToMembers: false,
+        redirectToActivities: false,
+        redirectToJoin: false,
+    });
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // console.log(joyrideState);
+        if (joyrideState.redirectToExpenses) {
+            setJoyrideState({ ...joyrideState, redirectToExpenses: false });
+            navigate(`/group/${slug}/expenses`);
+        }
+        if (joyrideState.redirectToDebts) {
+            setJoyrideState({ ...joyrideState, redirectToDebts: false });
+            navigate(`/group/${slug}/debts`);
+        }
+        if (joyrideState.redirectToSettlement) {
+            setJoyrideState({ ...joyrideState, redirectToSettlement: false });
+            navigate(`/group/${slug}/settlement`);
+        }
+        if (joyrideState.redirectToMembers) {
+            setJoyrideState({ ...joyrideState, redirectToMembers: false });
+            navigate(`/group/${slug}/members`);
+        }
+        if (joyrideState.redirectToActivities) {
+            setJoyrideState({ ...joyrideState, redirectToActivities: false });
+            navigate(`/group/${slug}/activities`);
+        }
+        if (joyrideState.redirectToJoin) {
+            setJoyrideState({ ...joyrideState, redirectToJoin: false });
+            navigate(`/group/${slug}/join`);
+        }
+    }, [joyrideState, navigate, slug]);
 
     if (isLoading || loading) {
         return <Loading />;
@@ -91,6 +139,14 @@ const Group = () => {
         }
     }
 
+    function handleStartGuide() {
+        setJoyrideState({
+            ...joyrideState,
+            run: true,
+            stepIndex: 0,
+        });
+    }
+
     return (
         <ExpenseContextProvider>
             {Object.keys(group).length !== 0 ? (
@@ -109,6 +165,34 @@ const Group = () => {
                             <Outlet></Outlet>
                             <Footer></Footer>
                         </WrapperOutlet>
+                        <Fab
+                            id="guide"
+                            color="primary"
+                            sx={{
+                                position: "fixed",
+                                right: "1rem",
+                                top: "calc(56px + 1rem)",
+                            }}
+                            onClick={handleStartGuide}
+                        >
+                            <TourIcon></TourIcon>
+                        </Fab>
+                        <JoyRide
+                            styles={STYLES}
+                            continuous
+                            hideCloseButton
+                            scrollToFirstStep
+                            showProgress
+                            showSkipButton
+                            {...joyrideState}
+                            callback={(data) =>
+                                handleJoyrideCallback(
+                                    data,
+                                    joyrideState,
+                                    setJoyrideState
+                                )
+                            }
+                        ></JoyRide>
                     </WrapperGroupContainer>
                 )
             ) : (

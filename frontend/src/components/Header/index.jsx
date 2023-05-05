@@ -4,9 +4,23 @@ import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { GroupContext } from "../../contexts/GroupContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Divide as Hamburger } from "hamburger-react";
+import GroupsIcon from "@mui/icons-material/Groups";
+import HistoryIcon from "@mui/icons-material/History";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+
+import Box from "@mui/material/Box";
+
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import Divider from "@mui/material/Divider";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 
 import ProfileButton from "./ProfileButton";
-import { HEADER_BG_COLOR } from "../../global/constant";
+import { HEADER_BG_COLOR, CHART_COLOR } from "../../global/constant";
 
 const StyledNavbar = styled(Navbar)`
     height: 55px;
@@ -45,14 +59,21 @@ const StyledNav = styled(Nav)`
     align-items: center;
 `;
 
+const GroupLink = styled(Link)`
+    text-decoration: none;
+    color: inherit;
+`;
+
 const Header = () => {
     const location = useLocation();
-    const { isLogin } = useContext(AuthContext);
+    const { isLogin, userGroups } = useContext(AuthContext);
+
     // const { logout } = useContext(AuthContext);
     const { setInvitation_code } = useContext(GroupContext);
     const navigate = useNavigate();
 
     const [isAtRoot, setIsAtRoot] = useState(location.pathname === "/");
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -92,8 +113,109 @@ const Header = () => {
         navigate("/login");
     };
 
+    const list = (anchor) => (
+        <Box
+            sx={{
+                width: anchor === "top" || anchor === "bottom" ? "auto" : 300,
+            }}
+            role="presentation"
+        >
+            <Container
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "left",
+
+                    padding: "12px 16px",
+                }}
+            >
+                <Navbar.Brand>
+                    <img
+                        src="/assets/logo.svg"
+                        width="auto"
+                        height="30"
+                        alt="SplitEase logo"
+                    />
+                </Navbar.Brand>
+            </Container>
+            <Divider />
+
+            <List>
+                <ListItem>
+                    <ListItemIcon>
+                        <GroupsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="My Groups" />
+                </ListItem>
+
+                {userGroups.map((group, index) => (
+                    <GroupLink
+                        key={group.slug}
+                        to={`/group/${group.slug}/expenses`}
+                    >
+                        <ListItem alignItems="center" disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <FiberManualRecordIcon
+                                        style={{ color: CHART_COLOR[index] }}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={`${group.name}`}
+                                    primaryTypographyProps={{
+                                        fontSize: "1rem",
+                                    }}
+                                    // sx={[{ color: "blue" }]}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    </GroupLink>
+                ))}
+            </List>
+            <Divider />
+            <List>
+                <ListItem>
+                    <ListItemIcon>
+                        <HistoryIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Archived Groups" />
+                </ListItem>
+                {userGroups.map((group, index) => (
+                    <GroupLink
+                        key={group.slug}
+                        to={`/group/${group.slug}/expenses`}
+                    >
+                        <ListItem alignItems="center" disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <FiberManualRecordIcon
+                                        style={{ color: CHART_COLOR[index] }}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={`${group.name}`}
+                                    primaryTypographyProps={{
+                                        fontSize: "1rem",
+                                    }}
+                                    // sx={[{ color: "blue" }]}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    </GroupLink>
+                ))}
+            </List>
+        </Box>
+    );
+
     return (
         <div>
+            <Drawer
+                anchor={"left"}
+                open={menuOpen}
+                onClose={() => setMenuOpen(false)}
+            >
+                {list("left")}
+            </Drawer>
             <StyledNavbar
                 id="header"
                 // className={isAtRoot ? "container" : undefined}
@@ -101,13 +223,33 @@ const Header = () => {
                 fixed="top"
                 // transparent={isAtRoot ? "true" : undefined}
             >
+                {isLogin && (
+                    <div style={{ padding: "1rem" }}>
+                        <Hamburger
+                            style={{ width: "540px", maxWidth: "540px" }}
+                            onToggle={(toggled) => {
+                                console.log(toggled);
+                                setMenuOpen(toggled);
+                                // handleToggleHamburger(toggled);
+                            }}
+                            toggled={menuOpen}
+                        ></Hamburger>
+                    </div>
+                )}
+
                 <StyledContainer>
                     <div>
-                        <Navbar.Toggle
+                        {/* <Navbar.Toggle
                             aria-controls="basic-navbar-nav"
                             style={{ border: "none", maxWidth: "54px" }}
-                        />
-                        <StyledLink to={isLogin ? "/home" : "/"}>
+                        /> */}
+
+                        {/* <Navbar.Toggle
+                            aria-controls="basic-navbar-nav"
+                            style={{ border: "none", maxWidth: "54px" }}
+                        /> */}
+
+                        <StyledLink to={"/"}>
                             <Navbar.Brand>
                                 <img
                                     src="/assets/logo.svg"
