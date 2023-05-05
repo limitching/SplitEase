@@ -29,14 +29,22 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
+    socket.emit("connection");
     console.log("a user connected (Server)");
     const group_slug = socket.handshake.query.slug;
 
+    //Join group via slug
+    socket.join(group_slug);
     console.log(`A user joined group ${group_slug}`);
 
-    socket.on("join-group", (group_slug) => {
-        console.log(`User joined group: ${group_slug}`);
-        socket.join(group_slug); // join group
+    socket.on("refreshMembers", () => {
+        console.log("refreshMembers");
+        io.to(group_slug).emit("refreshMembers"); // notify group user to update members
+    });
+
+    socket.on("expenseChange", () => {
+        console.log("expenseChange");
+        io.to(group_slug).emit("expenseChange"); // notify group user to update members
     });
 
     socket.on("leave-group", (group_slug) => {
