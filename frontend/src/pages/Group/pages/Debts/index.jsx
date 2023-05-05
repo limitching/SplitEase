@@ -30,8 +30,14 @@ const MySwal = withReactContent(Swal);
 
 const Debts = () => {
     const [alertOpen, setAlertOpen] = useState(false);
-    const { group_id, group, setExpensesChanged, debts, showFixedButton } =
-        useContext(GroupContext);
+    const {
+        group_id,
+        group,
+        // setExpensesChanged,
+        debts,
+        showFixedButton,
+        socket,
+    } = useContext(GroupContext);
     const { jwtToken, user } = useContext(AuthContext);
     const [selectSettlingDate, setSelectSettlingDate] = useState(
         dayjs(new Date())
@@ -54,7 +60,7 @@ const Debts = () => {
             startSettlingData,
             jwtToken
         );
-        console.log(response);
+        // console.log(response);
         if (response.status === 200) {
             handleAlertClose();
             MySwal.fire({
@@ -78,7 +84,8 @@ const Debts = () => {
                 },
             });
         }
-        setExpensesChanged(true);
+        socket.emit("expenseChange");
+        // setExpensesChanged(true);
     };
 
     let isNoDebts = true;
