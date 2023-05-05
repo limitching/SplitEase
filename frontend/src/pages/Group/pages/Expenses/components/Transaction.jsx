@@ -34,7 +34,7 @@ const ModalHeader = styled.h5`
 `;
 
 const Transaction = () => {
-    const { members, group_id, setExpensesChanged } = useContext(GroupContext);
+    const { members, group_id } = useContext(GroupContext);
     const {
         checked,
         subValues,
@@ -56,7 +56,7 @@ const Transaction = () => {
     } = useContext(ExpenseContext);
     const { user, jwtToken } = useContext(AuthContext);
     const { setSelectedExpense } = useContext(ExpenseContext);
-    const { group, showFixedButton } = useContext(GroupContext);
+    const { group, showFixedButton, socket } = useContext(GroupContext);
     const [hasError, setHasError] = useState(false);
 
     const handleClose = () => setShowTransaction(false);
@@ -138,7 +138,7 @@ const Transaction = () => {
 
         const response = await api.createExpense(formData, jwtToken);
         if (response.status === 200) {
-            setExpensesChanged(true);
+            socket.emit("expenseChange");
             // handleClickVariant("Expense Created successfully!", "success");
             MySwal.fire({
                 title: <p>Expense Created successfully!</p>,
