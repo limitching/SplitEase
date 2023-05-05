@@ -72,7 +72,7 @@ const Features = () => {
                                         <p className="text">
                                             Split bills quickly and effortlessly
                                             with SplitEase, saving you time and
-                                            energy.
+                                            hassle.
                                         </p>
                                     </div>
                                 </div>
