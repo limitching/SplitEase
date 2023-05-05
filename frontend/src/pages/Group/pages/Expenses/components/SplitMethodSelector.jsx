@@ -2,10 +2,7 @@ import { useContext } from "react";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import { TextField, MenuItem } from "@mui/material";
-import {
-    SPLIT_METHODS,
-    SPLIT_METHODS_ABBREVIATION,
-} from "../../../../../global/constant";
+import { SPLIT_METHODS_ABBREVIATION } from "../../../../../global/constant";
 
 function gcd(a, b) {
     if (b === 0) {

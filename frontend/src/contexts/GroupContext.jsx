@@ -5,11 +5,17 @@ import {
     useContext,
     useMemo,
     useRef,
+    useCallback,
 } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import { api } from "../utils/api";
 import Loading from "../components/Preloader/Preloader";
+import { API_HOST } from "../global/constant";
+import io from "socket.io-client";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 
 const GroupContext = createContext({
     slug: null,
@@ -32,6 +38,8 @@ const GroupContext = createContext({
     logs: [],
     wrapperOutletRef: null,
     showFixedButton: true,
+    socket: null,
+    joinGroup: () => {},
     setMembers: () => {},
     setExpensesChanged: () => {},
     setInviteEmail: () => {},
@@ -84,7 +92,7 @@ async function fetchGroupPublicInformation(
     setIsPublicVisit
 ) {
     const response = await api.getGroupPublicInformation(slug, invitation_code);
-    console.log("response", response);
+    // console.log("response", response);
     if (response.data.error) {
         return setError(response.data.error);
     }
@@ -104,11 +112,12 @@ async function fetchGroupLogs(jwtToken, group_id, setLogs) {
 
 const GroupContextProvider = ({ children }) => {
     const location = useLocation();
-    const { userGroups, jwtToken } = useContext(AuthContext);
+    const { userGroups, jwtToken, setGroupChange } = useContext(AuthContext);
     const { slug } = useParams();
 
     const [group_id, setGroup_id] = useState(null);
     const [members, setMembers] = useState([]);
+    const [membersChange, setMembersChange] = useState(false);
     const [groupExpense, setGroupExpense] = useState([]);
     const [debts, setDebts] = useState([]);
     const [settlingDebts, setSettlingDebts] = useState([]);
@@ -127,6 +136,9 @@ const GroupContextProvider = ({ children }) => {
     const wrapperOutletRef = useRef(null);
     const [showFixedButton, setShowFixedButton] = useState(true);
 
+    const [socket, setSocket] = useState(null);
+    const socketRef = useRef(null);
+
     // A map to get member object from memberId
     const memberMap = members
         ? new Map(members.map((member) => [member.id, member]))
@@ -139,6 +151,29 @@ const GroupContextProvider = ({ children }) => {
                 : new Map(),
         [members]
     );
+
+    useEffect(() => {
+        const newSocket = io(API_HOST, { query: { slug } });
+        socketRef.current = newSocket;
+        setSocket(socketRef.current);
+        newSocket.on("connection", () => {
+            console.log("Connected to server(Client)");
+        });
+
+        newSocket.on("refreshMembers", () => {
+            // console.log("got refreshMembers");
+            setMembersChange(true);
+        });
+
+        newSocket.on("expenseChange", () => {
+            // console.log("expense Change~");
+            setExpensesChanged(true);
+        });
+
+        return () => {
+            newSocket.disconnect();
+        };
+    }, [slug]);
 
     useMemo(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -285,6 +320,67 @@ const GroupContextProvider = ({ children }) => {
         }
     }, [groupExpense, indexMap, members.length]);
 
+    const handleJoinGroup = useCallback(
+        async (slug, invitation_code, jwtToken) => {
+            const response = await api.joinGroup(
+                slug,
+                invitation_code,
+                jwtToken
+            );
+            if (response.status === 200) {
+                MySwal.fire({
+                    title: <p>Join Successfully!</p>,
+                    icon: "success",
+                    timer: 1000,
+                    didOpen: () => {
+                        MySwal.showLoading();
+                    },
+                });
+                setGroupChange(true);
+                return;
+            } else if (response.status === 400) {
+                const { error } = response.data;
+                MySwal.fire({
+                    title: <p>Client Side Error</p>,
+                    html: <p>{error}</p>,
+                    icon: "error",
+                    timer: 2000,
+                    didOpen: () => {
+                        MySwal.showLoading();
+                    },
+                });
+            } else if (response.status === 500) {
+                const { error } = response.data;
+                MySwal.fire({
+                    title: <p>Server Side Error</p>,
+                    html: <p>{error}</p>,
+                    icon: "error",
+                    timer: 2000,
+                    didOpen: () => {
+                        MySwal.showLoading();
+                    },
+                });
+            }
+        },
+        [setGroupChange]
+    );
+
+    useEffect(() => {
+        if (membersChange === true && group_id) {
+            fetchMembers(group_id, setMembers);
+            fetchGroupLogs(jwtToken, group_id, setLogs);
+            setMembersChange(false);
+        }
+    }, [membersChange, group_id, jwtToken]);
+
+    const joinGroup = async (slug, invitation_code, jwtToken) => {
+        setIsLoading(true);
+        handleJoinGroup(slug, invitation_code, jwtToken);
+        setIsLoading(false);
+        socket.emit("refreshMembers");
+        // return navigate("home");
+    };
+
     if (isLoading) {
         return <Loading />;
     }
@@ -312,6 +408,8 @@ const GroupContextProvider = ({ children }) => {
                 logs,
                 wrapperOutletRef,
                 showFixedButton,
+                socket,
+                joinGroup,
                 setMembers,
                 setExpensesChanged,
                 setInviteEmail,

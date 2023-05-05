@@ -24,7 +24,6 @@ const AuthContext = createContext({
     logout: () => {},
     setLoading: () => {},
     setGroupChange: () => {},
-    joinGroup: () => {},
     setJwtToken: () => {},
     setUser: () => {},
 });
@@ -92,7 +91,7 @@ const AuthContextProvider = ({ children }) => {
                 const { data } = await api.getUserGroups(
                     window.localStorage.getItem("jwtToken")
                 );
-                console.log(data);
+                // console.log(data);
                 setUserGroups(data);
             };
             setLoading(true);
@@ -275,58 +274,6 @@ const AuthContextProvider = ({ children }) => {
         }
     }, []);
 
-    const handleJoinGroup = useCallback(
-        async (slug, invitation_code, jwtToken) => {
-            const response = await api.joinGroup(
-                slug,
-                invitation_code,
-                jwtToken
-            );
-            if (response.status === 200) {
-                MySwal.fire({
-                    title: <p>Join Successfully!</p>,
-                    icon: "success",
-                    timer: 1000,
-                    didOpen: () => {
-                        MySwal.showLoading();
-                    },
-                });
-                setGroupChange(true);
-                return;
-            } else if (response.status === 400) {
-                const { error } = response.data;
-                MySwal.fire({
-                    title: <p>Client Side Error</p>,
-                    html: <p>{error}</p>,
-                    icon: "error",
-                    timer: 2000,
-                    didOpen: () => {
-                        MySwal.showLoading();
-                    },
-                });
-            } else if (response.status === 500) {
-                const { error } = response.data;
-                MySwal.fire({
-                    title: <p>Server Side Error</p>,
-                    html: <p>{error}</p>,
-                    icon: "error",
-                    timer: 2000,
-                    didOpen: () => {
-                        MySwal.showLoading();
-                    },
-                });
-            }
-        },
-        []
-    );
-
-    const joinGroup = async (slug, invitation_code, jwtToken) => {
-        setLoading(true);
-        handleJoinGroup(slug, invitation_code, jwtToken);
-        setLoading(false);
-        // return navigate("home");
-    };
-
     const nativeSignUp = async (signUpForm) => {
         setLoading(true);
         navigate("login");
@@ -397,7 +344,6 @@ const AuthContextProvider = ({ children }) => {
                 logout,
                 setLoading,
                 setGroupChange,
-                joinGroup,
                 setJwtToken,
                 setUser,
             }}

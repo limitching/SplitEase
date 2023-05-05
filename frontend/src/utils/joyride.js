@@ -1,4 +1,4 @@
-import Joyride, { ACTIONS, EVENTS, LIFECYCLE, STATUS } from "react-joyride";
+import { ACTIONS } from "react-joyride";
 
 const STYLES = {
     options: {
@@ -70,7 +70,8 @@ const STEP = [
 ];
 
 const handleJoyrideCallback = (data, joyrideState, setJoyrideState) => {
-    const { action, index, type, status } = data;
+    const { action, index, type } = data;
+    // const { status } = data;
     // console.log(
     //     "TYPE:",
     //     type,
