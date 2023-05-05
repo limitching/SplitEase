@@ -95,9 +95,9 @@ const InvitationImg = styled.img`
 `;
 
 const Invitation = () => {
-    const { group, slug, invitation_code, setInvitation_code } =
+    const { group, slug, invitation_code, setInvitation_code, joinGroup } =
         useContext(GroupContext);
-    const { isLogin, jwtToken, joinGroup } = useContext(AuthContext);
+    const { isLogin, jwtToken } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleJoinGroup = () => {
