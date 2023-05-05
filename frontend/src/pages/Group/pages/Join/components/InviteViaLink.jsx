@@ -37,8 +37,6 @@ const QRcodeContainer = styled.div`
     margin-bottom: 2rem;
 `;
 
-const HeaderText = styled.h5``;
-
 // const CheckboxContainer = styled.div`
 //     width: 95%;
 //     display: flex;
