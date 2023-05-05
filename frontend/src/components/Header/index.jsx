@@ -249,7 +249,7 @@ const Header = () => {
                             style={{ border: "none", maxWidth: "54px" }}
                         /> */}
 
-                        <StyledLink to={isLogin ? "/home" : "/"}>
+                        <StyledLink to={"/"}>
                             <Navbar.Brand>
                                 <img
                                     src="/assets/logo.svg"
