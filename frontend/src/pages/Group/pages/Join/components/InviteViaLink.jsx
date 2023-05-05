@@ -1,7 +1,8 @@
 import { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { GroupContext } from "../../../../../contexts/GroupContext";
-import { TextField, IconButton, Tooltip } from "@mui/material";
+import { TextField, IconButton, Tooltip, Container } from "@mui/material";
+// import { Container } from "react-bootstrap";
 // import { Checkbox, FormControlLabel } from "@mui/material";
 import QrCodeBlock from "./QrCodeBlock";
 
@@ -25,6 +26,18 @@ const InvitationMethodContainer = styled.div`
     margin-top: 1rem;
     margin-bottom: 1rem;
 `;
+
+const QRcodeContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+`;
+
+const HeaderText = styled.h5``;
 
 // const CheckboxContainer = styled.div`
 //     width: 95%;
@@ -89,11 +102,14 @@ const InviteViaLink = () => {
 
     return (
         <>
-            <HeaderTextContainer>
-                <h6>Invite via link</h6>
-            </HeaderTextContainer>
-            <Divider variant="fullWidth"></Divider>
-            {/* <CheckboxContainer>
+            <div style={{ width: "100%" }}>
+                <Container>
+                    <HeaderTextContainer style={{ paddingBottom: "8px" }}>
+                        <h5>Invite via link</h5>
+                    </HeaderTextContainer>
+                </Container>
+                <Divider variant="fullWidth"></Divider>
+                {/* <CheckboxContainer>
                 <FormControlLabel
                     control={
                         <Checkbox checked={isCheck} onChange={handleChecked} />
@@ -105,26 +121,37 @@ const InviteViaLink = () => {
                     }
                 />
             </CheckboxContainer> */}
-            <InvitationMethodContainer>
-                <TextField
-                    variant="outlined"
-                    value={link}
-                    fullWidth
-                    aria-readonly
-                    onClick={handleCopyLink}
-                />
-                <Tooltip title="Copy to clipboard">
-                    <IconButton onClick={handleCopyLink}>
-                        <ContentCopyIcon />
-                    </IconButton>
-                </Tooltip>
-            </InvitationMethodContainer>
+                <Container>
+                    <InvitationMethodContainer>
+                        <TextField
+                            variant="outlined"
+                            value={link}
+                            fullWidth
+                            aria-readonly
+                            onClick={handleCopyLink}
+                        />
+                        <Tooltip title="Copy to clipboard">
+                            <IconButton onClick={handleCopyLink}>
+                                <ContentCopyIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </InvitationMethodContainer>
+                </Container>
 
-            <HeaderTextContainer>
-                <h6>Invite via QR code</h6>
-            </HeaderTextContainer>
-            <div style={{ marginTop: "3rem" }}></div>
-            <QrCodeBlock url={link}></QrCodeBlock>
+                <Divider variant="fullWidth"></Divider>
+                <Container>
+                    <HeaderTextContainer style={{ paddingBottom: "8px" }}>
+                        <h5>Invite via QR code</h5>
+                    </HeaderTextContainer>
+                </Container>
+
+                <Divider variant="fullWidth"></Divider>
+
+                <QRcodeContainer>
+                    <QrCodeBlock url={link}></QrCodeBlock>
+                </QRcodeContainer>
+            </div>
+
             {/* <HeaderTextContainer>
                 <h6>Invite via email</h6>
             </HeaderTextContainer>

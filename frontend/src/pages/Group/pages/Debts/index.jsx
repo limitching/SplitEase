@@ -94,7 +94,7 @@ const Debts = () => {
         <>
             <PageWrapper>
                 <HeaderTextContainer>
-                    <h6>{isNoDebts ? "No Debts :)" : "Total debts"}</h6>
+                    <h5>{isNoDebts ? "No Debts :)" : "Total debts"}</h5>
                 </HeaderTextContainer>
                 <ListWrapper>
                     <DebtsBlock></DebtsBlock>
