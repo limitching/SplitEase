@@ -8,19 +8,46 @@ import app from "../../app.js";
 import debug from "debug";
 const log = debug("backend:server");
 import http from "http";
+import { Server } from "socket.io"; // 引入 socket.io
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || "3000");
+const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
+
+/**
+ * Perform socket.io configuration and connection
+ */
+const io = new Server(server, { cors: { origin: "*" } });
+
+io.on("connection", (socket) => {
+    console.log("a user connected (Server)");
+    const group_slug = socket.handshake.query.slug;
+
+    console.log(`A user joined group ${group_slug}`);
+
+    socket.on("join-group", (group_slug) => {
+        console.log(`User joined group: ${group_slug}`);
+        socket.join(group_slug); // join group
+    });
+
+    socket.on("leave-group", (group_slug) => {
+        console.log(`User left group: ${group_slug}`);
+        socket.leave(group_slug); // leave group
+    });
+
+    socket.on("disconnect", () => {
+        console.log("user disconnected");
+    });
+});
 
 /**
  * Listen on provided port, on all network interfaces.
