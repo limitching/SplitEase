@@ -122,6 +122,7 @@ function NavTabs() {
                           )
                         : GROUP_TABS.map(({ name, displayText }, index) => (
                               <LinkTab
+                                  id={`${name}-tab`}
                                   key={name}
                                   label={displayText}
                                   onClick={() => {
@@ -133,7 +134,11 @@ function NavTabs() {
                                   }}
                               />
                           ))}
-                    <Tab label={<MoreVertIcon />} onClick={handleClick} />
+                    <Tab
+                        id="more-button"
+                        label={<MoreVertIcon />}
+                        onClick={handleClick}
+                    />
                     <StyledMenuWrapper>
                         <Menu
                             anchorEl={anchorEl}

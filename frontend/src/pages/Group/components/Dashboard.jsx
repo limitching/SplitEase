@@ -8,7 +8,6 @@ import DoughnutChart from "./DoughnutChart";
 // import HorizontalBarChart from "./HorizontalBarChart";
 import { CURRENCY_OPTIONS, DASHBOARD_BG_COLOR } from "../../../global/constant";
 import CountUp from "react-countup";
-import { Hidden } from "@mui/material";
 
 const Dashboard = styled.div`
     width: 100%;
@@ -123,7 +122,7 @@ const GroupDashboard = () => {
 
     return (
         <UserDashboard>
-            <DashboardWrapper>
+            <DashboardWrapper id="dashboard">
                 {isNoDebts ? (
                     <img
                         alt=""
