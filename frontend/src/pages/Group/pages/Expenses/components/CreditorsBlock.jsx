@@ -94,7 +94,7 @@ const CreditorsBlock = () => {
                     as={Row}
                     style={{ margin: 0, padding: 0 }}
                 >
-                    <Col lg="8">
+                    <Col lg="6">
                         <TextField
                             name="amount"
                             className="mb-3"
@@ -109,7 +109,7 @@ const CreditorsBlock = () => {
                         />
                     </Col>
                     <Col
-                        lg="4"
+                        lg="6"
                         style={{
                             display: "flex",
                             justifyContent: "end",

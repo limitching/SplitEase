@@ -278,13 +278,13 @@ const DebtorsBlock = () => {
 
                 <Form.Label
                     column
-                    lg="8"
+                    lg="6"
                     style={{ display: "flex", alignItems: "center" }}
                 >
                     For whom
                 </Form.Label>
                 <Col
-                    lg="4"
+                    lg="6"
                     style={{
                         display: "flex",
                         justifyContent: "end",

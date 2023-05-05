@@ -147,6 +147,7 @@ const ExpensesBlock = () => {
                         <div key={expense._id}>
                             <ListItem
                                 onClick={() => handleExpenseItemClick(expense)}
+                                id={index === 0 ? "expense-button" : null}
                             >
                                 <ListItemButton>
                                     <ListItemAvatar>

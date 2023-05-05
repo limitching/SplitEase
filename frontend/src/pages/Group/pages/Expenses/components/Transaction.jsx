@@ -188,6 +188,7 @@ const Transaction = () => {
                 }}
             >
                 <Button
+                    id="create-expense"
                     onClickCapture={handleShow}
                     disabled={false}
                     size="large"
