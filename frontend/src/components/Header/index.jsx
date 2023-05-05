@@ -228,7 +228,7 @@ const Header = () => {
                         <Hamburger
                             style={{ width: "540px", maxWidth: "540px" }}
                             onToggle={(toggled) => {
-                                console.log(toggled);
+                                // console.log(toggled);
                                 setMenuOpen(toggled);
                                 // handleToggleHamburger(toggled);
                             }}
