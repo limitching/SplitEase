@@ -1,5 +1,12 @@
 import Joyride, { ACTIONS, EVENTS, LIFECYCLE, STATUS } from "react-joyride";
 
+const STYLES = {
+    options: {
+        primaryColor: "#F3CA40", //修改背景色
+        zIndex: 10000,
+    },
+};
+
 const STEP = [
     {
         title: "Dashboard",
@@ -126,4 +133,4 @@ const handleJoyrideCallback = (data, joyrideState, setJoyrideState) => {
     }
 };
 
-export { STEP, handleJoyrideCallback };
+export { STEP, handleJoyrideCallback, STYLES };

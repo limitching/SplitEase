@@ -14,7 +14,7 @@ import Footer from "../../components/Footer";
 
 import TourIcon from "@mui/icons-material/Tour";
 import JoyRide from "react-joyride";
-import { handleJoyrideCallback, STEP } from "../../utils/joyride";
+import { handleJoyrideCallback, STEP, STYLES } from "../../utils/joyride";
 
 import Fab from "@mui/material/Fab";
 
@@ -178,6 +178,7 @@ const Group = () => {
                             <TourIcon></TourIcon>
                         </Fab>
                         <JoyRide
+                            styles={STYLES}
                             continuous
                             hideCloseButton
                             scrollToFirstStep
