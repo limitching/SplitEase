@@ -11,11 +11,9 @@ import Loading from "../../components/Loading";
 import { GROUP_BG_COLOR } from "../../global/constant";
 import Invitation from "./components/Invitation";
 import Footer from "../../components/Footer";
-
 import TourIcon from "@mui/icons-material/Tour";
 import JoyRide from "react-joyride";
 import { handleJoyrideCallback, STEP, STYLES } from "../../utils/joyride";
-
 import Fab from "@mui/material/Fab";
 
 const WrapperGroupContainer = styled.div`
@@ -67,6 +65,7 @@ const Group = () => {
         redirectToActivities: false,
         redirectToJoin: false,
     });
+
     const navigate = useNavigate();
 
     useEffect(() => {
