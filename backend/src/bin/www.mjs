@@ -41,15 +41,15 @@ io.on("connection", async (socket) => {
 
     //Join group via slug
     socket.join(group_slug);
-    console.log(`A user joined group ${group_slug}`);
+    // console.log(`A user joined group ${group_slug}`);
 
     //=================================================//
-    const rooms = await io.of("/").adapter.allRooms();
-    console.log(rooms); // a Set containing all rooms (across every node)
+    // const rooms = await io.of("/").adapter.allRooms();
+    // console.log(rooms); // a Set containing all rooms (across every node)
     //=================================================//
 
     socket.on("refreshMembers", () => {
-        console.log("refreshMembers");
+        // console.log("refreshMembers");
         // io.to(group_slug).emit("refreshMembers"); // notify group user to update members
         if (redisPub.connected) {
             redisPub.publish("refreshMembers", group_slug, (err) => {
@@ -61,7 +61,7 @@ io.on("connection", async (socket) => {
     });
 
     socket.on("logsChange", () => {
-        console.log("logsChange");
+        // console.log("logsChange");
         // io.to(group_slug).emit("logsChange"); // notify group user to update members
         if (redisPub.connected) {
             redisPub.publish("logsChange", group_slug, (err) => {
@@ -73,7 +73,7 @@ io.on("connection", async (socket) => {
     });
 
     socket.on("expenseChange", () => {
-        console.log("expenseChange");
+        // console.log("expenseChange");
         // io.to(group_slug).emit("expenseChange");
         if (redisPub.connected) {
             redisPub.publish("expenseChange", group_slug, (err) => {
