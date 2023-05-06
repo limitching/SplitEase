@@ -33,7 +33,7 @@ const StyledContainer = styled(Container)`
     display: flex;
     flex-wrap: no-wrap;
     justify-content: space-around;
-    width: 100%;
+    width: calc(100% - 80px);
     align-items: space-around;
     @media (min-width: 1400px) {
         max-width: 95vw;
@@ -222,11 +222,12 @@ const Header = () => {
                 expand="lg"
                 fixed="top"
                 // transparent={isAtRoot ? "true" : undefined}
+                style={{ flexWrap: "no-wrap" }}
             >
                 {isLogin && (
-                    <div style={{ padding: "1rem" }}>
+                    <div style={{ padding: "4px 1rem" }}>
                         <Hamburger
-                            style={{ width: "540px", maxWidth: "540px" }}
+                            style={{ padding: "0" }}
                             onToggle={(toggled) => {
                                 // console.log(toggled);
                                 setMenuOpen(toggled);
