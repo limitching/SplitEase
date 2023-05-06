@@ -26,6 +26,13 @@ const WrapperGroupContainer = styled.div`
     background-color: ${GROUP_BG_COLOR};
     // border: 2px solid black;
 `;
+
+const ErrorContainer = styled.div`
+    width: 100vw;
+    height: calc(100vh - 55px - 56px);
+    background-color: ${GROUP_BG_COLOR};
+`;
+
 const WrapperOutlet = styled.div`
     // padding-bottom: 55px;
     width: 100vw;
@@ -196,7 +203,10 @@ const Group = () => {
                 )
             ) : (
                 <WrapperGroupContainer>
-                    <Error></Error>
+                    <ErrorContainer>
+                        <Error></Error>
+                    </ErrorContainer>
+                    <Footer></Footer>
                 </WrapperGroupContainer>
             )}
         </ExpenseContextProvider>
