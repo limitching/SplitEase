@@ -34,7 +34,7 @@ const ModifyGroupModal = ({
 }) => {
     const navigate = useNavigate();
     const { user, jwtToken, setGroupChange } = useContext(AuthContext);
-    const { group } = useContext(GroupContext);
+    const { group, socket } = useContext(GroupContext);
     const [isCheck, setIsCheck] = useState(
         Boolean(Number(group.minimized_debts))
     );
@@ -175,6 +175,7 @@ const ModifyGroupModal = ({
             description: "",
         });
         handleCloseModifyGroupModal();
+        socket.emit("logsChange");
         setGroupChange(true);
     };
 

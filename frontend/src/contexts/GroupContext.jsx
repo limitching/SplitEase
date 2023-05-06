@@ -153,27 +153,34 @@ const GroupContextProvider = ({ children }) => {
     );
 
     useEffect(() => {
-        const newSocket = io(API_HOST, { query: { slug } });
-        socketRef.current = newSocket;
-        setSocket(socketRef.current);
-        newSocket.on("connection", () => {
-            console.log("Connected to server(Client)");
-        });
+        if (jwtToken) {
+            const newSocket = io(API_HOST, { query: { slug } });
+            socketRef.current = newSocket;
+            setSocket(socketRef.current);
+            newSocket.on("connection", () => {
+                console.log("Connected to server(Client)");
+            });
 
-        newSocket.on("refreshMembers", () => {
-            // console.log("got refreshMembers");
-            setMembersChange(true);
-        });
+            newSocket.on("refreshMembers", () => {
+                // console.log("got refreshMembers");
+                setMembersChange(true);
+            });
 
-        newSocket.on("expenseChange", () => {
-            // console.log("expense Change~");
-            setExpensesChanged(true);
-        });
+            newSocket.on("expenseChange", () => {
+                // console.log("expense Change~");
+                setExpensesChanged(true);
+            });
 
-        return () => {
-            newSocket.disconnect();
-        };
-    }, [slug]);
+            newSocket.on("logsChange", () => {
+                // console.log("expense Change~");
+                fetchGroupLogs(jwtToken, group_id, setLogs);
+            });
+
+            return () => {
+                newSocket.disconnect();
+            };
+        }
+    }, [slug, jwtToken, group_id]);
 
     useMemo(() => {
         const searchParams = new URLSearchParams(location.search);

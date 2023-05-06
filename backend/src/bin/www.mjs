@@ -42,6 +42,11 @@ io.on("connection", (socket) => {
         io.to(group_slug).emit("refreshMembers"); // notify group user to update members
     });
 
+    socket.on("logsChange", () => {
+        console.log("logsChange");
+        io.to(group_slug).emit("logsChange"); // notify group user to update members
+    });
+
     socket.on("expenseChange", () => {
         console.log("expenseChange");
         io.to(group_slug).emit("expenseChange"); // notify group user to update members
