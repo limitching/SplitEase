@@ -158,7 +158,7 @@ const GroupContextProvider = ({ children }) => {
             socketRef.current = newSocket;
             setSocket(socketRef.current);
             newSocket.on("connection", () => {
-                console.log("Connected to server(Client)");
+                console.log("Web socket Connected to server(Client)");
             });
 
             newSocket.on("refreshMembers", () => {
@@ -167,14 +167,15 @@ const GroupContextProvider = ({ children }) => {
             });
 
             newSocket.on("expenseChange", () => {
-                console.log("expense Change~");
+                // console.log("expense Change~");
                 setExpensesChanged(true);
             });
 
             newSocket.on("logsChange", () => {
                 if (group?.id) {
-                    // console.log("expense Change~");
-                    fetchGroupLogs(jwtToken, group.id, setLogs);
+                    // console.log("logsChange~");
+                    setExpensesChanged(true);
+                    // fetchGroupLogs(jwtToken, group.id, setLogs);
                 }
             });
 

@@ -255,4 +255,4 @@ const calculateTransaction = (graph) => {
     return transactions;
 };
 
-export { minimizeDebts };
+export { minimizeDebts, minimizeTransaction };

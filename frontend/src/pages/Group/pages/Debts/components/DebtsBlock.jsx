@@ -43,11 +43,11 @@ const DebtsBlock = () => {
                                 <ListItem>
                                     <ListItemButton>
                                         <ListItemAvatar>
-                                            <Tooltip title={debtor.name}>
+                                            <Tooltip title={debtor?.name}>
                                                 <Avatar
-                                                    alt={`${debtor.name}`}
+                                                    alt={`${debtor?.name}`}
                                                     src={
-                                                        debtor.image
+                                                        debtor?.image
                                                             ? debtor.image
                                                             : ANIMAL_AVATAR[
                                                                   indexMap.get(
@@ -64,7 +64,7 @@ const DebtsBlock = () => {
                                         </ListItemAvatar>
                                         <Container>
                                             <ListItemText
-                                                primary={debtor.name}
+                                                primary={debtor?.name}
                                                 secondary={`${
                                                     currency.symbol
                                                 } ${Number(
@@ -87,7 +87,7 @@ const DebtsBlock = () => {
                                         </Container>
                                         <Container>
                                             <ListItemText
-                                                primary={creditor.name}
+                                                primary={creditor?.name}
                                                 sx={{ textAlign: "right" }}
                                                 primaryTypographyProps={{
                                                     maxWidth: "15vw",
@@ -99,11 +99,11 @@ const DebtsBlock = () => {
                                         </Container>
 
                                         <ListItemAvatar>
-                                            <Tooltip title={creditor.name}>
+                                            <Tooltip title={creditor?.name}>
                                                 <Avatar
-                                                    alt={creditor.name}
+                                                    alt={creditor?.name}
                                                     src={
-                                                        creditor.image
+                                                        creditor?.image
                                                             ? creditor.image
                                                             : ANIMAL_AVATAR[
                                                                   indexMap.get(

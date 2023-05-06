@@ -73,8 +73,31 @@ function NavTabs() {
     };
 
     const [showModifyGroupModal, setShowModifyGroupModal] = useState(false);
+    const [modifiedGroupData, setModifiedGroupData] = useState({
+        id: group.id,
+        name: group.name,
+        default_currency: group.default_currency,
+        description: group.description,
+        minimized_debts: Number(group.minimized_debts),
+    });
+    useEffect(() => {
+        setModifiedGroupData({
+            id: group.id,
+            name: group.name,
+            default_currency: group.default_currency,
+            description: group.description,
+            minimized_debts: Number(group.minimized_debts),
+        });
+    }, [group]);
 
     const handleOpenModifyGroupModal = () => {
+        setModifiedGroupData({
+            id: group.id,
+            name: group.name,
+            default_currency: group.default_currency,
+            description: group.description,
+            minimized_debts: Number(group.minimized_debts),
+        });
         setShowModifyGroupModal(true);
     };
 
@@ -166,6 +189,8 @@ function NavTabs() {
             <ModifyGroupModal
                 showModifyGroupModal={showModifyGroupModal}
                 handleCloseModifyGroupModal={handleCloseModifyGroupModal}
+                modifiedGroupData={modifiedGroupData}
+                setModifiedGroupData={setModifiedGroupData}
             ></ModifyGroupModal>
         </Container>
     );
