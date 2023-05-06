@@ -153,7 +153,7 @@ const GroupContextProvider = ({ children }) => {
     );
 
     useEffect(() => {
-        if (jwtToken) {
+        if (jwtToken && slug) {
             const newSocket = io(API_HOST, { query: { slug } });
             socketRef.current = newSocket;
             setSocket(socketRef.current);
@@ -167,20 +167,23 @@ const GroupContextProvider = ({ children }) => {
             });
 
             newSocket.on("expenseChange", () => {
-                // console.log("expense Change~");
+                console.log("expense Change~");
                 setExpensesChanged(true);
             });
 
             newSocket.on("logsChange", () => {
-                // console.log("expense Change~");
-                fetchGroupLogs(jwtToken, group_id, setLogs);
+                if (group?.id) {
+                    // console.log("expense Change~");
+                    fetchGroupLogs(jwtToken, group.id, setLogs);
+                }
             });
 
             return () => {
                 newSocket.disconnect();
             };
         }
-    }, [slug, jwtToken, group_id]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [slug, jwtToken]);
 
     useMemo(() => {
         const searchParams = new URLSearchParams(location.search);
