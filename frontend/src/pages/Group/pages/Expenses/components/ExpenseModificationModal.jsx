@@ -31,7 +31,8 @@ const ModalHeader = styled.h5`
 `;
 
 const ExpenseModificationModal = () => {
-    const { memberMap, group_id, members, socket } = useContext(GroupContext);
+    const { memberMap, group_id, members, socket, setExpensesChanged } =
+        useContext(GroupContext);
     const {
         checked,
         subValues,
@@ -121,7 +122,12 @@ const ExpenseModificationModal = () => {
 
         const response = await api.updateExpense(formData, jwtToken);
         if (response.status === 200) {
-            socket.emit("expenseChange");
+            if (socket.connected) {
+                socket.emit("expenseChange");
+            } else {
+                setExpensesChanged(true);
+            }
+
             // handleClickVariant("Expense Created successfully!", "success");
             MySwal.fire({
                 title: <p>{response.data.msg}</p>,
@@ -166,7 +172,11 @@ const ExpenseModificationModal = () => {
             jwtToken
         );
         if (response.status === 200) {
-            socket.emit("expenseChange");
+            if (socket.connected) {
+                socket.emit("expenseChange");
+            } else {
+                setExpensesChanged(true);
+            }
             // handleClickVariant("Expense Created successfully!", "success");
             MySwal.fire({
                 title: <p>{response.data.msg}</p>,

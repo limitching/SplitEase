@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { useContext, useState, useRef, useEffect } from "react";
 import { GroupContext } from "../../contexts/GroupContext";
 import { AuthContext } from "../../contexts/AuthContext";
-import Loading from "../../components/Loading";
+import Loading from "../../components/Preloader/Preloader";
 import { GROUP_BG_COLOR } from "../../global/constant";
 import Invitation from "./components/Invitation";
 import Footer from "../../components/Footer";

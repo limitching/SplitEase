@@ -6,7 +6,7 @@ import { GroupContext } from "../../contexts/GroupContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Divide as Hamburger } from "hamburger-react";
 import GroupsIcon from "@mui/icons-material/Groups";
-import HistoryIcon from "@mui/icons-material/History";
+// import HistoryIcon from "@mui/icons-material/History";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
 import Box from "@mui/material/Box";
@@ -152,6 +152,7 @@ const Header = () => {
                     <GroupLink
                         key={group.slug}
                         to={`/group/${group.slug}/expenses`}
+                        onClick={() => setMenuOpen(false)}
                     >
                         <ListItem alignItems="center" disablePadding>
                             <ListItemButton>
@@ -173,7 +174,7 @@ const Header = () => {
                 ))}
             </List>
             <Divider />
-            <List>
+            {/* <List>
                 <ListItem>
                     <ListItemIcon>
                         <HistoryIcon />
@@ -184,6 +185,7 @@ const Header = () => {
                     <GroupLink
                         key={group.slug}
                         to={`/group/${group.slug}/expenses`}
+                        onClick={() => setMenuOpen(false)}
                     >
                         <ListItem alignItems="center" disablePadding>
                             <ListItemButton>
@@ -203,7 +205,7 @@ const Header = () => {
                         </ListItem>
                     </GroupLink>
                 ))}
-            </List>
+            </List> */}
         </Box>
     );
 

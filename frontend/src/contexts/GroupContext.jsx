@@ -236,7 +236,6 @@ const GroupContextProvider = ({ children }) => {
     useEffect(() => {
         const fetchData = async () => {
             if (expensesChanged) {
-                setIsLoading(true);
                 fetchGroupDebts(group_id, setDebts, jwtToken);
                 fetchGroupLogs(jwtToken, group_id, setLogs);
                 await fetchSettlingGroupDebts(
@@ -245,7 +244,6 @@ const GroupContextProvider = ({ children }) => {
                     jwtToken
                 );
                 fetchGroupExpenses(group_id, setGroupExpense, jwtToken);
-                setIsLoading(false);
                 setExpensesChanged(false);
             }
         };

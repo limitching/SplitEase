@@ -56,7 +56,8 @@ const Transaction = () => {
     } = useContext(ExpenseContext);
     const { user, jwtToken } = useContext(AuthContext);
     const { setSelectedExpense } = useContext(ExpenseContext);
-    const { group, showFixedButton, socket } = useContext(GroupContext);
+    const { group, showFixedButton, socket, setExpensesChanged } =
+        useContext(GroupContext);
     const [hasError, setHasError] = useState(false);
 
     const handleClose = () => setShowTransaction(false);
@@ -138,7 +139,11 @@ const Transaction = () => {
 
         const response = await api.createExpense(formData, jwtToken);
         if (response.status === 200) {
-            socket.emit("expenseChange");
+            if (socket.connected) {
+                socket.emit("expenseChange");
+            } else {
+                setExpensesChanged(true);
+            }
             // handleClickVariant("Expense Created successfully!", "success");
             MySwal.fire({
                 title: <p>Expense Created successfully!</p>,
