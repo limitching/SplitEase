@@ -17,7 +17,6 @@ import { GroupContext } from "../../../contexts/GroupContext";
 import { api } from "../../../utils/api";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { useEffect } from "react";
 const MySwal = withReactContent(Swal);
 
 const StyledModalBody = styled(Modal.Body)`
@@ -31,36 +30,39 @@ const StyledModalBody = styled(Modal.Body)`
 const ModifyGroupModal = ({
     showModifyGroupModal,
     handleCloseModifyGroupModal,
+    modifiedGroupData,
+    setModifiedGroupData,
 }) => {
     const navigate = useNavigate();
     const { user, jwtToken, setGroupChange } = useContext(AuthContext);
     const { group, socket } = useContext(GroupContext);
-    const [isCheck, setIsCheck] = useState(
-        Boolean(Number(group.minimized_debts))
-    );
+
     const [error, setError] = useState({
         name: undefined,
         description: undefined,
     });
     const [alertOpen, setAlertOpen] = useState(false);
 
-    const [modifiedGroupData, setModifiedGroupData] = useState({
-        id: group.id,
-        name: group.name,
-        default_currency: group.default_currency,
-        description: group.description,
-        minimized_debts: Number(group.minimized_debts),
-    });
+    // const [modifiedGroupData, setModifiedGroupData] = useState({
+    //     id: group.id,
+    //     name: group.name,
+    //     default_currency: group.default_currency,
+    //     description: group.description,
+    //     minimized_debts: Number(group.minimized_debts),
+    // });
+    // console.log("group", group);
+    // console.log("modal", modifiedGroupData);
+    // console.log("value", Boolean(modifiedGroupData.minimized_debts));
 
-    useEffect(() => {
-        setModifiedGroupData({
-            id: group.id,
-            name: group.name,
-            default_currency: group.default_currency,
-            description: group.description,
-            minimized_debts: Number(group.minimized_debts),
-        });
-    }, [group]);
+    // useEffect(() => {
+    //     setModifiedGroupData({
+    //         id: group.id,
+    //         name: group.name,
+    //         default_currency: group.default_currency,
+    //         description: group.description,
+    //         minimized_debts: Number(group.minimized_debts),
+    //     });
+    // }, [group]);
 
     const handleAlertOpen = () => {
         setAlertOpen(true);
@@ -70,14 +72,12 @@ const ModifyGroupModal = ({
     };
 
     const handleChecked = (event) => {
-        if (isCheck) {
-            setIsCheck(false);
+        if (Boolean(modifiedGroupData.minimized_debts)) {
             setModifiedGroupData({
                 ...modifiedGroupData,
                 minimized_debts: Number(false),
             });
         } else {
-            setIsCheck(true);
             setModifiedGroupData({
                 ...modifiedGroupData,
                 minimized_debts: Number(true),
@@ -181,7 +181,6 @@ const ModifyGroupModal = ({
 
     const handleGroupArchive = async () => {
         handleAlertClose();
-        console.log(group.id);
         const response = await api.archiveGroup(jwtToken, group.id);
 
         setGroupChange(true);
@@ -194,6 +193,8 @@ const ModifyGroupModal = ({
         });
         navigate("/home");
     };
+    // console.log(typeof modifiedGroupData.minimized_debts);
+    // console.log(Boolean(0));
 
     return (
         <>
@@ -250,7 +251,9 @@ const ModifyGroupModal = ({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={isCheck}
+                                        checked={Boolean(
+                                            modifiedGroupData.minimized_debts
+                                        )}
                                         onChange={(event) => {
                                             handleChecked(event);
                                         }}
