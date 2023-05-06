@@ -35,7 +35,7 @@ const Settlement = () => {
     });
     const [alertOpen, setAlertOpen] = useState(false);
     const { jwtToken } = useContext(AuthContext);
-    const { group_id, setExpensesChanged, memberMap, settlingDebts } =
+    const { group_id, setExpensesChanged, memberMap, settlingDebts, group } =
         useContext(GroupContext);
     const handleAlertOpen = () => {
         setAlertOpen(true);
@@ -100,12 +100,23 @@ const Settlement = () => {
                             width="500px"
                         ></img>
                     </>
+                ) : group.minimized_debts === "1" ? (
+                    <>
+                        <HeaderTextContainer>
+                            <h6>Debts in settling process</h6>
+                        </HeaderTextContainer>
+                        <ListWrapper>
+                            <SettlingDebtsBlock
+                                setSelectDebt={setSelectDebt}
+                                handleMarkAsSettled={handleMarkAsSettled}
+                                handleAlertOpen={handleAlertOpen}
+                            ></SettlingDebtsBlock>
+                        </ListWrapper>
+                    </>
                 ) : (
                     <>
                         <HeaderTextContainer>
-                            <h6>
-                                Settling debts (Debts in settling process...)
-                            </h6>
+                            <h6>Debts in settling process (not minimized)</h6>
                         </HeaderTextContainer>
                         <ListWrapper>
                             <SettlingDebtsBlock

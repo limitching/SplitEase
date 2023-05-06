@@ -101,7 +101,13 @@ const Debts = () => {
         <>
             <PageWrapper>
                 <HeaderTextContainer>
-                    <h5>{isNoDebts ? "No Debts :)" : "Total debts"}</h5>
+                    <h5>
+                        {isNoDebts
+                            ? "No Debts :)"
+                            : group.minimized_debts === "1"
+                            ? "Total debts"
+                            : "Total debts (not minimized)"}
+                    </h5>
                 </HeaderTextContainer>
                 <ListWrapper>
                     <DebtsBlock></DebtsBlock>
