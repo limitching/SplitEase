@@ -29,6 +29,12 @@ const WrapperGroupContainer = styled.div`
 
 const ErrorContainer = styled.div`
     width: 100vw;
+    height: calc(100vh - 55px);
+    background-color: ${GROUP_BG_COLOR};
+`;
+
+const InvitationContainer = styled.div`
+    width: 100vw;
     height: calc(100vh - 55px - 56px);
     background-color: ${GROUP_BG_COLOR};
 `;
@@ -158,7 +164,10 @@ const Group = () => {
             {Object.keys(group).length !== 0 ? (
                 isPublicVisit ? (
                     <WrapperGroupContainer>
-                        <Invitation></Invitation>
+                        <InvitationContainer>
+                            <Invitation></Invitation>
+                        </InvitationContainer>
+                        <Footer></Footer>
                     </WrapperGroupContainer>
                 ) : (
                     <WrapperGroupContainer>
