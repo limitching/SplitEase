@@ -6,7 +6,7 @@ import { GroupContext } from "../../contexts/GroupContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Divide as Hamburger } from "hamburger-react";
 import GroupsIcon from "@mui/icons-material/Groups";
-import HistoryIcon from "@mui/icons-material/History";
+// import HistoryIcon from "@mui/icons-material/History";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
 import Box from "@mui/material/Box";
@@ -33,7 +33,7 @@ const StyledContainer = styled(Container)`
     display: flex;
     flex-wrap: no-wrap;
     justify-content: space-around;
-    width: 100%;
+    width: calc(100% - 80px);
     align-items: space-around;
     @media (min-width: 1400px) {
         max-width: 95vw;
@@ -129,29 +129,36 @@ const Header = () => {
                     padding: "12px 16px",
                 }}
             >
-                <Navbar.Brand>
-                    <img
-                        src="/assets/logo.svg"
-                        width="auto"
-                        height="30"
-                        alt="SplitEase logo"
-                    />
-                </Navbar.Brand>
+                <StyledLink to={"/"} onClick={() => setMenuOpen(false)}>
+                    <Navbar.Brand>
+                        <img
+                            src="/assets/logo.svg"
+                            width="auto"
+                            height="30"
+                            alt="SplitEase logo"
+                        />
+                    </Navbar.Brand>
+                </StyledLink>
             </Container>
             <Divider />
 
             <List>
-                <ListItem>
-                    <ListItemIcon>
-                        <GroupsIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="My Groups" />
-                </ListItem>
+                <StyledLink to={"/home"} onClick={() => setMenuOpen(false)}>
+                    <ListItem alignItems="center" disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <GroupsIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="My Groups" />
+                        </ListItemButton>
+                    </ListItem>
+                </StyledLink>
 
                 {userGroups.map((group, index) => (
                     <GroupLink
                         key={group.slug}
                         to={`/group/${group.slug}/expenses`}
+                        onClick={() => setMenuOpen(false)}
                     >
                         <ListItem alignItems="center" disablePadding>
                             <ListItemButton>
@@ -173,7 +180,7 @@ const Header = () => {
                 ))}
             </List>
             <Divider />
-            <List>
+            {/* <List>
                 <ListItem>
                     <ListItemIcon>
                         <HistoryIcon />
@@ -184,6 +191,7 @@ const Header = () => {
                     <GroupLink
                         key={group.slug}
                         to={`/group/${group.slug}/expenses`}
+                        onClick={() => setMenuOpen(false)}
                     >
                         <ListItem alignItems="center" disablePadding>
                             <ListItemButton>
@@ -203,7 +211,7 @@ const Header = () => {
                         </ListItem>
                     </GroupLink>
                 ))}
-            </List>
+            </List> */}
         </Box>
     );
 
@@ -222,11 +230,12 @@ const Header = () => {
                 expand="lg"
                 fixed="top"
                 // transparent={isAtRoot ? "true" : undefined}
+                style={{ flexWrap: "no-wrap" }}
             >
                 {isLogin && (
-                    <div style={{ padding: "1rem" }}>
+                    <div style={{ padding: "4px 1rem" }}>
                         <Hamburger
-                            style={{ width: "540px", maxWidth: "540px" }}
+                            style={{ padding: "0" }}
                             onToggle={(toggled) => {
                                 // console.log(toggled);
                                 setMenuOpen(toggled);

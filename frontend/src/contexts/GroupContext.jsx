@@ -153,27 +153,37 @@ const GroupContextProvider = ({ children }) => {
     );
 
     useEffect(() => {
-        const newSocket = io(API_HOST, { query: { slug } });
-        socketRef.current = newSocket;
-        setSocket(socketRef.current);
-        newSocket.on("connection", () => {
-            console.log("Connected to server(Client)");
-        });
+        if (jwtToken && slug) {
+            const newSocket = io(API_HOST, { query: { slug } });
+            socketRef.current = newSocket;
+            setSocket(socketRef.current);
+            newSocket.on("connection", () => {
+                console.log("Connected to server(Client)");
+            });
 
-        newSocket.on("refreshMembers", () => {
-            // console.log("got refreshMembers");
-            setMembersChange(true);
-        });
+            newSocket.on("refreshMembers", () => {
+                // console.log("got refreshMembers");
+                setMembersChange(true);
+            });
 
-        newSocket.on("expenseChange", () => {
-            // console.log("expense Change~");
-            setExpensesChanged(true);
-        });
+            newSocket.on("expenseChange", () => {
+                console.log("expense Change~");
+                setExpensesChanged(true);
+            });
 
-        return () => {
-            newSocket.disconnect();
-        };
-    }, [slug]);
+            newSocket.on("logsChange", () => {
+                if (group?.id) {
+                    // console.log("expense Change~");
+                    fetchGroupLogs(jwtToken, group.id, setLogs);
+                }
+            });
+
+            return () => {
+                newSocket.disconnect();
+            };
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [slug, jwtToken]);
 
     useMemo(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -229,7 +239,6 @@ const GroupContextProvider = ({ children }) => {
     useEffect(() => {
         const fetchData = async () => {
             if (expensesChanged) {
-                setIsLoading(true);
                 fetchGroupDebts(group_id, setDebts, jwtToken);
                 fetchGroupLogs(jwtToken, group_id, setLogs);
                 await fetchSettlingGroupDebts(
@@ -238,7 +247,6 @@ const GroupContextProvider = ({ children }) => {
                     jwtToken
                 );
                 fetchGroupExpenses(group_id, setGroupExpense, jwtToken);
-                setIsLoading(false);
                 setExpensesChanged(false);
             }
         };

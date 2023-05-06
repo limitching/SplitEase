@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { useContext, useState, useRef, useEffect } from "react";
 import { GroupContext } from "../../contexts/GroupContext";
 import { AuthContext } from "../../contexts/AuthContext";
-import Loading from "../../components/Loading";
+import Loading from "../../components/Preloader/Preloader";
 import { GROUP_BG_COLOR } from "../../global/constant";
 import Invitation from "./components/Invitation";
 import Footer from "../../components/Footer";
@@ -26,6 +26,19 @@ const WrapperGroupContainer = styled.div`
     background-color: ${GROUP_BG_COLOR};
     // border: 2px solid black;
 `;
+
+const ErrorContainer = styled.div`
+    width: 100vw;
+    height: calc(100vh - 55px);
+    background-color: ${GROUP_BG_COLOR};
+`;
+
+const InvitationContainer = styled.div`
+    width: 100vw;
+    height: calc(100vh - 55px - 56px);
+    background-color: ${GROUP_BG_COLOR};
+`;
+
 const WrapperOutlet = styled.div`
     // padding-bottom: 55px;
     width: 100vw;
@@ -151,7 +164,10 @@ const Group = () => {
             {Object.keys(group).length !== 0 ? (
                 isPublicVisit ? (
                     <WrapperGroupContainer>
-                        <Invitation></Invitation>
+                        <InvitationContainer>
+                            <Invitation></Invitation>
+                        </InvitationContainer>
+                        <Footer></Footer>
                     </WrapperGroupContainer>
                 ) : (
                     <WrapperGroupContainer>
@@ -196,7 +212,10 @@ const Group = () => {
                 )
             ) : (
                 <WrapperGroupContainer>
-                    <Error></Error>
+                    <ErrorContainer>
+                        <Error></Error>
+                    </ErrorContainer>
+                    <Footer></Footer>
                 </WrapperGroupContainer>
             )}
         </ExpenseContextProvider>
