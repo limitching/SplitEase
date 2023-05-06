@@ -51,25 +51,37 @@ io.on("connection", async (socket) => {
     socket.on("refreshMembers", () => {
         console.log("refreshMembers");
         // io.to(group_slug).emit("refreshMembers"); // notify group user to update members
-        redisPub.publish("refreshMembers", group_slug, (err) => {
-            if (err) console.error("Redis publish error:", err);
-        });
+        if (redisPub.connected) {
+            redisPub.publish("refreshMembers", group_slug, (err) => {
+                if (err) console.error("Redis publish error:", err);
+            });
+        } else {
+            io.to(group_slug).emit("refreshMembers");
+        }
     });
 
     socket.on("logsChange", () => {
         console.log("logsChange");
         // io.to(group_slug).emit("logsChange"); // notify group user to update members
-        redisPub.publish("logsChange", group_slug, (err) => {
-            if (err) console.error("Redis publish error:", err);
-        });
+        if (redisPub.connected) {
+            redisPub.publish("logsChange", group_slug, (err) => {
+                if (err) console.error("Redis publish error:", err);
+            });
+        } else {
+            io.to(group_slug).emit("logsChange");
+        }
     });
 
     socket.on("expenseChange", () => {
         console.log("expenseChange");
         // io.to(group_slug).emit("expenseChange");
-        redisPub.publish("expenseChange", group_slug, (err) => {
-            if (err) console.error("Redis publish error:", err);
-        });
+        if (redisPub.connected) {
+            redisPub.publish("expenseChange", group_slug, (err) => {
+                if (err) console.error("Redis publish error:", err);
+            });
+        } else {
+            io.to(group_slug).emit("expenseChange");
+        }
     });
 
     socket.on("leave-group", (group_slug) => {
