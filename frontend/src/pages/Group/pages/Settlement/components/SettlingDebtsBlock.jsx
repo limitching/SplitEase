@@ -82,7 +82,8 @@ const SettlingDebtsBlock = ({ handleAlertOpen, setSelectDebt }) => {
                         return transactions.map((transaction, index) => {
                             const debtor = members[transaction[0]];
                             const creditor = members[transaction[1]];
-                            const debtAmounts = transaction[2];
+                            const debtAmounts = Number(transaction[2]);
+                            // const debtAmounts = transaction[2];
 
                             return (
                                 <div key={"settlingDebtsList" + index}>
@@ -121,9 +122,9 @@ const SettlingDebtsBlock = ({ handleAlertOpen, setSelectDebt }) => {
                                             </ListItemAvatar>
                                             <Container>
                                                 <ListItemText
-                                                    primary={debtor.name}
+                                                    primary={debtor?.name}
                                                     secondary={`${
-                                                        currency.symbol
+                                                        currency?.symbol
                                                     } ${Number(
                                                         debtAmounts.toFixed(2)
                                                     )}`}
