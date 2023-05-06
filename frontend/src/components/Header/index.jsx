@@ -129,24 +129,30 @@ const Header = () => {
                     padding: "12px 16px",
                 }}
             >
-                <Navbar.Brand>
-                    <img
-                        src="/assets/logo.svg"
-                        width="auto"
-                        height="30"
-                        alt="SplitEase logo"
-                    />
-                </Navbar.Brand>
+                <StyledLink to={"/"} onClick={() => setMenuOpen(false)}>
+                    <Navbar.Brand>
+                        <img
+                            src="/assets/logo.svg"
+                            width="auto"
+                            height="30"
+                            alt="SplitEase logo"
+                        />
+                    </Navbar.Brand>
+                </StyledLink>
             </Container>
             <Divider />
 
             <List>
-                <ListItem>
-                    <ListItemIcon>
-                        <GroupsIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="My Groups" />
-                </ListItem>
+                <StyledLink to={"/home"} onClick={() => setMenuOpen(false)}>
+                    <ListItem alignItems="center" disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <GroupsIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="My Groups" />
+                        </ListItemButton>
+                    </ListItem>
+                </StyledLink>
 
                 {userGroups.map((group, index) => (
                     <GroupLink
