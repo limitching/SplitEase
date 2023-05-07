@@ -93,10 +93,12 @@ const ExpensesBlock = () => {
 
         // Convert GMT datetime to local datetime
         const gmtDate = new Date(expense.date);
-        const timeZoneOffset = gmtDate.getTimezoneOffset() * 60 * 1000; //offset in milliseconds
-        const localISOTime = new Date(gmtDate - timeZoneOffset)
-            .toISOString()
-            .substring(0, 16);
+        // console.log(expense.date);
+        // const timeZoneOffset = gmtDate.getTimezoneOffset() * 60 * 1000; //offset in milliseconds
+        // const localISOTime = new Date(gmtDate - timeZoneOffset)
+        //     .toISOString()
+        //     .substring(0, 16);
+        const localISOTime = new Date(gmtDate).toISOString().substring(0, 16);
 
         setExpenseTime(localISOTime);
         setDescription(expense.description);
