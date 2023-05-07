@@ -229,6 +229,8 @@ function minimizeTransaction(graph) {
         }
     }
 
+    console.log("graph", graph);
+
     // Determine who owes how much money to whom
     let transactions = [];
     for (let i = 0; i < graph.length; i++) {
