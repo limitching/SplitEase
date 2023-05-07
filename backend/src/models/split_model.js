@@ -427,17 +427,25 @@ function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
     const uniqueSubGroups = Array.from(uniqueSet).map(JSON.parse);
     console.log("us", uniqueSet);
     console.log("ug", Array.from(uniqueSet).map(JSON.parse));
-    const filteredSubGroups = uniqueSubGroups.filter((subGroup1) => {
-        // 檢查是否有其他子陣列包含此子陣列
-        return !uniqueSubGroups.some((subGroup2) => {
-            if (subGroup1 === subGroup2) {
-                // 若比較的兩個子陣列是同一個，則不需要濾掉
-                return false;
+    // 使用 Set 存儲不可重複的值
+    const excludeSet = new Set();
+    // 使用 nested for loop 檢查子陣列是否被包含
+    for (let i = 0; i < uniqueSubGroups.length; i++) {
+        for (let j = 0; j < uniqueSubGroups.length; j++) {
+            if (i === j) continue; // 跳過比較同一個子陣列的情況
+            const isSubset = uniqueSubGroups[j].every((value) =>
+                uniqueSubGroups[i].includes(value)
+            );
+            if (isSubset) {
+                excludeSet.add(JSON.stringify(uniqueSubGroups[j]));
             }
-            // 檢查 subGroup1 是否為 subGroup2 的子集
-            return subGroup1.every((value) => subGroup2.includes(value));
-        });
-    });
+        }
+    }
+
+    // 過濾掉被包含的子陣列
+    const filteredSubGroups = uniqueSubGroups.filter(
+        (subGroup) => !excludeSet.has(JSON.stringify(subGroup))
+    );
     console.log("fg", filteredSubGroups);
     // return Array.from(subGroupsSet);
     return uniqueSubGroups;
