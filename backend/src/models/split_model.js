@@ -230,8 +230,10 @@ function minimizeTransaction(graph) {
     }
 
     console.log("graph", graph);
-    const Net = calculateNet(graph);
-    console.log(Net);
+    const nets = calculateNet(graph);
+    console.log(nets);
+    const transactions = dpSuggestion(nets);
+    console.log("transactions", transactions);
 
     // //TODO:
     // let residualGraph = buildResidualGraph(graph);
@@ -245,14 +247,14 @@ function minimizeTransaction(graph) {
     // console.log("new residual", residualGraph);
 
     // Determine who owes how much money to whom
-    let transactions = [];
-    for (let i = 0; i < graph.length; i++) {
-        for (let j = 0; j < graph.length; j++) {
-            if (graph[i][j] !== 0) {
-                transactions.push([j, i, graph[i][j]]);
-            }
-        }
-    }
+    // let transactions = [];
+    // for (let i = 0; i < graph.length; i++) {
+    //     for (let j = 0; j < graph.length; j++) {
+    //         if (graph[i][j] !== 0) {
+    //             transactions.push([j, i, graph[i][j]]);
+    //         }
+    //     }
+    // }
     return transactions;
 }
 
@@ -282,6 +284,175 @@ function calculateNet(graph) {
     // Debug
     // console.log("Nets:", Nets);
     return Nets;
+}
+
+function dpSuggestion(graph) {
+    const nets = calculateNet(graph);
+    const { subGroups, dp } = dpMinTransferStep(nets);
+    const nonDivisibleSubGroups = findNonDivisibleSubGroups(
+        subGroups,
+        dp,
+        nets
+    );
+    const subNets = getSubGroupsNets(nonDivisibleSubGroups, nets);
+    const suggestion = getSettleUpSuggestion(subNets);
+    return suggestion;
+}
+
+function dpMinTransferStep(nets) {
+    const N = nets.length;
+    const dp = new Array(1 << N).fill(0);
+    const sumValue = new Array(1 << N).fill(0);
+    const subGroups = [];
+    for (let currentState = 1; currentState < 1 << N; currentState++) {
+        let bit = 1;
+        let maxGroupCount = 0;
+        for (let i = 0; i < N; i++) {
+            if (currentState & bit) {
+                sumValue[currentState] += nets[i];
+                const lastState = currentState ^ bit;
+                // console.log(
+                //     "currentState : ",
+                //     currentState.toString(2).padStart(N, 0)
+                // );
+                // console.log("Bit          : ", bit.toString(2).padStart(N, 0));
+                // console.log(
+                //     "lastState    : ",
+                //     lastState.toString(2).padStart(N, 0)
+                // );
+                // console.log("=================");
+                maxGroupCount = Math.max(maxGroupCount, dp[lastState]);
+            }
+            bit <<= 1;
+        }
+
+        if (sumValue[currentState] === 0) {
+            dp[currentState] = maxGroupCount + 1;
+
+            if (currentState !== (1 << N) - 1) {
+                const binaryStr = currentState.toString(2).padStart(N, 0);
+                const subGroupMembers = [];
+                const subNets = new Array(N).fill(0);
+                for (let i = binaryStr.length; i >= 0; i--) {
+                    if (binaryStr[i] === "1") {
+                        subGroupMembers.push(binaryStr.length - 1 - i);
+                        subNets[binaryStr.length - 1 - i] =
+                            nets[binaryStr.length - 1 - i];
+                    }
+                }
+                subGroups.push(subGroupMembers);
+
+                // Log
+                console.log("Find new group: ", currentState);
+                console.log(
+                    "Binary: ",
+                    currentState.toString(2).padStart(N, 0)
+                );
+                console.log("subGroupMembers", subGroupMembers);
+                console.log("subNets", subNets);
+                console.log("=============");
+            }
+        } else {
+            dp[currentState] = maxGroupCount;
+        }
+    }
+
+    // console.log(sumValue);
+    // console.log(dp[(1 << N) - 1]);
+    // console.log("Possible subgroup: ", subGroups);
+    // console.log(dp);
+    if (subGroups.length === 0) {
+        subGroups.push(Array.from(Array(N).keys()));
+    }
+
+    const resultObject = {
+        minTransfer: N - dp[(1 << N) - 1],
+        dp: dp,
+        subGroups: subGroups,
+    };
+    // return N - dp[(1 << N) - 1];
+    return resultObject;
+}
+
+function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
+    // Sort allSubGroups by length
+    allSubGroups.sort((a, b) => {
+        return a.length - b.length;
+    });
+
+    // Select subGroup with no duplicated member
+    const targetCount = dp[(1 << nets.length) - 1];
+    const subGroupsSet = new Set();
+    for (const subGroup of allSubGroups) {
+        if (subGroupsSet.size === targetCount) {
+            break;
+        }
+        let isValidSubgroup = true;
+        for (const member of subGroup) {
+            if (subGroupsSet.has(member)) {
+                isValidSubgroup = false;
+                break;
+            }
+        }
+        if (isValidSubgroup) {
+            subGroupsSet.add(subGroup);
+        }
+    }
+    return Array.from(subGroupsSet);
+}
+
+function getSubGroupsNets(subGroups, nets) {
+    const subNets = [];
+    for (let subGroup of subGroups) {
+        const subNet = new Array(nets.length).fill(0);
+
+        for (let i = 0; i < subGroup.length; i++) {
+            subNet[subGroup[i]] = nets[subGroup[i]];
+        }
+        subNets.push(subNet);
+    }
+    return subNets;
+}
+
+function getSettleUpSuggestion(subGroupsNets) {
+    const suggestion = [];
+
+    subGroupsNets.forEach((subNet) => {
+        for (let i = 0; i < subNet.length; i++) {
+            if (subNet[i] === 0) {
+                continue;
+            }
+            for (let j = i + 1; j < subNet.length; j++) {
+                if (subNet[i] * subNet[j] >= 0) {
+                    continue;
+                }
+
+                // Determine Cash flow direction
+                if (subNet[i] > 0) {
+                    if (Math.abs(subNet[i]) - Math.abs(subNet[j]) > 0) {
+                        suggestion.push([i, j, -subNet[j]]);
+                        subNet[i] += subNet[j];
+                        subNet[j] -= subNet[j];
+                    } else {
+                        suggestion.push([i, j, subNet[i]]);
+                        subNet[j] += subNet[i];
+                        subNet[i] -= subNet[i];
+                    }
+                } else {
+                    if (Math.abs(subNet[i]) - Math.abs(subNet[j]) > 0) {
+                        suggestion.push([j, i, subNet[j]]);
+                        subNet[i] += subNet[j];
+                        subNet[j] -= subNet[j];
+                    } else {
+                        suggestion.push([j, i, -subNet[i]]);
+                        subNet[j] += subNet[i];
+                        subNet[i] -= subNet[i];
+                    }
+                }
+            }
+        }
+    });
+    return suggestion;
 }
 
 export { minimizeDebts, minimizeTransaction };
