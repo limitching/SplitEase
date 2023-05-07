@@ -225,6 +225,8 @@ const updateExpenseStatusByGroupId = async (group_id, deadline, user_id) => {
         new Date(deadline).getDate() + 1
     );
     //TODO:
+    console.log(new Date(deadline).getDate());
+    console.log(new Date(deadline).getDate() + 1);
     console.log("queryDeadline", queryDeadline);
     session.startTransaction();
     try {
