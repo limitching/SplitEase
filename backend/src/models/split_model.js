@@ -229,11 +229,11 @@ function minimizeTransaction(graph) {
         }
     }
 
-    console.log("graph", graph);
-    const nets = calculateNet(graph);
-    console.log(nets);
+    // console.log("graph", graph);
+    // const nets = calculateNet(graph);
+    // console.log(nets);
     const transactions = getSuggestion(graph);
-    console.log("transactions", transactions);
+    // console.log("transactions", transactions);
 
     // //TODO:
     // let residualGraph = buildResidualGraph(graph);
@@ -258,19 +258,19 @@ function minimizeTransaction(graph) {
     return transactions;
 }
 
-const calculateTransaction = (graph) => {
-    const transactions = [];
-    for (let i = 0; i < graph.length; i++) {
-        for (let j = 0; j < graph.length; j++) {
-            if (graph[i][j] !== 0) {
-                transactions.push([j, i, graph[i][j]]);
-            }
-        }
-    }
-    // TODO:
-    // console.log(transactions);
-    return transactions;
-};
+// const calculateTransaction = (graph) => {
+//     const transactions = [];
+//     for (let i = 0; i < graph.length; i++) {
+//         for (let j = 0; j < graph.length; j++) {
+//             if (graph[i][j] !== 0) {
+//                 transactions.push([j, i, graph[i][j]]);
+//             }
+//         }
+//     }
+//     // TODO:
+//     // console.log(transactions);
+//     return transactions;
+// };
 
 // A function to calculate Net for each people, positive means credit, negative mean debit
 function calculateNet(graph) {
