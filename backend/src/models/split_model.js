@@ -232,7 +232,7 @@ function minimizeTransaction(graph) {
     console.log("graph", graph);
     const nets = calculateNet(graph);
     console.log(nets);
-    const transactions = dpSuggestion(nets);
+    const transactions = getSuggestion(nets);
     console.log("transactions", transactions);
 
     // //TODO:
@@ -284,6 +284,29 @@ function calculateNet(graph) {
     // Debug
     // console.log("Nets:", Nets);
     return Nets;
+}
+
+function getSuggestion(graph) {
+    const N = graph.length;
+    const Nets = new Array(N).fill(0);
+    for (let j = 0; j < N; j++) {
+        for (let i = 0; i < N; i++) {
+            Nets[j] += graph[i][j] - graph[j][i];
+        }
+    }
+
+    const minTransferObject = dpMinTransferStep(Nets);
+    const nonDivisibleSubGroups = findNonDivisibleSubGroups(
+        minTransferObject.subGroups,
+        minTransferObject.dp,
+        Nets
+    );
+
+    const subNets = getSubGroupsNets(nonDivisibleSubGroups, Nets);
+    const suggestion = getSettleUpSuggestion(subNets);
+
+    console.log("Suggestion", suggestion);
+    return suggestion;
 }
 
 function dpSuggestion(graph) {
