@@ -370,7 +370,7 @@ function dpMinTransferStep(nets) {
 
     // console.log(sumValue);
     // console.log(dp[(1 << N) - 1]);
-    console.log("Possible subgroup: ", subGroups);
+    // console.log("Possible subgroup: ", subGroups);
     // console.log(dp);
     if (subGroups.length === 0) {
         subGroups.push(Array.from(Array(N).keys()));
