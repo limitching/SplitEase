@@ -306,11 +306,11 @@ function getSuggestion(graph) {
 
     const subNets = getSubGroupsNets(nonDivisibleSubGroups, Nets);
     const suggestion = getSettleUpSuggestion(subNets);
-    console.log("Nets", Nets);
-    console.log("subgroup", minTransferObject.subGroups);
-    console.log("dp", minTransferObject.dp);
-    console.log("nonDivisibleSubGroups", nonDivisibleSubGroups);
-    console.log("subNets", subNets);
+    // console.log("Nets", Nets);
+    // console.log("subgroup", minTransferObject.subGroups);
+    // console.log("dp", minTransferObject.dp);
+    // console.log("nonDivisibleSubGroups", nonDivisibleSubGroups);
+    // console.log("subNets", subNets);
     // console.log("Suggestion", suggestion);
     return suggestion;
 }
@@ -425,8 +425,8 @@ function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
 
     const uniqueSet = new Set(allSubGroups.map(JSON.stringify));
     const uniqueSubGroups = Array.from(uniqueSet).map(JSON.parse);
-    console.log("us", uniqueSet);
-    console.log("ug", Array.from(uniqueSet).map(JSON.parse));
+    // console.log("us", uniqueSet);
+    // console.log("ug", Array.from(uniqueSet).map(JSON.parse));
     const filteredSubGroups = uniqueSubGroups.filter((subGroup) => {
         // 判斷是否存在其他子集完整包含當前子集
         const isSubset = uniqueSubGroups.some((otherSubGroup) => {
@@ -440,7 +440,7 @@ function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
         return isSubset;
     });
 
-    console.log("fg", filteredSubGroups);
+    // console.log("fg", filteredSubGroups);
     // return Array.from(subGroupsSet);
     return uniqueSubGroups.length === 1 ? uniqueSubGroups : filteredSubGroups;
 }
