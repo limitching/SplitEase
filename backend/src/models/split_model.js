@@ -398,10 +398,10 @@ function dpMinTransferStep(nets) {
 }
 
 function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
-    // // Sort allSubGroups by length
-    // allSubGroups.sort((a, b) => {
-    //     return a.length - b.length;
-    // });
+    // Sort allSubGroups by length
+    allSubGroups.sort((a, b) => {
+        return a.length - b.length;
+    });
 
     // // Select subGroup with no duplicated member
     // const targetCount = dp[(1 << nets.length) - 1];
@@ -433,7 +433,8 @@ function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
             return count === 1;
         });
 
-    console.log("uus", uniqueSubGroups); // [[0,2],[6,8]]
+    console.log("us", uniqueSet);
+    console.log("ug", uniqueSubGroups);
     // return Array.from(subGroupsSet);
     return uniqueSubGroups;
 }
