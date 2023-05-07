@@ -107,15 +107,6 @@ function FooterBlock() {
                         </div>
                     </div>
                 </div>
-                <div
-                    id="particles-2"
-                    style={{
-                        padding: "0",
-                        margin: "0",
-                        height: "698px",
-                        backgroundColor: "transparent",
-                    }}
-                ></div>
             </footer>
         </>
     );
