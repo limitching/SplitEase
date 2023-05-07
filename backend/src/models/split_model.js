@@ -357,6 +357,7 @@ function dpMinTransferStep(nets) {
                             nets[binaryStr.length - 1 - i];
                     }
                 }
+
                 subGroups.push(subGroupMembers);
 
                 // Log
@@ -365,7 +366,7 @@ function dpMinTransferStep(nets) {
                 //     "Binary: ",
                 //     currentState.toString(2).padStart(N, 0)
                 // );
-                // console.log("subGroupMembers", subGroupMembers);
+                console.log("subGroupMembers", subGroupMembers);
                 // console.log("subNets", subNets);
                 // console.log("=============");
             }
