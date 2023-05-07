@@ -110,7 +110,7 @@ const getGroupDebts = async (req, res) => {
             });
         }
         //TODO:
-        // console.log(graph);
+        console.log(graph);
         // currencyTransactions[currency_option] = minimizeDebts(graph);
 
         if (isMinimized === 0) {
