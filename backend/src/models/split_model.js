@@ -352,7 +352,10 @@ function dpMinTransferStep(nets) {
                 const subNets = new Array(N).fill(0);
                 for (let i = binaryStr.length; i >= 0; i--) {
                     if (binaryStr[i] === "1") {
-                        subGroupMembers.push(binaryStr.length - 1 - i);
+                        if (nets[binaryStr.length - 1 - i] !== 0) {
+                            subGroupMembers.push(binaryStr.length - 1 - i);
+                        }
+                        // subGroupMembers.push(binaryStr.length - 1 - i);
                         subNets[binaryStr.length - 1 - i] =
                             nets[binaryStr.length - 1 - i];
                     }
@@ -361,14 +364,14 @@ function dpMinTransferStep(nets) {
                     subGroups.push(subGroupMembers);
                 }
                 // subGroups.push(subGroupMembers);
-
+                // [75, 0, -75, 0, 0, 0, 50, 0, -50, 0];
                 // Log
                 // console.log("Find new group: ", currentState);
                 // console.log(
                 //     "Binary: ",
                 //     currentState.toString(2).padStart(N, 0)
                 // );
-                console.log("subGroupMembers", subGroupMembers);
+                // console.log("subGroupMembers", subGroupMembers);
                 // console.log("subNets", subNets);
                 // console.log("=============");
             }
