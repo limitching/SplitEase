@@ -200,7 +200,7 @@ function minimizeDebts(graph) {
         }
     }
     // TODO:
-    // console.log("Simplify the graph", simplifiedGraph);
+    console.log("Simplify the graph", simplifiedGraph);
 
     // // Determine who owes how much money to whom
     // const transactions = calculateTransaction(simplifiedGraph);
