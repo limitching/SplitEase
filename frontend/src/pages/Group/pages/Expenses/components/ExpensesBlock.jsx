@@ -29,6 +29,19 @@ const StyledListItemTextForAmount = styled(ListItemText)`
     color: blue;
 `;
 
+const StyledAvatarGroup = styled(AvatarGroup)`
+    .css-sxh3gq-MuiAvatar-root-MuiAvatarGroup-avatar {
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+    }
+    .MuiAvatarGroup-avatar {
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+    }
+`;
+
 const ExpensesBlock = () => {
     const { members, memberMap, indexMap, groupExpense } =
         useContext(GroupContext);
@@ -194,7 +207,10 @@ const ExpensesBlock = () => {
                                             id={labelId}
                                             primary={`${currencyOption.symbol} ${expense.amount}`}
                                         />
-                                        <AvatarGroup total={debtors.length}>
+                                        <StyledAvatarGroup
+                                            total={debtors.length}
+                                            sx={{ fontSize: "12px" }}
+                                        >
                                             {debtors?.map((debtor, index) => (
                                                 <Tooltip
                                                     key={
@@ -223,7 +239,7 @@ const ExpensesBlock = () => {
                                                     />
                                                 </Tooltip>
                                             ))}
-                                        </AvatarGroup>
+                                        </StyledAvatarGroup>
                                     </Container>
                                     <Container style={{ maxWidth: "120px" }}>
                                         <StyledListItemTextForAmount
