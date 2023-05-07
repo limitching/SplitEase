@@ -419,6 +419,7 @@ function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
         }
         if (isValidSubgroup) {
             subGroupsSet.add(subGroup);
+            console.log("add", subGroup);
         }
     }
     return Array.from(subGroupsSet);
