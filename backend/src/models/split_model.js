@@ -436,7 +436,7 @@ function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
     console.log("us", uniqueSet);
     console.log("ug", Array.from(uniqueSet).map(JSON.parse));
     // return Array.from(subGroupsSet);
-    return uniqueSubGroups;
+    return Array.from(uniqueSet).map(JSON.parse);
 }
 
 function getSubGroupsNets(subGroups, nets) {
