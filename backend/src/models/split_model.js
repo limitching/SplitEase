@@ -339,16 +339,16 @@ function dpMinTransferStep(nets) {
                 sumValue[currentState] += nets[i];
                 const lastState = currentState ^ bit;
                 //TODO:
-                console.log(
-                    "currentState : ",
-                    currentState.toString(2).padStart(N, 0)
-                );
-                console.log("Bit          : ", bit.toString(2).padStart(N, 0));
-                console.log(
-                    "lastState    : ",
-                    lastState.toString(2).padStart(N, 0)
-                );
-                console.log("=================");
+                // console.log(
+                //     "currentState : ",
+                //     currentState.toString(2).padStart(N, 0)
+                // );
+                // console.log("Bit          : ", bit.toString(2).padStart(N, 0));
+                // console.log(
+                //     "lastState    : ",
+                //     lastState.toString(2).padStart(N, 0)
+                // );
+                // console.log("=================");
                 maxGroupCount = Math.max(maxGroupCount, dp[lastState]);
             }
             bit <<= 1;
@@ -387,7 +387,7 @@ function dpMinTransferStep(nets) {
 
     // console.log(sumValue);
     // console.log(dp[(1 << N) - 1]);
-    // console.log("Possible subgroup: ", subGroups);
+    console.log("Possible subgroup: ", subGroups);
     // console.log(dp);
     if (subGroups.length === 0) {
         subGroups.push(Array.from(Array(N).keys()));
