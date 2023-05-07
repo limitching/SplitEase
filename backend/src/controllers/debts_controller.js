@@ -110,7 +110,7 @@ const getGroupDebts = async (req, res) => {
             });
         }
         //TODO:
-        console.log(graph);
+        // console.log(graph);
         // currencyTransactions[currency_option] = minimizeDebts(graph);
 
         if (isMinimized === 0) {
@@ -119,7 +119,7 @@ const getGroupDebts = async (req, res) => {
             currencyTransactions[currency_option] = minimizeDebts(graph);
         }
 
-        console.log(currencyTransactions[currency_option]);
+        // console.log(currencyTransactions[currency_option]);
 
         //TODO:
         if (Object.keys(settlementTransactions).length === 0) {
