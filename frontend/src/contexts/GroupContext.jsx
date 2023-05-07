@@ -175,7 +175,7 @@ const GroupContextProvider = ({ children }) => {
                 if (group?.id) {
                     // console.log("logsChange~");
                     setExpensesChanged(true);
-                    // fetchGroupLogs(jwtToken, group.id, setLogs);
+                    fetchGroupLogs(jwtToken, group.id, setLogs);
                 }
             });
 
