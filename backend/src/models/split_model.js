@@ -427,7 +427,7 @@ function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
     const uniqueSubGroups = Array.from(uniqueSet)
         .map(JSON.parse)
         .filter((item) => {
-            const count = arrOfArr.filter(
+            const count = allSubGroups.filter(
                 (arr) => JSON.stringify(arr) === JSON.stringify(item)
             ).length;
             return count === 1;
