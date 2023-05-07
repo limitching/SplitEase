@@ -398,31 +398,44 @@ function dpMinTransferStep(nets) {
 }
 
 function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
-    // Sort allSubGroups by length
-    allSubGroups.sort((a, b) => {
-        return a.length - b.length;
-    });
+    // // Sort allSubGroups by length
+    // allSubGroups.sort((a, b) => {
+    //     return a.length - b.length;
+    // });
 
-    // Select subGroup with no duplicated member
-    const targetCount = dp[(1 << nets.length) - 1];
-    const subGroupsSet = new Set();
-    for (const subGroup of allSubGroups) {
-        if (subGroupsSet.size === targetCount) {
-            break;
-        }
-        let isValidSubgroup = true;
-        for (const member of subGroup) {
-            if (subGroupsSet.has(member)) {
-                isValidSubgroup = false;
-                break;
-            }
-        }
-        if (isValidSubgroup) {
-            subGroupsSet.add(subGroup);
-            console.log("add", subGroup);
-        }
-    }
-    return Array.from(subGroupsSet);
+    // // Select subGroup with no duplicated member
+    // const targetCount = dp[(1 << nets.length) - 1];
+    // const subGroupsSet = new Set();
+    // for (const subGroup of allSubGroups) {
+    //     if (subGroupsSet.size === targetCount) {
+    //         break;
+    //     }
+    //     let isValidSubgroup = true;
+    //     for (const member of subGroup) {
+    //         if (subGroupsSet.has(member)) {
+    //             isValidSubgroup = false;
+    //             break;
+    //         }
+    //     }
+    //     if (isValidSubgroup) {
+    //         subGroupsSet.add(subGroup);
+    //         console.log("add", subGroup);
+    //     }
+    // }
+
+    const uniqueSet = new Set(allSubGroups.map(JSON.stringify));
+    const uniqueSubGroups = Array.from(uniqueSet)
+        .map(JSON.parse)
+        .filter((item) => {
+            const count = arrOfArr.filter(
+                (arr) => JSON.stringify(arr) === JSON.stringify(item)
+            ).length;
+            return count === 1;
+        });
+
+    console.log("uus", uniqueSubGroups); // [[0,2],[6,8]]
+    // return Array.from(subGroupsSet);
+    return uniqueSubGroups;
 }
 
 function getSubGroupsNets(subGroups, nets) {
