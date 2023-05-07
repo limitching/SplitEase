@@ -156,7 +156,11 @@ const ProfileModal = ({
                         <Container className="modal-header-text ml-0 pl-0">
                             <h4>Profile</h4>
                         </Container>
-                        <LogoutButton variant="light" onClick={logout}>
+                        <LogoutButton
+                            variant="light"
+                            onClick={logout}
+                            style={{ marginRight: "1rem" }}
+                        >
                             Logout
                         </LogoutButton>
                     </Modal.Header>
