@@ -73,8 +73,31 @@ function NavTabs() {
     };
 
     const [showModifyGroupModal, setShowModifyGroupModal] = useState(false);
+    const [modifiedGroupData, setModifiedGroupData] = useState({
+        id: group.id,
+        name: group.name,
+        default_currency: group.default_currency,
+        description: group.description,
+        minimized_debts: Number(group.minimized_debts),
+    });
+    useEffect(() => {
+        setModifiedGroupData({
+            id: group.id,
+            name: group.name,
+            default_currency: group.default_currency,
+            description: group.description,
+            minimized_debts: Number(group.minimized_debts),
+        });
+    }, [group]);
 
     const handleOpenModifyGroupModal = () => {
+        setModifiedGroupData({
+            id: group.id,
+            name: group.name,
+            default_currency: group.default_currency,
+            description: group.description,
+            minimized_debts: Number(group.minimized_debts),
+        });
         setShowModifyGroupModal(true);
     };
 
@@ -83,13 +106,26 @@ function NavTabs() {
     };
 
     return (
-        <Container>
-            <Box sx={{ width: "100%" }}>
+        <Container
+            style={{
+                marginTop: "0.25rem",
+            }}
+        >
+            <Box
+                sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
                 <Tabs
                     value={value}
                     onChange={handleChange}
-                    aria-label="nav tabs example"
-                    centered
+                    variant="scrollable"
+                    // centered
+                    scrollButtons="auto"
+                    allowScrollButtonsMobile
                 >
                     {filterResult.length === 0
                         ? GROUP_TABS_VISITORS.map(
@@ -109,6 +145,7 @@ function NavTabs() {
                           )
                         : GROUP_TABS.map(({ name, displayText }, index) => (
                               <LinkTab
+                                  id={`${name}-tab`}
                                   key={name}
                                   label={displayText}
                                   onClick={() => {
@@ -120,7 +157,11 @@ function NavTabs() {
                                   }}
                               />
                           ))}
-                    <Tab label={<MoreVertIcon />} onClick={handleClick} />
+                    <Tab
+                        id="more-button"
+                        label={<MoreVertIcon />}
+                        onClick={handleClick}
+                    />
                     <StyledMenuWrapper>
                         <Menu
                             anchorEl={anchorEl}
@@ -148,6 +189,8 @@ function NavTabs() {
             <ModifyGroupModal
                 showModifyGroupModal={showModifyGroupModal}
                 handleCloseModifyGroupModal={handleCloseModifyGroupModal}
+                modifiedGroupData={modifiedGroupData}
+                setModifiedGroupData={setModifiedGroupData}
             ></ModifyGroupModal>
         </Container>
     );

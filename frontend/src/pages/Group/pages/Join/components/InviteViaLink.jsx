@@ -1,22 +1,17 @@
 import { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { GroupContext } from "../../../../../contexts/GroupContext";
-import {
-    Button as NormalButton,
-    TextField,
-    Checkbox,
-    FormControlLabel,
-    IconButton,
-    Tooltip,
-} from "@mui/material";
-import Button from "@mui/material-next/Button";
+import { TextField, IconButton, Tooltip, Container } from "@mui/material";
+// import { Container } from "react-bootstrap";
+// import { Checkbox, FormControlLabel } from "@mui/material";
+import QrCodeBlock from "./QrCodeBlock";
+
+import { WEB_HOST } from "../../../../../global/constant";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import SendIcon from "@mui/icons-material/Send";
-import ShareIcon from "@mui/icons-material/Share";
-import {
-    FixedButtonWrapper,
-    HeaderTextContainer,
-} from "../../../components/PageWrapper";
+// import SendIcon from "@mui/icons-material/Send";
+
+import { HeaderTextContainer } from "../../../components/PageWrapper";
+import Divider from "@mui/material/Divider";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
@@ -32,24 +27,35 @@ const InvitationMethodContainer = styled.div`
     margin-bottom: 1rem;
 `;
 
-const CheckboxContainer = styled.div`
-    width: 95%;
+const QRcodeContainer = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: start;
+    justify-content: center;
     align-items: center;
     gap: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 `;
 
+// const CheckboxContainer = styled.div`
+//     width: 95%;
+//     display: flex;
+//     flex-direction: row;
+//     justify-content: start;
+//     align-items: center;
+//     gap: 1rem;
+// `;
+
 const InviteViaLink = () => {
-    const { group, slug, inviteEmail, setInviteEmail } =
-        useContext(GroupContext);
+    const { group, slug } = useContext(GroupContext);
+
+    // const { inviteEmail, setInviteEmail } = useContext(GroupContext);
 
     const [link, setLink] = useState("");
-    const [isCheck, setIsCheck] = useState(true);
+    // const [isCheck, setIsCheck] = useState(true);
 
     useEffect(() => {
-        const invitation_link = `http://localhost:3001/group/${slug}/join?invitation_code=${group.invitation_code}`;
+        const invitation_link = `${WEB_HOST}/group/${slug}/join?invitation_code=${group.invitation_code}`;
         setLink(invitation_link);
     }, [group, slug]);
 
@@ -75,17 +81,17 @@ const InviteViaLink = () => {
         );
     };
 
-    const handleInviteEmailChange = (event) => {
-        setInviteEmail(event.target.value);
-    };
+    // const handleInviteEmailChange = (event) => {
+    //     setInviteEmail(event.target.value);
+    // };
 
-    const handleChecked = (event) => {
-        if (isCheck) {
-            setIsCheck(false);
-        } else {
-            setIsCheck(true);
-        }
-    };
+    // const handleChecked = (event) => {
+    //     if (isCheck) {
+    //         setIsCheck(false);
+    //     } else {
+    //         setIsCheck(true);
+    //     }
+    // };
 
     // TODO:
     // function emailIsValid(email) {
@@ -94,10 +100,14 @@ const InviteViaLink = () => {
 
     return (
         <>
-            <HeaderTextContainer>
-                <h6>Invite via link</h6>
-            </HeaderTextContainer>
-            <CheckboxContainer>
+            <div style={{ width: "100%" }}>
+                <Container>
+                    <HeaderTextContainer style={{ paddingBottom: "8px" }}>
+                        <h5>Invite via link</h5>
+                    </HeaderTextContainer>
+                </Container>
+                <Divider variant="fullWidth"></Divider>
+                {/* <CheckboxContainer>
                 <FormControlLabel
                     control={
                         <Checkbox checked={isCheck} onChange={handleChecked} />
@@ -108,22 +118,39 @@ const InviteViaLink = () => {
                             : "Joining this group via link is disabled"
                     }
                 />
-            </CheckboxContainer>
-            <InvitationMethodContainer>
-                <TextField
-                    variant="outlined"
-                    value={link}
-                    fullWidth
-                    aria-readonly
-                    onClick={handleCopyLink}
-                />
-                <Tooltip title="Copy to clipboard">
-                    <IconButton onClick={handleCopyLink}>
-                        <ContentCopyIcon />
-                    </IconButton>
-                </Tooltip>
-            </InvitationMethodContainer>
-            <HeaderTextContainer>
+            </CheckboxContainer> */}
+                <Container>
+                    <InvitationMethodContainer>
+                        <TextField
+                            variant="outlined"
+                            value={link}
+                            fullWidth
+                            aria-readonly
+                            onClick={handleCopyLink}
+                        />
+                        <Tooltip title="Copy to clipboard">
+                            <IconButton onClick={handleCopyLink}>
+                                <ContentCopyIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </InvitationMethodContainer>
+                </Container>
+
+                <Divider variant="fullWidth"></Divider>
+                <Container>
+                    <HeaderTextContainer style={{ paddingBottom: "8px" }}>
+                        <h5>Invite via QR code</h5>
+                    </HeaderTextContainer>
+                </Container>
+
+                <Divider variant="fullWidth"></Divider>
+
+                <QRcodeContainer>
+                    <QrCodeBlock url={link}></QrCodeBlock>
+                </QRcodeContainer>
+            </div>
+
+            {/* <HeaderTextContainer>
                 <h6>Invite via email</h6>
             </HeaderTextContainer>
             <InvitationMethodContainer>
@@ -142,19 +169,29 @@ const InviteViaLink = () => {
                 >
                     Invite
                 </NormalButton>
-            </InvitationMethodContainer>
-            <FixedButtonWrapper>
-                <Button
+            </InvitationMethodContainer> */}
+            {/* <FixedButtonWrapper>
+                <NormalButton
                     color="primary"
                     disabled={false}
                     size="large"
                     variant="filled"
                     startIcon={<ShareIcon></ShareIcon>}
                     onClickCapture={handleCopyLink}
+                    sx={{
+                        bgcolor: DASHBOARD_BG_COLOR,
+                        "&:hover": {
+                            bgcolor: DASHBOARD_BG_COLOR,
+                            opacity: 0.87,
+                        },
+                        borderRadius: "100px",
+                        color: "white",
+                        padding: "12px 26px",
+                    }}
                 >
                     SHARE LINK
-                </Button>
-            </FixedButtonWrapper>
+                </NormalButton>
+            </FixedButtonWrapper> */}
         </>
     );
 };

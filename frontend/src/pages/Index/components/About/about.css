@@ -1,0 +1,71 @@
+/*===========================
+      05.ABOUT css 
+===========================*/
+.about-area {
+    position: relative;
+    z-index: 5;
+}
+
+.about-shape-1 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 35%;
+    height: 100%;
+    z-index: -1;
+}
+.about-shape-1 img {
+    width: 100%;
+}
+@media (max-width: 767px) {
+    .about-shape-1 {
+        display: none;
+    }
+}
+
+.about-shape-2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 35%;
+    height: 100%;
+    z-index: -1;
+}
+.about-shape-2 img {
+    width: 100%;
+}
+@media (max-width: 767px) {
+    .about-shape-2 {
+        display: none;
+    }
+}
+
+.about-content {
+    max-width: 480px;
+}
+.about-content .text {
+    margin-top: 15px;
+}
+.about-content .main-btn {
+    background: -webkit-linear-gradient(
+        left,
+        #fe8464 0%,
+        #fe6e9a 50%,
+        #fe8464 100%
+    );
+    background: -o-linear-gradient(left, #fe8464 0%, #fe6e9a 50%, #fe8464 100%);
+    background: linear-gradient(
+        to right,
+        #fe8464 0%,
+        #fe6e9a 50%,
+        #fe8464 100%
+    );
+    background-size: 200%;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 35px;
+    margin-top: 40px;
+}
+.about-content .main-btn:hover {
+    background-position: right center;
+}

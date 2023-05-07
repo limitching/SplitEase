@@ -1,7 +1,10 @@
 import { Container, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
-import { CURRENCY_OPTIONS } from "../../../../../global/constant";
+import {
+    CURRENCY_OPTIONS,
+    ANIMAL_AVATAR,
+} from "../../../../../global/constant";
 import CurrencySelector from "./CurrencySelector";
 import { useContext } from "react";
 import {
@@ -12,7 +15,10 @@ import {
     ListItemAvatar,
     Avatar,
     TextField,
+    Tooltip,
 } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { amountFormatter } from "../../../../../utils/formatter";
 
 const CreditorsBlock = () => {
@@ -27,6 +33,7 @@ const CreditorsBlock = () => {
         setSubCredit,
         setSelectedCreditor,
         setAmount,
+        setCurrencyIntroOpen,
     } = useContext(ExpenseContext);
     if (members.length === 0) {
         return <div>Loading...</div>;
@@ -86,8 +93,12 @@ const CreditorsBlock = () => {
                         </option>
                     </Form.Select>
                 </Container>
-                <Container className="creditor-total-amount" as={Row}>
-                    <Col lg="8">
+                <Container
+                    className="creditor-total-amount"
+                    as={Row}
+                    style={{ margin: 0, padding: 0 }}
+                >
+                    <Col lg="6" xs="6">
                         <TextField
                             name="amount"
                             className="mb-3"
@@ -98,10 +109,36 @@ const CreditorsBlock = () => {
                                 amountFormatter(event);
                                 handleAmountChange(event);
                             }}
+                            fullWidth
                         />
                     </Col>
-                    <Col lg="4">
-                        <CurrencySelector />
+                    <Col
+                        lg="6"
+                        xs="6"
+                        style={{
+                            display: "flex",
+                            justifyContent: "end",
+                            padding: 0,
+                        }}
+                    >
+                        <Container>
+                            <CurrencySelector />
+                        </Container>
+                        <Container
+                            as={Col}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Tooltip title="Currency Q & A" placement="top">
+                                <IconButton
+                                    onClick={() => setCurrencyIntroOpen(true)}
+                                >
+                                    <HelpOutlineIcon></HelpOutlineIcon>
+                                </IconButton>
+                            </Tooltip>
+                        </Container>
                     </Col>
                 </Container>
             </div>
@@ -110,25 +147,50 @@ const CreditorsBlock = () => {
         return (
             <div className="creditor-block" style={{ width: "100%" }}>
                 <Container className="creditor-header-container" as={Row}>
-                    <Form.Label column lg="6">
-                        Who paid
-                    </Form.Label>
+                    <TextField
+                        name="amount"
+                        className="mb-3"
+                        label="Amount (Read only)"
+                        type="text"
+                        helperText="Amount will automatically update when edit sub-amounts."
+                        value={amount}
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                        fullWidth
+                    />
                 </Container>
                 <Container className="creditor-total-amount" as={Row}>
-                    <Col lg="8">
-                        <TextField
-                            name="amount"
-                            className="mb-3"
-                            label="Amount"
-                            type="text"
-                            value={amount}
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        />
+                    <Col lg="7" xs="7">
+                        <Form.Label column lg="6">
+                            Who paid
+                        </Form.Label>
                     </Col>
-                    <Col lg="4">
+                    <Col
+                        lg="5"
+                        xs="5"
+                        style={{
+                            display: "flex",
+                            justifyContent: "end",
+                            padding: 0,
+                        }}
+                    >
                         <CurrencySelector />
+                        <Container
+                            as={Col}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Tooltip title="Currency Q & A" placement="top">
+                                <IconButton
+                                    onClick={() => setCurrencyIntroOpen(true)}
+                                >
+                                    <HelpOutlineIcon></HelpOutlineIcon>
+                                </IconButton>
+                            </Tooltip>
+                        </Container>
                     </Col>
                 </Container>
                 <Container className="creditor-list-container" as={Row}>
@@ -152,15 +214,17 @@ const CreditorsBlock = () => {
                                         <ListItemAvatar>
                                             <Avatar
                                                 alt={`${member.name}`}
-                                                src={`${member.image}.jpg`}
+                                                src={`${
+                                                    member.image
+                                                        ? member.image
+                                                        : ANIMAL_AVATAR[index]
+                                                }`}
                                             />
                                         </ListItemAvatar>
-
                                         <ListItemText
                                             id={labelId}
                                             primary={`${member.name}`}
                                         />
-
                                         <TextField
                                             type="text"
                                             variant="standard"
@@ -182,8 +246,7 @@ const CreditorsBlock = () => {
                                             sx={{ width: "30%" }}
                                         />
                                         <ListItemText
-                                            id={labelId}
-                                            primary={`${selectedCurrencyObj.abbreviation}`}
+                                            primary={` ${selectedCurrencyObj.abbreviation}`}
                                             style={{ maxWidth: "2rem" }}
                                         />
                                     </ListItemButton>

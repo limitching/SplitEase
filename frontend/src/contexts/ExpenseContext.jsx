@@ -14,11 +14,13 @@ const ExpenseContext = createContext({
     selectedCurrency: 1,
     selectedCreditor: 0,
     selectedSplitMethod: 0,
-    selectedExpense: null,
+    selectedExpense: { status: "unsettled" },
     expenseTime: localISOTime,
     description: "",
     showTransaction: false,
     showModification: false,
+    splitIntroOpen: false,
+    currencyIntroOpen: false,
     setChecked: () => {},
     setSubCredit: () => {},
     setSubValues: () => {},
@@ -31,6 +33,8 @@ const ExpenseContext = createContext({
     setDescription: () => {},
     setShowTransaction: () => {},
     setShowModification: () => {},
+    setSplitIntroOpen: () => {},
+    setCurrencyIntroOpen: () => {},
 });
 
 const ExpenseContextProvider = ({ children }) => {
@@ -43,11 +47,16 @@ const ExpenseContextProvider = ({ children }) => {
     const [selectedCurrency, setSelectedCurrency] = useState(1);
     const [selectedCreditor, setSelectedCreditor] = useState(0);
     const [selectedSplitMethod, setSelectedSplitMethod] = useState(0);
-    const [selectedExpense, setSelectedExpense] = useState(null);
+    const [selectedExpense, setSelectedExpense] = useState({
+        status: "unsettled",
+    });
     const [expenseTime, setExpenseTime] = useState(localISOTime);
     const [description, setDescription] = useState("");
     const [showTransaction, setShowTransaction] = useState(false);
     const [showModification, setShowModification] = useState(false);
+
+    const [splitIntroOpen, setSplitIntroOpen] = useState(false);
+    const [currencyIntroOpen, setCurrencyIntroOpen] = useState(false);
 
     useEffect(() => {
         if (members !== null) {
@@ -74,6 +83,8 @@ const ExpenseContextProvider = ({ children }) => {
                 description,
                 showTransaction,
                 showModification,
+                splitIntroOpen,
+                currencyIntroOpen,
                 setChecked,
                 setSubCredit,
                 setSubValues,
@@ -86,6 +97,8 @@ const ExpenseContextProvider = ({ children }) => {
                 setDescription,
                 setShowTransaction,
                 setShowModification,
+                setSplitIntroOpen,
+                setCurrencyIntroOpen,
             }}
         >
             {children}

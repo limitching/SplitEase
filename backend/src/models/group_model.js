@@ -7,6 +7,7 @@ dotenv.config({ path: __dirname + "/../../.env" });
 const { HASH_ID_SALT } = process.env;
 import Hashids from "hashids";
 const hashids = new Hashids(HASH_ID_SALT, 10);
+import { AWS_CLOUDFRONT_HOST } from "../utils/constant.js";
 
 const getGroups = async (requirement) => {
     const condition = { sql: "", binding: [] };
@@ -20,7 +21,20 @@ const getGroups = async (requirement) => {
     return groups;
 };
 
-const archiveGroup = async (group_id) => {
+const getGroupsByUserId = async (user_id) => {
+    try {
+        const [groups] = await pool.query(
+            "SELECT `groups`.*, add_date FROM `group_users` INNER JOIN `groups` ON group_users.group_id = groups.id WHERE user_id = ?",
+            [user_id]
+        );
+        return groups;
+    } catch (error) {
+        console.error(error);
+        return { error };
+    }
+};
+
+const archiveGroup = async (group_id, user_id) => {
     const connection = await pool.getConnection();
     try {
         await connection.query("START TRANSACTION");
@@ -28,6 +42,12 @@ const archiveGroup = async (group_id) => {
             "UPDATE `groups` SET is_archived = 1 WHERE id = ?",
             [group_id]
         );
+        const logData = {
+            user_id: user_id,
+            group_id: group_id,
+            event: "archive group",
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
         await connection.query("COMMIT");
         return 0;
     } catch (error) {
@@ -40,15 +60,37 @@ const archiveGroup = async (group_id) => {
 };
 
 const getMembers = async (group_id) => {
-    const memberQuery =
-        "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ? ORDER BY user_id";
-    const [members] = await pool.query(memberQuery, [group_id]);
-    return members;
+    try {
+        const memberQuery =
+            "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ? ORDER BY user_id";
+        const [members] = await pool.query(memberQuery, [group_id]);
+        return members;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
 };
 
-const createGroup = async (newGroupData) => {
+const getMember = async (group_id, user_id) => {
+    try {
+        const memberQuery =
+            "SELECT user_id, add_date, add_by_user FROM `group_users` WHERE group_id = ? AND user_id = ?";
+        const [member] = await pool.query(memberQuery, [group_id, user_id]);
+        return member;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+};
+
+const createGroup = async (newGroupData, user_id) => {
     if (!newGroupData.slug) {
         newGroupData.slug = uuidV4();
+    }
+    if (!newGroupData.photo) {
+        newGroupData.photo = `${AWS_CLOUDFRONT_HOST}group_image_default/${Math.ceil(
+            Math.random() * 30
+        )}.jpg`;
     }
 
     const connection = await pool.getConnection();
@@ -77,6 +119,13 @@ const createGroup = async (newGroupData) => {
             "INSERT INTO `group_users` SET ?",
             newGroupUserData
         );
+        const logData = {
+            user_id: user_id,
+            group_id: result.insertId,
+            event: "create group",
+            event_target: newGroupData.name,
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
         await connection.query("COMMIT");
 
         return { group: newGroupData };
@@ -89,7 +138,7 @@ const createGroup = async (newGroupData) => {
     }
 };
 
-const editGroup = async (modifiedGroupData) => {
+const editGroup = async (modifiedGroupData, user_id) => {
     const connection = await pool.getConnection();
     try {
         await connection.query("START TRANSACTION");
@@ -97,6 +146,13 @@ const editGroup = async (modifiedGroupData) => {
             modifiedGroupData,
             modifiedGroupData.id,
         ]);
+        const logData = {
+            user_id: user_id,
+            group_id: modifiedGroupData.id,
+            event: "modify group",
+            event_target: modifiedGroupData.name,
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
 
         await connection.query("COMMIT");
 
@@ -133,6 +189,7 @@ const joinGroupViaCode = async (user_id, slug, invitation_code) => {
             "SELECT * FROM `group_users` WHERE group_id = ? AND user_id = ? ",
             [group_id, user_id]
         );
+
         if (group_users.length !== 0) {
             await connection.query("COMMIT");
             return group;
@@ -147,6 +204,13 @@ const joinGroupViaCode = async (user_id, slug, invitation_code) => {
             "INSERT INTO `group_users` SET ?",
             newGroupUserData
         );
+
+        const logData = {
+            user_id: user_id,
+            group_id: group.id,
+            event: "join group via code",
+        };
+        await connection.query("INSERT INTO `logs` SET ?", logData);
 
         await connection.query("COMMIT");
         return group;
@@ -179,12 +243,80 @@ const getGroupInformationViaCode = async (slug, invitation_code) => {
     }
 };
 
+const getLogs = async (group_id) => {
+    try {
+        //TODO: remember to order by time
+        const [logs] = await pool.query(
+            "SELECT * FROM `logs` WHERE group_id = ? ORDER BY log_time DESC LIMIT 100",
+            [group_id]
+        );
+        return logs;
+    } catch (error) {
+        console.error(error);
+        return { error: error };
+    }
+};
+
+const attachGroup = async (invitation_code, source) => {
+    try {
+        const groupLine_idData = { line_id: source.groupId };
+        const [result] = await pool.query(
+            "UPDATE `groups` SET ? WHERE invitation_code =?",
+            [groupLine_idData, invitation_code]
+        );
+        const [group] = await pool.query(
+            "SELECT * FROM `groups` WHERE invitation_code = ?",
+            [invitation_code]
+        );
+        const group_name = group[0]?.name;
+
+        return { result: result.affectedRows, name: group_name };
+    } catch (error) {
+        console.log(error);
+        return { error, result: -1 };
+    }
+};
+
+const getGroupUsersInformation = async (group_id) => {
+    try {
+        const [usersInformation] = await pool.query(
+            `
+            SELECT id,name,email,image,line_id FROM group_users 
+            INNER JOIN users ON group_users.user_id = users.id
+            WHERE group_id = ? ORDER BY users.id
+            `,
+            [group_id]
+        );
+        return usersInformation;
+    } catch (error) {
+        return { error };
+    }
+};
+
+const getGroupInformationById = async (group_id) => {
+    try {
+        const [groupInformation] = await pool.query(
+            "SELECT * FROM `groups` WHERE id = ?",
+            [group_id]
+        );
+        return groupInformation[0];
+    } catch (error) {
+        return { error };
+    }
+};
+
 export {
     getGroups,
+    getGroupsByUserId,
     archiveGroup,
     getMembers,
+    getMember,
     createGroup,
     editGroup,
     joinGroupViaCode,
     getGroupInformationViaCode,
+    getLogs,
+    attachGroup,
+    getGroupUsersInformation,
+    getGroupInformationById,
 };

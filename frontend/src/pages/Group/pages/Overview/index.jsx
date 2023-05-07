@@ -1,4 +1,9 @@
+import { PageWrapper } from "../../components/PageWrapper";
 const Overview = () => {
-    return <div>Hello World!!!</div>;
+    return (
+        <div>
+            <PageWrapper></PageWrapper>
+        </div>
+    );
 };
 export default Overview;

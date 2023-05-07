@@ -50,7 +50,6 @@ function amountFormatter(event) {
 }
 
 const removeLeadingZeros = (event) => {
-    console.log(event.target.value);
     if (event.target.value === "0" || event.target.value === "00") {
         event.target.value = "0";
         return "0";

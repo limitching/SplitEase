@@ -4,7 +4,6 @@ import { GroupContext } from "../../../../../contexts/GroupContext";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import styled from "styled-components";
 import { Container } from "react-bootstrap";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
     List,
     ListItem,
@@ -14,19 +13,15 @@ import {
     Avatar,
     AvatarGroup,
     Tooltip,
+    Divider,
 } from "@mui/material";
+import Chip from "@mui/material/Chip";
+import { HeaderTextContainer } from "../../../components/PageWrapper";
 
-import { CURRENCY_OPTIONS } from "../../../../../global/constant";
-
-const avatarTheme = createTheme({
-    components: {
-        MuiAvatarGroup: {
-            styleOverrides: {
-                avatar: { width: "20px", height: "20px", fontSize: "0.75rem" },
-            },
-        },
-    },
-});
+import {
+    CURRENCY_OPTIONS,
+    ANIMAL_AVATAR,
+} from "../../../../../global/constant";
 
 const StyledListItemTextForAmount = styled(ListItemText)`
     text-align: right;
@@ -37,6 +32,7 @@ const StyledListItemTextForAmount = styled(ListItemText)`
 const ExpensesBlock = () => {
     const { members, memberMap, indexMap, groupExpense } =
         useContext(GroupContext);
+
     const {
         setAmount,
         setChecked,
@@ -110,94 +106,140 @@ const ExpensesBlock = () => {
     }
 
     return (
-        <List
-            dense
-            sx={{
-                width: "100%",
-                maxWidth: "100%",
-                bgcolor: "background.paper",
-            }}
-        >
-            {groupExpense.map((expense, index) => {
-                const labelId = `checkbox-list-secondary-label-${expense._id}`;
-                let creditors;
-                if (Object.keys(expense.creditors_amounts).length === 1) {
-                    const creditorId = Object.keys(
-                        expense.creditors_amounts
-                    )[0];
-                    creditors = memberMap.get(Number(creditorId));
-                } else {
-                    creditors = { name: "Multiple Members" };
-                }
-                const [currencyOption] = CURRENCY_OPTIONS.filter(
-                    (currency) => currency.id === expense.currency_option
-                );
+        <>
+            <HeaderTextContainer>
+                <h5>
+                    {groupExpense.length === 0 ? "No Expense :)" : "Expenses"}
+                </h5>
+            </HeaderTextContainer>
 
-                const debtors = Object.keys(expense.debtors_weight).map(
-                    (debtorId) => {
-                        return memberMap.get(Number(debtorId));
+            <List
+                dense
+                sx={{
+                    width: "100%",
+                    maxWidth: "100%",
+                    bgcolor: "background.paper",
+                }}
+            >
+                <Divider></Divider>
+                {groupExpense.map((expense, index) => {
+                    const labelId = `checkbox-list-secondary-label-${expense._id}`;
+                    let creditors;
+                    if (Object.keys(expense.creditors_amounts).length === 1) {
+                        const creditorId = Object.keys(
+                            expense.creditors_amounts
+                        )[0];
+                        creditors = memberMap.get(Number(creditorId));
+                    } else {
+                        creditors = { name: "Multiple Members" };
                     }
-                );
+                    const [currencyOption] = CURRENCY_OPTIONS.filter(
+                        (currency) => currency.id === expense.currency_option
+                    );
 
-                return (
-                    <ListItem
-                        key={expense._id}
-                        onClick={() => handleExpenseItemClick(expense)}
-                    >
-                        <ListItemButton>
-                            <ListItemAvatar>
-                                <Tooltip title={creditors.name}>
-                                    <Avatar
-                                        alt={creditors.name}
-                                        src={creditors.image}
-                                        sx={{ width: 50, height: 50 }}
-                                    />
-                                </Tooltip>
-                            </ListItemAvatar>
-                            <Container>
-                                <ListItemText
-                                    id={labelId}
-                                    primary={
-                                        expense.description === ""
-                                            ? "Expense"
-                                            : `${expense.description}`
-                                    }
-                                    secondary={`${creditors.name} Paid for`}
-                                />
-                            </Container>
+                    const debtors = Object.keys(expense.debtors_weight).map(
+                        (debtorId) => {
+                            return memberMap.get(Number(debtorId));
+                        }
+                    );
 
-                            <Container>
-                                <StyledListItemTextForAmount
-                                    id={labelId}
-                                    primary={`${currencyOption.symbol} ${expense.amount}`}
-                                />
-                                <ThemeProvider theme={avatarTheme}>
-                                    <AvatarGroup total={debtors.length}>
-                                        {debtors.map((debtor, index) => (
-                                            <Tooltip title={debtor.name}>
-                                                <Avatar
+                    return (
+                        <div key={expense._id}>
+                            <ListItem
+                                onClick={() => handleExpenseItemClick(expense)}
+                                id={index === 0 ? "expense-button" : null}
+                            >
+                                <ListItemButton>
+                                    <ListItemAvatar>
+                                        <Tooltip title={creditors?.name}>
+                                            <Avatar
+                                                alt={creditors?.name}
+                                                src={
+                                                    creditors?.image
+                                                        ? creditors.image
+                                                        : ANIMAL_AVATAR[
+                                                              indexMap.get(
+                                                                  creditors?.id
+                                                              )
+                                                          ]
+                                                }
+                                                sx={{ width: 50, height: 50 }}
+                                            />
+                                        </Tooltip>
+                                    </ListItemAvatar>
+                                    <Container>
+                                        <ListItemText
+                                            primary={
+                                                expense.description === ""
+                                                    ? "Expense"
+                                                    : `${expense.description}`
+                                            }
+                                            primaryTypographyProps={{
+                                                width: "15vw",
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                            }}
+                                            secondary={`${creditors?.name} Paid for`}
+                                            secondaryTypographyProps={{
+                                                width: "15vw",
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                            }}
+                                        />
+                                    </Container>
+
+                                    <Container style={{ maxWidth: "100px" }}>
+                                        <StyledListItemTextForAmount
+                                            id={labelId}
+                                            primary={`${currencyOption.symbol} ${expense.amount}`}
+                                        />
+                                        <AvatarGroup total={debtors.length}>
+                                            {debtors?.map((debtor, index) => (
+                                                <Tooltip
                                                     key={
                                                         expense._id +
                                                         "_debtor_" +
                                                         index
                                                     }
-                                                    alt={debtor.name}
-                                                    src={
-                                                        debtor.image === null
-                                                            ? ".jpg"
-                                                            : debtor.image
-                                                    }
-                                                />
-                                            </Tooltip>
-                                        ))}
-                                    </AvatarGroup>
-                                </ThemeProvider>
-                            </Container>
-                        </ListItemButton>
-                    </ListItem>
-                );
-            })}
-        </List>
+                                                    title={debtor?.name}
+                                                >
+                                                    <Avatar
+                                                        alt={debtor?.name}
+                                                        src={
+                                                            debtor?.image
+                                                                ? debtor.image
+                                                                : ANIMAL_AVATAR[
+                                                                      indexMap.get(
+                                                                          debtor?.id
+                                                                      )
+                                                                  ]
+                                                        }
+                                                        sx={{
+                                                            width: "20px",
+                                                            height: "20px",
+                                                            fontSize: "12px",
+                                                        }}
+                                                    />
+                                                </Tooltip>
+                                            ))}
+                                        </AvatarGroup>
+                                    </Container>
+                                    <Container style={{ maxWidth: "120px" }}>
+                                        <StyledListItemTextForAmount
+                                            primary={
+                                                <Chip label={expense.status} />
+                                            }
+                                        />
+                                    </Container>
+                                </ListItemButton>
+                            </ListItem>
+                            <Divider></Divider>
+                        </div>
+                    );
+                })}
+            </List>
+        </>
     );
 };
 export default ExpensesBlock;

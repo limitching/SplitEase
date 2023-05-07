@@ -4,15 +4,18 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import Login from "./pages/Login";
-import Home from "./pages/Home";
+import Liff from "./pages/Liff";
+import Home from "./pages/Home/index.jsx";
 import Group from "./pages/Group";
-import Overview from "./pages/Group/pages/Overview";
+// import Overview from "./pages/Group/pages/Overview";
 import Expenses from "./pages/Group/pages/Expenses";
 import Debts from "./pages/Group/pages/Debts";
 import Settlement from "./pages/Group/pages/Settlement";
 import Members from "./pages/Group/pages/Members";
 import Activities from "./pages/Group/pages/Activities";
 import Join from "./pages/Group/pages/Join";
+import Index from "./pages/Index";
+import { Navigate } from "react-router-dom";
 
 // import reportWebVitals from "./reportWebVitals";
 
@@ -26,9 +29,10 @@ root.render(
     <BrowserRouter>
         <Routes>
             <Route path="/" element={<App />}>
-                {/* <Route index element={<Home />} /> */}
+                <Route index element={<Index />} />
                 <Route path="group/:slug" element={<Group />}>
-                    <Route path="overview" element={<Overview />} />
+                    <Route index element={<Expenses />} />
+                    {/* <Route path="overview" element={<Overview />} /> */}
                     <Route path="expenses" element={<Expenses />} />
                     <Route path="debts" element={<Debts />} />
                     <Route path="settlement" element={<Settlement />} />
@@ -37,7 +41,9 @@ root.render(
                     <Route path="activities" element={<Activities />} />
                 </Route>
                 <Route path="login" element={<Login />}></Route>
+                <Route path="liff" element={<Liff />}></Route>
                 <Route path="home" element={<Home />}></Route>
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
         </Routes>
     </BrowserRouter>

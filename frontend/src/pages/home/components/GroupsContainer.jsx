@@ -12,9 +12,10 @@ import {
     Avatar,
     Paper,
 } from "@mui/material";
+import { AWS_CLOUDFRONT_HOST } from "../../../global/constant";
 
 const GroupsWrapper = styled(Paper)`
-    width: 40%;
+    width: 90%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -25,6 +26,13 @@ const GroupsWrapper = styled(Paper)`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    padding: 1rem 0;
+    max-height: 50vh;
+    overflow: scroll;
+
+    @media (min-width: 768px) {
+        width: 40%;
+    }
 `;
 
 const CustomListItemText = styled(ListItemText)`
@@ -39,10 +47,11 @@ const GroupLink = styled(Link)`
     color: inherit;
 `;
 
-const GroupsHeader = styled.h3`
-    padding-top: 2rem;
+const GroupsHeader = styled.h6`
     text-decoration: none;
     color: inherit;
+    font-weight: bold;
+    margin-bottom: 0px;
 `;
 
 const GroupsContainer = () => {
@@ -72,17 +81,24 @@ const GroupsContainer = () => {
                     return (
                         <GroupLink
                             key={group.slug}
-                            to={`/group/${group.slug}/overview`}
+                            to={`/group/${group.slug}/expenses`}
                         >
                             <ListItem alignItems="center" disablePadding>
                                 <ListItemButton>
                                     <ListItemAvatar>
                                         <Avatar
                                             alt={`${group.name}`}
-                                            src={`${group.image}.jpg`}
+                                            src={`${group.photo}`}
                                         />
                                     </ListItemAvatar>
-                                    <ListItemText primary={`${group.name}`} />
+                                    <ListItemText
+                                        primary={`${group.name}`}
+                                        secondary={group.description}
+                                        primaryTypographyProps={{
+                                            fontSize: "1rem",
+                                        }}
+                                        // sx={[{ color: "blue" }]}
+                                    />
                                 </ListItemButton>
                             </ListItem>
                         </GroupLink>
@@ -91,16 +107,12 @@ const GroupsContainer = () => {
                 <ListItem alignItems="center" disablePadding>
                     <ListItemButton onClick={handleOpenCreateGroupModal}>
                         <ListItemAvatar>
-                            <Avatar alt={`+`} src={`.jpg`} />
+                            <Avatar
+                                alt={`+`}
+                                src={`${AWS_CLOUDFRONT_HOST}group_image_default/plus.png`}
+                            />
                         </ListItemAvatar>
-                        <CustomListItemText
-                            primary={`Create a new group`}
-                            sx={[
-                                { fontWeight: "bold" },
-                                { fontSize: "26px" },
-                                { color: "blue" },
-                            ]}
-                        />
+                        <CustomListItemText primary={`Create a new group`} />
                     </ListItemButton>
                 </ListItem>
             </List>

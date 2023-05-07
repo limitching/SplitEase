@@ -1,18 +1,26 @@
-import { useContext } from "react";
-import { Container, Modal, Button, Form, Col, Row } from "react-bootstrap";
+import { useContext, useState } from "react";
+import { Container, Modal, Form, Col, Row } from "react-bootstrap";
+import { Button } from "@mui/material";
 import styled from "styled-components";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { api } from "../../../../../utils/api";
-import { SPLIT_METHODS } from "../../../../../global/constant";
-
+import {
+    SPLIT_METHODS,
+    DASHBOARD_BG_COLOR,
+    HEADER_BG_COLOR,
+} from "../../../../../global/constant";
+// import { Button } from "react-bootstrap";
+// import Button from "@mui/material-next/Button";
+import AddIcon from "@mui/icons-material/Add";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import {
     ExpenseContext,
     localISOTime,
 } from "../../../../../contexts/ExpenseContext";
 import { AuthContext } from "../../../../../contexts/AuthContext";
-import { TransactionSelector, ModalContent } from "./Modal";
+import { ModalContent } from "./Modal";
+import { FixedButtonWrapper } from "../../../components/PageWrapper";
 
 const MySwal = withReactContent(Swal);
 
@@ -21,8 +29,12 @@ const StyledModalBody = styled(Modal.Body)`
     overflow: scroll;
 `;
 
+const ModalHeader = styled.h5`
+    margin-bottom: 0px;
+`;
+
 const Transaction = () => {
-    const { members, group_id, setExpensesChanged } = useContext(GroupContext);
+    const { members, group_id } = useContext(GroupContext);
     const {
         checked,
         subValues,
@@ -31,6 +43,7 @@ const Transaction = () => {
         amount,
         selectedCreditor,
         showTransaction,
+        expenseTime,
         setChecked,
         setSubCredit,
         setSelectedSplitMethod,
@@ -41,9 +54,11 @@ const Transaction = () => {
         setShowTransaction,
         setDescription,
     } = useContext(ExpenseContext);
-    const { user } = useContext(AuthContext);
+    const { user, jwtToken } = useContext(AuthContext);
     const { setSelectedExpense } = useContext(ExpenseContext);
-    const { group } = useContext(GroupContext);
+    const { group, showFixedButton, socket, setExpensesChanged } =
+        useContext(GroupContext);
+    const [hasError, setHasError] = useState(false);
 
     const handleClose = () => setShowTransaction(false);
     // When Transaction window is opened, set amount = 0
@@ -51,14 +66,19 @@ const Transaction = () => {
         setAmount(0);
         setSelectedExpense(null);
         setChecked([...members]);
-        setShowTransaction(true);
         // TODO: Set default creditor when user is done
         setSelectedCreditor(user.id);
         setSelectedCurrency(group.default_currency);
         setSelectedSplitMethod(0);
         setDescription("");
         setExpenseTime(localISOTime);
+        setExpenseTime(
+            new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                .toISOString()
+                .substring(0, 16)
+        );
         setSubCredit(Array(members.length).fill(0));
+        setShowTransaction(true);
     };
     const handleExpenseSubmit = async (event) => {
         event.preventDefault();
@@ -111,14 +131,19 @@ const Transaction = () => {
                 JSON.stringify([...debtorsAdjustment])
             );
         }
+        formData.append("date", expenseTime);
         // TODO: debug;
         // for (const pair of formData.entries()) {
         //     console.log(`${pair[0]}, ${pair[1]}`);
         // }
 
-        const response = await api.createExpense(formData);
+        const response = await api.createExpense(formData, jwtToken);
         if (response.status === 200) {
-            setExpensesChanged(true);
+            if (socket.connected) {
+                socket.emit("expenseChange");
+            } else {
+                setExpensesChanged(true);
+            }
             // handleClickVariant("Expense Created successfully!", "success");
             MySwal.fire({
                 title: <p>Expense Created successfully!</p>,
@@ -157,35 +182,76 @@ const Transaction = () => {
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Add Transaction
-            </Button>
+            <FixedButtonWrapper
+                style={{
+                    transition:
+                        "transform 0.5s ease-out, opacity 0.5s ease-out",
+                    transform: showFixedButton
+                        ? "translateY(0)"
+                        : "translateY(120%)",
+                    opacity: showFixedButton ? 1 : 0,
+                }}
+            >
+                <Button
+                    id="create-expense"
+                    onClickCapture={handleShow}
+                    disabled={false}
+                    size="large"
+                    variant="filled"
+                    startIcon={<AddIcon></AddIcon>}
+                    sx={{
+                        bgcolor: DASHBOARD_BG_COLOR,
+                        "&:hover": {
+                            bgcolor: DASHBOARD_BG_COLOR,
+                            opacity: 0.87,
+                        },
+                        borderRadius: "100px",
+                        color: "white",
+                        padding: "12px 26px",
+                    }}
+                >
+                    ADD EXPENSE
+                </Button>
+            </FixedButtonWrapper>
+
             {selectedCreditor !== "multi" ? (
                 <Modal
                     show={showTransaction}
                     onHide={handleClose}
                     backdrop="static"
                     keyboard={false}
+                    centered
                 >
                     <Form onSubmit={handleExpenseSubmit}>
                         <Modal.Header closeButton as={Row}>
                             <Container className="transaction-method ml-0 pl-0">
                                 <Col lg="6">
-                                    <TransactionSelector />
+                                    {/* <TransactionSelector /> */}
+                                    <ModalHeader>New Expense</ModalHeader>
                                 </Col>
                             </Container>
                         </Modal.Header>
                         <StyledModalBody>
-                            <ModalContent />
+                            <ModalContent
+                                hasError={hasError}
+                                setHasError={setHasError}
+                            />
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
                                 <Button
-                                    variant="warning"
+                                    variant="contained"
                                     type="submit"
-                                    disabled={amount === 0}
+                                    disabled={amount === 0 || hasError}
+                                    disableElevation
+                                    sx={{
+                                        backgroundColor: HEADER_BG_COLOR,
+                                        "&:hover": {
+                                            backgroundColor: "#cdae21",
+                                        },
+                                    }}
                                 >
-                                    Save
+                                    {hasError ? "Invalid Input" : "Save"}
                                 </Button>
                             </Container>
                         </Modal.Footer>
@@ -198,26 +264,38 @@ const Transaction = () => {
                     backdrop="static"
                     keyboard={false}
                     size="xl"
+                    centered
                 >
                     <Form onSubmit={handleExpenseSubmit}>
                         <Modal.Header closeButton as={Row}>
                             <Container className="transaction-method ml-0 pl-0">
                                 <Col lg="6">
-                                    <TransactionSelector />
+                                    {/* <TransactionSelector /> */}
+                                    <ModalHeader>New Expense</ModalHeader>
                                 </Col>
                             </Container>
                         </Modal.Header>
                         <StyledModalBody>
-                            <ModalContent />
+                            <ModalContent
+                                hasError={hasError}
+                                setHasError={setHasError}
+                            />
                         </StyledModalBody>
                         <Modal.Footer>
                             <Container className="d-grid">
                                 <Button
-                                    variant="warning"
+                                    variant="contained"
                                     type="submit"
-                                    disabled={amount === 0}
+                                    disabled={amount === 0 || hasError}
+                                    disableElevation
+                                    sx={{
+                                        backgroundColor: HEADER_BG_COLOR,
+                                        "&:hover": {
+                                            backgroundColor: "#cdae21",
+                                        },
+                                    }}
                                 >
-                                    Save
+                                    {hasError ? "Invalid Input" : "Save"}
                                 </Button>
                             </Container>
                         </Modal.Footer>

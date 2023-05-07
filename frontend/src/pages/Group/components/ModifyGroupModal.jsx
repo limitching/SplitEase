@@ -17,7 +17,6 @@ import { GroupContext } from "../../../contexts/GroupContext";
 import { api } from "../../../utils/api";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { useEffect } from "react";
 const MySwal = withReactContent(Swal);
 
 const StyledModalBody = styled(Modal.Body)`
@@ -31,33 +30,39 @@ const StyledModalBody = styled(Modal.Body)`
 const ModifyGroupModal = ({
     showModifyGroupModal,
     handleCloseModifyGroupModal,
+    modifiedGroupData,
+    setModifiedGroupData,
 }) => {
     const navigate = useNavigate();
-    const { user, jwtToken, setLoading, setGroupChange } =
-        useContext(AuthContext);
-    const { group } = useContext(GroupContext);
-    const [isCheck, setIsCheck] = useState(
-        Boolean(Number(group.minimized_debts))
-    );
+    const { user, jwtToken, setGroupChange } = useContext(AuthContext);
+    const { group, socket } = useContext(GroupContext);
+
+    const [error, setError] = useState({
+        name: undefined,
+        description: undefined,
+    });
     const [alertOpen, setAlertOpen] = useState(false);
 
-    const [modifiedGroupData, setModifiedGroupData] = useState({
-        id: group.id,
-        name: group.name,
-        default_currency: group.default_currency,
-        description: group.description,
-        minimized_debts: Number(group.minimized_debts),
-    });
+    // const [modifiedGroupData, setModifiedGroupData] = useState({
+    //     id: group.id,
+    //     name: group.name,
+    //     default_currency: group.default_currency,
+    //     description: group.description,
+    //     minimized_debts: Number(group.minimized_debts),
+    // });
+    // console.log("group", group);
+    // console.log("modal", modifiedGroupData);
+    // console.log("value", Boolean(modifiedGroupData.minimized_debts));
 
-    useEffect(() => {
-        setModifiedGroupData({
-            id: group.id,
-            name: group.name,
-            default_currency: group.default_currency,
-            description: group.description,
-            minimized_debts: Number(group.minimized_debts),
-        });
-    }, [group]);
+    // useEffect(() => {
+    //     setModifiedGroupData({
+    //         id: group.id,
+    //         name: group.name,
+    //         default_currency: group.default_currency,
+    //         description: group.description,
+    //         minimized_debts: Number(group.minimized_debts),
+    //     });
+    // }, [group]);
 
     const handleAlertOpen = () => {
         setAlertOpen(true);
@@ -67,14 +72,12 @@ const ModifyGroupModal = ({
     };
 
     const handleChecked = (event) => {
-        if (isCheck) {
-            setIsCheck(false);
+        if (Boolean(modifiedGroupData.minimized_debts)) {
             setModifiedGroupData({
                 ...modifiedGroupData,
                 minimized_debts: Number(false),
             });
         } else {
-            setIsCheck(true);
             setModifiedGroupData({
                 ...modifiedGroupData,
                 minimized_debts: Number(true),
@@ -84,6 +87,24 @@ const ModifyGroupModal = ({
 
     function handleGroupDataChange(event) {
         const key = event.target.name;
+        const newError = { ...error };
+        if (key === "name") {
+            if (event.target.value.length > 50) {
+                newError.name = "Group name must less than 50 characters.";
+            } else {
+                newError.name = undefined;
+            }
+        }
+        if (key === "description") {
+            console.log(event.target.value);
+            if (event.target.value.length > 50) {
+                newError.description =
+                    "Group description must less than 50 characters.";
+            } else {
+                newError.description = undefined;
+            }
+        }
+        setError(newError);
         setModifiedGroupData({
             ...modifiedGroupData,
             [key]: event.target.value,
@@ -154,12 +175,12 @@ const ModifyGroupModal = ({
             description: "",
         });
         handleCloseModifyGroupModal();
+        socket.emit("logsChange");
         setGroupChange(true);
     };
 
     const handleGroupArchive = async () => {
         handleAlertClose();
-        console.log(group.id);
         const response = await api.archiveGroup(jwtToken, group.id);
 
         setGroupChange(true);
@@ -172,6 +193,8 @@ const ModifyGroupModal = ({
         });
         navigate("/home");
     };
+    // console.log(typeof modifiedGroupData.minimized_debts);
+    // console.log(Boolean(0));
 
     return (
         <>
@@ -201,6 +224,8 @@ const ModifyGroupModal = ({
                                 variant="standard"
                                 fullWidth
                                 required
+                                helperText={error.name}
+                                error={Boolean(error.name)}
                             />
                         </Container>
                         <Container>
@@ -226,7 +251,9 @@ const ModifyGroupModal = ({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={isCheck}
+                                        checked={Boolean(
+                                            modifiedGroupData.minimized_debts
+                                        )}
                                         onChange={(event) => {
                                             handleChecked(event);
                                         }}
@@ -247,6 +274,8 @@ const ModifyGroupModal = ({
                                 fullWidth
                                 multiline
                                 rows={3}
+                                helperText={error.description}
+                                error={Boolean(error.description)}
                             />
                         </Container>
                         {user.id === group.owner ? (
@@ -262,8 +291,14 @@ const ModifyGroupModal = ({
                     </StyledModalBody>
                     <Modal.Footer>
                         <Container className="d-grid">
-                            <Button variant="warning" type="submit">
-                                Save
+                            <Button
+                                variant="warning"
+                                type="submit"
+                                disabled={error.name || error.description}
+                            >
+                                {error.name || error.description
+                                    ? "Invalid Input"
+                                    : "Save"}
                             </Button>
                         </Container>
                     </Modal.Footer>

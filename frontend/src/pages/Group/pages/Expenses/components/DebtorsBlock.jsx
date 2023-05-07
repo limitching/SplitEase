@@ -2,7 +2,10 @@ import SplitMethodSelector from "./SplitMethodSelector";
 import { Container, Form, Col, Row } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
-import { CURRENCY_OPTIONS } from "../../../../../global/constant";
+import {
+    CURRENCY_OPTIONS,
+    ANIMAL_AVATAR,
+} from "../../../../../global/constant";
 import { useContext, useState } from "react";
 import { TextField } from "@mui/material";
 import { TbPlusMinus } from "react-icons/tb";
@@ -19,7 +22,10 @@ import {
     ListItemAvatar,
     Checkbox,
     Avatar,
+    Tooltip,
 } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 const DebtorsBlock = () => {
     const { members } = useContext(GroupContext);
@@ -33,7 +39,9 @@ const DebtorsBlock = () => {
         setChecked,
         setSubValues,
         setAmount,
+        setSplitIntroOpen,
     } = useContext(ExpenseContext);
+
     const [modifiedIndices, setModifiedIndices] = useState([]);
 
     if (members.length === 0) {
@@ -264,12 +272,52 @@ const DebtorsBlock = () => {
     };
     return (
         <div className="debtor-list" style={{ width: "100%" }}>
-            <Container as={Row} className="debtor-header-container">
-                <Form.Label column lg="6">
+            <Container
+                as={Row}
+                className="debtor-header-container"
+                style={{ margin: 0, padding: 0 }}
+            >
+                {selectedCreditor === "multi" ? (
+                    <Container style={{ height: "94.41px" }}></Container>
+                ) : null}
+
+                <Form.Label
+                    column
+                    lg="6"
+                    xs="6"
+                    style={{ display: "flex", alignItems: "center" }}
+                >
                     For whom
                 </Form.Label>
-                <Col lg="6">
-                    <SplitMethodSelector />
+                <Col
+                    lg="6"
+                    xs="6"
+                    style={{
+                        display: "flex",
+                        justifyContent: "end",
+                        padding: 0,
+                    }}
+                >
+                    <Container>
+                        <SplitMethodSelector />
+                    </Container>
+
+                    <Container
+                        as={Col}
+                        style={{
+                            display: "flex",
+                            alignItems: "end",
+                        }}
+                    >
+                        <Tooltip
+                            title="Introduction of split methods"
+                            placement="top"
+                        >
+                            <IconButton onClick={() => setSplitIntroOpen(true)}>
+                                <HelpOutlineIcon></HelpOutlineIcon>
+                            </IconButton>
+                        </Tooltip>
+                    </Container>
                 </Col>
             </Container>
             <Container className="debtor-list-container">
@@ -307,7 +355,11 @@ const DebtorsBlock = () => {
                                         <ListItemAvatar>
                                             <Avatar
                                                 alt={`${member.name}`}
-                                                src={`${member.image}.jpg`}
+                                                src={`${
+                                                    member.image
+                                                        ? member.image
+                                                        : ANIMAL_AVATAR[index]
+                                                }`}
                                             />
                                         </ListItemAvatar>
                                         <ListItemText
@@ -331,7 +383,11 @@ const DebtorsBlock = () => {
                                         <ListItemAvatar>
                                             <Avatar
                                                 alt={`${member.name}`}
-                                                src={`${member.image}.jpg`}
+                                                src={`${
+                                                    member.image
+                                                        ? member.image
+                                                        : ANIMAL_AVATAR[index]
+                                                }`}
                                             />
                                         </ListItemAvatar>
                                         {selectedSplitMethod === 1 ? (

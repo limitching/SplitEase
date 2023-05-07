@@ -1,0 +1,45 @@
+name: Build and Deploy
+
+on:
+    push:
+        branches: [develop]
+        tags:
+            - CICD
+
+jobs:
+    build:
+        runs-on: macos-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 18.14
+
+            - name: Install dependencies
+              run: |
+                  cd frontend
+                  rm -rf node_modules
+                  rm -f package-lock.json
+                  npm cache clean --force
+                  npm install
+
+            - name: Build React app
+              run: |
+                  cd frontend
+                  pwd
+                  ls -al
+                  npm run build
+
+            # - name: Upload to S3
+            #   uses: jakejarvis/s3-sync-action@master
+            #   with:
+            #       args: --acl public-read --follow-symlinks --delete
+            #   env:
+            #       AWS_S3_BUCKET: your-bucket-name
+            #       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            #       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            #       AWS_REGION: your-bucket-region
+            #       SOURCE_DIR: frontend/build

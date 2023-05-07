@@ -2,15 +2,22 @@ import styled from "styled-components";
 import { Paper } from "@mui/material";
 
 const PageWrapper = styled(Paper)`
-    width: 45%;
-    height: 50vh;
+    width: 90%;
+    min-height: 42vh;
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: center;
     background-color: white;
-    margin: 2rem auto;
+    margin: 1rem auto;
     overflow: scroll;
+
+    @media (min-width: 768px) {
+        width: 45%;
+        // min-height: calc(50vh + 56px);
+        min-height: calc(100vh - 55px - 30vh - 52px - 1.5rem - 1.5rem);
+        margin: 1.5rem auto;
+    }
 `;
 
 const ListWrapper = styled.div`
@@ -28,10 +35,11 @@ const FixedButtonWrapper = styled.div`
     position: fixed;
     display: flex;
     justify-content: center;
-    bottom: 7rem;
+    bottom: 3.5vh;
     left: 0;
     width: 100%;
     padding: 20px;
+    z-index: 10;
 `;
 
 const HeaderTextContainer = styled.div`

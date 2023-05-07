@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import { TextField, MenuItem } from "@mui/material";
-import { SPLIT_METHODS } from "../../../../../global/constant";
+import { SPLIT_METHODS_ABBREVIATION } from "../../../../../global/constant";
 
 function gcd(a, b) {
     if (b === 0) {
@@ -29,8 +29,8 @@ const SplitMethodSelector = () => {
     const handleSplitMethodChange = (event) => {
         const previousMethod = selectedSplitMethod;
         setSelectedSplitMethod(Number(event.target.value));
-        console.log(event.target.value, typeof event.target.value);
-        console.log(SPLIT_METHODS[event.target.value]);
+        // console.log(event.target.value, typeof event.target.value);
+        // console.log(SPLIT_METHODS[event.target.value]);
         if (event.target.value === 1) {
             setSubValues(Array(members.length).fill(amount / members.length));
         } else if (event.target.value === 2) {
@@ -49,10 +49,12 @@ const SplitMethodSelector = () => {
         <TextField
             select
             variant="standard"
+            label="Split method"
             onChange={handleSplitMethodChange}
             value={selectedSplitMethod}
+            style={{ width: "100%" }}
         >
-            {SPLIT_METHODS.map((method, index) => (
+            {SPLIT_METHODS_ABBREVIATION.map((method, index) => (
                 <MenuItem key={index} value={index}>
                     {method}
                 </MenuItem>

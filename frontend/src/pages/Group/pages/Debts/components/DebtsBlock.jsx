@@ -1,4 +1,7 @@
-import { CURRENCY_OPTIONS } from "../../../../../global/constant";
+import {
+    CURRENCY_OPTIONS,
+    ANIMAL_AVATAR,
+} from "../../../../../global/constant";
 import { useContext } from "react";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import {
@@ -9,10 +12,11 @@ import {
     ListItemAvatar,
     Avatar,
     Divider,
+    Tooltip,
 } from "@mui/material";
 import { Container } from "react-bootstrap";
 const DebtsBlock = () => {
-    const { members, debts } = useContext(GroupContext);
+    const { members, debts, indexMap } = useContext(GroupContext);
     return (
         <List
             dense
@@ -39,20 +43,39 @@ const DebtsBlock = () => {
                                 <ListItem>
                                     <ListItemButton>
                                         <ListItemAvatar>
-                                            <Avatar
-                                                alt={`${debtor.name}`}
-                                                src={debtor.image}
-                                                sx={{ width: 50, height: 50 }}
-                                            />
+                                            <Tooltip title={debtor?.name}>
+                                                <Avatar
+                                                    alt={`${debtor?.name}`}
+                                                    src={
+                                                        debtor?.image
+                                                            ? debtor.image
+                                                            : ANIMAL_AVATAR[
+                                                                  indexMap.get(
+                                                                      debtor.id
+                                                                  )
+                                                              ]
+                                                    }
+                                                    sx={{
+                                                        width: 50,
+                                                        height: 50,
+                                                    }}
+                                                />
+                                            </Tooltip>
                                         </ListItemAvatar>
                                         <Container>
                                             <ListItemText
-                                                primary={debtor.name}
+                                                primary={debtor?.name}
                                                 secondary={`${
                                                     currency.symbol
                                                 } ${Number(
                                                     debtAmounts.toFixed(2)
                                                 )}`}
+                                                primaryTypographyProps={{
+                                                    maxWidth: "15vw",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    whiteSpace: "nowrap",
+                                                }}
                                             />
                                         </Container>
                                         <Container>
@@ -64,17 +87,36 @@ const DebtsBlock = () => {
                                         </Container>
                                         <Container>
                                             <ListItemText
-                                                primary={creditor.name}
+                                                primary={creditor?.name}
                                                 sx={{ textAlign: "right" }}
+                                                primaryTypographyProps={{
+                                                    maxWidth: "15vw",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    whiteSpace: "nowrap",
+                                                }}
                                             />
                                         </Container>
 
                                         <ListItemAvatar>
-                                            <Avatar
-                                                alt={creditor.name}
-                                                src={creditor.image}
-                                                sx={{ width: 50, height: 50 }}
-                                            />
+                                            <Tooltip title={creditor?.name}>
+                                                <Avatar
+                                                    alt={creditor?.name}
+                                                    src={
+                                                        creditor?.image
+                                                            ? creditor.image
+                                                            : ANIMAL_AVATAR[
+                                                                  indexMap.get(
+                                                                      creditor.id
+                                                                  )
+                                                              ]
+                                                    }
+                                                    sx={{
+                                                        width: 50,
+                                                        height: 50,
+                                                    }}
+                                                />
+                                            </Tooltip>
                                         </ListItemAvatar>
                                     </ListItemButton>
                                 </ListItem>

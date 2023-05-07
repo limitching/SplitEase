@@ -3,7 +3,11 @@ import CreditorsBlock from "./CreditorsBlock";
 import DebtorsBlock from "./DebtorsBlock";
 import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import styled from "styled-components";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import dayjs from "dayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
 
 const StyledExpenseImage = styled.img`
     width: 400px;
@@ -25,17 +29,37 @@ const TransactionSelector = () => {
 
 const ExpenseDescription = () => {
     const { selectedExpense } = useContext(ExpenseContext);
+
+    const [error, setError] = useState(undefined);
     return (
         <Container className="expense-description mb-3">
             <Form.Label>Description</Form.Label>
-            <Form.Control
+            {/* <Form.Control
                 as="textarea"
-                name="description"
+                // name="description"
                 rows={3}
                 defaultValue={
                     selectedExpense ? selectedExpense.description : ""
                 }
-            />
+            /> */}
+            <TextField
+                name="description"
+                fullWidth
+                multiline
+                defaultValue={
+                    selectedExpense ? selectedExpense.description : ""
+                }
+                onChange={(event) => {
+                    event.target.value.length <= 50
+                        ? setError(undefined)
+                        : setError(
+                              "Expense description cannot exceed 50 characters"
+                          );
+                }}
+                placeholder="Description of this expense"
+                error={Boolean(error)}
+                helperText={error}
+            ></TextField>
         </Container>
     );
 };
@@ -58,34 +82,69 @@ const ExpenseImage = () => {
     );
 };
 
-const ExpenseDatetime = () => {
+const ExpenseDatetime = ({ hasError, setHasError }) => {
     const { expenseTime, setExpenseTime } = useContext(ExpenseContext);
-    const handleExpenseTimeChange = (event) => {
-        setExpenseTime(event.target.value);
+
+    const validateExpenseTime = (date) => {
+        const now = dayjs();
+        if (date.isAfter(now)) {
+            setHasError(true);
+        } else {
+            setHasError(false);
+        }
     };
+
+    const handleExpenseTimeChange = (value) => {
+        // console.log(value.target.value);
+        // console.log(value.format("YYYY-MM-DDTHH:mm"));
+        // setExpenseTime(value.target.value);
+        const date = dayjs(value);
+        validateExpenseTime(date);
+        setExpenseTime(value.format("YYYY-MM-DDTHH:mm"));
+    };
+
     return (
         <Container className="expense-datetime mb-3">
             <Form.Label>Date &amp; time</Form.Label>
-            <Form.Control
+            {/* <Form.Control
                 type="datetime-local"
                 name="date"
-                defaultValue={expenseTime}
+                value={expenseTime}
                 onChange={handleExpenseTimeChange}
+            /> */}
+            <br></br>
+            <DateTimePicker
+                // name="date"
+                value={dayjs(expenseTime)}
+                // label="Select date"
+                onChange={(value) => handleExpenseTimeChange(value)}
+                disableFuture
+                error={hasError}
+                sx={{ width: "100%" }}
             />
+            {hasError && (
+                <Typography variant="body2" color="error">
+                    Invalid date format (Date cannot be future)
+                </Typography>
+            )}
         </Container>
     );
 };
 
-const ModalContent = () => {
+const ModalContent = ({ hasError, setHasError }) => {
     const { selectedCreditor } = useContext(ExpenseContext);
+
     if (selectedCreditor !== "multi") {
         return (
             <>
                 <CreditorsBlock />
                 <DebtorsBlock />
                 <ExpenseDescription />
-                <ExpenseImage />
-                <ExpenseDatetime />
+                {/* <ExpenseImage /> */}
+                <ExpenseDatetime
+                    hasError={hasError}
+                    setHasError={setHasError}
+                />
             </>
         );
     } else {
@@ -98,8 +157,11 @@ const ModalContent = () => {
                     <DebtorsBlock />
                 </div>
                 <ExpenseDescription />
-                <ExpenseImage />
-                <ExpenseDatetime />
+                {/* <ExpenseImage /> */}
+                <ExpenseDatetime
+                    hasError={hasError}
+                    setHasError={setHasError}
+                />
             </>
         );
     }

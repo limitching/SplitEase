@@ -8,19 +8,100 @@ import app from "../../app.js";
 import debug from "debug";
 const log = debug("backend:server");
 import http from "http";
+import { Server } from "socket.io";
+import { createAdapter } from "@socket.io/redis-adapter";
+import { redis, initializePubSub } from "../services/Redis.js";
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || "3000");
+const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
+
+/**
+ * Perform socket.io configuration and connection
+ */
+const { redisPub, redisSub } = initializePubSub();
+const io = new Server(server, {
+    cors: { origin: "*" },
+    adapter: createAdapter(redisPub, redisSub),
+});
+
+io.on("connection", async (socket) => {
+    socket.emit("connection");
+    console.log("a user connected (Server)");
+    const group_slug = socket.handshake.query.slug;
+
+    //Join group via slug
+    socket.join(group_slug);
+    // console.log(`A user joined group ${group_slug}`);
+
+    //=================================================//
+    // const rooms = await io.of("/").adapter.allRooms();
+    // console.log(rooms); // a Set containing all rooms (across every node)
+    //=================================================//
+
+    socket.on("refreshMembers", () => {
+        // console.log("refreshMembers");
+        // io.to(group_slug).emit("refreshMembers"); // notify group user to update members
+        if (redisPub.connected) {
+            redisPub.publish("refreshMembers", group_slug, (err) => {
+                if (err) console.error("Redis publish error:", err);
+            });
+        } else {
+            io.to(group_slug).emit("refreshMembers");
+        }
+    });
+
+    socket.on("logsChange", () => {
+        // console.log("logsChange");
+        // io.to(group_slug).emit("logsChange"); // notify group user to update members
+        if (redisPub.connected) {
+            redisPub.publish("logsChange", group_slug, (err) => {
+                if (err) console.error("Redis publish error:", err);
+            });
+        } else {
+            io.to(group_slug).emit("logsChange");
+        }
+    });
+
+    socket.on("expenseChange", () => {
+        // console.log("expenseChange");
+        // io.to(group_slug).emit("expenseChange");
+        if (redisPub.connected) {
+            redisPub.publish("expenseChange", group_slug, (err) => {
+                if (err) console.error("Redis publish error:", err);
+            });
+        } else {
+            io.to(group_slug).emit("expenseChange");
+        }
+    });
+
+    socket.on("leave-group", (group_slug) => {
+        console.log(`User left group: ${group_slug}`);
+        socket.leave(group_slug); // leave group
+    });
+
+    socket.on("disconnect", () => {
+        console.log("user disconnected");
+    });
+});
+
+// Subscribe to Redis channels and emit messages to clients
+redisSub.subscribe("refreshMembers", "logsChange", "expenseChange");
+redisSub.on("message", (channel, group_slug) => {
+    console.log(
+        `Received message on channel ${channel} for group ${group_slug}`
+    );
+    io.to(group_slug).emit(channel);
+});
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -85,3 +166,5 @@ function onListening() {
     var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
     debug("Listening on " + bind);
 }
+
+export { server };

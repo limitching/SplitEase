@@ -6,12 +6,16 @@ import {
     ListItemAvatar,
     Avatar,
     Divider,
+    Tooltip,
 } from "@mui/material";
 import { Container } from "react-bootstrap";
 import { GroupContext } from "../../../../../contexts/GroupContext";
 import { AuthContext } from "../../../../../contexts/AuthContext";
 import { useContext } from "react";
-import { CURRENCY_OPTIONS } from "../../../../../global/constant";
+import {
+    CURRENCY_OPTIONS,
+    ANIMAL_AVATAR,
+} from "../../../../../global/constant";
 
 const MemberList = () => {
     const { members, group, balance, spent } = useContext(GroupContext);
@@ -33,17 +37,24 @@ const MemberList = () => {
                 bgcolor: "background.paper",
             }}
         >
+            <Divider></Divider>
             {members.map((user, index) => {
                 return (
                     <div key={"Member " + user.id}>
                         <ListItem>
                             <ListItemButton>
                                 <ListItemAvatar>
-                                    <Avatar
-                                        alt={user.name}
-                                        src={user.image}
-                                        sx={{ width: 50, height: 50 }}
-                                    />
+                                    <Tooltip title={user.name}>
+                                        <Avatar
+                                            alt={user.name}
+                                            src={
+                                                user.image
+                                                    ? user.image
+                                                    : ANIMAL_AVATAR[index]
+                                            }
+                                            sx={{ width: 50, height: 50 }}
+                                        />
+                                    </Tooltip>
                                 </ListItemAvatar>
                                 <Container>
                                     <ListItemText
@@ -53,6 +64,12 @@ const MemberList = () => {
                                                 ? ``
                                                 : `Spent ${currencyObject.symbol} ${spent[index]}`
                                         }
+                                        primaryTypographyProps={{
+                                            maxWidth: "15vw",
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
+                                        }}
                                     />
                                 </Container>
                                 <Container>
