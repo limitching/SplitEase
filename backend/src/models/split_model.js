@@ -315,16 +315,16 @@ function dpMinTransferStep(nets) {
             if (currentState & bit) {
                 sumValue[currentState] += nets[i];
                 const lastState = currentState ^ bit;
-                // console.log(
-                //     "currentState : ",
-                //     currentState.toString(2).padStart(N, 0)
-                // );
-                // console.log("Bit          : ", bit.toString(2).padStart(N, 0));
-                // console.log(
-                //     "lastState    : ",
-                //     lastState.toString(2).padStart(N, 0)
-                // );
-                // console.log("=================");
+                console.log(
+                    "currentState : ",
+                    currentState.toString(2).padStart(N, 0)
+                );
+                console.log("Bit          : ", bit.toString(2).padStart(N, 0));
+                console.log(
+                    "lastState    : ",
+                    lastState.toString(2).padStart(N, 0)
+                );
+                console.log("=================");
                 maxGroupCount = Math.max(maxGroupCount, dp[lastState]);
             }
             bit <<= 1;
