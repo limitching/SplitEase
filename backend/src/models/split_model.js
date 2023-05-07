@@ -357,8 +357,10 @@ function dpMinTransferStep(nets) {
                             nets[binaryStr.length - 1 - i];
                     }
                 }
-
-                subGroups.push(subGroupMembers);
+                if (subGroupMembers.length > 1) {
+                    subGroups.push(subGroupMembers);
+                }
+                // subGroups.push(subGroupMembers);
 
                 // Log
                 // console.log("Find new group: ", currentState);
