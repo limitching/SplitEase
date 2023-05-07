@@ -289,11 +289,14 @@ function calculateNet(graph) {
 function dpSuggestion(graph) {
     const nets = calculateNet(graph);
     const { subGroups, dp } = dpMinTransferStep(nets);
+    console.log("subGroups", subGroups);
+    console.log("dp", dp);
     const nonDivisibleSubGroups = findNonDivisibleSubGroups(
         subGroups,
         dp,
         nets
     );
+    console.log("nonDivisibleSubGroups", nonDivisibleSubGroups);
     const subNets = getSubGroupsNets(nonDivisibleSubGroups, nets);
     const suggestion = getSettleUpSuggestion(subNets);
     return suggestion;
