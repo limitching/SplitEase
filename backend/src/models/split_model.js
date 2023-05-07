@@ -205,7 +205,7 @@ function minimizeDebts(graph) {
     // // Determine who owes how much money to whom
     // const transactions = calculateTransaction(simplifiedGraph);
     const transactions = getSuggestion(graph);
-    console.log("transactions", transactions);
+    // console.log("transactions", transactions);
     // const transactions = minimizeTransaction(simplifiedGraph);
     return transactions;
 }
@@ -306,7 +306,7 @@ function getSuggestion(graph) {
 
     const subNets = getSubGroupsNets(nonDivisibleSubGroups, Nets);
     const suggestion = getSettleUpSuggestion(subNets);
-
+    console.log("subNets", subNets);
     // console.log("Suggestion", suggestion);
     return suggestion;
 }
