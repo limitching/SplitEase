@@ -230,17 +230,19 @@ function minimizeTransaction(graph) {
     }
 
     console.log("graph", graph);
+    const Net = calculateNet(graph);
+    console.log(Net);
 
-    //TODO:
-    let residualGraph = buildResidualGraph(graph);
-    for (let source = 0; source < N; source++) {
-        for (let sink = 0; sink < N; sink++) {
-            const dinicResult = dinicMaxFlow(residualGraph, source, sink);
-            residualGraph = dinicResult.residualGraph;
-            // console.log(residualGraph);
-        }
-    }
-    console.log("new residual", residualGraph);
+    // //TODO:
+    // let residualGraph = buildResidualGraph(graph);
+    // for (let source = 0; source < N; source++) {
+    //     for (let sink = 0; sink < N; sink++) {
+    //         const dinicResult = dinicMaxFlow(residualGraph, source, sink);
+    //         residualGraph = dinicResult.residualGraph;
+    //         // console.log(residualGraph);
+    //     }
+    // }
+    // console.log("new residual", residualGraph);
 
     // Determine who owes how much money to whom
     let transactions = [];
@@ -267,5 +269,19 @@ const calculateTransaction = (graph) => {
     // console.log(transactions);
     return transactions;
 };
+
+// A function to calculate Net for each people, positive means credit, negative mean debit
+function calculateNet(graph) {
+    const N = graph[0].length;
+    const Nets = new Array(N).fill(0);
+    for (let j = 0; j < N; j++) {
+        for (let i = 0; i < N; i++) {
+            Nets[j] += graph[i][j] - graph[j][i];
+        }
+    }
+    // Debug
+    // console.log("Nets:", Nets);
+    return Nets;
+}
 
 export { minimizeDebts, minimizeTransaction };
