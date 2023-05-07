@@ -4,7 +4,7 @@
 .footer-area {
     background-position: top center;
     position: relative;
-    z-index: 5;
+    z-index: 0;
 }
 
 .footer-area::before {

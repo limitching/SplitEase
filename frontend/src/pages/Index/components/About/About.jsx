@@ -4,7 +4,7 @@ import "../section.css";
 import "../button.css";
 const About = () => {
     return (
-        <>
+        <div style={{ position: "relative", zIndex: "5" }}>
             {/* Diversified splitting methods */}
             <section id="features" className="about-area pt-70">
                 <div className="container">
@@ -244,7 +244,7 @@ const About = () => {
                     <img src="assets/images/about-shape-1.svg" alt="shape" />
                 </div>
             </section>
-        </>
+        </div>
     );
 };
 export default About;

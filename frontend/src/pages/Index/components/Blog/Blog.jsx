@@ -2,7 +2,11 @@
 import "./blog.css";
 const Blog = () => {
     return (
-        <section id="blog" className="blog-area pt-120">
+        <section
+            id="blog"
+            className="blog-area pt-120"
+            style={{ position: "relative", zIndex: "5" }}
+        >
             <div className="container">
                 <div className="row">
                     <div className="col-lg-6">

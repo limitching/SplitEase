@@ -21,7 +21,7 @@ const StyledContainer = styled(Container)`
 
 const Features = () => {
     return (
-        <div>
+        <div style={{ position: "relative", zIndex: "5" }}>
             <section id="intros" className="services-area pt-120">
                 <div className="container">
                     <div className="row justify-content-center">
