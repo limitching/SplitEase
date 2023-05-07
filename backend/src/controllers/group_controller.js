@@ -117,8 +117,8 @@ const startSettlement = async (req, res) => {
         });
     }
     //TODO: Local time issue
-    // console.log(deadline);
-    // console.log(new Date(deadline).toLocaleString());
+    console.log("DEADLINE", deadline);
+    console.log("toLocaleString", new Date(deadline).toLocaleString());
     const expenseResult = await updateExpenseStatusByGroupId(
         group_id,
         deadline,
