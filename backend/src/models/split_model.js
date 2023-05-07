@@ -442,7 +442,7 @@ function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
 
     console.log("fg", filteredSubGroups);
     // return Array.from(subGroupsSet);
-    return uniqueSubGroups;
+    return filteredSubGroups;
 }
 
 function getSubGroupsNets(subGroups, nets) {
