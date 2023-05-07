@@ -315,6 +315,7 @@ function dpMinTransferStep(nets) {
             if (currentState & bit) {
                 sumValue[currentState] += nets[i];
                 const lastState = currentState ^ bit;
+                //TODO:
                 console.log(
                     "currentState : ",
                     currentState.toString(2).padStart(N, 0)
