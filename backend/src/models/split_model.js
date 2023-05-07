@@ -309,23 +309,6 @@ function getSuggestion(graph) {
     return suggestion;
 }
 
-function dpSuggestion(graph) {
-    const nets = calculateNet(graph);
-    const { subGroups, dp } = dpMinTransferStep(nets);
-    console.log("subGroups", subGroups);
-    console.log("dp", dp);
-    const nonDivisibleSubGroups = findNonDivisibleSubGroups(
-        subGroups,
-        dp,
-        nets
-    );
-    console.log("nonDivisibleSubGroups", nonDivisibleSubGroups);
-    const subNets = getSubGroupsNets(nonDivisibleSubGroups, nets);
-    console.log("subNets", subNets);
-    const suggestion = getSettleUpSuggestion(subNets);
-    return suggestion;
-}
-
 function dpMinTransferStep(nets) {
     const N = nets.length;
     const dp = new Array(1 << N).fill(0);
@@ -371,14 +354,14 @@ function dpMinTransferStep(nets) {
                 subGroups.push(subGroupMembers);
 
                 // Log
-                console.log("Find new group: ", currentState);
-                console.log(
-                    "Binary: ",
-                    currentState.toString(2).padStart(N, 0)
-                );
-                console.log("subGroupMembers", subGroupMembers);
-                console.log("subNets", subNets);
-                console.log("=============");
+                // console.log("Find new group: ", currentState);
+                // console.log(
+                //     "Binary: ",
+                //     currentState.toString(2).padStart(N, 0)
+                // );
+                // console.log("subGroupMembers", subGroupMembers);
+                // console.log("subNets", subNets);
+                // console.log("=============");
             }
         } else {
             dp[currentState] = maxGroupCount;
