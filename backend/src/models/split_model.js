@@ -435,7 +435,7 @@ function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
             }
             return subGroup.every((element) => otherSubGroup.includes(element));
         });
-        console.log(isSubset);
+        // console.log(isSubset);
         // 如果不存在其他子集完整包含當前子集，則保留當前子集
         return isSubset;
     });
