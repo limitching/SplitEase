@@ -233,7 +233,7 @@ function minimizeTransaction(graph) {
     const nets = calculateNet(graph);
     console.log(nets);
     // const transactions = getSuggestion(graph);
-    console.log("transactions", transactions);
+    // console.log("transactions", transactions);
 
     // //TODO:
     // let residualGraph = buildResidualGraph(graph);
