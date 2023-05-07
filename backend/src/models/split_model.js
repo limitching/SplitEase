@@ -424,19 +424,23 @@ function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
     // }
 
     const uniqueSet = new Set(allSubGroups.map(JSON.stringify));
-    const uniqueSubGroups = Array.from(uniqueSet)
-        .map(JSON.parse)
-        .filter((item) => {
-            const count = allSubGroups.filter(
-                (arr) => JSON.stringify(arr) === JSON.stringify(item)
-            ).length;
-            return count === 1;
-        });
-
+    const uniqueSubGroups = Array.from(uniqueSet).map(JSON.parse);
     console.log("us", uniqueSet);
     console.log("ug", Array.from(uniqueSet).map(JSON.parse));
+    const filteredSubGroups = uniqueSubGroups.filter((subGroup1) => {
+        // 檢查是否有其他子陣列包含此子陣列
+        return !uniqueSubGroups.some((subGroup2) => {
+            if (subGroup1 === subGroup2) {
+                // 若比較的兩個子陣列是同一個，則不需要濾掉
+                return false;
+            }
+            // 檢查 subGroup1 是否為 subGroup2 的子集
+            return subGroup1.every((value) => subGroup2.includes(value));
+        });
+    });
+    console.log("fg", filteredSubGroups);
     // return Array.from(subGroupsSet);
-    return Array.from(uniqueSet).map(JSON.parse);
+    return uniqueSubGroups;
 }
 
 function getSubGroupsNets(subGroups, nets) {
