@@ -232,7 +232,7 @@ function minimizeTransaction(graph) {
     console.log("graph", graph);
     const nets = calculateNet(graph);
     console.log(nets);
-    const transactions = getSuggestion(graph);
+    // const transactions = getSuggestion(graph);
     console.log("transactions", transactions);
 
     // //TODO:
@@ -247,14 +247,14 @@ function minimizeTransaction(graph) {
     // console.log("new residual", residualGraph);
 
     // Determine who owes how much money to whom
-    // let transactions = [];
-    // for (let i = 0; i < graph.length; i++) {
-    //     for (let j = 0; j < graph.length; j++) {
-    //         if (graph[i][j] !== 0) {
-    //             transactions.push([j, i, graph[i][j]]);
-    //         }
-    //     }
-    // }
+    let transactions = [];
+    for (let i = 0; i < graph.length; i++) {
+        for (let j = 0; j < graph.length; j++) {
+            if (graph[i][j] !== 0) {
+                transactions.push([j, i, graph[i][j]]);
+            }
+        }
+    }
     return transactions;
 }
 
