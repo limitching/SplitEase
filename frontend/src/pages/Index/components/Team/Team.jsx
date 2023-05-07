@@ -3,7 +3,11 @@ import "./team.css";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
 const Team = () => {
     return (
-        <section id="team" className="team-area pt-120">
+        <section
+            id="team"
+            className="team-area pt-120"
+            style={{ position: "relative", zIndex: "5" }}
+        >
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-lg-5">
