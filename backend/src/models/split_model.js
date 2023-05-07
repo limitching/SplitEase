@@ -229,9 +229,9 @@ function minimizeTransaction(graph) {
         }
     }
 
-    // console.log("graph", graph);
-    // const nets = calculateNet(graph);
-    // console.log(nets);
+    console.log("graph", graph);
+    const nets = calculateNet(graph);
+    console.log(nets);
     const transactions = getSuggestion(graph);
     // console.log("transactions", transactions);
 
