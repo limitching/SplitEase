@@ -298,6 +298,7 @@ function dpSuggestion(graph) {
     );
     console.log("nonDivisibleSubGroups", nonDivisibleSubGroups);
     const subNets = getSubGroupsNets(nonDivisibleSubGroups, nets);
+    console.log("subNets", subNets);
     const suggestion = getSettleUpSuggestion(subNets);
     return suggestion;
 }
