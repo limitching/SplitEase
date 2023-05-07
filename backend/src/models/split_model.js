@@ -307,6 +307,7 @@ function getSuggestion(graph) {
     const subNets = getSubGroupsNets(nonDivisibleSubGroups, Nets);
     const suggestion = getSettleUpSuggestion(subNets);
     console.log("nonDivisibleSubGroups", nonDivisibleSubGroups);
+    console.log("subNets", subNets);
     // console.log("Suggestion", suggestion);
     return suggestion;
 }
