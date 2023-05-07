@@ -232,7 +232,7 @@ function minimizeTransaction(graph) {
     console.log("graph", graph);
     const nets = calculateNet(graph);
     console.log(nets);
-    const transactions = getSuggestion(nets);
+    const transactions = getSuggestion(graph);
     console.log("transactions", transactions);
 
     // //TODO:
