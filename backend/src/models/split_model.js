@@ -231,6 +231,17 @@ function minimizeTransaction(graph) {
 
     console.log("graph", graph);
 
+    //TODO:
+    let residualGraph = buildResidualGraph(graph);
+    for (let source = 0; source < N; source++) {
+        for (let sink = 0; sink < N; sink++) {
+            const dinicResult = dinicMaxFlow(residualGraph, source, sink);
+            residualGraph = dinicResult.residualGraph;
+            // console.log(residualGraph);
+        }
+    }
+    console.log("new residual", residualGraph);
+
     // Determine who owes how much money to whom
     let transactions = [];
     for (let i = 0; i < graph.length; i++) {
