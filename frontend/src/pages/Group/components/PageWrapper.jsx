@@ -1,7 +1,26 @@
 import styled from "styled-components";
-import { Paper } from "@mui/material";
+// import { Paper } from "@mui/material";
 
-const PageWrapper = styled(Paper)`
+// const PageWrapper = styled(Paper)`
+//     width: 90%;
+//     min-height: 42vh;
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: start;
+//     align-items: center;
+//     background-color: white;
+//     margin: 1rem auto;
+//     overflow: scroll;
+
+//     @media (min-width: 768px) {
+//         width: 45%;
+//         // min-height: calc(50vh + 56px);
+//         min-height: calc(100vh - 55px - 30vh - 52px - 1.5rem - 1.5rem);
+//         margin: 1.5rem auto;
+//     }
+// `;
+
+const PageWrapper = styled.div`
     width: 90%;
     min-height: 42vh;
     display: flex;
@@ -9,8 +28,10 @@ const PageWrapper = styled(Paper)`
     justify-content: start;
     align-items: center;
     background-color: white;
+    border-radius: 3px;
     margin: 1rem auto;
-    overflow: scroll;
+    // overflow: scroll;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 
     @media (min-width: 768px) {
         width: 45%;

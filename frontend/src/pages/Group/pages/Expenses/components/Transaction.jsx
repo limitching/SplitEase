@@ -21,6 +21,12 @@ import {
 import { AuthContext } from "../../../../../contexts/AuthContext";
 import { ModalContent } from "./Modal";
 import { FixedButtonWrapper } from "../../../components/PageWrapper";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const MySwal = withReactContent(Swal);
 
@@ -131,7 +137,13 @@ const Transaction = () => {
                 JSON.stringify([...debtorsAdjustment])
             );
         }
-        formData.append("date", expenseTime);
+        const localExpenseTime = expenseTime;
+        const utcExpenseTime = dayjs(localExpenseTime)
+            .utcOffset(0)
+            .format("YYYY-MM-DDTHH:mm");
+        // console.log(utcExpenseTime);
+        formData.append("date", utcExpenseTime);
+
         // TODO: debug;
         // for (const pair of formData.entries()) {
         //     console.log(`${pair[0]}, ${pair[1]}`);

@@ -4,7 +4,7 @@ import "./animate.css";
 import styled from "styled-components";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useCallback, useRef, useEffect } from "react";
+import { useCallback } from "react";
 import Particles from "react-particles";
 import { loadFull } from "tsparticles";
 

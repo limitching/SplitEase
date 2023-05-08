@@ -29,6 +29,14 @@ const SPLIT_METHODS = [
     "split by shares",
     "split by adjustment",
 ];
+
+const SPLIT_METHODS_ABBREVIATION = [
+    "Equally",
+    "Exact amounts",
+    "Percentages",
+    "Shares",
+    "Adjustment",
+];
 const CURRENCY_OPTIONS = [
     {
         id: 1,
@@ -265,4 +273,5 @@ export {
     GRAY_6,
     GRAY_7,
     GRAY_8,
+    SPLIT_METHODS_ABBREVIATION,
 };

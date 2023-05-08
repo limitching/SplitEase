@@ -84,6 +84,7 @@ const SettlingDebtsBlock = ({ handleAlertOpen, setSelectDebt }) => {
                             const creditor = members[transaction[1]];
                             const debtAmounts = Number(transaction[2]);
                             // const debtAmounts = transaction[2];
+                            console.log(debtor);
 
                             return (
                                 <div key={"settlingDebtsList" + index}>

@@ -211,7 +211,7 @@ const getUsers = async (requirement) => {
         condition.binding = [requirement.uid];
     }
     const userQuery =
-        "SELECT id, name, email, image FROM users " + condition.sql;
+        "SELECT id, name, email, image, line_id FROM users " + condition.sql;
     const [users] = await pool.query(userQuery, condition.binding);
     return users;
 };

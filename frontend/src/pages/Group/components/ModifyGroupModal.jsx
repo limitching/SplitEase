@@ -35,7 +35,7 @@ const ModifyGroupModal = ({
 }) => {
     const navigate = useNavigate();
     const { user, jwtToken, setGroupChange } = useContext(AuthContext);
-    const { group, socket } = useContext(GroupContext);
+    const { group, socket, setExpensesChanged } = useContext(GroupContext);
 
     const [error, setError] = useState({
         name: undefined,
@@ -175,7 +175,13 @@ const ModifyGroupModal = ({
             description: "",
         });
         handleCloseModifyGroupModal();
-        socket.emit("logsChange");
+
+        if (socket.connected) {
+            // socket.emit("logsChange");
+            socket.emit("expenseChange");
+        } else {
+            setExpensesChanged(true);
+        }
         setGroupChange(true);
     };
 

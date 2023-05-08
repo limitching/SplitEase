@@ -46,7 +46,7 @@ const WrapperOutlet = styled.div`
     // min-hight: 100vh;
     height: calc(100vh - 55px - 300px - 52px);
     // background-color: ${GROUP_BG_COLOR};
-    overflow: scroll;
+    overflow-y: scroll;
     // border: 2px solid black;
 
     @media (min-width: 768px) {
