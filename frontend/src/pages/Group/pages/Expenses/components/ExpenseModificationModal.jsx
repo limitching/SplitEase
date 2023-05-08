@@ -17,6 +17,12 @@ import withReactContent from "sweetalert2-react-content";
 import { api } from "../../../../../utils/api";
 import { SPLIT_METHODS, HEADER_BG_COLOR } from "../../../../../global/constant";
 import { AuthContext } from "../../../../../contexts/AuthContext";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const MySwal = withReactContent(Swal);
 
@@ -107,7 +113,14 @@ const ExpenseModificationModal = () => {
             JSON.stringify([...creditorsAmounts])
         );
         formData.append("debtorsWeight", JSON.stringify([...debtorsWeight]));
-        formData.append("date", expenseTime);
+
+        const localExpenseTime = expenseTime;
+        const utcExpenseTime = dayjs(localExpenseTime)
+            .utcOffset(0)
+            .format("YYYY-MM-DDTHH:mm");
+        // console.log(utcExpenseTime);
+
+        formData.append("date", utcExpenseTime);
         if (selectedSplitMethod === 4) {
             formData.append(
                 "debtorsAdjustment",

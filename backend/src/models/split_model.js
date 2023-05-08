@@ -204,7 +204,9 @@ function minimizeDebts(graph) {
 
     // // Determine who owes how much money to whom
     // const transactions = calculateTransaction(simplifiedGraph);
-    const transactions = minimizeTransaction(simplifiedGraph);
+    const transactions = getSuggestion(graph);
+    // console.log("transactions", transactions);
+    // const transactions = minimizeTransaction(simplifiedGraph);
     return transactions;
 }
 
@@ -229,6 +231,23 @@ function minimizeTransaction(graph) {
         }
     }
 
+    // console.log("graph", graph);
+    // const nets = calculateNet(graph);
+    // console.log(nets);
+    // const transactions = getSuggestion(graph);
+    // console.log("transactions", transactions);
+
+    // //TODO:
+    // let residualGraph = buildResidualGraph(graph);
+    // for (let source = 0; source < N; source++) {
+    //     for (let sink = 0; sink < N; sink++) {
+    //         const dinicResult = dinicMaxFlow(residualGraph, source, sink);
+    //         residualGraph = dinicResult.residualGraph;
+    //         // console.log(residualGraph);
+    //     }
+    // }
+    // console.log("new residual", residualGraph);
+
     // Determine who owes how much money to whom
     let transactions = [];
     for (let i = 0; i < graph.length; i++) {
@@ -241,18 +260,243 @@ function minimizeTransaction(graph) {
     return transactions;
 }
 
-const calculateTransaction = (graph) => {
-    const transactions = [];
-    for (let i = 0; i < graph.length; i++) {
-        for (let j = 0; j < graph.length; j++) {
-            if (graph[i][j] !== 0) {
-                transactions.push([j, i, graph[i][j]]);
-            }
+// const calculateTransaction = (graph) => {
+//     const transactions = [];
+//     for (let i = 0; i < graph.length; i++) {
+//         for (let j = 0; j < graph.length; j++) {
+//             if (graph[i][j] !== 0) {
+//                 transactions.push([j, i, graph[i][j]]);
+//             }
+//         }
+//     }
+//     // TODO:
+//     // console.log(transactions);
+//     return transactions;
+// };
+
+// A function to calculate Net for each people, positive means credit, negative mean debit
+function calculateNet(graph) {
+    const N = graph[0].length;
+    const Nets = new Array(N).fill(0);
+    for (let j = 0; j < N; j++) {
+        for (let i = 0; i < N; i++) {
+            Nets[j] += graph[i][j] - graph[j][i];
         }
     }
-    // TODO:
-    // console.log(transactions);
-    return transactions;
-};
+    // Debug
+    // console.log("Nets:", Nets);
+    return Nets;
+}
+
+function getSuggestion(graph) {
+    const N = graph.length;
+    const Nets = new Array(N).fill(0);
+    for (let j = 0; j < N; j++) {
+        for (let i = 0; i < N; i++) {
+            Nets[j] += graph[i][j] - graph[j][i];
+        }
+    }
+
+    const minTransferObject = dpMinTransferStep(Nets);
+    const nonDivisibleSubGroups = findNonDivisibleSubGroups(
+        minTransferObject.subGroups,
+        minTransferObject.dp,
+        Nets
+    );
+
+    const subNets = getSubGroupsNets(nonDivisibleSubGroups, Nets);
+    const suggestion = getSettleUpSuggestion(subNets);
+    // console.log("Nets", Nets);
+    // console.log("subgroup", minTransferObject.subGroups);
+    // console.log("dp", minTransferObject.dp);
+    // console.log("nonDivisibleSubGroups", nonDivisibleSubGroups);
+    // console.log("subNets", subNets);
+    // console.log("Suggestion", suggestion);
+    return suggestion;
+}
+
+function dpMinTransferStep(nets) {
+    const N = nets.length;
+    const dp = new Array(1 << N).fill(0);
+    const sumValue = new Array(1 << N).fill(0);
+    const subGroups = [];
+    for (let currentState = 1; currentState < 1 << N; currentState++) {
+        let bit = 1;
+        let maxGroupCount = 0;
+        for (let i = 0; i < N; i++) {
+            if (currentState & bit) {
+                sumValue[currentState] += nets[i];
+                const lastState = currentState ^ bit;
+                //TODO:
+                // console.log(
+                //     "currentState : ",
+                //     currentState.toString(2).padStart(N, 0)
+                // );
+                // console.log("Bit          : ", bit.toString(2).padStart(N, 0));
+                // console.log(
+                //     "lastState    : ",
+                //     lastState.toString(2).padStart(N, 0)
+                // );
+                // console.log("=================");
+                maxGroupCount = Math.max(maxGroupCount, dp[lastState]);
+            }
+            bit <<= 1;
+        }
+
+        if (sumValue[currentState] === 0) {
+            dp[currentState] = maxGroupCount + 1;
+
+            if (currentState !== (1 << N) - 1) {
+                const binaryStr = currentState.toString(2).padStart(N, 0);
+                const subGroupMembers = [];
+                const subNets = new Array(N).fill(0);
+                for (let i = binaryStr.length; i >= 0; i--) {
+                    if (binaryStr[i] === "1") {
+                        if (nets[binaryStr.length - 1 - i] !== 0) {
+                            subGroupMembers.push(binaryStr.length - 1 - i);
+                        }
+                        // subGroupMembers.push(binaryStr.length - 1 - i);
+                        subNets[binaryStr.length - 1 - i] =
+                            nets[binaryStr.length - 1 - i];
+                    }
+                }
+                if (subGroupMembers.length > 1) {
+                    subGroups.push(subGroupMembers);
+                }
+                // subGroups.push(subGroupMembers);
+                // [75, 0, -75, 0, 0, 0, 50, 0, -50, 0];
+                // Log
+                // console.log("Find new group: ", currentState);
+                // console.log(
+                //     "Binary: ",
+                //     currentState.toString(2).padStart(N, 0)
+                // );
+                // console.log("subGroupMembers", subGroupMembers);
+                // console.log("subNets", subNets);
+                // console.log("=============");
+            }
+        } else {
+            dp[currentState] = maxGroupCount;
+        }
+    }
+
+    // console.log(sumValue);
+    // console.log(dp[(1 << N) - 1]);
+    // console.log("Possible subgroup: ", subGroups);
+    // console.log(dp);
+    if (subGroups.length === 0) {
+        subGroups.push(Array.from(Array(N).keys()));
+    }
+
+    const resultObject = {
+        minTransfer: N - dp[(1 << N) - 1],
+        dp: dp,
+        subGroups: subGroups,
+    };
+    // return N - dp[(1 << N) - 1];
+    return resultObject;
+}
+
+function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
+    // Sort allSubGroups by length
+    allSubGroups.sort((a, b) => {
+        return a.length - b.length;
+    });
+
+    // // Select subGroup with no duplicated member
+    // const targetCount = dp[(1 << nets.length) - 1];
+    // const subGroupsSet = new Set();
+    // for (const subGroup of allSubGroups) {
+    //     if (subGroupsSet.size === targetCount) {
+    //         break;
+    //     }
+    //     let isValidSubgroup = true;
+    //     for (const member of subGroup) {
+    //         if (subGroupsSet.has(member)) {
+    //             isValidSubgroup = false;
+    //             break;
+    //         }
+    //     }
+    //     if (isValidSubgroup) {
+    //         subGroupsSet.add(subGroup);
+    //         console.log("add", subGroup);
+    //     }
+    // }
+
+    const uniqueSet = new Set(allSubGroups.map(JSON.stringify));
+    const uniqueSubGroups = Array.from(uniqueSet).map(JSON.parse);
+    // console.log("us", uniqueSet);
+    // console.log("ug", Array.from(uniqueSet).map(JSON.parse));
+    const filteredSubGroups = uniqueSubGroups.filter((subGroup) => {
+        // 判斷是否存在其他子集完整包含當前子集
+        const isSubset = uniqueSubGroups.some((otherSubGroup) => {
+            if (otherSubGroup === subGroup) {
+                return false;
+            }
+            return subGroup.every((element) => otherSubGroup.includes(element));
+        });
+        // console.log(isSubset);
+        // 如果不存在其他子集完整包含當前子集，則保留當前子集
+        return isSubset;
+    });
+
+    // console.log("fg", filteredSubGroups);
+    // return Array.from(subGroupsSet);
+    return uniqueSubGroups.length === 1 ? uniqueSubGroups : filteredSubGroups;
+}
+
+function getSubGroupsNets(subGroups, nets) {
+    const subNets = [];
+    for (let subGroup of subGroups) {
+        const subNet = new Array(nets.length).fill(0);
+
+        for (let i = 0; i < subGroup.length; i++) {
+            subNet[subGroup[i]] = nets[subGroup[i]];
+        }
+        subNets.push(subNet);
+    }
+    return subNets;
+}
+
+function getSettleUpSuggestion(subGroupsNets) {
+    const suggestion = [];
+
+    subGroupsNets.forEach((subNet) => {
+        for (let i = 0; i < subNet.length; i++) {
+            if (subNet[i] === 0) {
+                continue;
+            }
+            for (let j = i + 1; j < subNet.length; j++) {
+                if (subNet[i] * subNet[j] >= 0) {
+                    continue;
+                }
+
+                // Determine Cash flow direction
+                if (subNet[i] > 0) {
+                    if (Math.abs(subNet[i]) - Math.abs(subNet[j]) > 0) {
+                        suggestion.push([i, j, -subNet[j]]);
+                        subNet[i] += subNet[j];
+                        subNet[j] -= subNet[j];
+                    } else {
+                        suggestion.push([i, j, subNet[i]]);
+                        subNet[j] += subNet[i];
+                        subNet[i] -= subNet[i];
+                    }
+                } else {
+                    if (Math.abs(subNet[i]) - Math.abs(subNet[j]) > 0) {
+                        suggestion.push([j, i, subNet[j]]);
+                        subNet[i] += subNet[j];
+                        subNet[j] -= subNet[j];
+                    } else {
+                        suggestion.push([j, i, -subNet[i]]);
+                        subNet[j] += subNet[i];
+                        subNet[i] -= subNet[i];
+                    }
+                }
+            }
+        }
+    });
+    return suggestion;
+}
 
 export { minimizeDebts, minimizeTransaction };
