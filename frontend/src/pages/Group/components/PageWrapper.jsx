@@ -30,7 +30,7 @@ const PageWrapper = styled.div`
     background-color: white;
     border-radius: 3px;
     margin: 1rem auto;
-    overflow: scroll;
+    // overflow: scroll;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 
     @media (min-width: 768px) {
