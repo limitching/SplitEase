@@ -26,7 +26,7 @@ import { CURRENCY_MAP } from "../utils/constant.js";
 import {
     generateGroupsMenu,
     generateGroupOverView,
-} from "../models/bot_model.js";
+} from "../views/bot_reply_template.js";
 import { minimizeDebts } from "../models/split_model.js";
 
 import User from "../models/user_model.js";
