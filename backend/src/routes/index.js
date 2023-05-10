@@ -1,5 +1,5 @@
 import express from "express";
-import generateUploadUrl from "../databases/S3.js";
+import generateUploadUrl from "../services/S3.js";
 import { wrapAsync, authentication } from "../utils/util.js";
 var router = express.Router();
 
