@@ -52,4 +52,4 @@ function initializePubSub() {
     };
 }
 
-export { redis, initializePubSub };
+export {  initializePubSub };
