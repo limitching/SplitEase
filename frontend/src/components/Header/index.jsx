@@ -132,7 +132,7 @@ const Header = () => {
                 <StyledLink to={"/"} onClick={() => setMenuOpen(false)}>
                     <Navbar.Brand>
                         <img
-                            src="/assets/logo.svg"
+                            src="/assets/images/logo.svg"
                             width="auto"
                             height="30"
                             alt="SplitEase logo"
@@ -261,7 +261,7 @@ const Header = () => {
                         <StyledLink to={"/"}>
                             <Navbar.Brand>
                                 <img
-                                    src="/assets/logo.svg"
+                                    src="/assets/images/logo.svg"
                                     width="auto"
                                     height="30"
                                     alt="SplitEase logo"

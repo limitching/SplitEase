@@ -95,7 +95,7 @@ const Settlement = () => {
                             <h5>No Settling debts </h5>
                         </HeaderTextContainer>
                         <img
-                            src="/assets/allDone.svg"
+                            src="/assets/images/allDone.svg"
                             alt="All done :)"
                             width="500px"
                         ></img>
