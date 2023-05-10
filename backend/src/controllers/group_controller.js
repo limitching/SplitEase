@@ -149,7 +149,7 @@ const startSettlement = async (req, res) => {
         const config = {
             headers: { Authorization: `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}` },
         };
-        const { data } = await axios.post(
+        await axios.post(
             `https://api.line.me/v2/bot/message/push`,
             message,
             config
