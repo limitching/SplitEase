@@ -1,10 +1,10 @@
 import express from "express";
 import generateUploadUrl from "../services/S3.js";
 import { wrapAsync, authentication } from "../utils/util.js";
-var router = express.Router();
+const router = express.Router();
 
 /* Health check page for AWS ELB. */
-router.get("/", function (req, res, next) {
+router.get("/", function (req, res) {
     return res.status(200);
 });
 
