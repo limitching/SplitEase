@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
-import CreateGroupModal from "../components/CreateGroupModal";
+import CreateGroupModal from "./CreateGroupModal";
 import { Link } from "react-router-dom";
 import {
     List,
