@@ -10,7 +10,7 @@ import {
     getLogs,
     getGroupInformationById,
 } from "../models/group_model.js";
-import { generateStartSettlingNotification } from "../models/bot_model.js";
+import { generateStartSettlingNotification } from "../views/bot_reply_template.js";
 import { updateExpenseStatusByGroupId } from "../models/expense_model.js";
 import User from "../models/user_model.js";
 const getGroupInformation = async (req, res) => {
