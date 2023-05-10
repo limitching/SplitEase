@@ -5,7 +5,7 @@ import "./index.css";
 import App from "./App";
 import Login from "./pages/Login";
 import Liff from "./pages/Liff";
-import Home from "./pages/Home/index.jsx";
+import Home from "./pages/Home";
 import Group from "./pages/Group";
 // import Overview from "./pages/Group/pages/Overview";
 import Expenses from "./pages/Group/pages/Expenses";
