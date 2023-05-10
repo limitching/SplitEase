@@ -1,7 +1,7 @@
-import { AWS_CLOUDFRONT_HOST } from "../utils/constant.js";
+import {AWS_CLOUDFRONT_HOST} from "../utils/constant.js";
 
 const generateDebtNotify = (debtorName, creditorName, currency, amount) => {
-    const body = {
+    return {
         type: "bubble",
         hero: {
             type: "box",
@@ -249,12 +249,10 @@ const generateDebtNotify = (debtorName, creditorName, currency, amount) => {
             },
         },
     };
-
-    return body;
 };
 
 const generateGroupsMenu = async (groups) => {
-    const body = {
+    return {
         type: "carousel",
         contents: groups.map((group) => {
             const defaultDescription = "No description available.";
@@ -331,7 +329,6 @@ const generateGroupsMenu = async (groups) => {
             return content;
         }),
     };
-    return body;
 };
 
 const generateGroupOverView = (
@@ -386,7 +383,7 @@ const generateGroupOverView = (
         0
     );
 
-    const body = {
+    return {
         type: "bubble",
         body: {
             type: "box",
@@ -537,51 +534,51 @@ const generateGroupOverView = (
                             contents:
                                 userDebts.length === 0
                                     ? [
-                                          {
-                                              type: "box",
-                                              layout: "horizontal",
-                                              contents: [
-                                                  {
-                                                      type: "text",
-                                                      text: "NO DEBTS 🎉",
-                                                      size: "sm",
-                                                      color: "#555555",
-                                                      align: "start",
-                                                      margin: "none",
-                                                  },
-                                              ],
-                                              margin: "sm",
-                                          },
-                                      ]
+                                        {
+                                            type: "box",
+                                            layout: "horizontal",
+                                            contents: [
+                                                {
+                                                    type: "text",
+                                                    text: "NO DEBTS 🎉",
+                                                    size: "sm",
+                                                    color: "#555555",
+                                                    align: "start",
+                                                    margin: "none",
+                                                },
+                                            ],
+                                            margin: "sm",
+                                        },
+                                    ]
                                     : userDebts.map(
-                                          ([
-                                              debtorIndex,
-                                              creditorIndex,
-                                              amount,
-                                          ]) => {
-                                              const text = {
-                                                  type: "box",
-                                                  layout: "horizontal",
-                                                  margin: "none",
-                                                  contents: [
-                                                      {
-                                                          type: "text",
-                                                          text: `You owe ${groupMembers[creditorIndex].name}`,
-                                                          size: "sm",
-                                                          color: "#555555",
-                                                      },
-                                                      {
-                                                          type: "text",
-                                                          text: `${groupCurrency.symbol} ${amount}`,
-                                                          size: "sm",
-                                                          color: "#111111",
-                                                          align: "end",
-                                                      },
-                                                  ],
-                                              };
-                                              return text;
-                                          }
-                                      ),
+                                        ([
+                                             debtorIndex,
+                                             creditorIndex,
+                                             amount,
+                                         ]) => {
+                                            const text = {
+                                                type: "box",
+                                                layout: "horizontal",
+                                                margin: "none",
+                                                contents: [
+                                                    {
+                                                        type: "text",
+                                                        text: `You owe ${groupMembers[creditorIndex].name}`,
+                                                        size: "sm",
+                                                        color: "#555555",
+                                                    },
+                                                    {
+                                                        type: "text",
+                                                        text: `${groupCurrency.symbol} ${amount}`,
+                                                        size: "sm",
+                                                        color: "#111111",
+                                                        align: "end",
+                                                    },
+                                                ],
+                                            };
+                                            return text;
+                                        }
+                                    ),
                         },
 
                         {
@@ -592,34 +589,34 @@ const generateGroupOverView = (
                                 userCredits.length === 0
                                     ? []
                                     : userCredits.map(
-                                          ([
-                                              debtorIndex,
-                                              creditorIndex,
-                                              amount,
-                                          ]) => {
-                                              const text = {
-                                                  type: "box",
-                                                  layout: "horizontal",
-                                                  margin: "none",
-                                                  contents: [
-                                                      {
-                                                          type: "text",
-                                                          text: `${groupMembers[debtorIndex].name} owe You`,
-                                                          size: "sm",
-                                                          color: "#555555",
-                                                      },
-                                                      {
-                                                          type: "text",
-                                                          text: `${groupCurrency.symbol} ${amount}`,
-                                                          size: "sm",
-                                                          color: "#111111",
-                                                          align: "end",
-                                                      },
-                                                  ],
-                                              };
-                                              return text;
-                                          }
-                                      ),
+                                        ([
+                                             debtorIndex,
+                                             creditorIndex,
+                                             amount,
+                                         ]) => {
+                                            const text = {
+                                                type: "box",
+                                                layout: "horizontal",
+                                                margin: "none",
+                                                contents: [
+                                                    {
+                                                        type: "text",
+                                                        text: `${groupMembers[debtorIndex].name} owe You`,
+                                                        size: "sm",
+                                                        color: "#555555",
+                                                    },
+                                                    {
+                                                        type: "text",
+                                                        text: `${groupCurrency.symbol} ${amount}`,
+                                                        size: "sm",
+                                                        color: "#111111",
+                                                        align: "end",
+                                                    },
+                                                ],
+                                            };
+                                            return text;
+                                        }
+                                    ),
                         },
                     ],
                 },
@@ -656,13 +653,12 @@ const generateGroupOverView = (
             },
         },
     };
-    return body;
 };
 
 const generateStartSettlingNotification = (group, user, deadline) => {
     const date = new Date(deadline).toLocaleDateString();
 
-    const body = {
+    return {
         type: "bubble",
         body: {
             type: "box",
@@ -808,7 +804,6 @@ const generateStartSettlingNotification = (group, user, deadline) => {
             ],
         },
     };
-    return body;
 };
 export {
     generateDebtNotify,
