@@ -256,7 +256,7 @@ const generateGroupsMenu = async (groups) => {
         type: "carousel",
         contents: groups.map((group) => {
             const defaultDescription = "No description available.";
-            const content = {
+            return {
                 type: "bubble",
                 hero: {
                     type: "image",
@@ -326,7 +326,6 @@ const generateGroupsMenu = async (groups) => {
                     ],
                 },
             };
-            return content;
         }),
     };
 };
@@ -556,7 +555,7 @@ const generateGroupOverView = (
                                              creditorIndex,
                                              amount,
                                          ]) => {
-                                            const text = {
+                                            return {
                                                 type: "box",
                                                 layout: "horizontal",
                                                 margin: "none",
@@ -576,7 +575,6 @@ const generateGroupOverView = (
                                                     },
                                                 ],
                                             };
-                                            return text;
                                         }
                                     ),
                         },
@@ -594,7 +592,7 @@ const generateGroupOverView = (
                                              creditorIndex,
                                              amount,
                                          ]) => {
-                                            const text = {
+                                            return {
                                                 type: "box",
                                                 layout: "horizontal",
                                                 margin: "none",
@@ -614,7 +612,6 @@ const generateGroupOverView = (
                                                     },
                                                 ],
                                             };
-                                            return text;
                                         }
                                     ),
                         },
