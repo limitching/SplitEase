@@ -43,7 +43,7 @@ const getGroupDebts = async (req, res) => {
     const isMinimized = Number(group.minimized_debts);
 
     groupExpenses.forEach((expense) => {
-        if (expense.currency_option in currencyGraph === false) {
+        if (!(expense.currency_option in currencyGraph)) {
             const debtsGraph = new Array(groupMembers.length);
             for (let i = 0; i < debtsGraph.length; i++) {
                 debtsGraph[i] = new Array(groupMembers.length).fill(0);
@@ -86,7 +86,7 @@ const getGroupDebts = async (req, res) => {
 
     const settlementTransactions = {};
     settlement.forEach((settlement) => {
-        if (settlement.currency_option in settlementTransactions === false) {
+        if (!(settlement.currency_option in settlementTransactions)) {
             settlementTransactions[settlement.currency_option] = [];
         }
         const payerIndex = membersIndexMap.get(settlement.payer_id);
@@ -161,7 +161,7 @@ const getSettlingGroupDebts = async (req, res) => {
     // console.log(membersIndexMap);
     const settlementTransactions = {};
     settlements.forEach((settlement) => {
-        if (settlement.currency_option in settlementTransactions === false) {
+        if (!(settlement.currency_option in settlementTransactions)) {
             settlementTransactions[settlement.currency_option] = [];
         }
         const payerIndex = membersIndexMap.get(settlement.payer_id);
@@ -314,7 +314,7 @@ const notifyUserDebt = async (req, res) => {
         const config = {
             headers: { Authorization: `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}` },
         };
-        const { data } = await axios.post(
+        await axios.post(
             `https://api.line.me/v2/bot/message/push`,
             message,
             config
