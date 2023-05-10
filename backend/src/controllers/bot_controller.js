@@ -1,26 +1,20 @@
 import { bot } from "../services/line_connection.js";
-import path from "path";
-import fs, { access } from "fs";
 import dotenv from "dotenv";
 import {
     attachGroup,
     getGroupsByUserId,
     getMember,
-    getMembers,
     getGroupInformationById,
     getGroupUsersInformation,
 } from "../models/group_model.js";
 import {
-    getExpensesByGroupId,
     getSettlingExpensesByGroupId,
-    updateExpenseStatusToSettled,
 } from "../models/expense_model.js";
 import {
     createCurrencyGraph,
     getSettlingByGroupId,
 } from "../models/debts_model.js";
 dotenv.config();
-const { BASE_URL } = process.env;
 import { CURRENCY_MAP } from "../utils/constant.js";
 
 import {
@@ -30,7 +24,6 @@ import {
 import { minimizeDebts } from "../models/split_model.js";
 
 import User from "../models/user_model.js";
-import { group } from "console";
 
 function handleEvent(event) {
     console.log("event", event);
@@ -44,7 +37,6 @@ function handleEvent(event) {
 
 const messageTypeHandlerMap = {
     text: handleText,
-    image: handleImage,
 };
 
 async function handleText(message, replyToken, source) {
@@ -69,71 +61,6 @@ async function handleText(message, replyToken, source) {
     if (message.text.startsWith("/groups")) {
         return textMap.groups(message, replyToken, source);
     }
-
-    // switch (message.text) {
-    //     case "測試1":
-    //         return bot.replyMessage(replyToken, [
-    //             {
-    //                 type: "sticker",
-    //                 packageId: "1",
-    //                 stickerId: "1",
-    //             },
-    //         ]);
-    //     case "Menu":
-    //         return bot.replyMessage(replyToken, {
-    //             type: "text",
-    //             text: "Quick reply sample ?",
-    //             quickReply: {
-    //                 items: [
-    //                     {
-    //                         type: "action",
-    //                         action: {
-    //                             type: "postback",
-    //                             label: "ithome Clarence 鐵人賽",
-    //                             data: "action=url&item=clarence",
-    //                             text: "ithome Clarence 鐵人賽",
-    //                         },
-    //                     },
-    //                     {
-    //                         type: "action",
-    //                         action: {
-    //                             type: "message",
-    //                             label: "ithome Clarence",
-    //                             text: "https://ithelp.ithome.com.tw/users/20117701",
-    //                         },
-    //                     },
-    //                     {
-    //                         type: "action",
-    //                         action: {
-    //                             type: "camera",
-    //                             label: "Send camera",
-    //                         },
-    //                     },
-    //                     {
-    //                         type: "action",
-    //                         action: {
-    //                             type: "cameraRoll",
-    //                             label: "Send camera roll",
-    //                         },
-    //                     },
-    //                     {
-    //                         type: "action",
-    //                         action: {
-    //                             type: "location",
-    //                             label: "Send location",
-    //                         },
-    //                     },
-    //                 ],
-    //             },
-    //         });
-    //     default:
-    //         console.log(`Echo message to ${replyToken}: ${message.text}`);
-    //         const echo = {
-    //             type: "text",
-    //             text: message.text,
-    //         };
-    //         return bot.replyMessage(replyToken, echo);
-    // }
 }
 
 //===========================================
@@ -325,65 +252,8 @@ async function handleExpense(message, replyToken, source) {
 
 //===========================================
 
-async function handleImage(message, replyToken) {
-    let getContent;
-    if (message.contentProvider.type === "line") {
-        const downloadPath = path.join(
-            process.cwd(),
-            "public",
-            "downloaded",
-            `${message.id}.jpg`
-        );
-
-        try {
-            const downloadResult = await downloadContent(
-                message.id,
-                downloadPath
-            );
-            const originalContentUrl =
-                BASE_URL + "/downloaded/" + path.basename(downloadResult);
-            const previewImageUrl =
-                BASE_URL + "/downloaded/" + path.basename(downloadResult);
-            getContent = Promise.resolve({
-                originalContentUrl,
-                previewImageUrl,
-            });
-        } catch (error) {
-            console.error(error);
-            return;
-        }
-    } else if (message.contentProvider.type === "external") {
-        getContent = Promise.resolve(message.contentProvider);
-    }
-
-    try {
-        const { originalContentUrl, previewImageUrl } = await getContent;
-        return await bot.replyMessage(replyToken, {
-            type: "image",
-            originalContentUrl,
-            previewImageUrl,
-        });
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 //===========================================
-async function downloadContent(messageId, downloadPath) {
-    try {
-        const stream = await bot.getMessageContent(messageId);
-        const writable = fs.createWriteStream(downloadPath);
-        stream.pipe(writable);
-        await new Promise((resolve, reject) => {
-            stream.on("end", () => resolve(downloadPath));
-            stream.on("error", reject);
-        });
-        return downloadPath;
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
-}
+
 
 const eventTypeHandlerMap = {
     message: handleMessageEvent,
@@ -518,7 +388,7 @@ async function accessGroupPostBack(data, replyToken, source) {
 
     const settlementTransactions = {};
     settlements.forEach((settlement) => {
-        if (settlement.currency_option in settlementTransactions === false) {
+        if (!(settlement.currency_option in settlementTransactions)) {
             settlementTransactions[settlement.currency_option] = [];
         }
         const payerIndex = membersIndexMap.get(settlement.payer_id);
