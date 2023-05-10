@@ -15,7 +15,7 @@ import {
     getSettlingByGroupId,
     createCurrencyGraph,
 } from "../models/debts_model.js";
-import { generateDebtNotify } from "../models/bot_model.js";
+import { generateDebtNotify } from "../views/bot_reply_template.js";
 import { minimizeDebts, minimizeTransaction } from "../models/split_model.js";
 import { CURRENCY_MAP } from "../utils/constant.js";
 import axios from "axios";
