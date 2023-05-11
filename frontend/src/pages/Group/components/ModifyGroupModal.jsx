@@ -165,7 +165,7 @@ const ModifyGroupModal = ({
                 </div>
             ),
             icon: "success",
-            timer: 2000,
+            timer: 1500,
             showConfirmButton: false,
         });
         setModifiedGroupData({
