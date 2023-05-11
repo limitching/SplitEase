@@ -305,12 +305,12 @@ const api = {
             return error.response;
         }
     },
-    getPresignedUrl: async function (jwtToken) {
+    getPreSignedUrl: async function (jwtToken) {
         try {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const { data } = await axios.get(`${this.hostname}/s3Url`, config);
+            const { data } = await axios.get(`${this.hostname}/s3url`, config);
             return data;
         } catch (error) {
             console.error(error);

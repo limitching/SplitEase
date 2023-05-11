@@ -8,7 +8,7 @@ router.get("/", function (req, res) {
     return res.status(200);
 });
 
-router.route("/s3Url").get(
+router.route("/s3url").get(
     authentication(),
     wrapAsync(async (req, res) => {
         try {
