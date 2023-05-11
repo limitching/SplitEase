@@ -1,7 +1,6 @@
 import {
     getCurrencies,
     getExpensesByGroupId,
-    getExpensesByExpenseId,
     createExpenseUsers,
     createExpense,
     updateExpense,
@@ -9,7 +8,7 @@ import {
     deleteExpense,
 } from "../models/expense_model.js";
 
-const getExpensesCurrencies = async (req, res, next) => {
+const getExpensesCurrencies = async (req, res) => {
     const currencies = await getCurrencies();
     if (currencies === -1) {
         return res
