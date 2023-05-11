@@ -16,18 +16,20 @@ import { authentication } from "../utils/util.js";
 import createGroupValidator from "../middlewares/validators/createGroupValidator.js";
 import editGroupValidator from "../middlewares/validators/editGroupValidator.js";
 
-/* GET expense data */
-router
-    .route("/group/:group_id")
-    .get(wrapAsync(getGroupInformation))
-    .put(authentication(), wrapAsync(archiveExistingGroup));
-
-router.route("/group/members/:group_id").get(wrapAsync(getGroupMembers));
-
+/* Group information */
 router
     .route("/group")
     .post(authentication(), createGroupValidator, wrapAsync(createNewGroup))
-    .put(authentication(), editGroupValidator, wrapAsync(editExistingGroup));
+router
+    .route("/group/:group_id")
+    .get(wrapAsync(getGroupInformation))
+    .put(authentication(), editGroupValidator, wrapAsync(editExistingGroup))
+    .delete(authentication(), wrapAsync(archiveExistingGroup));
+
+
+/* Group members */
+router.route("/group/members/:group_id")
+    .get(wrapAsync(getGroupMembers))
 
 /* Join the Group via Invitation */
 router

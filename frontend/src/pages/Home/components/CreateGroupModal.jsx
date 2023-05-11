@@ -66,7 +66,6 @@ const CreateGroupModal = ({
         }
         setLoading(true);
         const response = await api.createGroup(jwtToken, newGroupData);
-        console.log(response);
         if (response.data.errors) {
             return MySwal.fire({
                 title: <p>Request Error</p>,

@@ -207,13 +207,13 @@ const api = {
             return error.response;
         }
     },
-    editGroup: async function (jwtToken, modifiedGroupData) {
+    editGroup: async function (jwtToken, modifiedGroupData,group_id) {
         try {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
             return await axios.put(
-                `${this.hostname}/group`,
+                `${this.hostname}/group/${group_id}`,
                 modifiedGroupData,
                 config
             );
@@ -227,9 +227,8 @@ const api = {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            return await axios.put(
+            return await axios.delete(
                 `${this.hostname}/group/${group_id}`,
-                {},
                 config
             );
         } catch (error) {

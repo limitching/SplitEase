@@ -35,7 +35,7 @@ const ModifyGroupModal = ({
 }) => {
     const navigate = useNavigate();
     const { user, jwtToken, setGroupChange } = useContext(AuthContext);
-    const { group, socket, setExpensesChanged } = useContext(GroupContext);
+    const { group, socket, setExpensesChanged,group_id } = useContext(GroupContext);
 
     const [error, setError] = useState({
         name: undefined,
@@ -136,7 +136,7 @@ const ModifyGroupModal = ({
             });
         }
 
-        const response = await api.editGroup(jwtToken, modifiedGroupData);
+        const response = await api.editGroup(jwtToken, modifiedGroupData,group_id);
         if (response.data.errors || response.status !== 200) {
             return MySwal.fire({
                 title: <p>Request Error</p>,
