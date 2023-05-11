@@ -22,7 +22,7 @@ const s3Client = new S3Client({
 });
 
 export default async function generateUploadUrl() {
-    const rawBytes = await randomBytes(16);
+    const rawBytes = randomBytes(16);
     const imageName = rawBytes.toString("hex");
 
     const params = {
