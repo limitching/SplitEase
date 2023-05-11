@@ -58,7 +58,6 @@ function findBlockingFlow(
   const numUsers = residualGraph.length;
   let currentFlow = 0;
 
-  // Iterate through all users in the graph
   for (let neighborUser = 0; neighborUser < numUsers; neighborUser++) {
     // If there is residual capacity between the start user and the neighbor user
     // and the neighbor user has not been visited before
@@ -84,12 +83,10 @@ function findBlockingFlow(
       if (delta > 0) {
         currentFlow += delta;
         residualGraph[startUser][neighborUser] -= delta;
-        residualGraph[neighborUser][startUser] += delta;
       }
     }
   }
 
-  // Return the total flow that has been updated so far
   return currentFlow;
 }
 
@@ -214,11 +211,12 @@ function dinicMaxFlow(graph, source, sink) {
 function minimizeDebts(graph) {
   const N = graph.length;
   let residualGraph = buildResidualGraph(graph);
+
   for (let source = 0; source < N; source++) {
     for (let sink = 0; sink < N; sink++) {
       const dinicResult = dinicMaxFlow(residualGraph, source, sink);
       residualGraph = dinicResult.residualGraph;
-      // console.log(residualGraph);
+      console.log(residualGraph);
     }
   }
 
@@ -254,14 +252,68 @@ function minimizeDebts(graph) {
     }
   }
   // TODO:
-  // console.log("Simplify the graph", simplifiedGraph);
+  //   console.log("Simplify the graph", simplifiedGraph);
 
   // // Determine who owes how much money to whom
   //   const transactions = getSuggestion(graph);
   // console.log("transactions", transactions);
   const transactions = minimizeTransaction(simplifiedGraph);
+  //   const transactions = calculateTransaction(simplifiedGraph);
   return transactions;
 }
+
+// function minimizeDebts(graph) {
+//   const N = graph.length;
+//   let residualGraph = buildResidualGraph(graph);
+
+//   for (let source = 0; source < N; source++) {
+//     for (let sink = 0; sink < N; sink++) {
+//       const dinicResult = dinicMaxFlow(residualGraph, source, sink);
+//       residualGraph = dinicResult.residualGraph;
+//       // console.log(residualGraph);
+//     }
+//   }
+
+//   const cutEdges = new Set();
+//   const levelGraph = buildLevelGraph(residualGraph, 0, graph.length - 1);
+//   // const levelGraph = buildLevelGraph(graph, source, sink);
+
+//   // console.log(levelGraph);
+
+//   // Find all edges crossing the cut
+//   for (let i = 0; i < N; i++) {
+//     if (levelGraph !== null && levelGraph[i] !== -1) {
+//       for (let j = 0; j < N; j++) {
+//         // if (levelGraph[j] === -1 && graph[i][j] !== 0) {
+//         if (levelGraph[j] === -1 && residualGraph[i][j] !== 0) {
+//           cutEdges.add(`${i}-${j}`);
+//         }
+//       }
+//     }
+//   }
+
+//   // Simplify the graph by removing all edges that cross the cut
+//   const simplifiedGraph = new Array(N)
+//     .fill(null)
+//     .map(() => new Array(N).fill(0));
+//   for (let i = 0; i < N; i++) {
+//     for (let j = 0; j < N; j++) {
+//       // if (!cutEdges.has(`${i}-${j}`) && graph[i][j] !== 0) {
+//       if (!cutEdges.has(`${i}-${j}`) && residualGraph[i][j] !== 0) {
+//         // simplifiedGraph[i][j] = graph[i][j];
+//         simplifiedGraph[i][j] = residualGraph[i][j];
+//       }
+//     }
+//   }
+//   // TODO:
+//   // console.log("Simplify the graph", simplifiedGraph);
+
+//   // // Determine who owes how much money to whom
+//   //   const transactions = getSuggestion(graph);
+//   // console.log("transactions", transactions);
+//   const transactions = minimizeTransaction(simplifiedGraph);
+//   return transactions;
+// }
 
 function minimizeTransaction(graph) {
   const N = graph.length;
@@ -313,19 +365,19 @@ function minimizeTransaction(graph) {
   return transactions;
 }
 
-// const calculateTransaction = (graph) => {
-//     const transactions = [];
-//     for (let i = 0; i < graph.length; i++) {
-//         for (let j = 0; j < graph.length; j++) {
-//             if (graph[i][j] !== 0) {
-//                 transactions.push([j, i, graph[i][j]]);
-//             }
-//         }
-//     }
-//     // TODO:
-//     // console.log(transactions);
-//     return transactions;
-// };
+const calculateTransaction = (graph) => {
+  const transactions = [];
+  for (let i = 0; i < graph.length; i++) {
+    for (let j = 0; j < graph.length; j++) {
+      if (graph[i][j] !== 0) {
+        transactions.push([j, i, graph[i][j]]);
+      }
+    }
+  }
+  // TODO:
+  // console.log(transactions);
+  return transactions;
+};
 
 // A function to calculate Net for each people, positive means credit, negative mean debit
 function calculateNet(graph) {
