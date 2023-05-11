@@ -71,7 +71,7 @@ const ModifyGroupModal = ({
         setAlertOpen(false);
     };
 
-    const handleChecked = (event) => {
+    const handleChecked = () => {
         if (Boolean(modifiedGroupData.minimized_debts)) {
             setModifiedGroupData({
                 ...modifiedGroupData,
