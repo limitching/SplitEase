@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_HOST } from "../global/constant";
+import {API_HOST} from "../global/constant";
 
 const api = {
     hostname: API_HOST + "/api/1.0",
@@ -18,12 +18,11 @@ const api = {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const result = await axios.post(
+            return await axios.post(
                 `${this.hostname}/expense`,
                 data,
                 config
             );
-            return result;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -55,12 +54,11 @@ const api = {
                     "Content-Type": "multipart/form-data",
                 },
             };
-            const result = await axios.put(
+            return await axios.put(
                 `${this.hostname}/expense`,
                 data,
                 config
             );
-            return result;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -69,11 +67,10 @@ const api = {
     deleteExpense: async function (expense_id, group_id, jwtToken) {
         try {
             const data = { expense_id, group_id };
-            const result = await axios.delete(`${this.hostname}/expense`, {
-                headers: { Authorization: `Bearer ${jwtToken}` },
+            return await axios.delete(`${this.hostname}/expense`, {
+                headers: {Authorization: `Bearer ${jwtToken}`},
                 data: data,
             });
-            return result;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -118,12 +115,11 @@ const api = {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const response = await axios.post(
+            return await axios.post(
                 `${this.hostname}/group/${group_id}/settle`,
                 startSettlingData,
                 config
             );
-            return response;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -148,11 +144,10 @@ const api = {
 
     userSignIn: async function (data) {
         try {
-            const result = await axios.post(
+            return await axios.post(
                 `${this.hostname}/user/signin`,
                 data
             );
-            return result;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -160,11 +155,10 @@ const api = {
     },
     userSignUp: async function (data) {
         try {
-            const result = await axios.post(
+            return await axios.post(
                 `${this.hostname}/user/signup`,
                 data
             );
-            return result;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -175,11 +169,10 @@ const api = {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const response = await axios.get(
+            return await axios.get(
                 `${this.hostname}/user/groups?is_archived=0`,
                 config
             );
-            return response;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -190,11 +183,10 @@ const api = {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const response = await axios.get(
+            return await axios.get(
                 `${this.hostname}/user/groups?is_archived=1`,
                 config
             );
-            return response;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -205,12 +197,11 @@ const api = {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const response = await axios.post(
+            return await axios.post(
                 `${this.hostname}/group`,
                 newGroupData,
                 config
             );
-            return response;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -221,12 +212,11 @@ const api = {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const response = await axios.put(
+            return await axios.put(
                 `${this.hostname}/group`,
                 modifiedGroupData,
                 config
             );
-            return response;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -237,12 +227,11 @@ const api = {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const response = await axios.put(
+            return await axios.put(
                 `${this.hostname}/group/${group_id}`,
                 {},
                 config
             );
-            return response;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -250,10 +239,9 @@ const api = {
     },
     getGroupPublicInformation: async function (slug, invitation_code) {
         try {
-            const response = await axios.get(
+            return await axios.get(
                 `${this.hostname}/group/${slug}/join?invitation_code=${invitation_code}`
             );
-            return response;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -264,11 +252,10 @@ const api = {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const response = await axios.get(
+            return await axios.get(
                 `${this.hostname}/user/profile`,
                 config
             );
-            return response;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -279,12 +266,11 @@ const api = {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const response = await axios.post(
+            return await axios.post(
                 `${this.hostname}/group/${slug}/join`,
-                { invitation_code: invitation_code },
+                {invitation_code: invitation_code},
                 config
             );
-            return response;
         } catch (error) {
             console.error(error);
             return error.response;
@@ -353,12 +339,11 @@ const api = {
             const config = {
                 headers: { Authorization: `Bearer ${jwtToken}` },
             };
-            const response = await axios.post(
+            return await axios.post(
                 `${this.hostname}/debts/${group_id}/notification`,
                 notifyData,
                 config
             );
-            return response;
         } catch (error) {
             console.error(error.response);
             return error.response.data;
