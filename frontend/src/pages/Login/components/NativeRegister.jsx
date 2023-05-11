@@ -60,7 +60,7 @@ const InputField = styled(TextField)`
         color: #999;
     }
     @media (max-width: 768px) {
-        width:100%
+        width:100%;
         max-width: 100%;
         margin: 0 auto;
     }
