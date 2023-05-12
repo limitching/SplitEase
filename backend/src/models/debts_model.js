@@ -26,7 +26,11 @@ const createSettlement = async (settlementData, user_id) => {
     await connection.query("COMMIT");
     return 0;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] User ${user_id} in group ${
+        settlementData.group_id
+      } create settlement in error: ${error}`
+    );
     await connection.query("ROLLBACK");
     return -1;
   } finally {
@@ -42,7 +46,9 @@ const getSettlementsByGroupId = async (group_id) => {
     );
     return settlements;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] Group ${group_id} get settlements in error: ${error}`
+    );
     return { error };
   }
 };
@@ -55,7 +61,9 @@ const getSettlingByGroupId = async (group_id) => {
     );
     return settlements;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] Group ${group_id} get settling in error: ${error}`
+    );
     return { error };
   }
 };
