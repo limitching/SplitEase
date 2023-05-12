@@ -1,5 +1,5 @@
-import { pool } from "../databases/MySQL.database.js";
-import { mongoose } from "../databases/Mongo.database.js";
+import { pool } from "../utils/db.js";
+import { mongoose } from "../utils/db.js";
 import { CURRENCY_MAP } from "../utils/constant.js";
 
 const ExpenseSchema = new mongoose.Schema({

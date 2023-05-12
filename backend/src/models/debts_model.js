@@ -1,4 +1,4 @@
-import { pool } from "../databases/MySQL.database.js";
+import { pool } from "../utils/db.js";
 import { CURRENCY_MAP } from "../utils/constant.js";
 import dotenv from "dotenv";
 import path from "path";

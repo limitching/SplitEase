@@ -1,4 +1,4 @@
-import { pool } from "../databases/MySQL.database.js";
+import { pool } from "../utils/db.js";
 import bcrypt from "bcrypt";
 import axios from "axios";
 import jwt from "jsonwebtoken";

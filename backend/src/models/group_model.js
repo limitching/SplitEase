@@ -1,4 +1,4 @@
-import { pool } from "../databases/MySQL.database.js";
+import { pool } from "../utils/db.js";
 import { v4 as uuidV4 } from "uuid";
 import dotenv from "dotenv";
 import path from "path";
