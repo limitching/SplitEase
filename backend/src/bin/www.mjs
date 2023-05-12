@@ -45,7 +45,7 @@ io.on("connection", async (socket) => {
 
   //=================================================//
   // const rooms = await io.of("/").adapter.allRooms();
-  // console.log(rooms); // a Set containing all rooms (across every node)
+  // console.debug(rooms); // a Set containing all rooms (across every node)
   //=================================================//
 
   socket.on("refreshMembers", () => {
