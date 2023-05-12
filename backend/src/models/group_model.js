@@ -29,7 +29,9 @@ const getGroupsByUserId = async (user_id) => {
     );
     return groups;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] User ${user_id} Get groups in error: ${error}`
+    );
     return { error };
   }
 };
@@ -50,7 +52,9 @@ const archiveGroup = async (group_id, user_id) => {
     await connection.query("COMMIT");
     return 0;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] User ${user_id} archive group in error: ${error}`
+    );
     await connection.query("ROLLBACK");
     return -1;
   } finally {
@@ -65,7 +69,9 @@ const getMembers = async (group_id) => {
     const [members] = await pool.query(memberQuery, [group_id]);
     return members;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] Group ${group_id} get group members in error: ${error}`
+    );
     return [];
   }
 };
@@ -77,7 +83,9 @@ const getMember = async (group_id, user_id) => {
     const [member] = await pool.query(memberQuery, [group_id, user_id]);
     return member;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] User ${user_id} get group ${group_id} member in error: ${error}`
+    );
     return [];
   }
 };
@@ -154,7 +162,11 @@ const editGroup = async (modifiedGroupData, user_id) => {
 
     return { group: modifiedGroupData };
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] User ${user_id} edit group ${
+        modifiedGroupData.id
+      } member in error: ${error}`
+    );
     await connection.query("ROLLBACK");
     return { error, status: 500 };
   } finally {
@@ -208,7 +220,9 @@ const joinGroupViaCode = async (user_id, slug, invitation_code) => {
     await connection.query("COMMIT");
     return group;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] User ${user_id} join group ${group_id} via code in error: ${error}`
+    );
     await connection.query("ROLLBACK");
     return { error, status: 500 };
   } finally {
@@ -245,7 +259,9 @@ const getLogs = async (group_id) => {
     );
     return logs;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] Group ${group_id} get logs in error: ${error}`
+    );
     return { error: error };
   }
 };
@@ -265,7 +281,11 @@ const attachGroup = async (invitation_code, source) => {
 
     return { result: result.affectedRows, name: group_name };
   } catch (error) {
-    console.log(error);
+    console.error(
+      `[${new Date().toISOString()}] LINE group ${
+        source.groupId
+      } attach group via code ${invitation_code} in error: ${error}`
+    );
     return { error, result: -1 };
   }
 };
@@ -282,6 +302,9 @@ const getGroupUsersInformation = async (group_id) => {
     );
     return usersInformation;
   } catch (error) {
+    console.error(
+      `[${new Date().toISOString()}] Group ${group_id} get group users information in error: ${error}`
+    );
     return { error };
   }
 };
@@ -294,6 +317,9 @@ const getGroupInformationById = async (group_id) => {
     );
     return groupInformation[0];
   } catch (error) {
+    console.error(
+      `[${new Date().toISOString()}] Group ${group_id} get group information in error: ${error}`
+    );
     return { error };
   }
 };
