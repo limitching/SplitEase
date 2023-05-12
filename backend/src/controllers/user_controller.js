@@ -178,7 +178,7 @@ const getUserProfile = async (req, res) => {
   });
 };
 
-const updateUserProfile = async (req, res) => {
+const updateUserProfile = async (req, res, next) => {
   const user_id = req.user.id;
   const modifiedUserProfile = req.body;
   const profile = await User.updateProfile(user_id, modifiedUserProfile);
