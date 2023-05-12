@@ -123,6 +123,7 @@ const startSettlement = async (req, res, next) => {
     deadline,
     user.id
   );
+
   if (expenseResult.error) {
     return next(customizedError.internal("Server Error: Database Query Error"));
   }
