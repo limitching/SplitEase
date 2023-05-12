@@ -148,6 +148,10 @@ const liffSignIn = async (data) => {
     const { name, email, image, line_id } = data;
     return await User.lineSignIn(name, email, image, line_id);
   } catch (error) {
+    // Log error
+    console.error(
+      `[${new Date().toISOString()}] User ${email} liff sign in error: ${error}`
+    );
     return { error: error };
   }
 };
@@ -180,7 +184,7 @@ const updateUserProfile = async (req, res) => {
   const profile = await User.updateProfile(user_id, modifiedUserProfile);
 
   if (profile.error) {
-    return res.status(500).json({ error: "Internal Server Error (MySQL)" });
+    return next(customizedError.internal("Internal Server Error (MySQL)"));
   }
 
   const user = {
