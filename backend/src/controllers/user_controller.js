@@ -7,19 +7,17 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 dotenv.config({ path: __dirname + "/../../.env" });
 const { TOKEN_EXPIRE, TOKEN_SECRET } = process.env;
 
-const signUp = async (req, res) => {
+const signUp = async (req, res, next) => {
   const { name, email, password } = req.body;
 
   const result = await User.signUp(name, email, password);
   if (result.error) {
-    return res.status(403).json({ error: result.error });
+    return next(customizedError.forbidden(result.error));
   }
 
   const user = result.user;
   if (!user) {
-    return res
-      .status(500)
-      .json({ error: "Server Error: Database Query Error" });
+    return next(customizedError.internal("Server Error: Database Query Error"));
   }
   const accessToken = jwt.sign(
     {
