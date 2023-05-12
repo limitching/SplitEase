@@ -57,7 +57,9 @@ const signUp = async (name, email, password) => {
     await connection.query("COMMIT");
     return { user };
   } catch (error) {
-    console.log(error);
+    console.error(
+      `[${new Date().toISOString()}] User: ${email}, signUp in error: ${error}`
+    );
     await connection.query("ROLLBACK");
     return {
       error: "Request Error: Email Already Exists",
@@ -153,10 +155,12 @@ const lineSignIn = async (name, email, image, line_id) => {
     }
     await connection.query("COMMIT");
     user.id = userId;
-    console.log(user);
     user.line_binding_code = hashids.encode(userId);
     return { user };
   } catch (error) {
+    console.error(
+      `[${new Date().toISOString()}] User ${email} LINE signIn in error: ${error}`
+    );
     await connection.query("ROLLBACK");
     return { error };
   } finally {
@@ -191,7 +195,10 @@ const getLineProfile = async (code, state) => {
     };
     return user;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] code ${code} get LINE profile in error: ${error}`
+    );
+
     throw "Permissions Error: LINE access code is wrong";
   }
 };
@@ -258,7 +265,12 @@ const bindingLineUser = async (line_binding_code, source) => {
 
     return { result: result.affectedRows, name: user_name };
   } catch (error) {
-    console.log(error);
+    console.error(
+      `[${new Date().toISOString()}] LINE_id ${
+        source.userId
+      } with binding code ${line_binding_code} binding in error: ${error}`
+    );
+
     return { error, result: -1 };
   }
 };
@@ -273,7 +285,9 @@ const getBindingUser = async (source) => {
     }
     return user[0];
   } catch (error) {
-    console.log(error);
+    console.error(
+      `[${new Date().toISOString()}] Get bindingUser in error: ${error}`
+    );
     return { error, result: -1 };
   }
 };
