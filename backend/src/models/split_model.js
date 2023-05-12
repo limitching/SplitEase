@@ -24,6 +24,7 @@ function buildLevelGraph(residualGraph, start, end) {
   const queue = [start];
 
   // BFS traversal on residual graph
+  // Update level graph with level of each node
   while (queue.length) {
     const current = queue.shift();
     const neighbors = residualGraph[current];
@@ -284,7 +285,7 @@ function getSubGroupsNets(subGroups, nets) {
   const subNets = [];
   for (let subGroup of subGroups) {
     const subNet = new Array(nets.length).fill(0);
-
+    // Calculate the net for each subGroup
     for (let i = 0; i < subGroup.length; i++) {
       subNet[subGroup[i]] = nets[subGroup[i]];
     }
@@ -308,6 +309,7 @@ function getSettleUpTransactions(subGroupsNets) {
         }
 
         // Determine Cash flow direction
+        // If subNet[i] > 0, it means i is a creditor, otherwise i is a debtor
         if (subNet[i] > 0) {
           if (Math.abs(subNet[i]) - Math.abs(subNet[j]) > 0) {
             settleUpSuggestion.push([i, j, -subNet[j]]);
