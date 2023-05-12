@@ -120,7 +120,9 @@ const createExpense = async (expenseObject, user_id) => {
     await connection.query("COMMIT");
     return { _id };
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] User ${user_id} in group ${attached_group_id} create expense in error: ${error}`
+    );
     await connection.query("ROLLBACK");
     await session.abortTransaction();
     return { _id: -1 };
@@ -145,7 +147,9 @@ const createExpenseUsers = async (expense_id, involved_users, date) => {
     await connection.query("COMMIT");
     return 0;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] Expense ${expense_id} create expense users in error: ${error}`
+    );
     await connection.query("ROLLBACK");
     return -1;
   } finally {
@@ -182,7 +186,11 @@ const updateExpense = async (expense_id, updatedExpenseObject, user_id) => {
   } catch (error) {
     await session.abortTransaction();
     await connection.query("ROLLBACK");
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] User ${user_id} in group ${
+        updatedExpenseObject.attached_group_id
+      } update expense in error: ${error}`
+    );
     return { _id: -1 };
   } finally {
     await connection.release();
@@ -208,7 +216,9 @@ const updateExpenseUsers = async (expense_id, involved_users, date) => {
     await connection.query("COMMIT");
     return 0;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] Expense ${expense_id} update expense users in error: ${error}`
+    );
     await connection.query("ROLLBACK");
     return -1;
   } finally {
@@ -251,7 +261,9 @@ const updateExpenseStatusByGroupId = async (group_id, deadline, user_id) => {
     await session.commitTransaction();
     return updateResult;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] Group ${group_id} update expenses status in error: ${error}`
+    );
     await connection.query("ROLLBACK");
     await session.abortTransaction();
     return { error: error };
@@ -301,7 +313,9 @@ const deleteExpense = async (expense_id, group_id, user_id) => {
     await connection.query("COMMIT");
     return 0;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] User ${user_id} in group ${group_id} delete expense in error: ${error}`
+    );
     await session.abortTransaction();
     await connection.query("ROLLBACK");
     return -1;
@@ -327,7 +341,9 @@ const updateExpenseStatusToSettled = async (group_id) => {
     );
     return updateResult;
   } catch (error) {
-    console.error(error);
+    console.error(
+      `[${new Date().toISOString()}] Group ${group_id} update expense status to "settled" in error: ${error}`
+    );
     await connection.query("ROLLBACK");
     return { _id: -1 };
   } finally {
