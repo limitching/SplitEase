@@ -24,8 +24,7 @@ import { minimizeDebts } from "../models/split_model.js";
 import User from "../models/user_model.js";
 
 function handleEvent(event) {
-  console.log("event", event);
-  console.log("==================");
+  console.debug("event", event);
   if (eventTypeHandlerMap[event.type]) {
     eventTypeHandlerMap[event.type](event);
   } else {
@@ -38,9 +37,9 @@ const messageTypeHandlerMap = {
 };
 
 async function handleText(message, replyToken, source) {
-  console.log("message", message);
-  console.log("event.replyToken", replyToken);
-  console.log("source", source);
+  console.debug("message", message);
+  console.debug("event.replyToken", replyToken);
+  console.debug("source", source);
 
   if (message.text.startsWith("/bind") || message.text.startsWith("/綁定")) {
     return textMap.bind(message, replyToken, source);
@@ -423,6 +422,18 @@ async function accessGroupPostBack(data, replyToken, source) {
     ? debts.filter(([debtor, creditor, amount]) => creditor === user_index)
     : [];
 
+  console.debug(
+    group,
+    groupMembers,
+    membersIndexMap,
+    groupExpenses,
+    userDebts,
+    userCredits,
+    user,
+    user_index,
+    groupCurrency,
+    currencyGraph[group.default_currency]
+  );
   const replyBody = generateGroupOverView(
     group,
     groupMembers,
