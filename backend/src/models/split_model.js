@@ -1,502 +1,375 @@
-// A function to build residual graph
+// Creates a deep copy of the input graph, returning a new 2D array with the same elements
 function buildResidualGraph(graph) {
-    const N = graph.length;
-    const residualGraph = new Array(N);
+  const nodeCount = graph.length;
+  const residualGraph = new Array(nodeCount);
 
-    // Deep copy current graph
-    for (let i = 0; i < N; i++) {
-        residualGraph[i] = new Array(N).fill(0);
-        for (let j = 0; j < N; j++) {
-            residualGraph[i][j] = graph[i][j];
-        }
+  // Create new array and copy elements
+  for (let i = 0; i < nodeCount; i++) {
+    residualGraph[i] = new Array(nodeCount).fill(0); // Create new row in residual graph
+    for (let j = 0; j < nodeCount; j++) {
+      residualGraph[i][j] = graph[i][j]; // Copy element from input graph to residual graph
     }
-    return residualGraph;
+  }
+
+  return residualGraph;
 }
 
-// A function to build levelGraph
+// Build level graph using BFS traversal on residual graph
 function buildLevelGraph(residualGraph, start, end) {
-    const N = residualGraph.length;
-    const levelGraph = new Array(N).fill(-1);
-    const queue = [];
-    queue.push(start);
-    levelGraph[start] = 0;
+  const nodeCount = residualGraph.length;
+  const levelGraph = new Array(nodeCount).fill(-1);
 
-    while (queue.length > 0) {
-        const u = queue.shift();
-        for (let v = 0; v < N; v++) {
-            if (residualGraph[u][v] > 0 && levelGraph[v] === -1) {
-                levelGraph[v] = levelGraph[u] + 1;
-                queue.push(v);
-            }
-        }
-    }
+  // Set starting node's level to 0 and add to queue
+  levelGraph[start] = 0;
+  const queue = [start];
 
-    if (levelGraph[end] === -1) {
-        return null;
-    } else {
-        return levelGraph;
+  // BFS traversal on residual graph
+  // Update level graph with level of each node
+  while (queue.length) {
+    const current = queue.shift();
+    const neighbors = residualGraph[current];
+    for (let neighbor = 0; neighbor < nodeCount; neighbor++) {
+      const isPathExist = neighbors[neighbor] > 0;
+      const isNeighborNotVisited = levelGraph[neighbor] === -1;
+      if (isPathExist && isNeighborNotVisited) {
+        levelGraph[neighbor] = levelGraph[current] + 1;
+        queue.push(neighbor);
+        if (neighbor === end) return levelGraph; // Early return if end node is reached
+      }
     }
+  }
+
+  return null; // No path from start to end
 }
 
-// A function to find BlockingFlow
-function findBlockingFlow(levelGraph, residualGraph, u, t, flow) {
-    // u = current user , t = target user
-    // when meet target user, return flow
-    if (u === t) {
-        return flow;
+// A function to find the blocking flow in a graph given the level graph and residual graph
+function findBlockingFlow(
+  levelGraph,
+  residualGraph,
+  startUser,
+  targetUser,
+  flow
+) {
+  // If the current user is the target user, the flow has reached the target and can be returned
+  if (startUser === targetUser) {
+    return flow;
+  }
+
+  // Get the number of users in the graph
+  const numUsers = residualGraph.length;
+  let currentFlow = 0;
+
+  for (let neighborUser = 0; neighborUser < numUsers; neighborUser++) {
+    // If there is residual capacity between the start user and the neighbor user
+    // and the neighbor user has not been visited before
+    if (
+      residualGraph[startUser][neighborUser] > 0 &&
+      levelGraph[neighborUser] === levelGraph[startUser] + 1
+    ) {
+      // Calculate the maximum flow that can be sent from start user to neighbor user
+      const maxFlow = Math.min(
+        flow - currentFlow,
+        residualGraph[startUser][neighborUser]
+      );
+      // Recursively find the blocking flow from the neighbor user to the target user
+      const delta = findBlockingFlow(
+        levelGraph,
+        residualGraph,
+        neighborUser,
+        targetUser,
+        maxFlow
+      );
+
+      // If there is a blocking flow, update the residual graph and the flow
+      if (delta > 0) {
+        currentFlow += delta;
+        residualGraph[startUser][neighborUser] -= delta;
+      }
     }
+  }
 
-    // N = number of users
-    const N = residualGraph.length;
-    let currentFlow = 0;
-
-    for (let i = 0; i < N; i++) {
-        // If user[u] has debt with user[i] , and user[i] is user[u]'s neighborhood,
-        // try finding BlockingFlow between them.
-        if (residualGraph[u][i] > 0 && levelGraph[i] === levelGraph[u] + 1) {
-            const minFlow = Math.min(flow - currentFlow, residualGraph[u][i]);
-            const delta = findBlockingFlow(
-                levelGraph,
-                residualGraph,
-                i,
-                t,
-                minFlow
-            );
-
-            if (delta > 0) {
-                currentFlow += delta;
-                // console.log(currentFlow);
-                // console.log("origin", residualGraph);
-                residualGraph[u][i] -= delta;
-                // residualGraph[i][u] += delta;
-                // console.log("updated", residualGraph);
-            }
-        }
-    }
-
-    return currentFlow;
+  return currentFlow;
 }
 
+// A function to update the graph
 function updateGraph(graph, residualGraph, source, sink, maxFlow) {
-    const n = graph.length;
-    // console.log(maxFlow);
-    // console.log("//////");
-    // console.log("inside update function residual", residualGraph);
-    residualGraph[source][sink] = maxFlow;
-    // console.log("inside update function residual", residualGraph);
-    // console.log("//////");
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < n; j++) {
-            if (residualGraph[i][j] > 0) {
-                // 將原本的邊減去 blocking flow
-                graph[i][j] -= maxFlow;
-                // 將反向邊加上 blocking flow
-                graph[j][i] += maxFlow;
-            }
-        }
+  const N = graph.length;
+
+  // Update residual graph with maximum flow from source to sink
+  residualGraph[source][sink] = maxFlow;
+
+  // Update flow graph with blocking flow
+  // i = source, j = sink
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      // If there is flow in the residual graph, update the flow graph
+      if (residualGraph[i][j] > 0) {
+        graph[i][j] -= maxFlow; // Decrease flow on original edge
+        graph[j][i] += maxFlow; // Increase flow on reverse edge
+      }
     }
-    // console.log(graph);
+  }
 }
 
-// A function to figure out maxFlow within specific source and sink
+// Find the maximum flow within a specific source and sink using Dinic's Maxflow algorithm
 function dinicMaxFlow(graph, source, sink) {
-    let maxFlow = 0;
-    let levelGraph;
-    let blockingFlow = 0;
+  let maxFlow = 0;
 
-    // Check if there's any edge between source and sink
-    if (graph[source][sink] === 0) {
-        // TODO:
-        // console.log(
-        //     `There's no path between source = ${source} and sink = ${sink}!`
-        // );
-        return { maxFlow, residualGraph: graph };
+  // Check if there's any edge between source and sink
+  if (graph[source][sink] === 0) {
+    // console.debug(
+    //   `There's no path between source = ${source} and sink = ${sink}!`
+    // );
+    return { maxFlow, residualGraph: graph };
+  }
+
+  // Build the residual graph
+  const residualGraph = buildResidualGraph(graph);
+
+  // Loop until there are no more blocking flows in residual graph
+  while (true) {
+    const levelGraph = buildLevelGraph(residualGraph, source, sink);
+    if (levelGraph === null) break;
+
+    let blockingFlow = Infinity;
+    while (blockingFlow > 0) {
+      blockingFlow = findBlockingFlow(
+        levelGraph,
+        residualGraph,
+        source,
+        sink,
+        Infinity
+      );
+      maxFlow += blockingFlow;
     }
+  }
 
-    // build residual graph
-    const residualGraph = buildResidualGraph(graph);
+  // Update the original graph with the residual graph and max flow
+  updateGraph(graph, residualGraph, source, sink, maxFlow);
 
-    // loop until there's no blocking flow in the residual graph
-    while (levelGraph !== null) {
-        levelGraph = buildLevelGraph(residualGraph, source, sink);
-        if (levelGraph === null) {
-            break;
-        }
-
-        blockingFlow = Infinity;
-        while (
-            (blockingFlow = findBlockingFlow(
-                levelGraph,
-                residualGraph,
-                source,
-                sink,
-                Infinity
-            )) > 0
-        ) {
-            // // update residual graph
-            // updateResidualGraph(
-            //     residualGraph,
-            //     levelGraph,
-            //     blockingFlow,
-            //     source,
-            //     sink
-            // );
-            // update max flow
-            maxFlow += blockingFlow;
-            // console.log(blockingFlow);
-        }
-    }
-
-    // console.log("before update", graph);
-    // update original graph
-    updateGraph(graph, residualGraph, source, sink, maxFlow);
-    // console.log("after update", graph);
-    // TODO:
-    // console.log(`[source = ${source} and sink = ${sink}] maxFlow = ${maxFlow}`);
-    // console.log("residual", residualGraph);
-    return { maxFlow, residualGraph, levelGraph };
+  // Return the max flow and residual graph
+  return { maxFlow, residualGraph };
 }
 
 function minimizeDebts(graph) {
-    const N = graph.length;
-    let residualGraph = buildResidualGraph(graph);
-    for (let source = 0; source < N; source++) {
-        for (let sink = 0; sink < N; sink++) {
-            const dinicResult = dinicMaxFlow(residualGraph, source, sink);
-            residualGraph = dinicResult.residualGraph;
-            // console.log(residualGraph);
-        }
+  const N = graph.length;
+  //   let residualGraph = buildResidualGraph(graph);
+  let residualGraph = graph;
+
+  for (let source = 0; source < N; source++) {
+    for (let sink = 0; sink < N; sink++) {
+      const dinicResult = dinicMaxFlow(residualGraph, source, sink);
+      residualGraph = dinicResult.residualGraph;
     }
+  }
 
-    const cutEdges = new Set();
-    const levelGraph = buildLevelGraph(residualGraph, 0, graph.length - 1);
-    // const levelGraph = buildLevelGraph(graph, source, sink);
-
-    // console.log(levelGraph);
-
-    // Find all edges crossing the cut
-    for (let i = 0; i < N; i++) {
-        if (levelGraph !== null && levelGraph[i] !== -1) {
-            for (let j = 0; j < N; j++) {
-                // if (levelGraph[j] === -1 && graph[i][j] !== 0) {
-                if (levelGraph[j] === -1 && residualGraph[i][j] !== 0) {
-                    cutEdges.add(`${i}-${j}`);
-                }
-            }
-        }
-    }
-
-    // Simplify the graph by removing all edges that cross the cut
-    const simplifiedGraph = new Array(N)
-        .fill(null)
-        .map(() => new Array(N).fill(0));
-    for (let i = 0; i < N; i++) {
-        for (let j = 0; j < N; j++) {
-            // if (!cutEdges.has(`${i}-${j}`) && graph[i][j] !== 0) {
-            if (!cutEdges.has(`${i}-${j}`) && residualGraph[i][j] !== 0) {
-                // simplifiedGraph[i][j] = graph[i][j];
-                simplifiedGraph[i][j] = residualGraph[i][j];
-            }
-        }
-    }
-    // TODO:
-    // console.log("Simplify the graph", simplifiedGraph);
-
-    // // Determine who owes how much money to whom
-    // const transactions = calculateTransaction(simplifiedGraph);
-    const transactions = getSuggestion(graph);
-    // console.log("transactions", transactions);
-    // const transactions = minimizeTransaction(simplifiedGraph);
-    return transactions;
+  // Minimize debts from residual graph
+  const transactions = getSuggestedTransaction(residualGraph);
+  return transactions;
 }
-
-function minimizeTransaction(graph) {
-    const N = graph.length;
-
-    // Calculate total debts and credits for each person
-    for (let i = 0; i < N; i++) {
-        for (let j = 0; j < N; j++) {
-            if (i === j) {
-                continue;
-            }
-            if (graph[i][j] !== 0 && graph[j][i] !== 0) {
-                if (graph[i][j] >= graph[j][i]) {
-                    graph[i][j] = graph[i][j] - graph[j][i];
-                    graph[j][i] = 0;
-                } else {
-                    graph[j][i] = graph[j][i] - graph[i][j];
-                    graph[i][j] = 0;
-                }
-            }
-        }
-    }
-
-    // console.log("graph", graph);
-    // const nets = calculateNet(graph);
-    // console.log(nets);
-    // const transactions = getSuggestion(graph);
-    // console.log("transactions", transactions);
-
-    // //TODO:
-    // let residualGraph = buildResidualGraph(graph);
-    // for (let source = 0; source < N; source++) {
-    //     for (let sink = 0; sink < N; sink++) {
-    //         const dinicResult = dinicMaxFlow(residualGraph, source, sink);
-    //         residualGraph = dinicResult.residualGraph;
-    //         // console.log(residualGraph);
-    //     }
-    // }
-    // console.log("new residual", residualGraph);
-
-    // Determine who owes how much money to whom
-    let transactions = [];
-    for (let i = 0; i < graph.length; i++) {
-        for (let j = 0; j < graph.length; j++) {
-            if (graph[i][j] !== 0) {
-                transactions.push([j, i, graph[i][j]]);
-            }
-        }
-    }
-    return transactions;
-}
-
-// const calculateTransaction = (graph) => {
-//     const transactions = [];
-//     for (let i = 0; i < graph.length; i++) {
-//         for (let j = 0; j < graph.length; j++) {
-//             if (graph[i][j] !== 0) {
-//                 transactions.push([j, i, graph[i][j]]);
-//             }
-//         }
-//     }
-//     // TODO:
-//     // console.log(transactions);
-//     return transactions;
-// };
 
 // A function to calculate Net for each people, positive means credit, negative mean debit
-function calculateNet(graph) {
-    const N = graph[0].length;
-    const Nets = new Array(N).fill(0);
-    for (let j = 0; j < N; j++) {
-        for (let i = 0; i < N; i++) {
-            Nets[j] += graph[i][j] - graph[j][i];
-        }
+function calculateNets(graph) {
+  const N = graph[0].length;
+  const Nets = new Array(N).fill(0);
+  for (let j = 0; j < N; j++) {
+    for (let i = 0; i < N; i++) {
+      Nets[j] += graph[i][j] - graph[j][i];
     }
-    // Debug
-    // console.log("Nets:", Nets);
-    return Nets;
+  }
+  return Nets;
 }
 
-function getSuggestion(graph) {
-    const N = graph.length;
-    const Nets = new Array(N).fill(0);
-    for (let j = 0; j < N; j++) {
-        for (let i = 0; i < N; i++) {
-            Nets[j] += graph[i][j] - graph[j][i];
-        }
-    }
-
-    const minTransferObject = dpMinTransferStep(Nets);
-    const nonDivisibleSubGroups = findNonDivisibleSubGroups(
-        minTransferObject.subGroups,
-        minTransferObject.dp,
-        Nets
-    );
-
-    const subNets = getSubGroupsNets(nonDivisibleSubGroups, Nets);
-    const suggestion = getSettleUpSuggestion(subNets);
-    // console.log("Nets", Nets);
-    // console.log("subgroup", minTransferObject.subGroups);
-    // console.log("dp", minTransferObject.dp);
-    // console.log("nonDivisibleSubGroups", nonDivisibleSubGroups);
-    // console.log("subNets", subNets);
-    // console.log("Suggestion", suggestion);
-    return suggestion;
+// A function to calculate the suggestion of transaction for each subGroup to settle up
+function getSuggestedTransaction(graph) {
+  // Calculate total balance for each person
+  const Nets = calculateNets(graph);
+  // Find all non-divisible subgroups
+  const subGroups = getNetZeroSubGroup(Nets);
+  const nonDivisibleSubGroups = findNonDivisibleSubGroups(subGroups);
+  // Calculate the net for each subGroup
+  const subNets = getSubGroupsNets(nonDivisibleSubGroups, Nets);
+  // Calculate the suggestion of transaction for each subGroup to settle up
+  const transactions = getSettleUpTransactions(subNets);
+  return transactions;
 }
 
-function dpMinTransferStep(nets) {
-    const N = nets.length;
-    const dp = new Array(1 << N).fill(0);
-    const sumValue = new Array(1 << N).fill(0);
-    const subGroups = [];
-    for (let currentState = 1; currentState < 1 << N; currentState++) {
-        let bit = 1;
-        let maxGroupCount = 0;
-        for (let i = 0; i < N; i++) {
-            if (currentState & bit) {
-                sumValue[currentState] += nets[i];
-                const lastState = currentState ^ bit;
-                //TODO:
-                // console.log(
-                //     "currentState : ",
-                //     currentState.toString(2).padStart(N, 0)
-                // );
-                // console.log("Bit          : ", bit.toString(2).padStart(N, 0));
-                // console.log(
-                //     "lastState    : ",
-                //     lastState.toString(2).padStart(N, 0)
-                // );
-                // console.log("=================");
-                maxGroupCount = Math.max(maxGroupCount, dp[lastState]);
+// A function to calculate the minimum number of transactions required to settle all debts
+function getNetZeroSubGroup(nets) {
+  const N = nets.length;
+  // dp[currentState] = the minimum number of transactions required to settle all debts in the current state
+  const dp = new Array(1 << N).fill(0);
+  const sumValue = new Array(1 << N).fill(0);
+  const subGroups = [];
+  // Iterate through all possible states
+  for (let currentState = 1; currentState < 1 << N; currentState++) {
+    let bit = 1;
+    let maxGroupCount = 0;
+    for (let i = 0; i < N; i++) {
+      if (currentState & bit) {
+        sumValue[currentState] += nets[i];
+        const lastState = currentState ^ bit;
+        maxGroupCount = Math.max(maxGroupCount, dp[lastState]);
+      }
+      bit <<= 1;
+    }
+    // If the current state is a net zero state, update the dp array and add the current state to the subGroups array
+    if (sumValue[currentState] === 0) {
+      dp[currentState] = maxGroupCount + 1;
+
+      if (currentState !== (1 << N) - 1) {
+        const binaryStr = currentState.toString(2).padStart(N, 0);
+        const subGroupMembers = [];
+        const subNets = new Array(N).fill(0);
+        for (let i = binaryStr.length; i >= 0; i--) {
+          if (binaryStr[i] === "1") {
+            if (nets[binaryStr.length - 1 - i] !== 0) {
+              subGroupMembers.push(binaryStr.length - 1 - i);
             }
-            bit <<= 1;
+            subNets[binaryStr.length - 1 - i] = nets[binaryStr.length - 1 - i];
+          }
         }
+        // If the current state is not a subset of any other state, add it to the subGroups array
+        if (subGroupMembers.length > 1) {
+          const hasSameElements = subGroups.some((group) => {
+            if (group.length !== subGroupMembers.length) return false;
+            const sortedGroup = group.slice().sort();
+            const sortedSubGroupMembers = subGroupMembers.slice().sort();
+            return sortedGroup.every(
+              (val, index) => val === sortedSubGroupMembers[index]
+            );
+          });
 
-        if (sumValue[currentState] === 0) {
-            dp[currentState] = maxGroupCount + 1;
-
-            if (currentState !== (1 << N) - 1) {
-                const binaryStr = currentState.toString(2).padStart(N, 0);
-                const subGroupMembers = [];
-                const subNets = new Array(N).fill(0);
-                for (let i = binaryStr.length; i >= 0; i--) {
-                    if (binaryStr[i] === "1") {
-                        if (nets[binaryStr.length - 1 - i] !== 0) {
-                            subGroupMembers.push(binaryStr.length - 1 - i);
-                        }
-                        // subGroupMembers.push(binaryStr.length - 1 - i);
-                        subNets[binaryStr.length - 1 - i] =
-                            nets[binaryStr.length - 1 - i];
-                    }
-                }
-                if (subGroupMembers.length > 1) {
-                    subGroups.push(subGroupMembers);
-                }
-                // subGroups.push(subGroupMembers);
-                // [75, 0, -75, 0, 0, 0, 50, 0, -50, 0];
-                // Log
-                // console.log("Find new group: ", currentState);
-                // console.log(
-                //     "Binary: ",
-                //     currentState.toString(2).padStart(N, 0)
-                // );
-                // console.log("subGroupMembers", subGroupMembers);
-                // console.log("subNets", subNets);
-                // console.log("=============");
-            }
-        } else {
-            dp[currentState] = maxGroupCount;
+          if (!hasSameElements) {
+            subGroups.push(subGroupMembers);
+          }
         }
+      }
+    } else {
+      dp[currentState] = maxGroupCount;
     }
-
-    // console.log(sumValue);
-    // console.log(dp[(1 << N) - 1]);
-    // console.log("Possible subgroup: ", subGroups);
-    // console.log(dp);
-    if (subGroups.length === 0) {
-        subGroups.push(Array.from(Array(N).keys()));
-    }
-
-    const resultObject = {
-        minTransfer: N - dp[(1 << N) - 1],
-        dp: dp,
-        subGroups: subGroups,
-    };
-    // return N - dp[(1 << N) - 1];
-    return resultObject;
+  }
+  // If there is no net zero state, add all people to the subGroups array
+  if (subGroups.length === 0) {
+    subGroups.push(Array.from(Array(N).keys()));
+  }
+  //minTransferStep = N - dp[(1 << N) - 1]
+  return subGroups;
 }
 
-function findNonDivisibleSubGroups(allSubGroups, dp, nets) {
-    // Sort allSubGroups by length
-    allSubGroups.sort((a, b) => {
-        return a.length - b.length;
+// A function to find all non-divisible subgroups
+function findNonDivisibleSubGroups(allSubGroups) {
+  // Sort allSubGroups by length
+  allSubGroups.sort((a, b) => {
+    return a.length - b.length;
+  });
+
+  const uniqueSet = new Set(allSubGroups.map(JSON.stringify));
+  const uniqueSubGroups = Array.from(uniqueSet).map(JSON.parse);
+  const filteredSubGroups = uniqueSubGroups.filter((subGroup) => {
+    // Determine whether there are other subsets that completely contain the current subset
+    const isSubset = uniqueSubGroups.some((otherSubGroup) => {
+      if (otherSubGroup === subGroup) {
+        return false;
+      }
+      return subGroup.every((element) => otherSubGroup.includes(element));
     });
-
-    // // Select subGroup with no duplicated member
-    // const targetCount = dp[(1 << nets.length) - 1];
-    // const subGroupsSet = new Set();
-    // for (const subGroup of allSubGroups) {
-    //     if (subGroupsSet.size === targetCount) {
-    //         break;
-    //     }
-    //     let isValidSubgroup = true;
-    //     for (const member of subGroup) {
-    //         if (subGroupsSet.has(member)) {
-    //             isValidSubgroup = false;
-    //             break;
-    //         }
-    //     }
-    //     if (isValidSubgroup) {
-    //         subGroupsSet.add(subGroup);
-    //         console.log("add", subGroup);
-    //     }
-    // }
-
-    const uniqueSet = new Set(allSubGroups.map(JSON.stringify));
-    const uniqueSubGroups = Array.from(uniqueSet).map(JSON.parse);
-    // console.log("us", uniqueSet);
-    // console.log("ug", Array.from(uniqueSet).map(JSON.parse));
-    const filteredSubGroups = uniqueSubGroups.filter((subGroup) => {
-        // 判斷是否存在其他子集完整包含當前子集
-        const isSubset = uniqueSubGroups.some((otherSubGroup) => {
-            if (otherSubGroup === subGroup) {
-                return false;
-            }
-            return subGroup.every((element) => otherSubGroup.includes(element));
-        });
-        // console.log(isSubset);
-        // 如果不存在其他子集完整包含當前子集，則保留當前子集
-        return isSubset;
-    });
-
-    // console.log("fg", filteredSubGroups);
-    // return Array.from(subGroupsSet);
-    return uniqueSubGroups.length === 1 ? uniqueSubGroups : filteredSubGroups;
+    // If there is no other subset that completely contains the current subset, keep the current subset
+    return isSubset;
+  });
+  return uniqueSubGroups.length === 1 ? uniqueSubGroups : filteredSubGroups;
 }
 
+// A function to calculate the net for each subGroup
 function getSubGroupsNets(subGroups, nets) {
-    const subNets = [];
-    for (let subGroup of subGroups) {
-        const subNet = new Array(nets.length).fill(0);
-
-        for (let i = 0; i < subGroup.length; i++) {
-            subNet[subGroup[i]] = nets[subGroup[i]];
-        }
-        subNets.push(subNet);
+  const subNets = [];
+  for (let subGroup of subGroups) {
+    const subNet = new Array(nets.length).fill(0);
+    // Calculate the net for each subGroup
+    for (let i = 0; i < subGroup.length; i++) {
+      subNet[subGroup[i]] = nets[subGroup[i]];
     }
-    return subNets;
+    subNets.push(subNet);
+  }
+  return subNets;
 }
 
-function getSettleUpSuggestion(subGroupsNets) {
-    const suggestion = [];
+// Calculate the suggestion of transaction for each subGroup to settle up
+function getSettleUpTransactions(subGroupsNets) {
+  const settleUpSuggestion = [];
 
-    subGroupsNets.forEach((subNet) => {
-        for (let i = 0; i < subNet.length; i++) {
-            if (subNet[i] === 0) {
-                continue;
-            }
-            for (let j = i + 1; j < subNet.length; j++) {
-                if (subNet[i] * subNet[j] >= 0) {
-                    continue;
-                }
-
-                // Determine Cash flow direction
-                if (subNet[i] > 0) {
-                    if (Math.abs(subNet[i]) - Math.abs(subNet[j]) > 0) {
-                        suggestion.push([i, j, -subNet[j]]);
-                        subNet[i] += subNet[j];
-                        subNet[j] -= subNet[j];
-                    } else {
-                        suggestion.push([i, j, subNet[i]]);
-                        subNet[j] += subNet[i];
-                        subNet[i] -= subNet[i];
-                    }
-                } else {
-                    if (Math.abs(subNet[i]) - Math.abs(subNet[j]) > 0) {
-                        suggestion.push([j, i, subNet[j]]);
-                        subNet[i] += subNet[j];
-                        subNet[j] -= subNet[j];
-                    } else {
-                        suggestion.push([j, i, -subNet[i]]);
-                        subNet[j] += subNet[i];
-                        subNet[i] -= subNet[i];
-                    }
-                }
-            }
+  subGroupsNets.forEach((subNet) => {
+    for (let i = 0; i < subNet.length; i++) {
+      if (subNet[i] === 0) {
+        continue;
+      }
+      for (let j = i + 1; j < subNet.length; j++) {
+        if (subNet[i] * subNet[j] >= 0) {
+          continue;
         }
-    });
-    return suggestion;
+
+        // Determine Cash flow direction
+        // If subNet[i] > 0, it means i is a creditor, otherwise i is a debtor
+        if (subNet[i] > 0) {
+          if (Math.abs(subNet[i]) - Math.abs(subNet[j]) > 0) {
+            settleUpSuggestion.push([i, j, -subNet[j]]);
+            subNet[i] += subNet[j];
+            subNet[j] -= subNet[j];
+          } else {
+            settleUpSuggestion.push([i, j, subNet[i]]);
+            subNet[j] += subNet[i];
+            subNet[i] -= subNet[i];
+          }
+        } else {
+          if (Math.abs(subNet[i]) - Math.abs(subNet[j]) > 0) {
+            settleUpSuggestion.push([j, i, subNet[j]]);
+            subNet[i] += subNet[j];
+            subNet[j] -= subNet[j];
+          } else {
+            settleUpSuggestion.push([j, i, -subNet[i]]);
+            subNet[j] += subNet[i];
+            subNet[i] -= subNet[i];
+          }
+        }
+      }
+    }
+  });
+  return settleUpSuggestion;
+}
+
+// calculate the minimum number of transactions required to settle all debts
+function minimizeTransaction(graph) {
+  const N = graph.length;
+
+  // Calculate total debts and credits for each person
+  // If user i and user j owe each other money, offset part of the debt
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      if (i === j) {
+        continue;
+      }
+      if (graph[i][j] !== 0 && graph[j][i] !== 0) {
+        if (graph[i][j] >= graph[j][i]) {
+          graph[i][j] = graph[i][j] - graph[j][i];
+          graph[j][i] = 0;
+        } else {
+          graph[j][i] = graph[j][i] - graph[i][j];
+          graph[i][j] = 0;
+        }
+      }
+    }
+  }
+
+  // Determine who owes how much money to whom
+  let transactions = [];
+  for (let i = 0; i < graph.length; i++) {
+    for (let j = 0; j < graph.length; j++) {
+      if (graph[i][j] !== 0) {
+        transactions.push([j, i, graph[i][j]]);
+      }
+    }
+  }
+  return transactions;
 }
 
 export { minimizeDebts, minimizeTransaction };

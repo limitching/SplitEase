@@ -9,348 +9,341 @@ import { useLiff } from "react-liff";
 const MySwal = withReactContent(Swal);
 
 const AuthContext = createContext({
-    isLogin: false,
-    user: {},
-    userGroups: [],
-    loading: false,
-    jwtToken: "",
-    loginMethod: null,
-    haveAccount: true,
-    setLoginMethod: () => {},
-    setHaveAccount: () => {},
-    nativeSignUp: () => {},
-    nativeSignIn: () => {},
-    lineSignIn: () => {},
-    logout: () => {},
-    setLoading: () => {},
-    setGroupChange: () => {},
-    setJwtToken: () => {},
-    setUser: () => {},
+  isLogin: false,
+  user: {},
+  userGroups: [],
+  loading: false,
+  jwtToken: "",
+  loginMethod: null,
+  haveAccount: true,
+  setLoginMethod: () => {},
+  setHaveAccount: () => {},
+  nativeSignUp: () => {},
+  nativeSignIn: () => {},
+  lineSignIn: () => {},
+  logout: () => {},
+  setLoading: () => {},
+  setGroupChange: () => {},
+  setJwtToken: () => {},
+  setUser: () => {},
 });
 
 const AuthContextProvider = ({ children }) => {
-    const navigate = useNavigate();
-    const [isLogin, setIsLogin] = useState(false);
-    const [user, setUser] = useState({});
-    const [loading, setLoading] = useState(false);
-    const [jwtToken, setJwtToken] = useState(
-        window.localStorage.getItem("jwtToken")
-    );
-    const [loginMethod, setLoginMethod] = useState(null);
-    const [haveAccount, setHaveAccount] = useState(true);
-    const [userGroups, setUserGroups] = useState([]);
-    const [groupChange, setGroupChange] = useState(false);
-    const { isLoggedIn, liff, isReady } = useLiff();
+  const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useState(false);
+  const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [jwtToken, setJwtToken] = useState(
+    window.localStorage.getItem("jwtToken")
+  );
+  const [loginMethod, setLoginMethod] = useState(null);
+  const [haveAccount, setHaveAccount] = useState(true);
+  const [userGroups, setUserGroups] = useState([]);
+  const [groupChange, setGroupChange] = useState(false);
+  const { isLoggedIn, liff, isReady } = useLiff();
 
-    useEffect(() => {
-        const checkAuthStatus = async () => {
-            setLoading(true);
-            if (window.localStorage.getItem("jwtToken") !== null) {
-                const { data } = await api.getUserProfile(
-                    window.localStorage.getItem("jwtToken")
-                );
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      setLoading(true);
+      if (window.localStorage.getItem("jwtToken") !== null) {
+        const { data } = await api.getUserProfile(
+          window.localStorage.getItem("jwtToken")
+        );
 
-                if (data.error) {
-                    window.localStorage.removeItem("jwtToken");
-                    window.localStorage.removeItem("fortune");
-                    setUser({});
-                    setIsLogin(true);
-                    setLoading(false);
-                    return;
-                }
-                setUser(data);
-                setIsLogin(true);
-                setLoading(false);
-            } else {
-                window.localStorage.removeItem("jwtToken");
-                window.localStorage.removeItem("fortune");
-                setIsLogin(false);
-                setLoading(false);
-            }
-        };
-        checkAuthStatus();
-    }, []);
-
-    useEffect(() => {
-        if (isLogin && window.localStorage.getItem("jwtToken")) {
-            const fetchUserGroups = async () => {
-                const { data } = await api.getUserGroups(
-                    window.localStorage.getItem("jwtToken")
-                );
-                setUserGroups(data);
-            };
-            setLoading(true);
-            fetchUserGroups();
-            setLoading(false);
+        if (data.error) {
+          window.localStorage.removeItem("jwtToken");
+          setUser({});
+          setIsLogin(true);
+          setLoading(false);
+          navigate("/");
+          return;
         }
-    }, [isLogin]);
-
-    useEffect(() => {
-        if (groupChange && window.localStorage.getItem("jwtToken")) {
-            const fetchUserGroups = async () => {
-                const { data } = await api.getUserGroups(
-                    window.localStorage.getItem("jwtToken")
-                );
-                // console.log(data);
-                setUserGroups(data);
-            };
-            setLoading(true);
-            fetchUserGroups();
-            setGroupChange(false);
-            setLoading(false);
-        }
-    }, [groupChange]);
-
-    useEffect(() => {
-        if (isReady && isLoggedIn && !window.localStorage.getItem("jwtToken")) {
-            const handleLIFFSignInResponse = async () => {
-                try {
-                    const profile = await liff.getDecodedIDToken();
-                    const data = {
-                        provider: "liff",
-                        name: profile.name,
-                        email: profile.email,
-                        image: profile.picture,
-                        line_id: profile.sub,
-                    };
-                    const result = await api.userSignIn(data);
-                    if (result.status === 200) {
-                        MySwal.fire({
-                            title: <p>Login Successfully!</p>,
-                            icon: "success",
-                            timer: 1000,
-                            didOpen: () => {
-                                MySwal.showLoading();
-                            },
-                        });
-                        const {
-                            access_token: tokenFromServer,
-                            user: userData,
-                        } = result.data;
-                        setUser(userData);
-                        setJwtToken(tokenFromServer);
-                        window.localStorage.setItem(
-                            "jwtToken",
-                            tokenFromServer
-                        );
-                        setIsLogin(true);
-                        return tokenFromServer;
-                    } else if (result.status === 400) {
-                        const { error } = result.data;
-                        MySwal.fire({
-                            title: <p>Server Side Error</p>,
-                            html: <p>{error}</p>,
-                            icon: "error",
-                            timer: 2000,
-                            didOpen: () => {
-                                MySwal.showLoading();
-                            },
-                        });
-                    } else if (result.status === 500) {
-                        const { error } = result.data;
-                        MySwal.fire({
-                            title: <p>Server Side Error</p>,
-                            html: <p>{error}</p>,
-                            icon: "error",
-                            timer: 2000,
-                            didOpen: () => {
-                                MySwal.showLoading();
-                            },
-                        });
-                    }
-                } catch (error) {
-                    console.error(error);
-                }
-            };
-            handleLIFFSignInResponse();
-        }
-    }, [isLoggedIn, liff, isReady, isLogin]);
-
-    const handleSignUpResponse = useCallback(async (signUpForm) => {
-        const { data } = await api.userSignUp(signUpForm);
-        if (data.errors !== undefined || data.error !== undefined) {
-            MySwal.fire({
-                title: <p>Request Error</p>,
-                html: (
-                    <div>
-                        {data.errors ? (
-                            data.errors.map((error, index) => (
-                                <p key={"error" + index}>{error.msg}</p>
-                            ))
-                        ) : (
-                            <p>{data.error}</p>
-                        )}
-                    </div>
-                ),
-                icon: "error",
-                timer: 2000,
-                didOpen: () => {
-                    MySwal.showLoading();
-                },
-            });
-            return;
-        }
-        const { access_token: tokenFromServer, user: userData } = data;
-        setUser(userData);
-        setJwtToken(tokenFromServer);
-        window.localStorage.setItem("jwtToken", tokenFromServer);
+        setUser(data);
         setIsLogin(true);
-        return tokenFromServer;
-    }, []);
+        setLoading(false);
+      } else {
+        window.localStorage.removeItem("jwtToken");
+        setIsLogin(false);
+        setLoading(false);
+      }
+    };
+    checkAuthStatus();
+  }, []);
 
-    const handleNativeLoginResponse = useCallback(async (signInForm) => {
-        const { data } = await api.userSignIn(signInForm);
-        if (data.errors !== undefined || data.error !== undefined) {
-            MySwal.fire({
-                title: <p>Request Error</p>,
-                html: (
-                    <div>
-                        {data.errors ? (
-                            data.errors.map((error, index) => (
-                                <p key={"error" + index}>{error.msg}</p>
-                            ))
-                        ) : (
-                            <p>{data.error}</p>
-                        )}
-                    </div>
-                ),
-                icon: "error",
-                timer: 2000,
-                didOpen: () => {
-                    MySwal.showLoading();
-                },
-            });
-            return;
-        }
-        const { access_token: tokenFromServer, user: userData } = data;
-        setUser(userData);
-        setJwtToken(tokenFromServer);
-        window.localStorage.setItem("jwtToken", tokenFromServer);
-        setIsLogin(true);
-        return tokenFromServer;
-    }, []);
+  useEffect(() => {
+    if (isLogin && window.localStorage.getItem("jwtToken")) {
+      const fetchUserGroups = async () => {
+        const { data } = await api.getUserGroups(
+          window.localStorage.getItem("jwtToken")
+        );
+        setUserGroups(data);
+      };
+      setLoading(true);
+      fetchUserGroups();
+      setLoading(false);
+    }
+  }, [isLogin]);
 
-    const handleLineSignInResponse = useCallback(async (code, state) => {
-        const data = { provider: "line", code, state };
-        const result = await api.userSignIn(data);
-        if (result.status === 200) {
+  useEffect(() => {
+    if (groupChange && window.localStorage.getItem("jwtToken")) {
+      const fetchUserGroups = async () => {
+        const { data } = await api.getUserGroups(
+          window.localStorage.getItem("jwtToken")
+        );
+        // console.log(data);
+        setUserGroups(data);
+      };
+      setLoading(true);
+      fetchUserGroups();
+      setGroupChange(false);
+      setLoading(false);
+    }
+  }, [groupChange]);
+
+  useEffect(() => {
+    if (isReady && isLoggedIn && !window.localStorage.getItem("jwtToken")) {
+      const handleLIFFSignInResponse = async () => {
+        try {
+          const profile = await liff.getDecodedIDToken();
+          const data = {
+            provider: "liff",
+            name: profile.name,
+            email: profile.email,
+            image: profile.picture,
+            line_id: profile.sub,
+          };
+          const result = await api.userSignIn(data);
+          if (result.status === 200) {
             MySwal.fire({
-                title: <p>Login Successfully!</p>,
-                icon: "success",
-                timer: 1000,
-                didOpen: () => {
-                    MySwal.showLoading();
-                },
+              title: <p>Login Successfully!</p>,
+              icon: "success",
+              timer: 1000,
+              didOpen: () => {
+                MySwal.showLoading();
+              },
             });
             const { access_token: tokenFromServer, user: userData } =
-                result.data;
+              result.data;
             setUser(userData);
             setJwtToken(tokenFromServer);
             window.localStorage.setItem("jwtToken", tokenFromServer);
             setIsLogin(true);
             return tokenFromServer;
-        } else if (result.status === 400) {
+          } else if (result.status === 400) {
             const { error } = result.data;
             MySwal.fire({
-                title: <p>Server Side Error</p>,
-                html: <p>{error}</p>,
-                icon: "error",
-                timer: 2000,
-                didOpen: () => {
-                    MySwal.showLoading();
-                },
-            });
-        } else if (result.status === 500) {
-            const { error } = result.data;
-            MySwal.fire({
-                title: <p>Server Side Error</p>,
-                html: <p>{error}</p>,
-                icon: "error",
-                timer: 2000,
-                didOpen: () => {
-                    MySwal.showLoading();
-                },
-            });
-        }
-    }, []);
-
-    const nativeSignUp = async (signUpForm) => {
-        setLoading(true);
-        navigate("login");
-        const tokenFromServer = handleSignUpResponse(signUpForm);
-        setLoading(false);
-        return tokenFromServer;
-    };
-
-    const lineSignIn = async (code, state) => {
-        setLoading(true);
-        const tokenFromServer = handleLineSignInResponse(code, state);
-        setLoading(false);
-        return tokenFromServer;
-    };
-
-    // const liffSignIn = async () => {
-    //     setLoading(true);
-    //     const tokenFromServer = handleLIFFSignInResponse();
-    //     setLoading(false);
-    //     return tokenFromServer;
-    // };
-
-    const nativeSignIn = async (signInForm) => {
-        setLoading(true);
-        const tokenFromServer = handleNativeLoginResponse(signInForm);
-        setLoading(false);
-        return tokenFromServer;
-    };
-
-    const logout = async () => {
-        setLoading(true);
-        await liff.logout();
-        setIsLogin(false);
-        setUser({});
-        setJwtToken();
-        window.localStorage.removeItem("jwtToken");
-        MySwal.fire({
-            title: <p>Logout</p>,
-            html: <p>Logout Successfully</p>,
-            icon: "success",
-            timer: 1000,
-            didOpen: () => {
+              title: <p>Server Side Error</p>,
+              html: <p>{error}</p>,
+              icon: "error",
+              timer: 2000,
+              didOpen: () => {
                 MySwal.showLoading();
-            },
-        });
-        navigate("login");
-        setLoading(false);
-    };
-    if (loading) {
-        return <Loading />;
+              },
+            });
+          } else if (result.status === 500) {
+            const { error } = result.data;
+            MySwal.fire({
+              title: <p>Server Side Error</p>,
+              html: <p>{error}</p>,
+              icon: "error",
+              timer: 2000,
+              didOpen: () => {
+                MySwal.showLoading();
+              },
+            });
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      handleLIFFSignInResponse();
     }
+  }, [isLoggedIn, liff, isReady, isLogin]);
 
-    return (
-        <AuthContext.Provider
-            value={{
-                isLogin,
-                user,
-                userGroups,
-                loading,
-                jwtToken,
-                loginMethod,
-                haveAccount,
-                setLoginMethod,
-                setHaveAccount,
-                nativeSignUp,
-                nativeSignIn,
-                lineSignIn,
-                logout,
-                setLoading,
-                setGroupChange,
-                setJwtToken,
-                setUser,
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
-    );
+  const handleSignUpResponse = useCallback(async (signUpForm) => {
+    const { data } = await api.userSignUp(signUpForm);
+    if (data.errors !== undefined || data.error !== undefined) {
+      MySwal.fire({
+        title: <p>Request Error</p>,
+        html: (
+          <div>
+            {data.errors ? (
+              data.errors.map((error, index) => (
+                <p key={"error" + index}>{error.msg}</p>
+              ))
+            ) : (
+              <p>{data.error}</p>
+            )}
+          </div>
+        ),
+        icon: "error",
+        timer: 2000,
+        didOpen: () => {
+          MySwal.showLoading();
+        },
+      });
+      return;
+    }
+    const { access_token: tokenFromServer, user: userData } = data;
+    setUser(userData);
+    setJwtToken(tokenFromServer);
+    window.localStorage.setItem("jwtToken", tokenFromServer);
+    setIsLogin(true);
+    return tokenFromServer;
+  }, []);
+
+  const handleNativeLoginResponse = useCallback(async (signInForm) => {
+    const { data } = await api.userSignIn(signInForm);
+    if (data.errors !== undefined || data.error !== undefined) {
+      MySwal.fire({
+        title: <p>Request Error</p>,
+        html: (
+          <div>
+            {data.errors ? (
+              data.errors.map((error, index) => (
+                <p key={"error" + index}>{error.msg}</p>
+              ))
+            ) : (
+              <p>{data.error}</p>
+            )}
+          </div>
+        ),
+        icon: "error",
+        timer: 2000,
+        didOpen: () => {
+          MySwal.showLoading();
+        },
+      });
+      return;
+    }
+    const { access_token: tokenFromServer, user: userData } = data;
+    setUser(userData);
+    setJwtToken(tokenFromServer);
+    window.localStorage.setItem("jwtToken", tokenFromServer);
+    setIsLogin(true);
+    return tokenFromServer;
+  }, []);
+
+  const handleLineSignInResponse = useCallback(async (code, state) => {
+    const data = { provider: "line", code, state };
+    const result = await api.userSignIn(data);
+    if (result.status === 200) {
+      MySwal.fire({
+        title: <p>Login Successfully!</p>,
+        icon: "success",
+        timer: 1000,
+        didOpen: () => {
+          MySwal.showLoading();
+        },
+      });
+      const { access_token: tokenFromServer, user: userData } = result.data;
+      setUser(userData);
+      setJwtToken(tokenFromServer);
+      window.localStorage.setItem("jwtToken", tokenFromServer);
+      setIsLogin(true);
+      return tokenFromServer;
+    } else if (result.status === 400) {
+      const { error } = result.data;
+      MySwal.fire({
+        title: <p>Server Side Error</p>,
+        html: <p>{error}</p>,
+        icon: "error",
+        timer: 2000,
+        didOpen: () => {
+          MySwal.showLoading();
+        },
+      });
+    } else if (result.status === 500) {
+      const { error } = result.data;
+      MySwal.fire({
+        title: <p>Server Side Error</p>,
+        html: <p>{error}</p>,
+        icon: "error",
+        timer: 2000,
+        didOpen: () => {
+          MySwal.showLoading();
+        },
+      });
+    }
+  }, []);
+
+  const nativeSignUp = async (signUpForm) => {
+    setLoading(true);
+    navigate("login");
+    const tokenFromServer = handleSignUpResponse(signUpForm);
+    setLoading(false);
+    return tokenFromServer;
+  };
+
+  const lineSignIn = async (code, state) => {
+    setLoading(true);
+    const tokenFromServer = handleLineSignInResponse(code, state);
+    setLoading(false);
+    return tokenFromServer;
+  };
+
+  // const liffSignIn = async () => {
+  //     setLoading(true);
+  //     const tokenFromServer = handleLIFFSignInResponse();
+  //     setLoading(false);
+  //     return tokenFromServer;
+  // };
+
+  const nativeSignIn = async (signInForm) => {
+    setLoading(true);
+    const tokenFromServer = handleNativeLoginResponse(signInForm);
+    setLoading(false);
+    return tokenFromServer;
+  };
+
+  const logout = async () => {
+    setLoading(true);
+    await liff.logout();
+    setIsLogin(false);
+    setUser({});
+    setJwtToken();
+    window.localStorage.removeItem("jwtToken");
+    MySwal.fire({
+      title: <p>Logout</p>,
+      html: <p>Logout Successfully</p>,
+      icon: "success",
+      timer: 1000,
+      didOpen: () => {
+        MySwal.showLoading();
+      },
+    });
+    navigate("login");
+    setLoading(false);
+  };
+  if (loading) {
+    return <Loading />;
+  }
+
+  return (
+    <AuthContext.Provider
+      value={{
+        isLogin,
+        user,
+        userGroups,
+        loading,
+        jwtToken,
+        loginMethod,
+        haveAccount,
+        setLoginMethod,
+        setHaveAccount,
+        nativeSignUp,
+        nativeSignIn,
+        lineSignIn,
+        logout,
+        setLoading,
+        setGroupChange,
+        setJwtToken,
+        setUser,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export { AuthContext, AuthContextProvider };
