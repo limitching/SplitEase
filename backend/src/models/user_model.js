@@ -199,7 +199,7 @@ const getLineProfile = async (code, state) => {
       `[${new Date().toISOString()}] code ${code} get LINE profile in error: ${error}`
     );
 
-    throw "Permissions Error: LINE access code is wrong";
+    throw new Error("Permissions Error: LINE access code is wrong");
   }
 };
 
