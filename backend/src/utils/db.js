@@ -22,9 +22,7 @@ mongoose.connect(process.env.MONGODB_URI + "/SplitEase");
 
 mongoose.connection.once("open", () => console.log("connected to database"));
 mongoose.connection.on("error", (error) =>
-    console.error("database error", error)
+  console.error("database error", error)
 );
-
-
 
 export { pool, poolEnd, mongoose };
