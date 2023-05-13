@@ -7,6 +7,11 @@
     "start": "node ./src/bin/www.mjs",
     "test": "jest"
   },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.319.0",
     "@aws-sdk/s3-request-presigner": "^3.319.0",
@@ -35,5 +40,9 @@
     "socket.io": "^4.6.1",
     "uuid": "^9.0.0",
     "validator": "^13.9.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.21.5",
+    "babel-jest": "^29.5.0"
   }
 }
