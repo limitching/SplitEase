@@ -3,10 +3,9 @@ import path from "path";
 import { v4 as uuidV4 } from "uuid";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-const { TOKEN_SECRET } = process.env;
-
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 dotenv.config({ path: __dirname + "/../../.env" });
+const { TOKEN_SECRET } = process.env;
 
 // Normalize a port into a number, string, or false.
 function normalizePort(val) {
@@ -23,6 +22,29 @@ function normalizePort(val) {
   }
 
   return false;
+}
+
+// Event listener for HTTP server "error" event.
+function serverOnError(error) {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
+
+  const bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case "EACCES":
+      console.error(bind + " requires elevated privileges");
+      process.exit(1);
+      break;
+    case "EADDRINUSE":
+      console.error(bind + " is already in use");
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
 }
 
 // reference: https://thecodebarbarian.com/80-20-guide-to-express-error-handling
@@ -73,4 +95,10 @@ const authentication = (req, res, next) => {
     }
   };
 };
-export { normalizePort, wrapAsync, multerUpload, authentication };
+export {
+  normalizePort,
+  serverOnError,
+  wrapAsync,
+  multerUpload,
+  authentication,
+};
