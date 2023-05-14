@@ -66,7 +66,7 @@ const signIn = async (req, res, next) => {
   }
   if (result.status === 400) {
     return next(
-      customizedError.badRequest("Request Error: Account does not exist")
+      customizedError.badRequest("Request Error: Invalid email or password")
     );
   }
   const user = result.user;
@@ -205,4 +205,11 @@ const updateUserProfile = async (req, res, next) => {
   });
 };
 
-export { signUp, signIn, getUserGroups, getUserProfile, updateUserProfile };
+export {
+  signUp,
+  signIn,
+  getUserGroups,
+  getUserProfile,
+  updateUserProfile,
+  nativeSignIn,
+};
