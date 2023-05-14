@@ -8,6 +8,23 @@ const { TOKEN_SECRET } = process.env;
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 dotenv.config({ path: __dirname + "/../../.env" });
 
+// Normalize a port into a number, string, or false.
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
 // reference: https://thecodebarbarian.com/80-20-guide-to-express-error-handling
 const wrapAsync = (fn) => {
   return function (req, res, next) {
@@ -56,4 +73,4 @@ const authentication = (req, res, next) => {
     }
   };
 };
-export { wrapAsync, multerUpload, authentication };
+export { normalizePort, wrapAsync, multerUpload, authentication };
