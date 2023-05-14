@@ -16,7 +16,7 @@ jest.mock("jsonwebtoken", () => ({
   sign: jest.fn(),
 }));
 
-// sign up function
+// signUp function
 describe("signUp function", () => {
   const req = {
     body: {
@@ -31,7 +31,7 @@ describe("signUp function", () => {
   };
   const next = jest.fn();
 
-  it("should return a token and user object if sign up successfully", async () => {
+  test("should return a token and user object if sign up successfully", async () => {
     const mockUser = {
       id: "testId",
       provider: "testProvider",
@@ -80,7 +80,7 @@ describe("signUp function", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it("should call next with a forbidden error if there is a signUp error", async () => {
+  test("should call next with a forbidden error if there is a signUp error", async () => {
     const errorMessage = "Invalid email";
     User.signUp.mockResolvedValueOnce({ error: errorMessage });
 
@@ -96,7 +96,7 @@ describe("signUp function", () => {
     expect(res.json).toHaveBeenCalled();
   });
 
-  it("should call next with an internal error if user is not found", async () => {
+  test("should call next with an internal error if user is not found", async () => {
     User.signUp.mockResolvedValueOnce({ user: null });
 
     await signUp(req, res, next);
@@ -113,7 +113,7 @@ describe("signUp function", () => {
     );
   });
 
-  it("should create a JWT token with the correct payload", async () => {
+  test("should create a JWT token with the correct payload", async () => {
     const mockUser = {
       id: "testId",
       provider: "testProvider",
