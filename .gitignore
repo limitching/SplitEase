@@ -2,9 +2,10 @@
 **node_modules
 **.env
 **test.sql
-**assets
-**.svg
-**.png
+# **assets
+# **.svg
+# **.png
 **echo-bot
 **backup**
 **test.html
+**coverage

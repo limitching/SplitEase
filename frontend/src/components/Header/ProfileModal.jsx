@@ -128,13 +128,13 @@ const ProfileModal = ({
     const handlingUpload = async (event) => {
         const imageFile = event.target.files[0];
         // get secure url from my server
-        const response = await api.getPresignedUrl(jwtToken);
+        const response = await api.getPreSignedUrl(jwtToken);
         if (response.error) {
             return console.error(response.error);
         }
-        const presignedUrl = response.url;
+        const preSignedUrl = response.url;
         const imageName = response.imageName;
-        const uploadResponse = await api.putImageToS3(presignedUrl, imageFile);
+        const uploadResponse = await api.putImageToS3(preSignedUrl, imageFile);
         if (uploadResponse.error) {
             return console.error(uploadResponse.error);
         }

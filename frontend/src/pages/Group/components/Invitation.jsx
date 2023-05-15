@@ -136,7 +136,7 @@ const Invitation = () => {
                 </InvitationContext>
                 <ImageContainer>
                     <InvitationImg
-                        src="/assets/invite-animate.svg"
+                        src="/assets/images/invite-animate.svg"
                         alt="Invitation_picture"
                     />
                 </ImageContainer>

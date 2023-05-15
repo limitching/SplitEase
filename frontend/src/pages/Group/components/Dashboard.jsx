@@ -126,7 +126,7 @@ const GroupDashboard = () => {
                 {isNoDebts ? (
                     <img
                         alt=""
-                        src="/assets/noDebt.svg"
+                        src="/assets/images/noDebt.svg"
                         style={{
                             maxWidth: "50%",
                             minWidth: "300px",
