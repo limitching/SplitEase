@@ -7,7 +7,7 @@ import cors from "cors";
 import { initSocketIO } from "./src/services/socketIO.js";
 import dotenv from "dotenv";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
-dotenv.config();
+dotenv.config({ path: __dirname + "./.env" });
 
 const { API_VERSION, PORT } = process.env;
 
