@@ -4,7 +4,6 @@ import { api } from "../utils/api";
 import Loading from "../components/Preloader/Preloader";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-// import liff from "@line/liff";
 import { useLiff } from "react-liff";
 const MySwal = withReactContent(Swal);
 
@@ -68,7 +67,7 @@ const AuthContextProvider = ({ children }) => {
       }
     };
     checkAuthStatus();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     if (isLogin && window.localStorage.getItem("jwtToken")) {

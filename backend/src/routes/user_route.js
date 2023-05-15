@@ -15,8 +15,11 @@ import { wrapAsync, authentication } from "../utils/util.js";
 
 /* User SignUp */
 router.route("/user/signup").post(signUpValidator, wrapAsync(signUp));
+/* User SignIn */
 router.route("/user/signin").post(signInValidator, wrapAsync(signIn));
+/* User Get User Group */
 router.route("/user/groups").get(authentication(), wrapAsync(getUserGroups));
+/* User Profile */
 router
   .route("/user/profile")
   .get(authentication(), wrapAsync(getUserProfile))
