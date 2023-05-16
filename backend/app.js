@@ -16,6 +16,10 @@ const port = normalizePort(PORT || "3000");
 app.set("port", port);
 const server = http.createServer(app);
 
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./swagger-output-doc.json" assert { type: "json" };
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 import indexRouter from "./src/routes/index.js";
 import userRouter from "./src/routes/user_route.js";
 import groupRouter from "./src/routes/group_route.js";
