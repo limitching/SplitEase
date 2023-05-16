@@ -5,7 +5,7 @@ const router = express.Router();
 
 /* Health check page for AWS Application Load Balancer. */
 router.get("/", function (req, res) {
-  return res.status(200);
+  return res.status(200).end();
 });
 
 router.route("/s3url").get(
