@@ -1,5 +1,5 @@
-// const API_HOST = "http://localhost:3000";
-const API_HOST = "https://api.splitease.cc";
+const API_HOST = "http://localhost:3000";
+// const API_HOST = "https://api.splitease.cc";
 // const WEB_HOST = "http://localhost:3001";
 const WEB_HOST = "https://splitease.cc";
 
@@ -27,67 +27,61 @@ const SPLIT_METHODS = [
   "split by exact amounts",
   "split by percentages",
   "split by shares",
-  "split by adjustment",
+  "split by adjustment"
 ];
 
-const SPLIT_METHODS_ABBREVIATION = [
-  "Equally",
-  "Exact amounts",
-  "Percentages",
-  "Shares",
-  "Adjustment",
-];
+const SPLIT_METHODS_ABBREVIATION = ["Equally", "Exact amounts", "Percentages", "Shares", "Adjustment"];
 const CURRENCY_OPTIONS = [
   {
     id: 1,
     abbreviation: "TWD",
-    symbol: "NT$",
+    symbol: "NT$"
   },
   {
     id: 2,
     abbreviation: "USD",
-    symbol: "$",
+    symbol: "$"
   },
   {
     id: 3,
     abbreviation: "EUR",
-    symbol: "€",
+    symbol: "€"
   },
   {
     id: 4,
     abbreviation: "JPY",
-    symbol: "¥",
+    symbol: "¥"
   },
   {
     id: 5,
     abbreviation: "GBP",
-    symbol: "£",
+    symbol: "£"
   },
   {
     id: 6,
     abbreviation: "AUD",
-    symbol: "A$",
+    symbol: "A$"
   },
   {
     id: 7,
     abbreviation: "CAD",
-    symbol: "C$",
+    symbol: "C$"
   },
   {
     id: 8,
     abbreviation: "CHF",
-    symbol: "CHF",
+    symbol: "CHF"
   },
   {
     id: 9,
     abbreviation: "CNY",
-    symbol: "CN¥",
+    symbol: "CN¥"
   },
   {
     id: 10,
     abbreviation: "HKD",
-    symbol: "HK$",
-  },
+    symbol: "HK$"
+  }
 ];
 
 const CURRENCY_MAP = {
@@ -100,7 +94,7 @@ const CURRENCY_MAP = {
   7: { abbreviation: "CAD", symbol: "C$" },
   8: { abbreviation: "CHF", symbol: "CHF" },
   9: { abbreviation: "CNY", symbol: "CN¥" },
-  10: { abbreviation: "HKD", symbol: "HK$" },
+  10: { abbreviation: "HKD", symbol: "HK$" }
 };
 const GROUP_TABS = [
   // {
@@ -109,39 +103,39 @@ const GROUP_TABS = [
   // },
   {
     name: "expenses",
-    displayText: "Expenses",
+    displayText: "Expenses"
   },
   {
     name: "debts",
-    displayText: "Debts",
+    displayText: "Debts"
   },
   {
     name: "settlement",
-    displayText: "Settlement",
+    displayText: "Settlement"
   },
   {
     name: "members",
-    displayText: "members",
+    displayText: "members"
   },
   {
     name: "activities",
-    displayText: "Recent Activities",
+    displayText: "Recent Activities"
   },
   {
     name: "join",
-    displayText: "Invite Friends",
-  },
+    displayText: "Invite Friends"
+  }
 ];
 
 const GROUP_TABS_VISITORS = [
   {
     name: "members",
-    displayText: "members",
+    displayText: "members"
   },
   {
     name: "join",
-    displayText: "Invite Friends",
-  },
+    displayText: "Invite Friends"
+  }
 ];
 
 const CHART_COLOR = [
@@ -164,7 +158,7 @@ const CHART_COLOR = [
   "rgba(255, 153, 153, 0.8)",
   "rgba(255, 255, 0, 0.8)",
   "rgba(0, 204, 255, 0.8)",
-  "rgba(204, 204, 204, 0.8)",
+  "rgba(204, 204, 204, 0.8)"
 ];
 
 const HOVER_CHART_COLOR = [
@@ -187,7 +181,7 @@ const HOVER_CHART_COLOR = [
   "rgba(255, 153, 153, 0.64)",
   "rgba(255, 255, 0, 0.64)",
   "rgba(0, 204, 255, 0.64)",
-  "rgba(204, 204, 204, 0.64)",
+  "rgba(204, 204, 204, 0.64)"
 ];
 const AVATAR_LINK = "https://dxkgfgg79h3hz.cloudfront.net/avatars/";
 const DEFAULT_AVATAR = [
@@ -232,7 +226,7 @@ const DEFAULT_AVATAR = [
   "rabbit_avatar.jpg",
   "dog_avatar.jpg",
   "jellyfish.png",
-  "sea-lion.png",
+  "sea-lion.png"
 ];
 
 const ANIMAL_AVATAR = [
@@ -243,7 +237,7 @@ const ANIMAL_AVATAR = [
   AWS_CLOUDFRONT_HOST + "avatars/lion_avatar.jpg",
   AWS_CLOUDFRONT_HOST + "avatars/rabbit_avatar.jpg",
   AWS_CLOUDFRONT_HOST + "avatars/tiger_avatar.jpg",
-  AWS_CLOUDFRONT_HOST + "avatars/wolf_avatar.jpg",
+  AWS_CLOUDFRONT_HOST + "avatars/wolf_avatar.jpg"
 ];
 
 export {
@@ -273,5 +267,5 @@ export {
   GRAY_6,
   GRAY_7,
   GRAY_8,
-  SPLIT_METHODS_ABBREVIATION,
+  SPLIT_METHODS_ABBREVIATION
 };
