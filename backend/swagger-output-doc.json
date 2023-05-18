@@ -22,7 +22,7 @@
     }
   ],
   "paths": {
-    "/api/1.0/": {
+    "/api/1.0/health": {
       "get": {
         "tags": ["Health Check API"],
         "summary": "An health check endpoint for AWS ELB",
