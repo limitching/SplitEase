@@ -41,26 +41,21 @@ SplitEase is a splitting service designed to simplify the process of dividing ex
    `$ cd SplitEase`
 
 3. Environment setup:
+
    1. Server Deploment
+
       1. Navigate to the backend directory `cd backend`
       2. Install dependencies `npm install`
       3. Start MySQL server
       4. Import database: `mysql -u <user_name> -p <SplitEase_db_name> < splitease_backup.sql`
-      5. Create config: .env for back-end server (You can copy the schema from template: [.env-template](https://github.com/limitching/SplitEase/blob/main/backend/.env.example))
-      6. Start the server `npm start`
+      5. Create config: `.env` for back-end server (You can copy the schema from template: [.env-template](https://github.com/limitching/SplitEase/blob/main/backend/.env.example))
+      6. Start a redis server in `localhost` at port `6379`
+      7. Start the server `npm start`
 
-- Refer to the .env.sample file for configuring the .env settings.
-  You can find the .env.sample file at the following location: link
-  Modify the .env file according to your requirements and save it.
-
-### Executing program
-
-- How to run the program
-- Step-by-step bullets
-
-```
-code blocks for commands
-```
+   2. Client Deployment:
+      1. Navigate to the frontend directory `cd frontend`
+      2. Install dependencies `npm install`
+      3. Start the server `npm run start`
 
 ## Help
 
