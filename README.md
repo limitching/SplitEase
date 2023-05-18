@@ -46,7 +46,7 @@ SplitEase is a splitting service designed to simplify the process of dividing ex
       2. Install dependencies `npm install`
       3. Start MySQL server
       4. Import database: `mysql -u <user_name> -p <SplitEase_db_name> < splitease_backup.sql`
-      5. Create config: .env for back-end server (You can copy the schema from template: `[.env-template](https://github.com/limitching/SplitEase/blob/main/backend/.env.example)`)
+      5. Create config: .env for back-end server (You can copy the schema from template: [.env-template](https://github.com/limitching/SplitEase/blob/main/backend/.env.example))
       6. Start the server `npm start`
 
 - Refer to the .env.sample file for configuring the .env settings.
