@@ -109,9 +109,13 @@ The **frontend** directory includes a public folder for public assets, such as c
       3. Configure **API_HOST** to your server endpoint in `/src/global/constant.js`
       4. Start the server `npm run start`
 
-## Backend Architechture
+## Architechture
 
-## Frontend Architechture
+### Backend Architechture
+
+[](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Backend_Architechture.png)
+
+### Frontend Architechture
 
 ## API Documentation
 
