@@ -47,6 +47,11 @@ initSocketIO(server);
 import errorHandler from "./src/middlewares/errorHandler.js";
 app.use(errorHandler);
 
+// if no route is matched by now, redirect to splitease.cc (frontend)
+app.use((req, res, next) => {
+  res.redirect("https://splitease.cc/");
+});
+
 // listen on provided port
 server.listen(port);
 server.on("error", serverOnError);
