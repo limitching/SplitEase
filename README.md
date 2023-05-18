@@ -114,10 +114,26 @@ ex. [@DomPizzie](https://twitter.com/dompizzie)
 
 ## Version History
 
-- 0.2
+- 1.4
   - Various bug fixes and optimizations
-  - See [commit change]() or See [release history]()
-- 0.1
+  - Unit Test
+- 1.3
+  - Various bug fixes and optimizations
+  - Refacroting
+  - Refine Error Handling
+- 1.2
+  - Various bug fixes and optimizations
+  - Add **Dashboard feature** for group expense management
+  - Add **Bot feature** for notification and debt management
+  - Add **SettleUp feature** for debt management
+  - Add **Log feature** for group history management
+  - Add **Edit Profile feature** for group history management
+  - Add **Eexpense synchronization** for expense management
+  - Make Frontend **stateless**
+- 1.1
+  - Various bug fixes and optimizations
+  - Add **Group feature** for basic group management
+- 1.0
   - Initial Release
 
 ## Roadmap
@@ -135,7 +151,3 @@ Please note that this roadmap is subject to change and may be updated based on p
 ## License
 
 This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
-
-## Acknowledgments
-
-Inspiration, code snippets, etc.
