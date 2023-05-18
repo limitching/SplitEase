@@ -107,10 +107,16 @@ The **frontend** directory includes a public folder for public assets, such as c
       3. Configure **API_HOST** to your server endpoint in `/src/global/constant.js`
       4. Start the server `npm run start`
 
-## Authors
+## Contact me
 
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
+If you have any questions, suggestions, or would like to collaborate on the SplitEase project, feel free to reach out to me:
+
+- Name: Hung Wei-Ching
+- Email: hwc0320@gmail.com
+- Telegram: [@limitching](https://t.me/limitching)
+- LinkedIn: [limitching](https://www.linkedin.com/in/limitching/)
+
+I'm excited to connect with you and discuss anything related to SplitEase. Don't hesitate to contact me!
 
 ## Version History
 
