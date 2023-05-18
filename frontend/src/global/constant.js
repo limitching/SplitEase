@@ -1,5 +1,5 @@
-const API_HOST = "http://localhost:3000";
-// const API_HOST = "https://api.splitease.cc";
+// const API_HOST = "http://localhost:3000";
+const API_HOST = "https://api.splitease.cc";
 // const WEB_HOST = "http://localhost:3001";
 const WEB_HOST = "https://splitease.cc";
 

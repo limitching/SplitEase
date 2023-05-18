@@ -38,13 +38,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 // API routes
-app.use("/api/" + API_VERSION, [
-  indexRouter,
-  userRouter,
-  groupRouter,
-  expenseRouter,
-  debtsRouter,
-]);
+app.use("/api/" + API_VERSION, [indexRouter, userRouter, groupRouter, expenseRouter, debtsRouter]);
 
 // Perform socket.io configuration and connection
 initSocketIO(server);
@@ -52,6 +46,11 @@ initSocketIO(server);
 // catch error and forward to error handler
 import errorHandler from "./src/middlewares/errorHandler.js";
 app.use(errorHandler);
+
+// if no route is matched by now, redirect to splitease.cc (frontend)
+app.use((req, res, next) => {
+  res.redirect("https://splitease.cc/");
+});
 
 // listen on provided port
 server.listen(port);
