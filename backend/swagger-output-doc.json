@@ -3,9 +3,9 @@
   "info": {
     "version": "1.0",
     "title": "SplitEase API",
-    "description": "Description"
+    "description": "SplitEase is a web application that helps you to manage your group expenses. It is a tool that helps you to keep track of your group expenses and settle them easily."
   },
-  "host": "localhost:3000",
+  "host": "api.splitease.cc",
   "basePath": "/",
   "schemes": ["http"],
   "securityDefinitions": {
@@ -18,7 +18,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000/"
+      "url": "https://api.splitease.cc/"
     }
   ],
   "paths": {
@@ -36,6 +36,11 @@
     },
     "/api/1.0/s3url": {
       "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": ["Pre-signed S3 URL API"],
         "summary": "An endpoint for acquiring pre-signed S3 URL for uploading file",
         "description": "Response contains pre-signed S3 URL and file name",
@@ -232,6 +237,11 @@
         "tags": ["User API"],
         "summary": "An endpoint for getting user groups",
         "description": "Allow user to get all groups that user is in",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "is_archived",
@@ -298,6 +308,11 @@
         "tags": ["User API"],
         "summary": "An endpoint for getting user profile",
         "description": "Allow users to access their own profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [],
         "responses": {
           "200": {
@@ -347,6 +362,11 @@
         "summary": "An endpoint for updating user profile",
         "description": "Allow users to modify their own profile",
         "parameters": [],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -420,6 +440,11 @@
         "tags": ["Group API"],
         "summary": "An endpoint for creating group",
         "description": "Allow user to create group",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -503,6 +528,11 @@
         "tags": ["Group API"],
         "summary": "An endpoint for get group information",
         "description": "Allow user to get group information that user is in",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "group_id",
@@ -560,6 +590,11 @@
         "tags": ["Group API"],
         "summary": "An endpoint for update group information",
         "description": "Allow user to edit group information that user is in",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "group_id",
@@ -683,6 +718,11 @@
         "tags": ["Group API"],
         "summary": "An endpoint for archive group",
         "description": "Allow group owner to archive the group",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "group_id",
@@ -750,6 +790,11 @@
         "tags": ["Group API"],
         "summary": "An endpoint for get group members",
         "description": "Allows user to get group memberships to which the user is a member",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "group_id",
@@ -866,6 +911,11 @@
         "tags": ["Group API"],
         "summary": "An endpoint for join group with invitation code",
         "description": "Allows user to join group that they have invitation code",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "slug",
@@ -943,6 +993,11 @@
         "tags": ["Group API"],
         "summary": "An endpoint for group owner to start settling event",
         "description": "Allow group owner to update all expenses with a date prior to the selected date from 'unsettled' to 'settling' status",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "group_id",
@@ -1021,6 +1076,11 @@
         "tags": ["Group API"],
         "summary": "An endpoint for user to access group logs",
         "description": "Allow user to get the latest 100 group logs",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "group_id",
@@ -1086,6 +1146,11 @@
         "tags": ["Expense API"],
         "summary": "An endpoint for user to get group expenses",
         "description": "Allow user to access specific group expenses",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "group_id",
@@ -1150,6 +1215,11 @@
         "tags": ["Expense API"],
         "summary": "An endpoint for user to create expense",
         "description": "Allow user to create expense in their group",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1311,6 +1381,11 @@
         "tags": ["Expense API"],
         "summary": "An endpoint for user to update expense",
         "description": "Allow user to edit expense in their group",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1478,6 +1553,11 @@
         "tags": ["Expense API"],
         "summary": "An endpoint for user to delete expense",
         "description": "Allow user to delete expense in their group",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1555,6 +1635,11 @@
         "tags": ["Debt API"],
         "summary": "An endpoint for user to get overall group debts",
         "description": "Allow user to access overall group group debts with group_id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "group_id",
@@ -1612,6 +1697,11 @@
         "tags": ["Debt API"],
         "summary": "An endpoint for user to settle the debt",
         "description": "Allow user to mark the debt as settled",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "group_id",
@@ -1712,8 +1802,13 @@
     "/api/1.0/debts/{group_id}/settling": {
       "get": {
         "tags": ["Debt API"],
-        "summary": "An endpoint for user t get debts that are settling",
+        "summary": "An endpoint for user to get debts that are settling",
         "description": "Allow user to get debts that are now in settling stage",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "group_id",
@@ -1773,6 +1868,11 @@
         "tags": ["Debt API"],
         "summary": "An endpoint for user to notify group members",
         "description": "Allow users to notify members who have already bound LINE accounts",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "group_id",
