@@ -1084,53 +1084,468 @@
     "/api/1.0/expense": {
       "get": {
         "tags": ["Expense API"],
-        "description": "",
-        "parameters": [],
+        "summary": "An endpoint for user to get group expenses",
+        "description": "Allow user to access specific group expenses",
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "query",
+            "description": "Group ID",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 5566
+            }
+          }
+        ],
         "responses": {
+          "200": {
+            "description": "Successfully to get group expenses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "minItems": 0,
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/Expense"
+                  }
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
           }
         }
       },
       "post": {
         "tags": ["Expense API"],
-        "description": "",
+        "summary": "An endpoint for user to create expense",
+        "description": "Allow user to create expense in their group",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Expense amount",
+                    "example": 200
+                  },
+                  "currency_option": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Currency ID",
+                    "example": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Expense description",
+                    "example": "Description of the expense"
+                  },
+                  "split_method": {
+                    "type": "string",
+                    "description": "Split method ID",
+                    "example": "1"
+                  },
+                  "attached_group_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Group ID",
+                    "example": 1
+                  },
+                  "creditorsAmounts": {
+                    "type": "array",
+                    "description": "Array of creditor ID with amount",
+                    "minItems": 0,
+                    "maxItems": 30,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "example": [[31, 200]]
+                  },
+                  "debtorsWeight": {
+                    "type": "array",
+                    "description": "Array of debtor weight",
+                    "minItems": 1,
+                    "maxItems": 30,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "example": [
+                      [31, 1],
+                      [32, 1]
+                    ]
+                  },
+                  "debtorsAdjustment": {
+                    "type": "array",
+                    "description": "Array of debtor adjustment amount",
+                    "minItems": 1,
+                    "maxItems": 30,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "example": [
+                      [31, 10],
+                      [32, -20]
+                    ]
+                  },
+                  "date": {
+                    "type": "string",
+                    "description": "Expense time",
+                    "example": "2023-05-17T08:01"
+                  }
+                },
+                "required": [
+                  "amount",
+                  "currency_option",
+                  "description",
+                  "split_method",
+                  "attached_group_id",
+                  "creditorsAmounts",
+                  "debtorsWeight",
+                  "date"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
+          "200": {
+            "description": "Successfully to create expense",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "Sccessful message",
+                      "example": "New expense_id: 64648ebd62f14b7e98rf2757 was created!!"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
           }
         }
       },
       "put": {
         "tags": ["Expense API"],
-        "description": "",
+        "summary": "An endpoint for user to update expense",
+        "description": "Allow user to edit expense in their group",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Modified expense amount",
+                    "example": 200
+                  },
+                  "currency_option": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Currency ID",
+                    "example": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Expense description",
+                    "example": "Description of the expense"
+                  },
+                  "expense_id": {
+                    "type": "string",
+                    "description": "Expense ID that user want to modify",
+                    "example": "735da7e45abe7542b1e13d01"
+                  },
+                  "split_method": {
+                    "type": "string",
+                    "description": "Split method ID",
+                    "example": "1"
+                  },
+                  "attached_group_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Group ID",
+                    "example": 1
+                  },
+                  "creditorsAmounts": {
+                    "type": "array",
+                    "description": "Array of creditor ID with amount",
+                    "minItems": 0,
+                    "maxItems": 30,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "example": [[31, 200]]
+                  },
+                  "debtorsWeight": {
+                    "type": "array",
+                    "description": "Array of debtor weight",
+                    "minItems": 1,
+                    "maxItems": 30,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "example": [
+                      [31, 1],
+                      [32, 1]
+                    ]
+                  },
+                  "debtorsAdjustment": {
+                    "type": "array",
+                    "description": "Array of debtor adjustment amount",
+                    "minItems": 1,
+                    "maxItems": 30,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "example": [
+                      [31, 10],
+                      [32, -20]
+                    ]
+                  },
+                  "date": {
+                    "type": "string",
+                    "description": "Expense time",
+                    "example": "2023-05-17T08:01"
+                  }
+                },
+                "required": [
+                  "amount",
+                  "currency_option",
+                  "description",
+                  "expense_id",
+                  "split_method",
+                  "attached_group_id",
+                  "creditorsAmounts",
+                  "debtorsWeight",
+                  "date"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
+          "200": {
+            "description": "Successfully to modify expense",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "Sccessful message",
+                      "example": "Successfully modified expense!"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
           }
         }
       },
       "delete": {
         "tags": ["Expense API"],
-        "description": "",
+        "summary": "An endpoint for user to delete expense",
+        "description": "Allow user to delete expense in their group",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "expense_id": {
+                    "type": "string",
+                    "description": "Expense ID that user want to modify",
+                    "example": "646da7145abed542b1e13d01"
+                  },
+                  "group_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Group ID",
+                    "example": 1
+                  }
+                },
+                "required": ["expense_id", "group_id"]
+              }
+            }
+          }
+        },
         "responses": {
+          "200": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": { "type": "string", "description": "Sccessful message", "example": "Successfully deleted!" }
+                  }
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
           }
         }
       }
@@ -1138,7 +1553,8 @@
     "/api/1.0/debts/{group_id}": {
       "get": {
         "tags": ["Debt API"],
-        "description": "",
+        "summary": "An endpoint for user to get overall group debts",
+        "description": "Allow user to access overall group group debts with group_id",
         "parameters": [
           {
             "name": "group_id",
@@ -1150,17 +1566,52 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Get group debts sccessfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Debts"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
           }
         }
       },
       "post": {
         "tags": ["Debt API"],
-        "description": "",
+        "summary": "An endpoint for user to settle the debt",
+        "description": "Allow user to mark the debt as settled",
         "parameters": [
           {
             "name": "group_id",
@@ -1171,12 +1622,89 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "payer_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Payer ID",
+                    "example": 1
+                  },
+                  "payee_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Payee ID",
+                    "example": 2
+                  },
+                  "amount": {
+                    "type": "number",
+                    "description": "Amount of the debt",
+                    "example": "60"
+                  },
+                  "currency_option": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Currency ID",
+                    "example": 1
+                  }
+                },
+                "required": ["payer_id", "payee_id", "amount", "currency_option"]
+              }
+            }
+          }
+        },
         "responses": {
+          "200": {
+            "description": "Sccessful message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "Sccessful message",
+                      "example": "SettleUp Successfully!"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
           }
         }
       }
@@ -1184,24 +1712,8 @@
     "/api/1.0/debts/{group_id}/settling": {
       "get": {
         "tags": ["Debt API"],
-        "description": "",
-        "parameters": [
-          {
-            "name": "group_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {}
-      }
-    },
-    "/api/1.0/debts/{group_id}/notification": {
-      "post": {
-        "tags": ["Debt API"],
-        "description": "",
+        "summary": "An endpoint for user t get debts that are settling",
+        "description": "Allow user to get debts that are now in settling stage",
         "parameters": [
           {
             "name": "group_id",
@@ -1213,11 +1725,147 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Get group debts sccessfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Debts"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/debts/{group_id}/notification": {
+      "post": {
+        "tags": ["Debt API"],
+        "summary": "An endpoint for user to notify group members",
+        "description": "Allow users to notify members who have already bound LINE accounts",
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "debtor_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Payer ID",
+                    "example": 1
+                  },
+                  "creditor_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Payee ID",
+                    "example": 2
+                  },
+                  "amount": {
+                    "type": "number",
+                    "description": "Amount of the debt",
+                    "example": "60"
+                  },
+                  "currency_option": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Currency ID",
+                    "example": 1
+                  }
+                },
+                "required": ["debtor_id", "creditor_id", "amount", "currency_option"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sccessful message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "Sccessful message",
+                      "example": "Successfully notify"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
           }
         }
       }
@@ -1555,6 +2203,121 @@
             "example": "2023-05-16T14:14:32.000Z",
             "description": "Log event"
           }
+        }
+      },
+      "Expense": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6457d12138772a1c1e2c9527",
+            "description": "Expense ID"
+          },
+          "description": {
+            "type": "string",
+            "example": "Coca Cola",
+            "description": "Expense description"
+          },
+          "amount": {
+            "type": "number",
+            "example": 200,
+            "description": "Expense amount"
+          },
+          "currency_option": {
+            "type": "integer",
+            "example": 1,
+            "description": "Currency ID"
+          },
+          "split_method": {
+            "type": "string",
+            "example": "split equally",
+            "description": "Split method"
+          },
+          "creditors_amounts": {
+            "type": "object",
+            "description": "Object of debtor weight (key: user_id, value: weight)",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "example": { "47": 900 }
+          },
+          "debtors_weight": {
+            "type": "object",
+            "description": "Object of debtor weight (key: user_id, value: weight)",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "example": { "42": 1, "46": 1, "53": 1, "55": 1 }
+          },
+          "debtors_adjustment": {
+            "type": "object",
+            "description": "Object of debtor adjustment amount (key: user_id, value: amount)",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "example": { "42": 10, "46": -5, "53": -10, "55": 20 }
+          },
+          "attached_group_id": {
+            "type": "integer",
+            "example": 666,
+            "description": "Group ID"
+          },
+          "involved_users": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "example": [47, 42, 46, 53, 55],
+            "description": "Array of involved user ID"
+          },
+          "status": {
+            "type": "string",
+            "example": "unsettled",
+            "description": "Expense status"
+          },
+          "date": {
+            "type": "string",
+            "example": "2023-05-16T14:14:32.000Z",
+            "description": "Expense time"
+          },
+          "image": {
+            "type": "string",
+            "example": null,
+            "description": "This feature is temporarily unavailable"
+          },
+          "createTime": {
+            "type": "string",
+            "example": "2023-05-16T14:14:32.000Z",
+            "description": "Expense time"
+          }
+        }
+      },
+      "Debt": {
+        "type": "array",
+        "minItems": 3,
+        "maxItems": 3,
+        "description": "Array of debt information, format:[debtor_index,creditor_index,amount]",
+        "items": {
+          "type": "number"
+        },
+        "example": [1, 2, 155]
+      },
+      "Debts": {
+        "type": "object",
+        "description": "Object of debts (key: currency_id, value: debt information)",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Debt"
+          },
+          "minItems": 1
+        },
+        "example": {
+          "1": [
+            [1, 2, 155],
+            [3, 2, 30]
+          ],
+          "2": [[4, 3, 60]]
         }
       }
     }
