@@ -26,7 +26,7 @@ const signUp = async (req, res, next) => {
       name: user.name,
       email: user.email,
       image: user.image,
-      line_binding_code: user.line_binding_code,
+      line_binding_code: user.line_binding_code
     },
     TOKEN_SECRET,
     { expiresIn: TOKEN_EXPIRE }
@@ -42,8 +42,8 @@ const signUp = async (req, res, next) => {
       name: user.name,
       email: user.email,
       image: user.image,
-      line_binding_code: user.line_binding_code,
-    },
+      line_binding_code: user.line_binding_code
+    }
   });
 };
 
@@ -65,9 +65,7 @@ const signIn = async (req, res, next) => {
       result = { error: "Request Error: Wrong Request" };
   }
   if (result.status === 400) {
-    return next(
-      customizedError.badRequest("Request Error: Invalid email or password")
-    );
+    return next(customizedError.badRequest("Request Error: Invalid email or password"));
   }
   const user = result.user;
   if (!user || result.status === 500) {
@@ -81,7 +79,7 @@ const signIn = async (req, res, next) => {
       name: user.name,
       email: user.email,
       image: user.image,
-      line_binding_code: user.line_binding_code,
+      line_binding_code: user.line_binding_code
     },
     TOKEN_SECRET,
     { expiresIn: TOKEN_EXPIRE }
@@ -97,8 +95,8 @@ const signIn = async (req, res, next) => {
       name: user.name,
       email: user.email,
       image: user.image,
-      line_binding_code: user.line_binding_code,
-    },
+      line_binding_code: user.line_binding_code
+    }
   });
 };
 
@@ -107,9 +105,7 @@ const nativeSignIn = async (email, password) => {
     return await User.nativeSignIn(email, password);
   } catch (error) {
     // Log error
-    console.error(
-      `[${new Date().toISOString()}] User ${email} native sign in error: ${error}`
-    );
+    console.error(`[${new Date().toISOString()}] User ${email} native sign in error: ${error}`);
     return { error };
   }
 };
@@ -118,7 +114,7 @@ const lineSignIn = async (code, state) => {
   if (!code || !state) {
     return {
       error: "Request Error: code and state is required.",
-      status: 400,
+      status: 400
     };
   }
   try {
@@ -127,8 +123,7 @@ const lineSignIn = async (code, state) => {
 
     if (!name || !email || !image || !line_id) {
       return {
-        error:
-          "Permissions Error: LINE access code can not get line_id, name, image or email",
+        error: "Permissions Error: LINE access code can not get line_id, name, image or email"
       };
     }
     return await User.lineSignIn(name, email, image, line_id);
@@ -137,11 +132,11 @@ const lineSignIn = async (code, state) => {
   }
 };
 
-const liffSignIn = async (data) => {
+const liffSignIn = async data => {
   if (!data) {
     return {
       error: "Request Error: signIn data is required.",
-      status: 400,
+      status: 400
     };
   }
   try {
@@ -149,9 +144,7 @@ const liffSignIn = async (data) => {
     return await User.lineSignIn(name, email, image, line_id);
   } catch (error) {
     // Log error
-    console.error(
-      `[${new Date().toISOString()}] User ${email} liff sign in error: ${error}`
-    );
+    console.error(`[${new Date().toISOString()}] User ${email} liff sign in error: ${error}`);
     return { error: error };
   }
 };
@@ -174,7 +167,7 @@ const getUserProfile = async (req, res) => {
     email: req.user.email,
     name: req.user.name,
     image: req.user.image,
-    line_binding_code: req.user.line_binding_code,
+    line_binding_code: req.user.line_binding_code
   });
 };
 
@@ -192,24 +185,17 @@ const updateUserProfile = async (req, res, next) => {
     provider: req.user.provider,
     email: req.user.email,
     line_binding_code: req.user.line_binding_code,
-    ...profile.data,
+    ...profile.data
   };
 
   const accessToken = jwt.sign(user, TOKEN_SECRET, {
-    expiresIn: TOKEN_EXPIRE,
+    expiresIn: TOKEN_EXPIRE
   });
   return res.status(200).json({
     access_token: accessToken,
     access_expired: TOKEN_EXPIRE,
-    user: user,
+    user: user
   });
 };
 
-export {
-  signUp,
-  signIn,
-  getUserGroups,
-  getUserProfile,
-  updateUserProfile,
-  nativeSignIn,
-};
+export { signUp, signIn, getUserGroups, getUserProfile, updateUserProfile, nativeSignIn };

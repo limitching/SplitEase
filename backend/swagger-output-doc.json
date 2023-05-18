@@ -1,0 +1,2425 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0",
+    "title": "SplitEase API",
+    "description": "SplitEase is a web application that helps you to manage your group expenses. It is a tool that helps you to keep track of your group expenses and settle them easily."
+  },
+  "host": "api.splitease.cc",
+  "basePath": "/",
+  "schemes": ["http"],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "Bearer Token"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.splitease.cc/"
+    }
+  ],
+  "paths": {
+    "/api/1.0/": {
+      "get": {
+        "tags": ["Health Check API"],
+        "summary": "An health check endpoint for AWS ELB",
+        "description": "Always returns 200 OK",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/1.0/s3url": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Pre-signed S3 URL API"],
+        "summary": "An endpoint for acquiring pre-signed S3 URL for uploading file",
+        "description": "Response contains pre-signed S3 URL and file name",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "description": "Pre-signed S3 URL for uploading file",
+                      "example": "https://your-bucket-name.s3.your-zone.amazonaws.com/7a3992dd952127fa33e43ac8e6b032a4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAYQRXHFVMR3EMVBM7%2F20230516%2Fap-northeast-1%2Fs3%2Faws4_request&X-Amz-Date=20230516T122525Z&X-Amz-Expires=60&X-Amz-Signature=42a6b012aa430e30ba6a2f1c5f4644d7aba82a7f16758c1ae260216563e8f113&X-Amz-SignedHeaders=host&x-id=PutObject"
+                    },
+                    "imageName": {
+                      "type": "string",
+                      "description": "Pre-signed file name",
+                      "example": "7a3992dd952127fa33e43ac8e6b032a4"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/S3URLError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/user/signup": {
+      "post": {
+        "tags": ["User API"],
+        "summary": "An endpoint for signing up",
+        "description": "Allow user to sign up with name, email and password",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "User name",
+                    "example": "Test User"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "User email",
+                    "example": "test@test.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User password",
+                    "example": "Test123!"
+                  }
+                },
+                "required": ["name", "email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SignUp scucessful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Email Already Exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailExistError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/user/signin": {
+      "post": {
+        "tags": ["User API"],
+        "summary": "An endpoint for signing in",
+        "description": "Allow user to sign in with email and password via native login or LINE login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "User email",
+                    "example": "test@test.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User password",
+                    "example": "Test123!"
+                  }
+                },
+                "required": ["name", "email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SignIn scucessful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidLoginError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/user/groups": {
+      "get": {
+        "tags": ["User API"],
+        "summary": "An endpoint for getting user groups",
+        "description": "Allow user to get all groups that user is in",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "is_archived",
+            "in": "query",
+            "description": "Filter by archive status",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "enum": [0, 1]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "minItems": 0,
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/Group"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/user/profile": {
+      "get": {
+        "tags": ["User API"],
+        "summary": "An endpoint for getting user profile",
+        "description": "Allow users to access their own profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get Profile scucessful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthUser"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["User API"],
+        "summary": "An endpoint for updating user profile",
+        "description": "Allow users to modify their own profile",
+        "parameters": [],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "User name",
+                    "example": "SplitEase"
+                  },
+                  "image": {
+                    "type": "string",
+                    "description": "User profile image URL",
+                    "example": "https://you-cdn.cloudfront.net/you-image"
+                  }
+                },
+                "required": ["name", "image"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SignIn scucessful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateUserProfileResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/1.0/group": {
+      "post": {
+        "tags": ["Group API"],
+        "summary": "An endpoint for creating group",
+        "description": "Allow user to create group",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "owner": {
+                    "type": "number",
+                    "description": "Group Owner Id",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Group name",
+                    "example": "SplitEase Test Group"
+                  },
+                  "default_currency": {
+                    "type": "number",
+                    "description": "Group default currency ID",
+                    "example": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "User email",
+                    "example": "SplitEase Awesome"
+                  }
+                },
+                "required": ["owner", "name", "default_currency", "description"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SignUp scucessful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewGroup"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/group/{group_id}": {
+      "get": {
+        "tags": ["Group API"],
+        "summary": "An endpoint for get group information",
+        "description": "Allow user to get group information that user is in",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Group"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Group API"],
+        "summary": "An endpoint for update group information",
+        "description": "Allow user to edit group information that user is in",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "description": "Group Id",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Group name",
+                    "example": "SplitEase Test Group"
+                  },
+                  "default_currency": {
+                    "type": "number",
+                    "description": "Group default currency ID",
+                    "example": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "User email",
+                    "example": "SplitEase Awesome"
+                  },
+                  "minimized_debts": {
+                    "type": "number",
+                    "description": "Group minimized debts ID",
+                    "example": 1
+                  }
+                },
+                "required": ["owner", "name", "default_currency", "description"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SignUp scucessful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "description": "Group Id",
+                      "example": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Group name",
+                      "example": "SplitEase Test Group"
+                    },
+                    "default_currency": {
+                      "type": "number",
+                      "description": "Group default currency ID",
+                      "example": 1
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "User email",
+                      "example": "SplitEase Awesome"
+                    },
+                    "minimized_debts": {
+                      "type": "number",
+                      "description": "Group minimized debts ID",
+                      "example": 1
+                    }
+                  },
+                  "required": ["owner", "name", "default_currency", "description"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Group API"],
+        "summary": "An endpoint for archive group",
+        "description": "Allow group owner to archive the group",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully archived the group",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "Sccessful message",
+                      "example": "Successfully archived."
+                    }
+                  },
+                  "required": ["owner", "name", "default_currency", "description"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/group/members/{group_id}": {
+      "get": {
+        "tags": ["Group API"],
+        "summary": "An endpoint for get group members",
+        "description": "Allows user to get group memberships to which the user is a member",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully to get group member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "minItems": 0,
+                  "maxItems": 30,
+                  "items": {
+                    "$ref": "#/components/schemas/MemberUser"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/group/{slug}/join": {
+      "get": {
+        "tags": ["Group API"],
+        "summary": "An endpoint for get public group information",
+        "description": "Allows user to get group memberships to which the user is a member",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "minItems": 0,
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/PulicGroupInformation"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Group API"],
+        "summary": "An endpoint for join group with invitation code",
+        "description": "Allows user to join group that they have invitation code",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "invitation_code": {
+                    "type": "string",
+                    "description": "Group name",
+                    "example": "3jdNxpNdqY"
+                  }
+                },
+                "required": ["invitation_code"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully to get group member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Group"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/group/{group_id}/settle": {
+      "post": {
+        "tags": ["Group API"],
+        "summary": "An endpoint for group owner to start settling event",
+        "description": "Allow group owner to update all expenses with a date prior to the selected date from 'unsettled' to 'settling' status",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "deadline": {
+                    "type": "string",
+                    "description": "The selected date",
+                    "example": "2023-05-16T16:00:00.000Z"
+                  }
+                },
+                "required": ["deadline"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully to get group member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Successfully update expense stage."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/group/{group_id}/logs": {
+      "get": {
+        "tags": ["Group API"],
+        "summary": "An endpoint for user to access group logs",
+        "description": "Allow user to get the latest 100 group logs",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "minItems": 0,
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/Logs"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotMemberAccessLogsError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/1.0/expense": {
+      "get": {
+        "tags": ["Expense API"],
+        "summary": "An endpoint for user to get group expenses",
+        "description": "Allow user to access specific group expenses",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "query",
+            "description": "Group ID",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 5566
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully to get group expenses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "minItems": 0,
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/Expense"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Expense API"],
+        "summary": "An endpoint for user to create expense",
+        "description": "Allow user to create expense in their group",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Expense amount",
+                    "example": 200
+                  },
+                  "currency_option": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Currency ID",
+                    "example": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Expense description",
+                    "example": "Description of the expense"
+                  },
+                  "split_method": {
+                    "type": "string",
+                    "description": "Split method ID",
+                    "example": "1"
+                  },
+                  "attached_group_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Group ID",
+                    "example": 1
+                  },
+                  "creditorsAmounts": {
+                    "type": "array",
+                    "description": "Array of creditor ID with amount",
+                    "minItems": 0,
+                    "maxItems": 30,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "example": [[31, 200]]
+                  },
+                  "debtorsWeight": {
+                    "type": "array",
+                    "description": "Array of debtor weight",
+                    "minItems": 1,
+                    "maxItems": 30,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "example": [
+                      [31, 1],
+                      [32, 1]
+                    ]
+                  },
+                  "debtorsAdjustment": {
+                    "type": "array",
+                    "description": "Array of debtor adjustment amount",
+                    "minItems": 1,
+                    "maxItems": 30,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "example": [
+                      [31, 10],
+                      [32, -20]
+                    ]
+                  },
+                  "date": {
+                    "type": "string",
+                    "description": "Expense time",
+                    "example": "2023-05-17T08:01"
+                  }
+                },
+                "required": [
+                  "amount",
+                  "currency_option",
+                  "description",
+                  "split_method",
+                  "attached_group_id",
+                  "creditorsAmounts",
+                  "debtorsWeight",
+                  "date"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully to create expense",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "Sccessful message",
+                      "example": "New expense_id: 64648ebd62f14b7e98rf2757 was created!!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Expense API"],
+        "summary": "An endpoint for user to update expense",
+        "description": "Allow user to edit expense in their group",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Modified expense amount",
+                    "example": 200
+                  },
+                  "currency_option": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Currency ID",
+                    "example": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Expense description",
+                    "example": "Description of the expense"
+                  },
+                  "expense_id": {
+                    "type": "string",
+                    "description": "Expense ID that user want to modify",
+                    "example": "735da7e45abe7542b1e13d01"
+                  },
+                  "split_method": {
+                    "type": "string",
+                    "description": "Split method ID",
+                    "example": "1"
+                  },
+                  "attached_group_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Group ID",
+                    "example": 1
+                  },
+                  "creditorsAmounts": {
+                    "type": "array",
+                    "description": "Array of creditor ID with amount",
+                    "minItems": 0,
+                    "maxItems": 30,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "example": [[31, 200]]
+                  },
+                  "debtorsWeight": {
+                    "type": "array",
+                    "description": "Array of debtor weight",
+                    "minItems": 1,
+                    "maxItems": 30,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "example": [
+                      [31, 1],
+                      [32, 1]
+                    ]
+                  },
+                  "debtorsAdjustment": {
+                    "type": "array",
+                    "description": "Array of debtor adjustment amount",
+                    "minItems": 1,
+                    "maxItems": 30,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "example": [
+                      [31, 10],
+                      [32, -20]
+                    ]
+                  },
+                  "date": {
+                    "type": "string",
+                    "description": "Expense time",
+                    "example": "2023-05-17T08:01"
+                  }
+                },
+                "required": [
+                  "amount",
+                  "currency_option",
+                  "description",
+                  "expense_id",
+                  "split_method",
+                  "attached_group_id",
+                  "creditorsAmounts",
+                  "debtorsWeight",
+                  "date"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully to modify expense",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "Sccessful message",
+                      "example": "Successfully modified expense!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Expense API"],
+        "summary": "An endpoint for user to delete expense",
+        "description": "Allow user to delete expense in their group",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "expense_id": {
+                    "type": "string",
+                    "description": "Expense ID that user want to modify",
+                    "example": "646da7145abed542b1e13d01"
+                  },
+                  "group_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Group ID",
+                    "example": 1
+                  }
+                },
+                "required": ["expense_id", "group_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": { "type": "string", "description": "Sccessful message", "example": "Successfully deleted!" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/debts/{group_id}": {
+      "get": {
+        "tags": ["Debt API"],
+        "summary": "An endpoint for user to get overall group debts",
+        "description": "Allow user to access overall group group debts with group_id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get group debts sccessfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Debts"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Debt API"],
+        "summary": "An endpoint for user to settle the debt",
+        "description": "Allow user to mark the debt as settled",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "payer_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Payer ID",
+                    "example": 1
+                  },
+                  "payee_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Payee ID",
+                    "example": 2
+                  },
+                  "amount": {
+                    "type": "number",
+                    "description": "Amount of the debt",
+                    "example": "60"
+                  },
+                  "currency_option": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Currency ID",
+                    "example": 1
+                  }
+                },
+                "required": ["payer_id", "payee_id", "amount", "currency_option"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sccessful message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "Sccessful message",
+                      "example": "SettleUp Successfully!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/debts/{group_id}/settling": {
+      "get": {
+        "tags": ["Debt API"],
+        "summary": "An endpoint for user to get debts that are settling",
+        "description": "Allow user to get debts that are now in settling stage",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get group debts sccessfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Debts"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1.0/debts/{group_id}/notification": {
+      "post": {
+        "tags": ["Debt API"],
+        "summary": "An endpoint for user to notify group members",
+        "description": "Allow users to notify members who have already bound LINE accounts",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "debtor_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Payer ID",
+                    "example": 1
+                  },
+                  "creditor_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Payee ID",
+                    "example": 2
+                  },
+                  "amount": {
+                    "type": "number",
+                    "description": "Amount of the debt",
+                    "example": "60"
+                  },
+                  "currency_option": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Currency ID",
+                    "example": 1
+                  }
+                },
+                "required": ["debtor_id", "creditor_id", "amount", "currency_option"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sccessful message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "Sccessful message",
+                      "example": "Successfully notify"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "InvalidRequestError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Request Error: Invaild Request."
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Unauthorized"
+          }
+        }
+      },
+      "NotMemberAccessLogsError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Unauthorized, only group member can access logs."
+          }
+        }
+      },
+      "ForbiddenError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Forbidden"
+          }
+        }
+      },
+      "S3URLError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "AWS Error Message"
+          }
+        }
+      },
+      "InternalServerError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Server Error: Database Query Error"
+          }
+        }
+      },
+      "EmailExistError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Request Error: Email Already Exists"
+          }
+        }
+      },
+      "InvalidLoginError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Request Error: Invalid email or password"
+          }
+        }
+      },
+      "AuthUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 9527
+          },
+          "provider": {
+            "type": "string",
+            "example": "native"
+          },
+          "name": {
+            "type": "string",
+            "example": "Test User"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@test.com"
+          },
+          "image": {
+            "type": "string",
+            "example": "https://your-cdn.cloudfront.net/user-image.jpg"
+          },
+          "line_binding_code": {
+            "type": "string",
+            "example": "QKqAe2D0xq"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjksInByb3ZpZGVyIjoibmF0aXZlIiwibmFtZSI6IkFzaGVseSIsImVtYWlsIjoiYXpvbGUxQGdtYWlsLmNvbSIsImltYWdlIjoiaHR0cHM6Ly9keGtnZmdnNzloM2h6LmNsb3VkZnJvbnQubmV0L2F2YXRhcnMva29hbGFfYXZhdGFyLmpwZyIsImxpbmVfYmluZGluZ19jb2RlIjoiUUtxYWUyRG94biIsImlhdCI6MTY4NDI0MjcxMCwiZXhwIjoxNjg0MzI5MTEwfQ.un7mK5KRl4TGXMMp8DbLetIy0aMcYxfxRTJww0g7Ia8"
+          },
+          "access_expired": {
+            "type": "string",
+            "example": "1d"
+          },
+          "login_at": {
+            "type": "string",
+            "example": "2023-12-31T00:00:00.000Z"
+          },
+          "user": {
+            "$ref": "#/components/schemas/AuthUser"
+          }
+        }
+      },
+      "UpdateUserProfileResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjksInByb3ZpZGVyIjoibmF0aXZlIiwibmFtZSI6IkFzaGVseSIsImVtYWlsIjoiYXpvbGUxQGdtYWlsLmNvbSIsImltYWdlIjoiaHR0cHM6Ly9keGtnZmdnNzloM2h6LmNsb3VkZnJvbnQubmV0L2F2YXRhcnMva29hbGFfYXZhdGFyLmpwZyIsImxpbmVfYmluZGluZ19jb2RlIjoiUUtxYWUyRG94biIsImlhdCI6MTY4NDI0MjcxMCwiZXhwIjoxNjg0MzI5MTEwfQ.un7mK5KRl4TGXMMp8DbLetIy0aMcYxfxRTJww0g7Ia8"
+          },
+          "access_expired": {
+            "type": "string",
+            "example": "1d"
+          },
+          "user": {
+            "$ref": "#/components/schemas/AuthUser"
+          }
+        }
+      },
+      "Group": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "Group ID"
+          },
+          "slug": {
+            "type": "string",
+            "example": "54e3d947-5a82-4b87-63f6-1140hdf2053d",
+            "description": "Group slug"
+          },
+          "owner": {
+            "type": "number",
+            "example": 9527,
+            "description": "User ID"
+          },
+          "name": {
+            "type": "string",
+            "example": "SplitEase Test Group",
+            "description": "Group name"
+          },
+          "description": {
+            "type": "string",
+            "example": "SplitEase Awesome",
+            "description": "Group description"
+          },
+          "default_currency": {
+            "type": "number",
+            "example": 1,
+            "description": "Currency ID"
+          },
+          "minimized_debts": {
+            "type": "string",
+            "example": "0"
+          },
+          "photo": {
+            "type": "string",
+            "example": "https://your-cdn.cloudfront.net/group-photo.jpg"
+          },
+          "invitation_code": {
+            "type": "string",
+            "example": "pXeas1aqBg"
+          },
+          "creation_date": {
+            "type": "string",
+            "example": "2023-12-31T00:00:00.000Z"
+          },
+          "is_archived": {
+            "type": "string",
+            "example": "0"
+          },
+          "line_id": {
+            "type": "string",
+            "example": "LINE group id (default: null)"
+          }
+        }
+      },
+      "PulicGroupInformation": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/Group"
+          },
+          "members": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 30,
+            "items": {
+              "$ref": "#/components/schemas/MemberUser"
+            }
+          }
+        }
+      },
+      "NewGroup": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "Group ID"
+          },
+          "slug": {
+            "type": "string",
+            "example": "54e3d947-5a82-4b87-63f6-1140hdf2053d",
+            "description": "Group slug"
+          },
+          "owner": {
+            "type": "number",
+            "example": 9527,
+            "description": "User ID"
+          },
+          "name": {
+            "type": "string",
+            "example": "SplitEase Test Group",
+            "description": "Group name"
+          },
+          "description": {
+            "type": "string",
+            "example": "SplitEase Awesome",
+            "description": "Group description"
+          },
+          "default_currency": {
+            "type": "number",
+            "example": 1,
+            "description": "Currency ID"
+          },
+          "photo": {
+            "type": "string",
+            "example": "https://your-cdn.cloudfront.net/group-photo.jpg"
+          }
+        }
+      },
+      "MemberUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 9527
+          },
+          "name": {
+            "type": "string",
+            "example": "Test User"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@test.com"
+          },
+          "image": {
+            "type": "string",
+            "example": "https://your-cdn.cloudfront.net/user-image.jpg"
+          },
+          "line_id": {
+            "type": "string",
+            "example": "User's LINE ID"
+          }
+        }
+      },
+      "Logs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "Log ID"
+          },
+          "user_id": {
+            "type": "number",
+            "example": 1,
+            "description": "User ID"
+          },
+          "group_id": {
+            "type": "number",
+            "example": 1,
+            "description": "Group ID"
+          },
+          "event": {
+            "type": "string",
+            "example": "create expense",
+            "description": "Log event"
+          },
+          "event_target": {
+            "type": "string",
+            "example": "food",
+            "description": "Log event"
+          },
+          "event_value": {
+            "type": "string",
+            "example": "NTD$50",
+            "description": "Log event"
+          },
+          "log_time": {
+            "type": "string",
+            "example": "2023-05-16T14:14:32.000Z",
+            "description": "Log event"
+          }
+        }
+      },
+      "Expense": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6457d12138772a1c1e2c9527",
+            "description": "Expense ID"
+          },
+          "description": {
+            "type": "string",
+            "example": "Coca Cola",
+            "description": "Expense description"
+          },
+          "amount": {
+            "type": "number",
+            "example": 200,
+            "description": "Expense amount"
+          },
+          "currency_option": {
+            "type": "integer",
+            "example": 1,
+            "description": "Currency ID"
+          },
+          "split_method": {
+            "type": "string",
+            "example": "split equally",
+            "description": "Split method"
+          },
+          "creditors_amounts": {
+            "type": "object",
+            "description": "Object of debtor weight (key: user_id, value: weight)",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "example": { "47": 900 }
+          },
+          "debtors_weight": {
+            "type": "object",
+            "description": "Object of debtor weight (key: user_id, value: weight)",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "example": { "42": 1, "46": 1, "53": 1, "55": 1 }
+          },
+          "debtors_adjustment": {
+            "type": "object",
+            "description": "Object of debtor adjustment amount (key: user_id, value: amount)",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "example": { "42": 10, "46": -5, "53": -10, "55": 20 }
+          },
+          "attached_group_id": {
+            "type": "integer",
+            "example": 666,
+            "description": "Group ID"
+          },
+          "involved_users": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "example": [47, 42, 46, 53, 55],
+            "description": "Array of involved user ID"
+          },
+          "status": {
+            "type": "string",
+            "example": "unsettled",
+            "description": "Expense status"
+          },
+          "date": {
+            "type": "string",
+            "example": "2023-05-16T14:14:32.000Z",
+            "description": "Expense time"
+          },
+          "image": {
+            "type": "string",
+            "example": null,
+            "description": "This feature is temporarily unavailable"
+          },
+          "createTime": {
+            "type": "string",
+            "example": "2023-05-16T14:14:32.000Z",
+            "description": "Expense time"
+          }
+        }
+      },
+      "Debt": {
+        "type": "array",
+        "minItems": 3,
+        "maxItems": 3,
+        "description": "Array of debt information, format:[debtor_index,creditor_index,amount]",
+        "items": {
+          "type": "number"
+        },
+        "example": [1, 2, 155]
+      },
+      "Debts": {
+        "type": "object",
+        "description": "Object of debts (key: currency_id, value: debt information)",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Debt"
+          },
+          "minItems": 1
+        },
+        "example": {
+          "1": [
+            [1, 2, 155],
+            [3, 2, 30]
+          ],
+          "2": [[4, 3, 60]]
+        }
+      }
+    }
+  }
+}

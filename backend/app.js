@@ -7,7 +7,7 @@ import cors from "cors";
 import { initSocketIO } from "./src/services/socketIO.js";
 import dotenv from "dotenv";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
-dotenv.config({ path: __dirname + "./.env" });
+dotenv.config({ path: __dirname + "/.env" });
 
 const { API_VERSION, PORT } = process.env;
 
@@ -15,6 +15,10 @@ const app = express();
 const port = normalizePort(PORT || "3000");
 app.set("port", port);
 const server = http.createServer(app);
+
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./swagger-output-doc.json" assert { type: "json" };
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 import indexRouter from "./src/routes/index.js";
 import userRouter from "./src/routes/user_route.js";
