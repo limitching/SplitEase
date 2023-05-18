@@ -18,7 +18,7 @@ const server = http.createServer(app);
 
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./swagger-output-doc.json" assert { type: "json" };
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 import indexRouter from "./src/routes/index.js";
 import userRouter from "./src/routes/user_route.js";
