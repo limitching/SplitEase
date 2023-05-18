@@ -109,16 +109,29 @@ The **frontend** directory includes a public folder for public assets, such as c
       3. Configure **API_HOST** to your server endpoint in `/src/global/constant.js`
       4. Start the server `npm run start`
 
-## Contact me
+## Backend Architechture
 
-If you have any questions, suggestions, or would like to collaborate on the SplitEase project, feel free to reach out to me:
+## Frontend Architechture
 
-- Name: Hung Wei-Ching
-- Email: hwc0320@gmail.com
-- Telegram: [@limitching](https://t.me/limitching)
-- LinkedIn: [limitching](https://www.linkedin.com/in/limitching/)
+## API Documentation
 
-I'm excited to connect with you and discuss anything related to SplitEase. Don't hesitate to contact me!
+For detailed information about the SplitEase API and its endpoints, please refer to the Swagger API documentation:
+
+[Swagger API Documentation](https://api.splitease.cc/api-docs/)
+
+The Swagger API documentation provides an overview of all the available endpoints, their request/response formats, and any necessary authentication requirements. It serves as a comprehensive reference for integrating with the SplitEase API.
+
+## Roadmap
+
+Here are the planned features and improvements for future releases of SplitEase:
+
+- Enhance **unit testing** and **integration testing** coverage
+- Add functionality to **browse archived group history** information
+- Implement the ability to insert **expense receipt photos**
+- Add a "**Forgot Password**" feature
+- Expand the **capabilities of the LINE chatbot**
+
+Please note that this roadmap is subject to change and may be updated based on project priorities and user feedback. Stay tuned for future updates!
 
 ## Version History
 
@@ -144,18 +157,17 @@ I'm excited to connect with you and discuss anything related to SplitEase. Don't
 - 1.0
   - Initial Release
 
-## Roadmap
-
-Here are the planned features and improvements for future releases of SplitEase:
-
-- Enhance **unit testing** and **integration testing** coverage
-- Add functionality to **browse archived group history** information
-- Implement the ability to insert **expense receipt photos**
-- Add a "**Forgot Password**" feature
-- Expand the **capabilities of the LINE chatbot**
-
-Please note that this roadmap is subject to change and may be updated based on project priorities and user feedback. Stay tuned for future updates!
-
 ## License
 
 This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+
+## Contact me
+
+If you have any questions, suggestions, or would like to collaborate on the SplitEase project, feel free to reach out to me:
+
+- Name: Hung Wei-Ching
+- Email: hwc0320@gmail.com
+- Telegram: [@limitching](https://t.me/limitching)
+- LinkedIn: [limitching](https://www.linkedin.com/in/limitching/)
+
+I'm excited to connect with you and discuss anything related to SplitEase. Don't hesitate to contact me!
