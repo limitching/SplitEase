@@ -18,7 +18,7 @@ const server = http.createServer(app);
 
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./swagger-output-doc.json" assert { type: "json" };
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 import indexRouter from "./src/routes/index.js";
 import userRouter from "./src/routes/user_route.js";
@@ -38,13 +38,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 // API routes
-app.use("/api/" + API_VERSION, [
-  indexRouter,
-  userRouter,
-  groupRouter,
-  expenseRouter,
-  debtsRouter,
-]);
+app.use("/api/" + API_VERSION, [indexRouter, userRouter, groupRouter, expenseRouter, debtsRouter]);
 
 // Perform socket.io configuration and connection
 initSocketIO(server);
