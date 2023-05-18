@@ -116,11 +116,11 @@ ex. [@DomPizzie](https://twitter.com/dompizzie)
 
 - 1.4
   - Various bug fixes and optimizations
-  - Unit Test
+  - **Unit Test**
 - 1.3
   - Various bug fixes and optimizations
-  - Refacroting
-  - Refine Error Handling
+  - **Refacroting**
+  - Refine **Error Handling**
 - 1.2
   - Various bug fixes and optimizations
   - Add **Dashboard feature** for group expense management
