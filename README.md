@@ -122,6 +122,16 @@ ex. [@DomPizzie](https://twitter.com/dompizzie)
 
 ## Roadmap
 
+Here are the planned features and improvements for future releases of SplitEase:
+
+- Enhance unit testing and integration testing coverage
+- Add functionality to browse archived group history information
+- Implement the ability to insert expense receipt photos
+- Add a "Forgot Password" feature
+- Expand the capabilities of the LINE chatbot
+
+Please note that this roadmap is subject to change and may be updated based on project priorities and user feedback. Stay tuned for future updates!
+
 ## License
 
 This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
