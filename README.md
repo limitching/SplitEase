@@ -2,6 +2,8 @@
 
 "Make bill splitting easy" - (SplitEase,2023)
 
+Website URL: [https://splitease.cc/](https://splitease.cc/)
+
 ## Description
 
 SplitEase is a splitting service designed to simplify the process of dividing expenses among multiple parties. It leverages the Dinic flow algorithm to optimize debt repayment paths, resulting in the most efficient repayment plans.
