@@ -30,6 +30,55 @@ SplitEase is a splitting service designed to simplify the process of dividing ex
 
 ## Getting Started
 
+### Repo Structure
+
+This repository follows a structured layout with a `backend` directory and a `frontend` directory.
+
+The **backend** directory contains the source code (**src**) and testing (**test**) folders. The source code is organized into various modules including **controllers**, **middlewares**, **models**, **routes**, **services**, **utils**, and **views**. The testing folder includes unit tests for **controllers**, **models**, **routes**, and **utils**.
+
+The **frontend** directory includes a public folder for public assets, such as css, fonts, images, and js. The src folder contains different parts of the frontend, including components, contexts, global, pages, and utils. The components folder stores reusable components such as Footer, Header, and Preloader. The pages folder contains specific pages of the application. Other folders like **contexts**, **global**, and **utils** are used for organizing related code and utilities.
+
+```
+.
+├── backend
+│   ├── src
+│   │   ├── controllers
+│   │   ├── middlewares
+│   │   │   └── validators
+│   │   ├── models
+│   │   ├── routes
+│   │   ├── services
+│   │   ├── utils
+│   │   └── views
+│   └── test
+│       └── unit
+│           ├── controllers
+│           ├── models
+│           ├── routes
+│           └── utils
+└── frontend
+    ├── public
+    │   └── assets
+    │       ├── css
+    │       ├── fonts
+    │       ├── images
+    │       └── js
+    └── src
+        ├── components
+        │   ├── Footer
+        │   ├── Header
+        │   └── Preloader
+        ├── contexts
+        ├── global
+        ├── pages
+        │   ├── Group
+        │   ├── Home
+        │   ├── Index
+        │   ├── Liff
+        │   └── Login
+        └── utils
+```
+
 ### Installing
 
 1. Clone the repository from GitHub:
@@ -55,19 +104,10 @@ SplitEase is a splitting service designed to simplify the process of dividing ex
    2. Client Deployment:
       1. Navigate to the frontend directory `cd frontend`
       2. Install dependencies `npm install`
-      3. Start the server `npm run start`
-
-## Help
-
-Any advise for common problems or issues.
-
-```
-command to run if program contains helper info
-```
+      3. Configure **API_HOST** to your server endpoint in `/src/global/constant.js`
+      4. Start the server `npm run start`
 
 ## Authors
-
-Contributors names and contact info
 
 ex. Dominique Pizzie  
 ex. [@DomPizzie](https://twitter.com/dompizzie)
