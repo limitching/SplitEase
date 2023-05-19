@@ -13,6 +13,32 @@ Website URL: [https://splitease.cc/](https://splitease.cc/)
 
 SplitEase is a splitting service designed to simplify the process of dividing expenses among multiple parties. It leverages the Dinic flow algorithm to optimize debt repayment paths, resulting in the most efficient repayment plans.
 
+## Table of Contents
+
+- [SplitEase](#splitease)
+  - [Description](#description)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+    - [Diversified splitting methods](#diversified-splitting-methods)
+    - [Debt simplification](#debt-simplification)
+    - [Notification and debt management](#notification-and-debt-management)
+    - [Real-Time Expense Updates](#real-time-expense-updates)
+  - [Getting Started](#getting-started)
+    - [Demo accounts](#demo-accounts)
+    - [Binding LINE account](#binding-line-account)
+  - [Algorithm](#algorithm)
+    - [Dinic Maxflow Algorithm](#dinic-maxflow-algorithm)
+  - [Architecture](#architecture)
+    - [Frontend Architecture](#frontend-architecture)
+  - [Table Schema](#table-schema)
+  - [API Documentation](#api-documentation)
+  - [Repo Structure](#repo-structure)
+  - [Installation](#installation)
+  - [Roadmap](#roadmap)
+  - [Version History](#version-history)
+  - [License](#license)
+  - [Contact me](#contact-me)
+
 ## Features
 
 ### Diversified splitting methods
