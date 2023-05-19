@@ -14,7 +14,7 @@ SplitEase is a splitting service designed to simplify the process of dividing ex
 
 ## Features
 
-1. Diversified splitting methods:
+### Diversified splitting methods:
 
 - Equal Split
 - Exact Amounts
@@ -23,16 +23,29 @@ SplitEase is a splitting service designed to simplify the process of dividing ex
 - Adjustment Split
 - Simplify Debts:
 
-2. Utilizes advanced algorithms for debt simplification.
+### Debt simplification.
 
 - Dynamic programming optimizes repayment plans.
 - Max flow optimization minimizes transaction costs.
 
-3. Notification:
+### Notification:
 
 - Easily notify group members or individuals to settle debts.
 - Streamlines debt management and eliminates the need for manual follow-ups.
 - Try SplitEase for a faster, more accurate, and cost-effective way to manage and repay debts.
+
+### Real-Time Expense Updates
+
+SplitEase leverages Socket.IO to enable real-time expense information updates for users.
+
+- When a user updates an expense record, other users in the same group will receive an "Expense changed" event through Socket.IO, updating their state.
+- The frontend React application listens for this event and sends a request to the backend API to keep the user's expenses information up to date.
+
+![Websocket Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_websocket_Architechture.jpeg)
+
+Additionally, SplitEase utilizes a Redis adapter to ensure synchronized updates when scaling horizontally.
+
+![Redis Adapter](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Adapter.jpeg)
 
 ## Getting Started
 
@@ -77,10 +90,6 @@ For a more detailed explanation and mathematical formulas, please refer to the r
 ## Architechture
 
 ![Backend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Backend_Architechture.jpeg)
-
-### Websocket Architechture
-
-![Websocket Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_websocket_Architechture.jpeg)
 
 ### Frontend Architechture
 
