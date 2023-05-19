@@ -1,6 +1,3 @@
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
-
 # SplitEase
 
 [![SplitEase logo](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_logo.jpeg)](https://splitease.cc/)
@@ -126,11 +123,18 @@ The **frontend** directory includes a public folder for public assets, such as c
 
 ![Frontend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_frontend_Architechture.jpeg)
 
-## Dinic Maxflow Algorithm
+## Algorithm
+
+Just imagine that the debt relationship between multiple people can be represented by a directed graph. The vertex of this graph is the user, the directed edge is the debt on behalf of the debt, and the direction of the arrow is from the creditor to the debtor.
+
+I organize the debts between all users into a residual graph, traverse through the Dinic Maxflow algorithm and find the maximum money flow between any two users, and simplify the residual graphs.
+Finally, the optimal repayment path can be calculated.
+
+### Dinic Maxflow Algorithm
 
 The Dinic Maxflow algorithm is used to find the maximum flow in a flow network. It is based on the concept of residual graphs and augmenting paths.
 
-1. **Input**: A directed graph with capacities assigned to its edges, a source node `s`, and a sink node `t`.
+1. **Input**: A directed graph (user debts) with capacities （debt） assigned to its edges, a source node (user i) `s`, and a sink node (user j) `t`.
 
 2. **Initialize** the flow network with zero flow on each edge and residual capacities equal to the original capacities.
 
