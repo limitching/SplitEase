@@ -113,11 +113,15 @@ The **frontend** directory includes a public folder for public assets, such as c
 
 ## Architechture
 
-### Backend Architechture
-
 ![Backend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Backend_Architechture.png)
 
+### Backend Architechture
+
+![Websocket Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_websocket_Architechture.jpeg)
+
 ### Frontend Architechture
+
+![Frontend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_frontend_Architechture.jpeg)
 
 ## API Documentation
 
