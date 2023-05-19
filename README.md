@@ -24,6 +24,8 @@ SplitEase supports a variety of splitting methods to accommodate different scena
 - Shares Split
 - Adjustment Split
 
+![Splitting Methods](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Split_Method.gif)
+
 ### Debt simplification
 
 SplitEase utilizes the Dinic Maxflow algorithm to simplify debt relationships between multiple users.
