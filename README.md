@@ -68,8 +68,10 @@ Password: Example123!
 ### Binding LINE account
 
 You can bind your LINE account to SplitEase to receive notifications through the LINE chatbot.
-If you're login with LINE account, you can skip this step.
-If you're login with native email, you can follow the steps below to bind your LINE account.
+
+**If you're login with LINE account, you can skip this step.**
+
+**If you're login with native email, you can follow the steps below to bind your LINE account.**
 
 1. Login to SplitEase with your email and password.
 2. Click the "Profile" icon in the top right corner.
