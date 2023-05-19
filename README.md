@@ -1,5 +1,7 @@
 # SplitEase
 
+![SplitEase logo](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_logo.jpeg)
+
 "Make bill splitting easy" - (SplitEase,2023)
 
 Website URL: [https://splitease.cc/](https://splitease.cc/)
