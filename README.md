@@ -34,6 +34,15 @@ SplitEase is a splitting service designed to simplify the process of dividing ex
 
 ## Getting Started
 
+### Test accounts
+
+You can use the following test accounts to try out the SplitEase service:
+
+```
+Email: example1@example.com
+Password: Example123!
+```
+
 ### Repo Structure
 
 This repository follows a structured layout with a `backend` directory and a `frontend` directory.
