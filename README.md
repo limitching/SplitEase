@@ -14,25 +14,29 @@ SplitEase is a splitting service designed to simplify the process of dividing ex
 
 ## Features
 
-### Diversified splitting methods:
+### Diversified splitting methods
+
+SplitEase supports a variety of splitting methods to accommodate different scenarios.
 
 - Equal Split
 - Exact Amounts
 - Percentage Split
 - Shares Split
 - Adjustment Split
-- Simplify Debts:
 
-### Debt simplification.
+### Debt simplification
 
-- Dynamic programming optimizes repayment plans.
-- Max flow optimization minimizes transaction costs.
+SplitEase utilizes the Dinic Maxflow algorithm to simplify debt relationships between multiple users.
 
-### Notification:
+![Debts Simplification Process](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Simplify_Debts.gif)
+
+### Notification and debt management
 
 - Easily notify group members or individuals to settle debts.
 - Streamlines debt management and eliminates the need for manual follow-ups.
 - Try SplitEase for a faster, more accurate, and cost-effective way to manage and repay debts.
+
+![LINE Notification](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Notification.gif)
 
 ### Real-Time Expense Updates
 
