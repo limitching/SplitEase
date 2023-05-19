@@ -1,3 +1,6 @@
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+
 # SplitEase
 
 [![SplitEase logo](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_logo.jpeg)](https://splitease.cc/)
@@ -122,6 +125,28 @@ The **frontend** directory includes a public folder for public assets, such as c
 ### Frontend Architechture
 
 ![Frontend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_frontend_Architechture.jpeg)
+
+## Dinic Maxflow Algorithm
+
+The Dinic Maxflow algorithm is used to find the maximum flow in a flow network. It is based on the concept of residual graphs and augmenting paths.
+
+1. **Input**: A directed graph with capacities assigned to its edges, a source node `s`, and a sink node `t`.
+
+2. **Initialize** the flow network with zero flow on each edge and residual capacities equal to the original capacities.
+
+3. **While** there exists an augmenting path in the residual graph from `s` to `t`, do the following steps:
+
+   1. **Apply Breadth-First Search (BFS)** to find a blocking flow path from `s` to `t` in the residual graph. The BFS traversal ensures that only the shortest paths are considered.
+
+   2. **Determine the blocking flow** by finding the minimum residual capacity `C_min` along the augmenting path.
+
+   3. **Update the flow** along the augmenting path by adding `C_min` to the flow of each edge and subtracting `C_min` from the residual capacity of each edge in the augmenting path.
+
+   4. **Output**: The maximum flow value obtained is the sum of flows leaving the source node `s` in the final flow network.
+
+The time complexity of the Dinic Maxflow algorithm is O(V^2E), where V is the number of vertices and E is the number of edges in the flow network.
+
+For a more detailed explanation and mathematical formulas, please refer to the relevant textbooks or research papers.
 
 ## API Documentation
 
