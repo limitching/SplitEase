@@ -34,7 +34,7 @@ SplitEase is a splitting service designed to simplify the process of dividing ex
 
 ## Getting Started
 
-### Test accounts
+### Demo accounts
 
 You can use the following test accounts to try out the SplitEase service:
 
@@ -131,6 +131,18 @@ The **frontend** directory includes a public folder for public assets, such as c
 ### Frontend Architechture
 
 ![Frontend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_frontend_Architechture.jpeg)
+
+## Table Schema
+
+The table schema of our application follows a multi-database architecture. The majority of the data is stored in RDS, while the `Expense` data is separated and stored in MongoDB Atlas.
+
+### Why use both RDS and MongoDB Atlas?
+
+Let's take a closer look at the content stored in the `Expense` data. The `Expense` table stores the IDs of the involved users along with their respective shares or split percentages. In the case of using the "split by adjustments" method, additional adjustments for each involved user need to be stored. This kind of data is not well-structured and can be complex.
+
+In my personal opinion, NoSQL databases like MongoDB are more suitable for storing such complex, unstructured, and continuously growing behavioral data. However, this decision does come with some drawbacks, such as the increased maintenance cost of managing two different database systems, including setup, management, and monitoring. Additionally, extra programming logic is required to handle data synchronization and consistency between the two databases (e.g., transactions).
+
+![Table Schema](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Table_Schema.jpeg)
 
 ## Algorithm
 
