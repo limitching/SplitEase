@@ -4,7 +4,8 @@
 
 > "Make bill splitting easy" - (SplitEase,2023)
 
-Tired of struggling to keep track of shared expenses with your friends during outings? Look no further, because SplitEase is here to make splitting bills easily!
+Tired of struggling to keep track of shared expenses with your friends during outings?
+Look no further, because SplitEase is here to make splitting bills easily!
 
 Website URL: [https://splitease.cc/](https://splitease.cc/)
 
@@ -63,6 +64,20 @@ You can use the following test accounts to try out the SplitEase service:
 Email: example1@example.com
 Password: Example123!
 ```
+
+### Binding LINE account
+
+You can bind your LINE account to SplitEase to receive notifications through the LINE chatbot.
+If you're login with LINE account, you can skip this step.
+If you're login with native email, you can follow the steps below to bind your LINE account.
+
+1. Login to SplitEase with your email and password.
+2. Click the "Profile" icon in the top right corner.
+3. Click the "Copy LINE Binding Code" button.
+4. Open the LINE app on your mobile device and add our chatbot as a friend: [@757qejcl](https://line.me/R/ti/p/@757qejcl)
+5. Send the copied binding code to the chatbot.
+
+![Binding LINE](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Binding_LINE.gif)
 
 ## Algorithm
 
