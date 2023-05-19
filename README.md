@@ -29,7 +29,7 @@ SplitEase is a splitting service designed to simplify the process of dividing ex
   - [Algorithm](#algorithm)
     - [Dinic Maxflow Algorithm](#dinic-maxflow-algorithm)
   - [Architecture](#architecture)
-    - [BAckend](#backend)
+    - [Backend](#backend)
     - [Frontend](#frontend)
   - [Table Schema](#table-schema)
   - [API Documentation](#api-documentation)
