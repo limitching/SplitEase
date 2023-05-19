@@ -68,7 +68,7 @@ const Blog = () => {
 
                 <a
                   className="more"
-                  href="https://github.com/limitching/SplitEase"
+                  href="https://github.com/limitching/SplitEase#backend"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -94,16 +94,10 @@ const Blog = () => {
                   <li>03 June, 2023</li>
                 </ul>
                 <p className="text">
-                  <strong>SplitEase System Design</strong>
-                  <br></br>
-                  Find PerformanceBottlenecks
+                  <strong>SplitEase API Documentation</strong>
+                  <br></br>A RESTful API Documentation for SplitEase
                 </p>
-                <a
-                  className="more"
-                  href="https://github.com/limitching/SplitEase"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a className="more" href="https://api.splitease.cc/api-docs/" target="_blank" rel="noopener noreferrer">
                   Learn More <i className="lni-chevron-right"></i>
                 </a>
               </div>
