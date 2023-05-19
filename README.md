@@ -138,9 +138,11 @@ For a more detailed explanation and mathematical formulas, please refer to the r
 
 ## Architechture
 
+### Backend
+
 ![Backend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Backend_Architechture.jpeg)
 
-### Frontend Architechture
+### Frontend
 
 ![Frontend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_frontend_Architechture.jpeg)
 
