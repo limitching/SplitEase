@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { createContext, useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
@@ -24,7 +25,7 @@ const AuthContext = createContext({
   setLoading: () => {},
   setGroupChange: () => {},
   setJwtToken: () => {},
-  setUser: () => {},
+  setUser: () => {}
 });
 
 const AuthContextProvider = ({ children }) => {
@@ -32,9 +33,7 @@ const AuthContextProvider = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false);
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
-  const [jwtToken, setJwtToken] = useState(
-    window.localStorage.getItem("jwtToken")
-  );
+  const [jwtToken, setJwtToken] = useState(window.localStorage.getItem("jwtToken"));
   const [loginMethod, setLoginMethod] = useState(null);
   const [haveAccount, setHaveAccount] = useState(true);
   const [userGroups, setUserGroups] = useState([]);
@@ -45,9 +44,7 @@ const AuthContextProvider = ({ children }) => {
     const checkAuthStatus = async () => {
       setLoading(true);
       if (window.localStorage.getItem("jwtToken") !== null) {
-        const { data } = await api.getUserProfile(
-          window.localStorage.getItem("jwtToken")
-        );
+        const { data } = await api.getUserProfile(window.localStorage.getItem("jwtToken"));
 
         if (data.error) {
           window.localStorage.removeItem("jwtToken");
@@ -67,14 +64,12 @@ const AuthContextProvider = ({ children }) => {
       }
     };
     checkAuthStatus();
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     if (isLogin && window.localStorage.getItem("jwtToken")) {
       const fetchUserGroups = async () => {
-        const { data } = await api.getUserGroups(
-          window.localStorage.getItem("jwtToken")
-        );
+        const { data } = await api.getUserGroups(window.localStorage.getItem("jwtToken"));
         setUserGroups(data);
       };
       setLoading(true);
@@ -86,9 +81,7 @@ const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     if (groupChange && window.localStorage.getItem("jwtToken")) {
       const fetchUserGroups = async () => {
-        const { data } = await api.getUserGroups(
-          window.localStorage.getItem("jwtToken")
-        );
+        const { data } = await api.getUserGroups(window.localStorage.getItem("jwtToken"));
         // console.log(data);
         setUserGroups(data);
       };
@@ -109,7 +102,7 @@ const AuthContextProvider = ({ children }) => {
             name: profile.name,
             email: profile.email,
             image: profile.picture,
-            line_id: profile.sub,
+            line_id: profile.sub
           };
           const result = await api.userSignIn(data);
           if (result.status === 200) {
@@ -119,10 +112,9 @@ const AuthContextProvider = ({ children }) => {
               timer: 1000,
               didOpen: () => {
                 MySwal.showLoading();
-              },
+              }
             });
-            const { access_token: tokenFromServer, user: userData } =
-              result.data;
+            const { access_token: tokenFromServer, user: userData } = result.data;
             setUser(userData);
             setJwtToken(tokenFromServer);
             window.localStorage.setItem("jwtToken", tokenFromServer);
@@ -137,7 +129,7 @@ const AuthContextProvider = ({ children }) => {
               timer: 2000,
               didOpen: () => {
                 MySwal.showLoading();
-              },
+              }
             });
           } else if (result.status === 500) {
             const { error } = result.data;
@@ -148,7 +140,7 @@ const AuthContextProvider = ({ children }) => {
               timer: 2000,
               didOpen: () => {
                 MySwal.showLoading();
-              },
+              }
             });
           }
         } catch (error) {
@@ -159,7 +151,7 @@ const AuthContextProvider = ({ children }) => {
     }
   }, [isLoggedIn, liff, isReady, isLogin]);
 
-  const handleSignUpResponse = useCallback(async (signUpForm) => {
+  const handleSignUpResponse = useCallback(async signUpForm => {
     const { data } = await api.userSignUp(signUpForm);
     if (data.errors !== undefined || data.error !== undefined) {
       MySwal.fire({
@@ -167,9 +159,7 @@ const AuthContextProvider = ({ children }) => {
         html: (
           <div>
             {data.errors ? (
-              data.errors.map((error, index) => (
-                <p key={"error" + index}>{error.msg}</p>
-              ))
+              data.errors.map((error, index) => <p key={"error" + index}>{error.msg}</p>)
             ) : (
               <p>{data.error}</p>
             )}
@@ -179,7 +169,7 @@ const AuthContextProvider = ({ children }) => {
         timer: 2000,
         didOpen: () => {
           MySwal.showLoading();
-        },
+        }
       });
       return;
     }
@@ -191,7 +181,7 @@ const AuthContextProvider = ({ children }) => {
     return tokenFromServer;
   }, []);
 
-  const handleNativeLoginResponse = useCallback(async (signInForm) => {
+  const handleNativeLoginResponse = useCallback(async signInForm => {
     const { data } = await api.userSignIn(signInForm);
     if (data.errors !== undefined || data.error !== undefined) {
       MySwal.fire({
@@ -199,9 +189,7 @@ const AuthContextProvider = ({ children }) => {
         html: (
           <div>
             {data.errors ? (
-              data.errors.map((error, index) => (
-                <p key={"error" + index}>{error.msg}</p>
-              ))
+              data.errors.map((error, index) => <p key={"error" + index}>{error.msg}</p>)
             ) : (
               <p>{data.error}</p>
             )}
@@ -211,7 +199,7 @@ const AuthContextProvider = ({ children }) => {
         timer: 2000,
         didOpen: () => {
           MySwal.showLoading();
-        },
+        }
       });
       return;
     }
@@ -233,7 +221,7 @@ const AuthContextProvider = ({ children }) => {
         timer: 1000,
         didOpen: () => {
           MySwal.showLoading();
-        },
+        }
       });
       const { access_token: tokenFromServer, user: userData } = result.data;
       setUser(userData);
@@ -250,7 +238,7 @@ const AuthContextProvider = ({ children }) => {
         timer: 2000,
         didOpen: () => {
           MySwal.showLoading();
-        },
+        }
       });
     } else if (result.status === 500) {
       const { error } = result.data;
@@ -261,12 +249,12 @@ const AuthContextProvider = ({ children }) => {
         timer: 2000,
         didOpen: () => {
           MySwal.showLoading();
-        },
+        }
       });
     }
   }, []);
 
-  const nativeSignUp = async (signUpForm) => {
+  const nativeSignUp = async signUpForm => {
     setLoading(true);
     navigate("login");
     const tokenFromServer = handleSignUpResponse(signUpForm);
@@ -288,7 +276,7 @@ const AuthContextProvider = ({ children }) => {
   //     return tokenFromServer;
   // };
 
-  const nativeSignIn = async (signInForm) => {
+  const nativeSignIn = async signInForm => {
     setLoading(true);
     const tokenFromServer = handleNativeLoginResponse(signInForm);
     setLoading(false);
@@ -309,7 +297,7 @@ const AuthContextProvider = ({ children }) => {
       timer: 1000,
       didOpen: () => {
         MySwal.showLoading();
-      },
+      }
     });
     navigate("login");
     setLoading(false);
@@ -337,7 +325,7 @@ const AuthContextProvider = ({ children }) => {
         setLoading,
         setGroupChange,
         setJwtToken,
-        setUser,
+        setUser
       }}
     >
       {children}

@@ -4,8 +4,8 @@ import { wrapAsync, authentication } from "../utils/util.js";
 const router = express.Router();
 
 /* Health check page for AWS Application Load Balancer. */
-router.get("/", function (req, res) {
-  return res.status(200);
+router.get("/health", function (req, res) {
+  return res.status(200).end();
 });
 
 router.route("/s3url").get(

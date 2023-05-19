@@ -1,11 +1,12 @@
 {
-  "name": "backend",
-  "version": "0.0.0",
+  "name": "splitease",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "test": "jest --silent --coverage --detectOpenHandles --forceExit --"
+    "test": "jest --silent --coverage --detectOpenHandles --forceExit --",
+    "swagger-autogen": "node ./swagger.js"
   },
   "jest": {
     "transform": {
@@ -41,6 +42,8 @@
     "mysql2": "^3.2.0",
     "socket.io": "^4.6.1",
     "supertest": "^6.3.3",
+    "swagger-autogen": "^2.23.1",
+    "swagger-ui-express": "^4.6.3",
     "uuid": "^9.0.0",
     "validator": "^13.9.0"
   },

@@ -8,7 +8,7 @@ import {
   joinGroupViaCode,
   getGroupInformationViaCode,
   getLogs,
-  getGroupInformationById,
+  getGroupInformationById
 } from "../models/group_model.js";
 import { customizedError } from "../utils/error.js";
 import { generateStartSettlingNotification } from "../views/bot_reply_template.js";
@@ -26,7 +26,7 @@ const getGroupInformation = async (req, res) => {
   const group_id = req.params.group_id;
   const requirement = { group_id };
   const [groupInformation] = await getGroups(requirement);
-  return res.status(200).json({ data: groupInformation });
+  return res.status(200).json(groupInformation);
 };
 
 const archiveExistingGroup = async (req, res, next) => {
@@ -44,7 +44,7 @@ const getGroupMembers = async (req, res) => {
 
   // Use gid to query group memberIds
   const groupUsers = await getMembers(group_id);
-  const memberIds = groupUsers.map((user) => user.user_id);
+  const memberIds = groupUsers.map(user => user.user_id);
   // Use memberIds to query user details
   const requirement = { uid: memberIds };
   const memberUsers = await User.getUsers(requirement);
@@ -76,13 +76,13 @@ const getPublicInformation = async (req, res, next) => {
   const { invitation_code } = req.query;
   const group = await getGroupInformationViaCode(slug, invitation_code);
   if (group.error) {
-    return res.status(400).json({ error: group.error });
+    return next(customizedError.badRequest("Request Error: Invaild Request."));
   }
   const groupUsers = await getMembers(group.id);
   if (groupUsers.length === 0) {
     return next(customizedError.badRequest("Request Error: Group not exist."));
   }
-  const userIds = groupUsers.map((user) => user.user_id);
+  const userIds = groupUsers.map(user => user.user_id);
   const requirement = { uid: userIds };
   const memberUsers = await User.getUsers(requirement);
   if (memberUsers.length === 0) {
@@ -109,20 +109,12 @@ const startSettlement = async (req, res, next) => {
 
   const group = await getGroupInformationById(group_id);
   if (user.id !== group.owner) {
-    return next(
-      customizedError.unauthorized(
-        "Unauthorized, this feature can only used by group owner."
-      )
-    );
+    return next(customizedError.unauthorized("Unauthorized, this feature can only used by group owner."));
   }
   // Debug
   //   console.debug("DEADLINE", deadline);
   //   console.debug("toLocaleString", new Date(deadline).toLocaleString());
-  const expenseResult = await updateExpenseStatusByGroupId(
-    group_id,
-    deadline,
-    user.id
-  );
+  const expenseResult = await updateExpenseStatusByGroupId(group_id, deadline, user.id);
 
   if (expenseResult.error) {
     return next(customizedError.internal("Server Error: Database Query Error"));
@@ -140,28 +132,20 @@ const startSettlement = async (req, res, next) => {
       {
         type: "flex",
         altText: "[Important] Start Settling Notification",
-        contents: replyBody,
-      },
-    ],
+        contents: replyBody
+      }
+    ]
   };
 
   try {
     const config = {
-      headers: { Authorization: `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}` },
+      headers: { Authorization: `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}` }
     };
-    await axios.post(
-      `https://api.line.me/v2/bot/message/push`,
-      message,
-      config
-    );
-    return res
-      .status(200)
-      .json("Successfully update expense stage. (With LINE notify)");
+    await axios.post(`https://api.line.me/v2/bot/message/push`, message, config);
+    return res.status(200).json("Successfully update expense stage. (With LINE notify)");
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ error: "Server side error. (LINE Server error)" });
+    return res.status(500).json({ error: "Server side error. (LINE Server error)" });
   }
 };
 
@@ -171,11 +155,7 @@ const getGroupLogs = async (req, res, next) => {
 
   const member = await getMember(group_id, user_id);
   if (member.length === 0) {
-    return next(
-      customizedError.unauthorized(
-        "Unauthorized, only group member can access logs."
-      )
-    );
+    return next(customizedError.unauthorized("Unauthorized, only group member can access logs."));
   }
 
   const logs = await getLogs(group_id);
@@ -195,5 +175,5 @@ export {
   joinGroup,
   editExistingGroup,
   startSettlement,
-  getGroupLogs,
+  getGroupLogs
 };
