@@ -2,7 +2,9 @@
 
 [![SplitEase logo](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_logo.jpeg)](https://splitease.cc/)
 
-"Make bill splitting easy" - (SplitEase,2023)
+> "Make bill splitting easy" - (SplitEase,2023)
+
+Tired of struggling to keep track of shared expenses with your friends during outings? Look no further, because SplitEase is here to make splitting bills easily!
 
 Website URL: [https://splitease.cc/](https://splitease.cc/)
 
@@ -43,7 +45,70 @@ Email: example1@example.com
 Password: Example123!
 ```
 
-### Repo Structure
+## Algorithm
+
+Just imagine that the debt relationship between multiple people can be represented by a directed graph. The vertex of this graph is the user, the directed edge is the debt on behalf of the debt, and the direction of the arrow is from the creditor to the debtor.
+
+I organize the debts between all users into a residual graph, traverse through the Dinic Maxflow algorithm and find the maximum money flow between any two users, and simplify the residual graphs.
+Finally, the optimal repayment path can be calculated.
+
+### Dinic Maxflow Algorithm
+
+The Dinic Maxflow algorithm is used to find the maximum flow in a flow network. It is based on the concept of residual graphs and augmenting paths.
+
+1. **Input**: A directed graph (user debts) with capacities （debt） assigned to its edges, a source node (user i) `s`, and a sink node (user j) `t`.
+
+2. **Initialize** the flow network with zero flow on each edge and residual capacities equal to the original capacities.
+
+3. **While** there exists an augmenting path in the residual graph from `s` to `t`, do the following steps:
+
+   1. **Apply Breadth-First Search (BFS)** to find a blocking flow path from `s` to `t` in the residual graph. The BFS traversal ensures that only the shortest paths are considered.
+
+   2. **Determine the blocking flow** by finding the minimum residual capacity `C_min` along the augmenting path.
+
+   3. **Update the flow** along the augmenting path by adding `C_min` to the flow of each edge and subtracting `C_min` from the residual capacity of each edge in the augmenting path.
+
+   4. **Output**: The maximum flow value obtained is the sum of flows leaving the source node `s` in the final flow network.
+
+The time complexity of the Dinic Maxflow algorithm is O(V^2E), where V is the number of vertices and E is the number of edges in the flow network.
+
+For a more detailed explanation and mathematical formulas, please refer to the relevant textbooks or research papers.
+
+## Architechture
+
+![Backend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Backend_Architechture.jpeg)
+
+### Websocket Architechture
+
+![Websocket Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_websocket_Architechture.jpeg)
+
+### Frontend Architechture
+
+![Frontend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_frontend_Architechture.jpeg)
+
+## Table Schema
+
+The table schema of our application follows a **multi-database architecture**. The majority of the data is stored in RDS, while the `Expense` data is separated and stored in MongoDB Atlas.
+
+### Why use both RDS and MongoDB Atlas?
+
+Let's take a closer look at the content stored in the Expense data. The Expense table stores the IDs of the involved users along with their respective shares or split percentages. In the case of using the "split by adjustments" method, additional adjustments for each involved user need to be stored. **This kind of data is not well-structured and can be complex**.
+
+In my personal opinion, NoSQL databases like MongoDB are more suitable for storing such complex, unstructured, and continuously growing behavioral data.
+
+However, this decision does come with some drawbacks, such as the increased maintenance cost of managing two different database systems, including setup, management, and monitoring. Additionally, extra programming logic is required to handle data synchronization and consistency between the two databases (e.g., transactions).
+
+![Table Schema](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Table_Schema.jpeg)
+
+## API Documentation
+
+For detailed information about the SplitEase API and its endpoints, please refer to the Swagger API documentation:
+
+[Swagger API Documentation](https://api.splitease.cc/api-docs/)
+
+The Swagger API documentation provides an overview of all the available endpoints, their request/response formats, and any necessary authentication requirements. It serves as a comprehensive reference for integrating with the SplitEase API.
+
+## Repo Structure
 
 This repository follows a structured layout with a `backend` directory and a `frontend` directory.
 
@@ -92,7 +157,7 @@ The **frontend** directory includes a public folder for public assets, such as c
         └── utils
 ```
 
-### Installation
+## Installation
 
 1. Clone the repository from GitHub:
 
@@ -119,67 +184,6 @@ The **frontend** directory includes a public folder for public assets, such as c
       2. Install dependencies `npm install`
       3. Configure **API_HOST** to your server endpoint in `/src/global/constant.js`
       4. Start the server `npm run start`
-
-## Architechture
-
-![Backend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Backend_Architechture.jpeg)
-
-### Websocket Architechture
-
-![Websocket Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_websocket_Architechture.jpeg)
-
-### Frontend Architechture
-
-![Frontend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_frontend_Architechture.jpeg)
-
-## Table Schema
-
-The table schema of our application follows a multi-database architecture. The majority of the data is stored in RDS, while the `Expense` data is separated and stored in MongoDB Atlas.
-
-### Why use both RDS and MongoDB Atlas?
-
-Let's take a closer look at the content stored in the `Expense` data. The `Expense` table stores the IDs of the involved users along with their respective shares or split percentages. In the case of using the "split by adjustments" method, additional adjustments for each involved user need to be stored. This kind of data is not well-structured and can be complex.
-
-In my personal opinion, NoSQL databases like MongoDB are more suitable for storing such complex, unstructured, and continuously growing behavioral data. However, this decision does come with some drawbacks, such as the increased maintenance cost of managing two different database systems, including setup, management, and monitoring. Additionally, extra programming logic is required to handle data synchronization and consistency between the two databases (e.g., transactions).
-
-![Table Schema](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Table_Schema.jpeg)
-
-## Algorithm
-
-Just imagine that the debt relationship between multiple people can be represented by a directed graph. The vertex of this graph is the user, the directed edge is the debt on behalf of the debt, and the direction of the arrow is from the creditor to the debtor.
-
-I organize the debts between all users into a residual graph, traverse through the Dinic Maxflow algorithm and find the maximum money flow between any two users, and simplify the residual graphs.
-Finally, the optimal repayment path can be calculated.
-
-### Dinic Maxflow Algorithm
-
-The Dinic Maxflow algorithm is used to find the maximum flow in a flow network. It is based on the concept of residual graphs and augmenting paths.
-
-1. **Input**: A directed graph (user debts) with capacities （debt） assigned to its edges, a source node (user i) `s`, and a sink node (user j) `t`.
-
-2. **Initialize** the flow network with zero flow on each edge and residual capacities equal to the original capacities.
-
-3. **While** there exists an augmenting path in the residual graph from `s` to `t`, do the following steps:
-
-   1. **Apply Breadth-First Search (BFS)** to find a blocking flow path from `s` to `t` in the residual graph. The BFS traversal ensures that only the shortest paths are considered.
-
-   2. **Determine the blocking flow** by finding the minimum residual capacity `C_min` along the augmenting path.
-
-   3. **Update the flow** along the augmenting path by adding `C_min` to the flow of each edge and subtracting `C_min` from the residual capacity of each edge in the augmenting path.
-
-   4. **Output**: The maximum flow value obtained is the sum of flows leaving the source node `s` in the final flow network.
-
-The time complexity of the Dinic Maxflow algorithm is O(V^2E), where V is the number of vertices and E is the number of edges in the flow network.
-
-For a more detailed explanation and mathematical formulas, please refer to the relevant textbooks or research papers.
-
-## API Documentation
-
-For detailed information about the SplitEase API and its endpoints, please refer to the Swagger API documentation:
-
-[Swagger API Documentation](https://api.splitease.cc/api-docs/)
-
-The Swagger API documentation provides an overview of all the available endpoints, their request/response formats, and any necessary authentication requirements. It serves as a comprehensive reference for integrating with the SplitEase API.
 
 ## Roadmap
 
