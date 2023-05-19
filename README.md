@@ -1,6 +1,6 @@
 # SplitEase
 
-![SplitEase logo](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_logo.jpeg)
+[![SplitEase logo](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_logo.jpeg)](https://splitease.cc/)
 
 "Make bill splitting easy" - (SplitEase,2023)
 
