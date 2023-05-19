@@ -260,6 +260,10 @@ Please note that this roadmap is subject to change and may be updated based on p
 
 ## Version History
 
+- 1.5
+  - Various bug fixes and optimizations
+  - **API Documentation**
+  - **README**
 - 1.4
   - Various bug fixes and optimizations
   - **Unit Test**
