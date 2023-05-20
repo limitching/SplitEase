@@ -184,7 +184,7 @@ For a more detailed explanation and mathematical formulas, please refer to the r
 - **React:** The frontend is built using the React library.
 - **Context Provider:** Shared state across multiple pages is extracted and managed using Context Provider.
 - **Components:** Commonly used components are componentized for reusability.
-- \***\*React Router DOM:** Route management is handled using React Router DOM.
+- **React Router DOM:** Route management is handled using React Router DOM.
 
 ![Frontend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_frontend_Architechture.jpeg)
 
