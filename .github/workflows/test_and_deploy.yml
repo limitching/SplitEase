@@ -15,10 +15,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Unit Test
-        run: |
-          cd backend
-          npm install
-          npm test
+        run: cd backend && npm install && npm test
 
   # build:
   #   runs-on: macos-latest
