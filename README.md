@@ -154,7 +154,7 @@ $$f(e) = 0\quad \text {for each}  \quad e\in E$$
 
    1. **Apply Breadth-First Search (BFS)** to build level graph $G_L$ from $s$ to $t$ in the residual graph. The BFS traversal ensures that only the shortest paths are considered.
 
-   $$\text{Construct}\; G_L\; \text{from}\; G_f\; \text{of}\; G.$$
+   $$\text {Construct}\quad G_L\quad \text {from}\quad G_f\quad \text{of}\quad G.$$
    $$\text{If}\; dist(t) = \infty\text{, then terminate the algorithm and output the maximum flow value} f.$$
 
    2. **Determine the blocking flow** in $G_L$ by finding the minimum residual capacity $C_{min}$ along the augmenting path.
