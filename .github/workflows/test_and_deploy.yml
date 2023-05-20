@@ -16,7 +16,7 @@ jobs:
 
       - name: Unit Test
         env:
-          MONGODB_URI: mongodb+srv://splitease.nmhtp7d.mongodb.net
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: cd backend && npm install && npm test
 
   # build:
