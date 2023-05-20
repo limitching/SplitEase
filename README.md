@@ -155,7 +155,7 @@ $$f(e) = 0\quad \text {for each}  \quad e\in E$$
    1. **Apply Breadth-First Search (BFS)** to build level graph $G_L$ from $s$ to $t$ in the residual graph. The BFS traversal ensures that only the shortest paths are considered.
 
    $$\text {Construct}\quad G_L\quad \text {from}\quad G_f\quad \text{of}\quad G.$$
-   $$\text{If}\; dist(t) = \infty\text{, then terminate the algorithm and output the maximum flow value} f.$$
+   $$\text{If}\quad dist(t) = \infty\text{, then terminate the algorithm and output the maximum flow value}\quad f.$$
 
    2. **Determine the blocking flow** in $G_L$ by finding the minimum residual capacity $C_{min}$ along the augmenting path.
 
@@ -166,6 +166,8 @@ $$f(e) = 0\quad \text {for each}  \quad e\in E$$
 The time complexity of the Dinic Maxflow algorithm is $O$($V^2E$), where $V$ is the number of vertices and $E$ is the number of edges in the flow network.
 
 For a more detailed explanation and mathematical formulas, please refer to the relevant textbooks or research papers.
+
+![MaxFlow example](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Maxflow.gif)
 
 ## Architechture
 
