@@ -329,7 +329,7 @@ Please note that this roadmap is subject to change and may be updated based on p
 
 ## License
 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/limitching/SplitEase/blob/main/LICENSE.md) file for details
 
 ## Contact me
 
