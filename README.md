@@ -101,8 +101,8 @@ You can bind your LINE account to SplitEase to receive notifications through the
 **If you're login with native email, you can follow the steps below to bind your LINE account.**
 
 1. Login to SplitEase with your email and password.
-2. Click the "Profile" icon in the top right corner.
-3. Click the "Copy LINE Binding Code" button.
+2. Click the **Profile** icon in the top right corner.
+3. Click the **Copy LINE Binding Code** button.
 4. Open the LINE app on your mobile device and add our chatbot as a friend: [@757qejcl](https://line.me/R/ti/p/@757qejcl)
 5. Send the copied binding code to the chatbot.
 
@@ -173,9 +173,18 @@ For a more detailed explanation and mathematical formulas, please refer to the r
 
 ### Backend
 
+- **Optimization:** Deployed static files with **AWS S3** and **CloudFront**, enhancing user browsing experience through improved speed and accessibility.
+- **Scalable:** Strengthened server scalability under high-traffic load by leveraging **AWS Application Load Balancer**, **EC2 Auto Scaling Group**, and **Redis adapter for Socket.IO**.
+- **LINE Message Integration:** Integrated LINE message API to notify users, leveraging its popularity among 90% of Taiwan users.
+
 ![Backend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_Backend_Architechture.jpeg)
 
 ### Frontend
+
+- **React:** The frontend is built using the React library.
+- **Context Provider:** Shared state across multiple pages is extracted and managed using Context Provider.
+- **Components:** Commonly used components are componentized for reusability.
+- \***\*React Router DOM:** Route management is handled using React Router DOM.
 
 ![Frontend Architecture](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_frontend_Architechture.jpeg)
 
