@@ -119,29 +119,49 @@ Finally, the optimal repayment path can be calculated.
 
 The Dinic Maxflow algorithm is used to find the maximum flow in a flow network. It is based on the concept of residual graphs and augmenting paths.
 
+#### Definition
+
+Let $G$ be a directed graph with vertices $V$ and edges $E$. Each edge $(u, v)$ in $E$ has a non-negative capacity $c(u, v)$. The flow network $G$ is defined as a tuple $(G, s, t, c)$, where $s$ is the source node and $t$ is the sink node.
+
+The **residual capacity** defined as,
+
+1. if $(u, v) \in E$, then $c_f(u, v) = c(u, v) - f(u, v)$
+2. if $(v, u) \in E$, then $c_f(u, v) = f(v, u)$
+3. otherwise, $c_f(u, v) = 0$.
+
+Here, $f(u, v)$ represents the flow on edge $(u, v)$.
+
+The **residual graph** $G_f$ of $G$ is defined as a tuple $(V, E_f)$, where $E_f$ is the set of residual edges in $G$.
+
+An **augmenting path** is a simple path from $s$ to $t$ in the residual graph $G_f$.
+
+$dist(v)$ represents the shortest distance from $s$ to $v$ in the residual graph $G_f$.
+
+The **level graph** $G_L$ is a subgraph of $G_f$ that contains all edges $(u, v)$ in $G_f$ such that $dist(v) = dist(u) + 1$.
+
+A **blocking flow** is a flow $f$ in $G$ such that there is no augmenting path in the residual graph $G_f$.
+
+#### Algorithm
+
 1. **Input**: A directed graph $G$ (`user debts`) with capacities （`debt`） assigned to its edges, a source node $s$ (user $i$), and a sink node $t$ (user $j$).
+   $$G = ((V, E),c,s,t)$$
 
 2. **Initialize** the flow network with zero flow on each edge and residual capacities equal to the original capacities.
 
-$$
-f(e) = 0
-$$
-
-for each
-
-$$
- e\in E.
-$$
+$$f(e) = 0\quad \text {for each}  \quad e\in E$$
 
 3. **While** there exists an augmenting path in the residual graph from $s$ to $t$, do the following steps:
 
-   1. **Apply Breadth-First Search (BFS)** to build level graph $G_L$ to find a blocking flow path from $s$ to $t$ in the residual graph. The BFS traversal ensures that only the shortest paths are considered.
+   1. **Apply Breadth-First Search (BFS)** to build level graph $G_L$ from $s$ to $t$ in the residual graph. The BFS traversal ensures that only the shortest paths are considered.
 
-   2. **Determine the blocking flow** by finding the minimum residual capacity $C_{min}$ along the augmenting path.
+   $$\text{Construct}\; G_L\; \text{from}\; G_f\; \text{of}\; G.$$
+   $$\text{If}\; dist(t) = \infty\text{, then terminate the algorithm and output the maximum flow value} f.$$
 
-   3. **Update the flow** along the augmenting path by adding $C_{min}$ to the flow of each edge and subtracting $C_{min}$ from the residual capacity of each edge in the augmenting path.
+   2. **Determine the blocking flow** in $G_L$ by finding the minimum residual capacity $C_{min}$ along the augmenting path.
 
-4. **Output**: The maximum flow value $f$ obtained is the sum of flows leaving the source node $s$ in the final flow network.
+   3. **Update the flow** along the augmenting path by adding $C_{min}$ to the flow $f$ of each edge and subtracting $C_{min}$ from the residual capacity of each edge in the augmenting path. **Then go back to step i.**
+
+4. **Output**: The maximum flow value $f$ obtained is the sum of flows from the source node $s$ to the sink node $t$ in the final flow network.
 
 The time complexity of the Dinic Maxflow algorithm is $O$($V^2E$), where $V$ is the number of vertices and $E$ is the number of edges in the flow network.
 
