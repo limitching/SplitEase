@@ -119,21 +119,31 @@ Finally, the optimal repayment path can be calculated.
 
 The Dinic Maxflow algorithm is used to find the maximum flow in a flow network. It is based on the concept of residual graphs and augmenting paths.
 
-1. **Input**: A directed graph (user debts) with capacities （debt） assigned to its edges, a source node (user i) `s`, and a sink node (user j) `t`.
+1. **Input**: A directed graph $G$ (`user debts`) with capacities （`debt`） assigned to its edges, a source node $s$ (user $i$), and a sink node $t$ (user $j$).
 
 2. **Initialize** the flow network with zero flow on each edge and residual capacities equal to the original capacities.
 
-3. **While** there exists an augmenting path in the residual graph from `s` to `t`, do the following steps:
+$$
+f(e) = 0
+$$
 
-   1. **Apply Breadth-First Search (BFS)** to find a blocking flow path from `s` to `t` in the residual graph. The BFS traversal ensures that only the shortest paths are considered.
+for each
 
-   2. **Determine the blocking flow** by finding the minimum residual capacity `C_min` along the augmenting path.
+$$
+ e\in E.
+$$
 
-   3. **Update the flow** along the augmenting path by adding `C_min` to the flow of each edge and subtracting `C_min` from the residual capacity of each edge in the augmenting path.
+3. **While** there exists an augmenting path in the residual graph from $s$ to $t$, do the following steps:
 
-   4. **Output**: The maximum flow value obtained is the sum of flows leaving the source node `s` in the final flow network.
+   1. **Apply Breadth-First Search (BFS)** to build level graph $G_L$ to find a blocking flow path from $s$ to $t$ in the residual graph. The BFS traversal ensures that only the shortest paths are considered.
 
-The time complexity of the Dinic Maxflow algorithm is O(V^2E), where V is the number of vertices and E is the number of edges in the flow network.
+   2. **Determine the blocking flow** by finding the minimum residual capacity $C_{min}$ along the augmenting path.
+
+   3. **Update the flow** along the augmenting path by adding $C_{min}$ to the flow of each edge and subtracting $C_{min}$ from the residual capacity of each edge in the augmenting path.
+
+4. **Output**: The maximum flow value $f$ obtained is the sum of flows leaving the source node $s$ in the final flow network.
+
+The time complexity of the Dinic Maxflow algorithm is $O$($V^2E$), where $V$ is the number of vertices and $E$ is the number of edges in the flow network.
 
 For a more detailed explanation and mathematical formulas, please refer to the relevant textbooks or research papers.
 
