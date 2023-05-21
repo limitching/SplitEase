@@ -33,7 +33,6 @@ jobs:
           script: |
             cd projects/SplitEase/backend
             git pull
-            npm install
             pm2 restart 1
   # build:
   #   runs-on: macos-latest
