@@ -35,7 +35,9 @@ jobs:
             cd projects/SplitEase/backend &&
             ls -al &&
             git pull &&
-            npm -v
+            npm install &&
+            pm2 restart 1
+
   # build:
   #   runs-on: macos-latest
   #   steps:
