@@ -20,7 +20,7 @@ jobs:
         run: cd backend && npm install && npm test
 
   Deploy:
-    needs: unit_test
+    needs: Test
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to my EC2
