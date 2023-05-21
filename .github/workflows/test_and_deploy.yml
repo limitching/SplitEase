@@ -31,6 +31,7 @@ jobs:
           USERNAME: ${{ secrets.VPC_USER }} # username
           PORT: ${{ secrets.VPC_PORT }} # port
           script: |
+            source ~/.nvm/nvm.sh &&
             cd projects/SplitEase/backend &&
             ls -al &&
             git pull &&
