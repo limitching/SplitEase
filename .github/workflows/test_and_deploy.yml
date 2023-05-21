@@ -31,8 +31,10 @@ jobs:
           USERNAME: ${{ secrets.VPC_USER }} # username
           PORT: ${{ secrets.VPC_PORT }} # port
           script: |
-            echo "hi"
-            mkdir 123
+            cd project/SplitEase/backend
+            git pull
+            npm install
+            pm2 restart 1
   # build:
   #   runs-on: macos-latest
   #   steps:
