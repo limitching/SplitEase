@@ -19,6 +19,18 @@ jobs:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: cd backend && npm install && npm test
 
+    deploy:
+      needs: unit_test
+      runs-on: ubuntu-latest
+      steps:
+        - name: Deploy to my EC2
+          uses: appleboy/ssh-action@master
+          with:
+            KEY: ${{ secrets.VPC_SSH_KEY }} # SSH key
+            HOST: ${{ secrets.VPC_HOST }} # host
+            USERNAME: ${{ secrets.VPC_USER }} # username
+            PORT: ${{ secrets.VPC_PORT }} # port
+            script: echo "hi"
   # build:
   #   runs-on: macos-latest
   #   steps:
