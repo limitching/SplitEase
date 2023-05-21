@@ -30,7 +30,9 @@ jobs:
           HOST: ${{ secrets.VPC_HOST }} # host
           USERNAME: ${{ secrets.VPC_USER }} # username
           PORT: ${{ secrets.VPC_PORT }} # port
-          script: echo "hi"
+          script: |
+            echo "hi"
+            mkdir 123
   # build:
   #   runs-on: macos-latest
   #   steps:
