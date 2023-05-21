@@ -5,33 +5,27 @@ import { CURRENCY_MAP } from "../utils/constant.js";
 const ExpenseSchema = new mongoose.Schema({
   description: { type: String },
   amount: {
-    type: Number,
+    type: Number
   },
   currency_option: {
-    type: Number,
+    type: Number
   },
   split_method: {
     type: String,
-    enum: [
-      "split equally",
-      "split by exact amounts",
-      "split by percentages",
-      "split by shares",
-      "split by adjustment",
-    ],
-    required: true,
+    enum: ["split equally", "split by exact amounts", "split by percentages", "split by shares", "split by adjustment"],
+    required: true
   },
   creditors_amounts: {
     type: Map,
-    of: Number,
+    of: Number
   },
   debtors_weight: {
     type: Map,
-    of: Number,
+    of: Number
   },
   debtors_adjustment: {
     type: Map,
-    of: Number,
+    of: Number
   },
 
   attached_group_id: { type: String, default: null }, // index key
@@ -39,8 +33,8 @@ const ExpenseSchema = new mongoose.Schema({
   // debt_users: { type: Map, of: Number }, // People who will pay money to others. They have a negative balance.
   involved_users: [
     {
-      type: Number,
-    },
+      type: Number
+    }
   ],
   comments: {},
   status: { type: String, default: "unsettled" },
@@ -48,8 +42,8 @@ const ExpenseSchema = new mongoose.Schema({
   image: { type: String },
   createTime: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const Expense = mongoose.model("Expense", ExpenseSchema);
@@ -65,29 +59,29 @@ const getCurrencies = async () => {
   }
 };
 
-const getExpensesByGroupId = async (group_id) => {
+const getExpensesByGroupId = async group_id => {
   try {
     return await Expense.find({ attached_group_id: group_id }).sort({
       date: -1,
-      createTime: -1,
+      createTime: -1
     });
   } catch (error) {
     return [];
   }
 };
 
-const getSettlingExpensesByGroupId = async (group_id) => {
+const getSettlingExpensesByGroupId = async group_id => {
   try {
     return await Expense.find({
       attached_group_id: group_id,
-      status: "settling",
+      status: "settling"
     });
   } catch (error) {
     return -1;
   }
 };
 
-const getExpensesByExpenseId = async (expense_id) => {
+const getExpensesByExpenseId = async expense_id => {
   try {
     return await Expense.find({ expense_id: expense_id });
   } catch (error) {
@@ -110,9 +104,7 @@ const createExpense = async (expenseObject, user_id) => {
       group_id: expenseObject.attached_group_id,
       event: "create expense",
       event_target: expenseObject.description,
-      event_value: `${CURRENCY_MAP[expenseObject.currency_option].symbol} ${
-        expenseObject.amount
-      }`,
+      event_value: `${CURRENCY_MAP[expenseObject.currency_option].symbol} ${expenseObject.amount}`
     };
     await connection.query("INSERT INTO `logs` SET ?", logData);
 
@@ -136,20 +128,13 @@ const createExpenseUsers = async (expense_id, involved_users, date) => {
   const connection = await pool.getConnection();
   try {
     await connection.query("START TRANSACTION");
-    const involvedUsersBinding = involved_users.map((user_id) => [
-      expense_id,
-      user_id,
-      date,
-    ]);
-    const involvedUsersQuery =
-      "INSERT INTO expense_users (m_expense_id, user_id, expense_date) VALUES ?";
+    const involvedUsersBinding = involved_users.map(user_id => [expense_id, user_id, date]);
+    const involvedUsersQuery = "INSERT INTO expense_users (m_expense_id, user_id, expense_date) VALUES ?";
     await connection.query(involvedUsersQuery, [involvedUsersBinding]);
     await connection.query("COMMIT");
     return 0;
   } catch (error) {
-    console.error(
-      `[${new Date().toISOString()}] Expense ${expense_id} create expense users in error: ${error}`
-    );
+    console.error(`[${new Date().toISOString()}] Expense ${expense_id} create expense users in error: ${error}`);
     await connection.query("ROLLBACK");
     return -1;
   } finally {
@@ -175,9 +160,7 @@ const updateExpense = async (expense_id, updatedExpenseObject, user_id) => {
         group_id: updatedExpenseObject.attached_group_id,
         event: "update expense",
         event_target: updatedExpenseObject.description,
-        event_value: `${
-          CURRENCY_MAP[updatedExpenseObject.currency_option].symbol
-        } ${updatedExpenseObject.amount}`,
+        event_value: `${CURRENCY_MAP[updatedExpenseObject.currency_option].symbol} ${updatedExpenseObject.amount}`
       };
       await connection.query("INSERT INTO `logs` SET ?", logData);
     });
@@ -202,23 +185,15 @@ const updateExpenseUsers = async (expense_id, involved_users, date) => {
   const connection = await pool.getConnection();
   try {
     await connection.query("START TRANSACTION");
-    const deleteInvolvedUsersQuery =
-      "DELETE FROM expense_users WHERE m_expense_id = ?";
+    const deleteInvolvedUsersQuery = "DELETE FROM expense_users WHERE m_expense_id = ?";
     await connection.query(deleteInvolvedUsersQuery, [expense_id]);
-    const involvedUsersBinding = involved_users.map((user_id) => [
-      expense_id,
-      user_id,
-      date,
-    ]);
-    const insertInvolvedUsersQuery =
-      "INSERT INTO expense_users (m_expense_id, user_id, expense_date) VALUES ?";
+    const involvedUsersBinding = involved_users.map(user_id => [expense_id, user_id, date]);
+    const insertInvolvedUsersQuery = "INSERT INTO expense_users (m_expense_id, user_id, expense_date) VALUES ?";
     await connection.query(insertInvolvedUsersQuery, [involvedUsersBinding]);
     await connection.query("COMMIT");
     return 0;
   } catch (error) {
-    console.error(
-      `[${new Date().toISOString()}] Expense ${expense_id} update expense users in error: ${error}`
-    );
+    console.error(`[${new Date().toISOString()}] Expense ${expense_id} update expense users in error: ${error}`);
     await connection.query("ROLLBACK");
     return -1;
   } finally {
@@ -230,9 +205,7 @@ const updateExpenseStatusByGroupId = async (group_id, deadline, user_id) => {
   const connection = await pool.getConnection();
   const session = await mongoose.startSession();
   // Add one day to deadline
-  const queryDeadline = new Date(deadline).setDate(
-    new Date(deadline).getDate() + 1
-  );
+  const queryDeadline = new Date(deadline).setDate(new Date(deadline).getDate() + 1);
 
   session.startTransaction();
   try {
@@ -241,7 +214,7 @@ const updateExpenseStatusByGroupId = async (group_id, deadline, user_id) => {
       {
         attached_group_id: group_id,
         date: { $lte: queryDeadline },
-        status: "unsettled",
+        status: "unsettled"
       },
       { $set: { status: "settling" } },
       { session }
@@ -253,7 +226,7 @@ const updateExpenseStatusByGroupId = async (group_id, deadline, user_id) => {
       group_id: group_id,
       event: "update all expenses with a date prior to",
       event_target: deadline,
-      event_value: "unsettled → settling",
+      event_value: "unsettled → settling"
     };
     await connection.query("INSERT INTO `logs` SET ?", logData);
     await connection.query("COMMIT");
@@ -261,9 +234,7 @@ const updateExpenseStatusByGroupId = async (group_id, deadline, user_id) => {
     await session.commitTransaction();
     return updateResult;
   } catch (error) {
-    console.error(
-      `[${new Date().toISOString()}] Group ${group_id} update expenses status in error: ${error}`
-    );
+    console.error(`[${new Date().toISOString()}] Group ${group_id} update expenses status in error: ${error}`);
     await connection.query("ROLLBACK");
     await session.abortTransaction();
     return { error: error };
@@ -279,14 +250,13 @@ const deleteExpense = async (expense_id, group_id, user_id) => {
   session.startTransaction();
   try {
     await connection.query("START TRANSACTION");
-    const deleteExpenseQuery =
-      "DELETE FROM expense_users WHERE m_expense_id = ?";
+    const deleteExpenseQuery = "DELETE FROM expense_users WHERE m_expense_id = ?";
     await connection.query(deleteExpenseQuery, [expense_id]);
 
     const deleteResult = await Expense.findOneAndDelete(
       {
         _id: expense_id,
-        attached_group_id: group_id,
+        attached_group_id: group_id
       },
       { session }
     );
@@ -303,9 +273,7 @@ const deleteExpense = async (expense_id, group_id, user_id) => {
       group_id: group_id,
       event: "delete expense",
       event_target: deleteResult.description,
-      event_value: `${CURRENCY_MAP[deleteResult.currency_option].symbol} ${
-        deleteResult.amount
-      }`,
+      event_value: `${CURRENCY_MAP[deleteResult.currency_option].symbol} ${deleteResult.amount}`
     };
     await connection.query("INSERT INTO `logs` SET ?", logData);
 
@@ -325,17 +293,14 @@ const deleteExpense = async (expense_id, group_id, user_id) => {
   }
 };
 
-const updateExpenseStatusToSettled = async (group_id) => {
+const updateExpenseStatusToSettled = async group_id => {
   const connection = await pool.getConnection();
   try {
-    await connection.query(
-      "UPDATE settlements SET `status` = 1 WHERE group_id = ? ",
-      [group_id]
-    );
+    await connection.query("UPDATE settlements SET `status` = 1 WHERE group_id = ? ", [group_id]);
     const updateResult = await Expense.updateMany(
       {
         attached_group_id: group_id,
-        status: "settling",
+        status: "settling"
       },
       { $set: { status: "settled" } }
     );
@@ -363,4 +328,5 @@ export {
   updateExpenseStatusByGroupId,
   deleteExpense,
   updateExpenseStatusToSettled,
+  Expense
 };
