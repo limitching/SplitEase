@@ -2,7 +2,7 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [CICD]
+    branches: [CICD, develop]
     tags:
       - CICD
 
