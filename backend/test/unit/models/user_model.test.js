@@ -9,23 +9,45 @@ import path from "path";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 dotenv.config({ path: __dirname + "/../../../.env" });
 
-const {
-  PASSWORD_HASH_TIMES,
-  LINE_CLIENT_ID,
-  LINE_CLIENT_SECRET,
-  WEB_DEPLOY_URI,
-} = process.env;
+const { PASSWORD_HASH_TIMES, LINE_CLIENT_ID, LINE_CLIENT_SECRET, WEB_DEPLOY_URI } = process.env;
 
 jest.mock("../../../src/utils/db.js", () => ({
   pool: {
     getConnection: jest.fn(),
-    query: jest.fn(),
-  },
+    query: jest.fn()
+  }
 }));
+
+jest.mock("../../../src/utils/db.js", () => {
+  const originalModule = jest.requireActual("../../../src/utils/db.js");
+  const mockPool = {
+    promise: jest.fn().mockResolvedValue(),
+    getConnection: jest.fn(),
+    query: jest.fn(),
+    end: jest.fn().mockResolvedValue()
+  };
+
+  const mockMongoose = {
+    connect: jest.fn().mockImplementation(() => {
+      mockMongoose.connection.emit("open");
+      return Promise.resolve();
+    }),
+    connection: {
+      once: jest.fn(),
+      emit: jest.fn()
+    }
+  };
+  return {
+    ...originalModule,
+    pool: mockPool,
+    poolEnd: jest.fn().mockResolvedValue(),
+    mongoose: mockMongoose
+  };
+});
 
 jest.mock("bcrypt", () => ({
   hash: jest.fn(),
-  compare: jest.fn(),
+  compare: jest.fn()
 }));
 
 //signUp function
@@ -33,11 +55,11 @@ describe("signUp function", () => {
   test("should return a user object when both bcrypt.hash and pool.getConnection are successful", async () => {
     const mockConnection = {
       query: jest.fn(),
-      release: jest.fn(),
+      release: jest.fn()
     };
     const mockHashedPassword = "mockHashedPassword";
     const mockResult = {
-      insertId: 1,
+      insertId: 1
     };
     const mockUser = {
       id: mockResult.insertId,
@@ -47,69 +69,48 @@ describe("signUp function", () => {
       email: "mockEmail",
       password: mockHashedPassword,
       login_at: "mockLoginAt",
-      image: "mockImage",
+      image: "mockImage"
     };
     const mockLineBindingCode = {
-      line_binding_code: "mockCode",
+      line_binding_code: "mockCode"
     };
     const expectedUser = {
       ...mockUser,
       id: mockResult.insertId,
-      line_binding_code: mockLineBindingCode.line_binding_code,
+      line_binding_code: mockLineBindingCode.line_binding_code
     };
 
     // Mock bcrypt.hash() to return mockHashedPassword
-    jest
-      .spyOn(bcrypt, "hash")
-      .mockImplementation(async () => mockHashedPassword);
+    jest.spyOn(bcrypt, "hash").mockImplementation(async () => mockHashedPassword);
 
     // Mock pool.getConnection() to return mockConnection
-    jest
-      .spyOn(pool, "getConnection")
-      .mockImplementation(async () => mockConnection);
+    jest.spyOn(pool, "getConnection").mockImplementation(async () => mockConnection);
 
     // Mock connection.query() to return mockResult
     mockConnection.query.mockImplementation(async () => [mockResult]);
 
     // Mock Hashids constructor to return mockHashids
-    jest
-      .spyOn(Hashids.prototype, "encode")
-      .mockImplementation(() => mockLineBindingCode.line_binding_code);
+    jest.spyOn(Hashids.prototype, "encode").mockImplementation(() => mockLineBindingCode.line_binding_code);
 
-    const { user } = await User.signUp(
-      mockUser.name,
-      mockUser.email,
-      mockUser.password
-    );
+    const { user } = await User.signUp(mockUser.name, mockUser.email, mockUser.password);
     user.image = mockUser.image;
     user.login_at = mockUser.login_at;
     user.id = mockResult.insertId;
     user.line_binding_code = mockLineBindingCode.line_binding_code;
 
     expect(pool.getConnection).toHaveBeenCalledTimes(1);
-    expect(bcrypt.hash).toHaveBeenCalledWith(
-      mockUser.password,
-      Number(PASSWORD_HASH_TIMES)
-    );
+    expect(bcrypt.hash).toHaveBeenCalledWith(mockUser.password, Number(PASSWORD_HASH_TIMES));
     // 1: START TRANSACTION
     // 2: INSERT INTO users SET ?
     // 3: UPDATE `users` SET ? WHERE id = ?
     // 4: COMMIT
     expect(mockConnection.query).toHaveBeenCalledTimes(4);
-    expect(mockConnection.query).toHaveBeenNthCalledWith(
-      1,
-      "START TRANSACTION"
-    );
-    expect(mockConnection.query).toHaveBeenNthCalledWith(
-      2,
-      "INSERT INTO users SET ?",
-      mockUser
-    );
-    expect(mockConnection.query).toHaveBeenNthCalledWith(
-      3,
-      "UPDATE `users` SET ? WHERE id = ?",
-      [mockLineBindingCode, mockResult.insertId]
-    );
+    expect(mockConnection.query).toHaveBeenNthCalledWith(1, "START TRANSACTION");
+    expect(mockConnection.query).toHaveBeenNthCalledWith(2, "INSERT INTO users SET ?", mockUser);
+    expect(mockConnection.query).toHaveBeenNthCalledWith(3, "UPDATE `users` SET ? WHERE id = ?", [
+      mockLineBindingCode,
+      mockResult.insertId
+    ]);
     expect(mockConnection.query).toHaveBeenNthCalledWith(4, "COMMIT");
 
     expect(user).toEqual(expectedUser);
@@ -121,29 +122,23 @@ describe("signUp function", () => {
       throw mockError;
     });
 
-    await expect(
-      User.signUp("mockName", "mockEmail", "mockPassword")
-    ).rejects.toThrow(mockError);
+    await expect(User.signUp("mockName", "mockEmail", "mockPassword")).rejects.toThrow(mockError);
   });
 
   test("should throw an error when any query execution fails", async () => {
     const mockConnection = {
       query: jest.fn(),
-      release: jest.fn(),
+      release: jest.fn()
     };
     jest.spyOn(pool, "getConnection").mockImplementation(() => mockConnection);
-    mockConnection.query.mockRejectedValueOnce(
-      new Error("mock query error message")
-    );
+    mockConnection.query.mockRejectedValueOnce(new Error("mock query error message"));
 
     const errorObj = {
       error: "Request Error: Email Already Exists",
-      status: 403,
+      status: 403
     };
 
-    await expect(
-      User.signUp("mockName", "mockEmail", "mockPassword")
-    ).resolves.toMatchObject(errorObj);
+    await expect(User.signUp("mockName", "mockEmail", "mockPassword")).resolves.toMatchObject(errorObj);
   });
 });
 // nativeSignIn function
@@ -161,7 +156,7 @@ describe("nativeSignIn function", () => {
     mockCompare = jest.fn();
     mockConnection = {
       query: mockQuery,
-      release: mockRelease,
+      release: mockRelease
     };
     pool.getConnection.mockResolvedValue(mockConnection);
     bcrypt.compare.mockResolvedValue(true);
@@ -207,22 +202,22 @@ describe("getLineProfile function", () => {
     const axiosPostMock = jest.spyOn(axios, "post").mockResolvedValueOnce({
       data: {
         access_token: token,
-        id_token: idToken,
-      },
+        id_token: idToken
+      }
     });
 
     const jwtVerifyMock = jest.spyOn(jwt, "verify").mockReturnValueOnce({
       name: "testName",
       email: "testEmail@example.com",
       picture: "testPictureUrl",
-      sub: "testLineId",
+      sub: "testLineId"
     });
 
     const expectedUser = {
       name: "testName",
       email: "testEmail@example.com",
       image: "testPictureUrl",
-      line_id: "testLineId",
+      line_id: "testLineId"
     };
 
     const result = await User.getLineProfile(code, state);
@@ -235,12 +230,12 @@ describe("getLineProfile function", () => {
         code,
         redirect_uri: `${WEB_DEPLOY_URI}/login`,
         client_id: LINE_CLIENT_ID,
-        client_secret: LINE_CLIENT_SECRET,
+        client_secret: LINE_CLIENT_SECRET
       },
       {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
       }
     );
 
@@ -252,9 +247,7 @@ describe("getLineProfile function", () => {
     const state = "testState";
     const expectedError = "testError";
 
-    const axiosPostMock = jest
-      .spyOn(axios, "post")
-      .mockRejectedValueOnce(expectedError);
+    const axiosPostMock = jest.spyOn(axios, "post").mockRejectedValueOnce(expectedError);
 
     try {
       await User.getLineProfile(code, state);
@@ -273,12 +266,12 @@ describe("getLineProfile function", () => {
         code,
         redirect_uri: `${WEB_DEPLOY_URI}/login`,
         client_id: LINE_CLIENT_ID,
-        client_secret: LINE_CLIENT_SECRET,
+        client_secret: LINE_CLIENT_SECRET
       },
       {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
       }
     );
   });
@@ -296,24 +289,23 @@ describe("getUsers function", () => {
   test("should return users when requirement.uid exists", async () => {
     const mockUsers = [
       { id: 1, name: "Alice" },
-      { id: 2, name: "Bob" },
+      { id: 2, name: "Bob" }
     ];
     pool.query.mockResolvedValueOnce([mockUsers]);
 
     const requirement = { uid: [1, 2] };
     const actualUsers = await User.getUsers(requirement);
 
-    expect(pool.query).toHaveBeenCalledWith(
-      "SELECT id, name, email, image, line_id FROM users WHERE id IN (?)",
-      [requirement.uid]
-    );
+    expect(pool.query).toHaveBeenCalledWith("SELECT id, name, email, image, line_id FROM users WHERE id IN (?)", [
+      requirement.uid
+    ]);
     expect(actualUsers).toEqual(mockUsers);
   });
 
   test("should return all users when requirement.uid does not exist", async () => {
     const mockUsers = [
       { id: 1, name: "Alice" },
-      { id: 2, name: "Bob" },
+      { id: 2, name: "Bob" }
     ];
     pool.query.mockResolvedValueOnce([mockUsers]);
 
@@ -321,10 +313,7 @@ describe("getUsers function", () => {
     const expectedCondition = { sql: "", binding: [] };
     const actualUsers = await User.getUsers(requirement);
 
-    expect(pool.query).toHaveBeenCalledWith(
-      "SELECT id, name, email, image, line_id FROM users ",
-      []
-    );
+    expect(pool.query).toHaveBeenCalledWith("SELECT id, name, email, image, line_id FROM users ", []);
     expect(actualUsers).toEqual(mockUsers);
   });
 });
@@ -365,8 +354,7 @@ describe("getGroupsInformation function", () => {
 
     const groupIds = [1, 2, 3];
     const is_archived = 0;
-    const expectedQuery =
-      "SELECT * FROM `groups` WHERE id IN (?) AND is_archived = ? ORDER BY creation_date DESC";
+    const expectedQuery = "SELECT * FROM `groups` WHERE id IN (?) AND is_archived = ? ORDER BY creation_date DESC";
     const expectedBinding = [groupIds, is_archived];
 
     await User.getGroupsInformation(groupIds, is_archived);
@@ -389,20 +377,17 @@ describe("updateProfile function", () => {
     const modifiedUserProfile = {
       name: "Test",
       email: "test@example.com",
-      image: "http://example.com/test.jpg",
+      image: "http://example.com/test.jpg"
     };
     const mockReturnValue = {
-      data: modifiedUserProfile,
+      data: modifiedUserProfile
     };
     pool.query.mockResolvedValueOnce(mockReturnValue);
 
     const expectedQuery = "UPDATE users SET ? WHERE id = ?";
     const expectedBinding = [modifiedUserProfile, user_id];
     const expectedReturnValue = mockReturnValue;
-    const actualReturnValue = await User.updateProfile(
-      user_id,
-      modifiedUserProfile
-    );
+    const actualReturnValue = await User.updateProfile(user_id, modifiedUserProfile);
 
     expect(pool.query).toHaveBeenCalledWith(expectedQuery, expectedBinding);
     expect(actualReturnValue).toEqual(expectedReturnValue);
@@ -413,7 +398,7 @@ describe("updateProfile function", () => {
     const modifiedUserProfile = {
       name: "Test",
       email: "test@example.com",
-      image: "http://example.com/test.jpg",
+      image: "http://example.com/test.jpg"
     };
     const mockError = new Error("Failed to update user profile");
     pool.query.mockRejectedValueOnce(mockError);
@@ -421,10 +406,7 @@ describe("updateProfile function", () => {
     const expectedQuery = "UPDATE users SET ? WHERE id = ?";
     const expectedBinding = [modifiedUserProfile, user_id];
     const expectedReturnValue = { error: mockError };
-    const actualReturnValue = await User.updateProfile(
-      user_id,
-      modifiedUserProfile
-    );
+    const actualReturnValue = await User.updateProfile(user_id, modifiedUserProfile);
 
     expect(pool.query).toHaveBeenCalledWith(expectedQuery, expectedBinding);
     expect(actualReturnValue).toEqual(expectedReturnValue);
@@ -452,29 +434,17 @@ describe("bindingLineUser function", () => {
     const expectedLineIdData = { line_id: mockSource.userId };
     const expectedUpdateQuery = "UPDATE users SET ? WHERE line_binding_code =?";
     const expectedUpdateBinding = [expectedLineIdData, mockLineBindingCode];
-    const expectedSelectQuery =
-      "SELECT * FROM users WHERE line_binding_code = ?";
+    const expectedSelectQuery = "SELECT * FROM users WHERE line_binding_code = ?";
     const expectedSelectBinding = [mockLineBindingCode];
     const expectedOutput = {
       result: mockQueryResult.affectedRows,
-      name: mockUser[0].name,
+      name: mockUser[0].name
     };
 
-    const actualOutput = await User.bindingLineUser(
-      mockLineBindingCode,
-      mockSource
-    );
+    const actualOutput = await User.bindingLineUser(mockLineBindingCode, mockSource);
 
-    expect(pool.query).toHaveBeenNthCalledWith(
-      1,
-      expectedUpdateQuery,
-      expectedUpdateBinding
-    );
-    expect(pool.query).toHaveBeenNthCalledWith(
-      2,
-      expectedSelectQuery,
-      expectedSelectBinding
-    );
+    expect(pool.query).toHaveBeenNthCalledWith(1, expectedUpdateQuery, expectedUpdateBinding);
+    expect(pool.query).toHaveBeenNthCalledWith(2, expectedSelectQuery, expectedSelectBinding);
     expect(actualOutput).toEqual(expectedOutput);
   });
 });
@@ -496,10 +466,7 @@ describe("getBindingUser", () => {
     const result = await User.getBindingUser(mockSource);
 
     expect(pool.query).toHaveBeenCalledTimes(1);
-    expect(pool.query).toHaveBeenCalledWith(
-      "SELECT * FROM users WHERE line_id = ?",
-      [mockSource.userId]
-    );
+    expect(pool.query).toHaveBeenCalledWith("SELECT * FROM users WHERE line_id = ?", [mockSource.userId]);
     expect(result).toEqual(mockUser);
   });
 
@@ -510,10 +477,7 @@ describe("getBindingUser", () => {
     const result = await User.getBindingUser(mockSource);
 
     expect(pool.query).toHaveBeenCalledTimes(1);
-    expect(pool.query).toHaveBeenCalledWith(
-      "SELECT * FROM users WHERE line_id = ?",
-      [mockSource.userId]
-    );
+    expect(pool.query).toHaveBeenCalledWith("SELECT * FROM users WHERE line_id = ?", [mockSource.userId]);
     expect(result).toEqual({ result: 0 });
   });
 
@@ -525,10 +489,7 @@ describe("getBindingUser", () => {
     const result = await User.getBindingUser(mockSource);
 
     expect(pool.query).toHaveBeenCalledTimes(1);
-    expect(pool.query).toHaveBeenCalledWith(
-      "SELECT * FROM users WHERE line_id = ?",
-      [mockSource.userId]
-    );
+    expect(pool.query).toHaveBeenCalledWith("SELECT * FROM users WHERE line_id = ?", [mockSource.userId]);
     expect(result).toEqual({ error: mockError, result: -1 });
   });
 });
