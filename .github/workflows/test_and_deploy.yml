@@ -33,7 +33,8 @@ jobs:
           script: |
             cd projects/SplitEase/backend &&
             ls -al &&
-            git pull
+            git pull &&
+            npm -v
   # build:
   #   runs-on: macos-latest
   #   steps:
