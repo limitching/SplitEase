@@ -31,7 +31,7 @@ jobs:
           USERNAME: ${{ secrets.VPC_USER }} # username
           PORT: ${{ secrets.VPC_PORT }} # port
           script: |
-            cd project/SplitEase/backend
+            cd projects/SplitEase/backend
             git pull
             npm install
             pm2 restart 1
