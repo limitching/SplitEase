@@ -32,9 +32,8 @@ jobs:
           PORT: ${{ secrets.VPC_PORT }} # port
           script: |
             cd projects/SplitEase/backend &&
-            git pull &&
-            npm install &&
-            pm2 restart 1
+            ls -al &&
+            git pull
   # build:
   #   runs-on: macos-latest
   #   steps:
