@@ -227,6 +227,190 @@ const expensesInSandBoxGroup = [
   }
 ];
 
+const expensesInColdPlayGroup = [
+  {
+    _id: "646af93c8b95b7454e31cdc5",
+    description: "Rock A Zone (5800)",
+    amount: 23200,
+    currency_option: 1,
+    split_method: "split equally",
+    creditors_amounts: {
+      65: 23200
+    },
+    debtors_weight: {
+      41: 1,
+      53: 1,
+      59: 1,
+      65: 1
+    },
+    debtors_adjustment: {},
+    attached_group_id: "35",
+    involved_users: [65, 41, 53, 59],
+    status: "settling",
+    date: "2023-05-16T04:01:00.000Z",
+    image: null,
+    createTime: "2023-05-22T05:10:20.610Z"
+  },
+  {
+    _id: "646af97f8b95b7454e31cdd0",
+    description: "Area B07, 2nd Floor (1500)",
+    amount: 6000,
+    currency_option: 1,
+    split_method: "split equally",
+    creditors_amounts: {
+      59: 6000
+    },
+    debtors_weight: {
+      41: 1,
+      53: 1,
+      59: 1,
+      65: 1
+    },
+    debtors_adjustment: {},
+    attached_group_id: "35",
+    involved_users: [59, 41, 53, 65],
+    status: "settling",
+    date: "2023-05-17T04:02:00.000Z",
+    image: null,
+    createTime: "2023-05-22T05:11:27.924Z"
+  },
+  {
+    _id: "646af9d88b95b7454e31cddb",
+    description: "Area C25, 2nd Floor (3800)",
+    amount: 15200,
+    currency_option: 1,
+    split_method: "split equally",
+    creditors_amounts: {
+      65: 15200
+    },
+    debtors_weight: {
+      41: 1,
+      53: 1,
+      59: 1,
+      65: 1
+    },
+    debtors_adjustment: {},
+    attached_group_id: "35",
+    involved_users: [65, 41, 53, 59],
+    status: "settling",
+    date: "2023-05-16T04:01:00.000Z",
+    image: null,
+    createTime: "2023-05-22T05:12:56.057Z"
+  },
+  {
+    _id: "646afa2b8b95b7454e31cde9",
+    description: "2nd Floor, Area E19 (2800)",
+    amount: 11200,
+    currency_option: 1,
+    split_method: "split equally",
+    creditors_amounts: {
+      41: 11200
+    },
+    debtors_weight: {
+      41: 1,
+      53: 1,
+      59: 1,
+      65: 1
+    },
+    debtors_adjustment: {},
+    attached_group_id: "35",
+    involved_users: [41, 53, 59, 65],
+    status: "settling",
+    date: "2023-05-16T04:02:00.000Z",
+    image: null,
+    createTime: "2023-05-22T05:14:19.088Z"
+  },
+  {
+    _id: "646afa928b95b7454e31cdf7",
+    description: "1nd Floor, Area F02 (5300)",
+    amount: 21200,
+    currency_option: 1,
+    split_method: "split equally",
+    creditors_amounts: {
+      53: 21200
+    },
+    debtors_weight: {
+      41: 1,
+      53: 1,
+      59: 1,
+      65: 1
+    },
+    debtors_adjustment: {},
+    attached_group_id: "35",
+    involved_users: [53, 41, 59, 65],
+    status: "settling",
+    date: "2023-05-17T04:03:00.000Z",
+    image: null,
+    createTime: "2023-05-22T05:16:02.503Z"
+  },
+  {
+    _id: "646afb158b95b7454e31ce0c",
+    description: "2nd Floor, Area H04 (1500)",
+    amount: 12000,
+    currency_option: 1,
+    split_method: "split equally",
+    creditors_amounts: {
+      59: 12000
+    },
+    debtors_weight: {
+      41: 1,
+      53: 1,
+      59: 1,
+      65: 1
+    },
+    debtors_adjustment: {},
+    attached_group_id: "35",
+    involved_users: [59, 41, 53, 59, 65],
+    status: "settling",
+    date: "2023-05-16T04:00:00.000Z",
+    image: null,
+    createTime: "2023-05-22T05:18:13.646Z"
+  },
+  {
+    _id: "646afb788b95b7454e31ce17",
+    description: "2nd Floor, Area G25 (2800)",
+    amount: 8400,
+    currency_option: 1,
+    split_method: "split equally",
+    creditors_amounts: {
+      41: 8400
+    },
+    debtors_weight: {
+      41: 1,
+      53: 1,
+      59: 1
+    },
+    debtors_adjustment: {},
+    attached_group_id: "35",
+    involved_users: [41, 53, 59],
+    status: "settling",
+    date: "2023-05-17T04:04:00.000Z",
+    image: null,
+    createTime: "2023-05-22T05:19:52.443Z"
+  },
+  {
+    _id: "646afbcd8b95b7454e31ce22",
+    description: "2nd Floor, Area E27 (3800)",
+    amount: 7600,
+    currency_option: 1,
+    split_method: "split equally",
+    creditors_amounts: {
+      53: 7600
+    },
+    debtors_weight: {
+      53: 1,
+      65: 1
+    },
+    debtors_adjustment: {},
+    attached_group_id: "35",
+    involved_users: [53, 65],
+    status: "settling",
+    date: "2023-05-16T04:00:00.000Z",
+    image: null,
+    createTime: "2023-05-22T05:21:17.249Z"
+  }
+];
+
 // Recover data from the demo database
 const restoreExpense = async () => {
   const session = await mongoose.startSession();
@@ -242,6 +426,12 @@ const restoreExpense = async () => {
     );
     await Expense.deleteMany(
       {
+        attached_group_id: "35"
+      },
+      { session }
+    );
+    await Expense.deleteMany(
+      {
         attached_group_id: "38"
       },
       { session }
@@ -250,6 +440,7 @@ const restoreExpense = async () => {
     // insert demo data into group 32
     await Expense.create(expensesIn3PersonGroup, { session });
     await Expense.create(expensesInSandBoxGroup, { session });
+    await Expense.create(expensesInColdPlayGroup, { session });
     await session.commitTransaction();
     console.log("Update complete!");
   } catch (error) {
@@ -262,6 +453,7 @@ const restoreExpense = async () => {
 const removeSettling = async () => {
   try {
     await pool.query("DELETE FROM settlements WHERE group_id = 32");
+    await pool.query("DELETE FROM settlements WHERE group_id = 35");
     await pool.query("DELETE FROM settlements WHERE group_id = 38");
     console.log("Remove settlements complete!");
   } catch (error) {
@@ -271,6 +463,7 @@ const removeSettling = async () => {
 const removeLogs = async () => {
   try {
     await pool.query("DELETE FROM logs WHERE id > 642 && group_id = 32");
+    await pool.query("DELETE FROM logs WHERE id > 683 && group_id = 35");
     await pool.query("DELETE FROM logs WHERE id > 670 && group_id = 38");
     console.log("Remove logs complete!");
   } catch (error) {
