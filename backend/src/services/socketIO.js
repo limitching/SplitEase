@@ -6,11 +6,13 @@ function initSocketIO(server) {
   const { redisPub, redisSub } = initializePubSub();
   const io = new Server(server, {
     cors: { origin: "*" },
-    adapter: createAdapter(redisPub, redisSub),
+    adapter: createAdapter(redisPub, redisSub)
   });
-  io.on("connection", async (socket) => {
+  io.on("connection", async socket => {
+    const clientIp = socket.handshake.address;
     socket.emit("connection");
-    console.log("a user connected (Server)");
+    // log IP of connected client for debugging
+    console.log(`a user connected (Server). IP: ${clientIp}`);
     const group_slug = socket.handshake.query.slug;
 
     //Join group via slug
@@ -18,7 +20,7 @@ function initSocketIO(server) {
 
     socket.on("refreshMembers", () => {
       if (redisPub.connected) {
-        redisPub.publish("refreshMembers", group_slug, (err) => {
+        redisPub.publish("refreshMembers", group_slug, err => {
           if (err) console.error("Redis publish error:", err);
         });
       } else {
@@ -28,7 +30,7 @@ function initSocketIO(server) {
 
     socket.on("logsChange", () => {
       if (redisPub.connected) {
-        redisPub.publish("logsChange", group_slug, (err) => {
+        redisPub.publish("logsChange", group_slug, err => {
           if (err) console.error("Redis publish error:", err);
         });
       } else {
@@ -38,7 +40,7 @@ function initSocketIO(server) {
 
     socket.on("expenseChange", () => {
       if (redisPub.connected) {
-        redisPub.publish("expenseChange", group_slug, (err) => {
+        redisPub.publish("expenseChange", group_slug, err => {
           if (err) console.error("Redis publish error:", err);
         });
       } else {
@@ -46,7 +48,7 @@ function initSocketIO(server) {
       }
     });
 
-    socket.on("leave-group", (group_slug) => {
+    socket.on("leave-group", group_slug => {
       console.log(`User left group: ${group_slug}`);
       socket.leave(group_slug); // leave group
     });
@@ -58,9 +60,7 @@ function initSocketIO(server) {
 
   redisSub.subscribe("refreshMembers", "logsChange", "expenseChange");
   redisSub.on("message", (channel, group_slug) => {
-    console.log(
-      `Received message on channel ${channel} for group ${group_slug}`
-    );
+    console.log(`Received message on channel ${channel} for group ${group_slug}`);
     io.to(group_slug).emit(channel);
   });
 }
