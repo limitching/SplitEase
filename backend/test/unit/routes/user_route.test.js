@@ -14,11 +14,11 @@ jest.mock("../../../src/controllers/user_controller.js", () => ({
   signIn: jest.fn(),
   getUserGroups: jest.fn(),
   getUserProfile: jest.fn(),
-  updateUserProfile: jest.fn(),
+  updateUserProfile: jest.fn()
 }));
 
 jest.mock("../../../src/utils/util.js", () => ({
-  wrapAsync: (fn) => {
+  wrapAsync: fn => {
     return function (req, res, next) {
       fn(req, res, next).catch(next);
     };
@@ -26,7 +26,7 @@ jest.mock("../../../src/utils/util.js", () => ({
   authentication: (req, res, next) =>
     function (req, res, next) {
       return next();
-    },
+    }
 }));
 
 // user/signup route
@@ -35,7 +35,7 @@ describe("POST /user/signup", () => {
     const user = {
       name: "Test User",
       email: "test1@test.splitease.com",
-      password: "Test123!",
+      password: "Test123!"
     };
 
     await request(app).post("/api/1.0/user/signup").send(user);
@@ -48,7 +48,7 @@ describe("POST /user/signin", () => {
     const user = {
       provider: "native",
       email: "test@test.splitease.com",
-      password: "Test123!",
+      password: "Test123!"
     };
 
     await request(app).post("/api/1.0/user/signin").send(user);
