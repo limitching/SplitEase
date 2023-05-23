@@ -36,7 +36,7 @@ jobs:
             ls -al &&
             git pull &&
             npm install &&
-            pm2 restart 1
+            pm2 restart app
 
   # build:
   #   runs-on: macos-latest
