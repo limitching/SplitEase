@@ -474,6 +474,7 @@ const restoreDemo = async () => {
   await restoreExpense();
   await removeSettling();
   await removeLogs();
+  process.exit(0);
 };
 
 restoreDemo();
