@@ -49,7 +49,7 @@ const AuthContextProvider = ({ children }) => {
         if (data.error) {
           window.localStorage.removeItem("jwtToken");
           setUser({});
-          setIsLogin(true);
+          setIsLogin(false);
           setLoading(false);
           navigate("/");
           return;
