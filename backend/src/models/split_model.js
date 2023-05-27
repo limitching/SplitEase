@@ -43,13 +43,7 @@ function buildLevelGraph(residualGraph, start, end) {
 }
 
 // A function to find the blocking flow in a graph given the level graph and residual graph
-function findBlockingFlow(
-  levelGraph,
-  residualGraph,
-  startUser,
-  targetUser,
-  flow
-) {
+function findBlockingFlow(levelGraph, residualGraph, startUser, targetUser, flow) {
   // If the current user is the target user, the flow has reached the target and can be returned
   if (startUser === targetUser) {
     return flow;
@@ -62,23 +56,11 @@ function findBlockingFlow(
   for (let neighborUser = 0; neighborUser < numUsers; neighborUser++) {
     // If there is residual capacity between the start user and the neighbor user
     // and the neighbor user has not been visited before
-    if (
-      residualGraph[startUser][neighborUser] > 0 &&
-      levelGraph[neighborUser] === levelGraph[startUser] + 1
-    ) {
+    if (residualGraph[startUser][neighborUser] > 0 && levelGraph[neighborUser] === levelGraph[startUser] + 1) {
       // Calculate the maximum flow that can be sent from start user to neighbor user
-      const maxFlow = Math.min(
-        flow - currentFlow,
-        residualGraph[startUser][neighborUser]
-      );
+      const maxFlow = Math.min(flow - currentFlow, residualGraph[startUser][neighborUser]);
       // Recursively find the blocking flow from the neighbor user to the target user
-      const delta = findBlockingFlow(
-        levelGraph,
-        residualGraph,
-        neighborUser,
-        targetUser,
-        maxFlow
-      );
+      const delta = findBlockingFlow(levelGraph, residualGraph, neighborUser, targetUser, maxFlow);
 
       // If there is a blocking flow, update the residual graph and the flow
       if (delta > 0) {
@@ -133,13 +115,7 @@ function dinicMaxFlow(graph, source, sink) {
 
     let blockingFlow = Infinity;
     while (blockingFlow > 0) {
-      blockingFlow = findBlockingFlow(
-        levelGraph,
-        residualGraph,
-        source,
-        sink,
-        Infinity
-      );
+      blockingFlow = findBlockingFlow(levelGraph, residualGraph, source, sink, Infinity);
       maxFlow += blockingFlow;
     }
   }
@@ -175,6 +151,12 @@ function calculateNets(graph) {
   for (let j = 0; j < N; j++) {
     for (let i = 0; i < N; i++) {
       Nets[j] += graph[i][j] - graph[j][i];
+    }
+  }
+  for (let k = 0; k < N; k++) {
+    // if abs of Nets[k] <0.01, set it to 0
+    if (Math.abs(Nets[k]) < 0.01) {
+      Nets[k] = 0;
     }
   }
   return Nets;
@@ -231,13 +213,11 @@ function getNetZeroSubGroup(nets) {
         }
         // If the current state is not a subset of any other state, add it to the subGroups array
         if (subGroupMembers.length > 1) {
-          const hasSameElements = subGroups.some((group) => {
+          const hasSameElements = subGroups.some(group => {
             if (group.length !== subGroupMembers.length) return false;
             const sortedGroup = group.slice().sort();
             const sortedSubGroupMembers = subGroupMembers.slice().sort();
-            return sortedGroup.every(
-              (val, index) => val === sortedSubGroupMembers[index]
-            );
+            return sortedGroup.every((val, index) => val === sortedSubGroupMembers[index]);
           });
 
           if (!hasSameElements) {
@@ -266,13 +246,13 @@ function findNonDivisibleSubGroups(allSubGroups) {
 
   const uniqueSet = new Set(allSubGroups.map(JSON.stringify));
   const uniqueSubGroups = Array.from(uniqueSet).map(JSON.parse);
-  const filteredSubGroups = uniqueSubGroups.filter((subGroup) => {
+  const filteredSubGroups = uniqueSubGroups.filter(subGroup => {
     // Determine whether there are other subsets that completely contain the current subset
-    const isSubset = uniqueSubGroups.some((otherSubGroup) => {
+    const isSubset = uniqueSubGroups.some(otherSubGroup => {
       if (otherSubGroup === subGroup) {
         return false;
       }
-      return subGroup.every((element) => otherSubGroup.includes(element));
+      return subGroup.every(element => otherSubGroup.includes(element));
     });
     // If there is no other subset that completely contains the current subset, keep the current subset
     return isSubset;
@@ -298,7 +278,7 @@ function getSubGroupsNets(subGroups, nets) {
 function getSettleUpTransactions(subGroupsNets) {
   const settleUpSuggestion = [];
 
-  subGroupsNets.forEach((subNet) => {
+  subGroupsNets.forEach(subNet => {
     for (let i = 0; i < subNet.length; i++) {
       if (subNet[i] === 0) {
         continue;
