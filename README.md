@@ -115,7 +115,7 @@ Just imagine that the debt relationship between multiple people can be represent
 I organize the debts between all users into a residual graph, traverse through the Dinic Maxflow algorithm and find the maximum money flow between any two users, and simplify the residual graphs.
 Finally, the optimal repayment path can be calculated.
 
-![MaxFlow introduction](https://github.com/limitching/SplitEase/blob/documents/docs/images/SplitEase_maxFlow_introduction.png)
+![MaxFlow introduction](https://github.com/limitching/SplitEase/blob/main/docs/images/SplitEase_maxFlow_introduction.png)
 
 ### Dinic Maxflow Algorithm
 
