@@ -15,7 +15,8 @@ const MySwal = withReactContent(Swal);
 
 const StyledModalBody = styled(Modal.Body)`
   max-height: 800px;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
