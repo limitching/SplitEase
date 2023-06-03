@@ -122,8 +122,13 @@ const About = () => {
                 <p className="text">
                   Try SplitEase for a faster, more accurate, and more cost-effective way to pay off debts.
                 </p>
-                <a href="#" className="main-btn" rel="noopener noreferrer">
-                  Try it Free
+                <a
+                  href="https://github.com/limitching/SplitEase#algorithm"
+                  className="main-btn"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  See How It Works
                 </a>
               </div>
             </div>
