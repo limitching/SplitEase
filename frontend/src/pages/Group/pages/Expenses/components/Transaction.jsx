@@ -5,19 +5,12 @@ import styled from "styled-components";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { api } from "../../../../../utils/api";
-import {
-  SPLIT_METHODS,
-  DASHBOARD_BG_COLOR,
-  HEADER_BG_COLOR,
-} from "../../../../../global/constant";
+import { SPLIT_METHODS, DASHBOARD_BG_COLOR, HEADER_BG_COLOR } from "../../../../../global/constant";
 // import { Button } from "react-bootstrap";
 // import Button from "@mui/material-next/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { GroupContext } from "../../../../../contexts/GroupContext";
-import {
-  ExpenseContext,
-  localISOTime,
-} from "../../../../../contexts/ExpenseContext";
+import { ExpenseContext, localISOTime } from "../../../../../contexts/ExpenseContext";
 import { AuthContext } from "../../../../../contexts/AuthContext";
 import { ModalContent } from "./Modal";
 import { FixedButtonWrapper } from "../../../components/PageWrapper";
@@ -32,7 +25,8 @@ const MySwal = withReactContent(Swal);
 
 const StyledModalBody = styled(Modal.Body)`
   max-height: 800px;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 const ModalHeader = styled.h5`
@@ -58,12 +52,11 @@ const Transaction = () => {
     setSelectedCreditor,
     setExpenseTime,
     setShowTransaction,
-    setDescription,
+    setDescription
   } = useContext(ExpenseContext);
   const { user, jwtToken } = useContext(AuthContext);
   const { setSelectedExpense } = useContext(ExpenseContext);
-  const { group, showFixedButton, socket, setExpensesChanged } =
-    useContext(GroupContext);
+  const { group, showFixedButton, socket, setExpensesChanged } = useContext(GroupContext);
   const [hasError, setHasError] = useState(false);
 
   const handleClose = () => setShowTransaction(false);
@@ -78,15 +71,11 @@ const Transaction = () => {
     setSelectedSplitMethod(0);
     setDescription("");
     setExpenseTime(localISOTime);
-    setExpenseTime(
-      new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substring(0, 16)
-    );
+    setExpenseTime(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substring(0, 16));
     setSubCredit(Array(members.length).fill(0));
     setShowTransaction(true);
   };
-  const handleExpenseSubmit = async (event) => {
+  const handleExpenseSubmit = async event => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const creditors = [selectedCreditor];
@@ -103,12 +92,8 @@ const Transaction = () => {
     const debtorsAdjustment = new Map();
 
     if (selectedSplitMethod === 0) {
-      checked.forEach((debtor) => debtorsWeight.set(debtor.id, 1));
-    } else if (
-      selectedSplitMethod === 1 ||
-      selectedSplitMethod === 2 ||
-      selectedSplitMethod === 3
-    ) {
+      checked.forEach(debtor => debtorsWeight.set(debtor.id, 1));
+    } else if (selectedSplitMethod === 1 || selectedSplitMethod === 2 || selectedSplitMethod === 3) {
       subValues.forEach((debtorAmount, debtorIndex) => {
         if (debtorAmount !== 0) {
           // TODO: Error Client side error but mongodb error
@@ -129,15 +114,10 @@ const Transaction = () => {
     formData.append("creditorsAmounts", JSON.stringify([...creditorsAmounts]));
     formData.append("debtorsWeight", JSON.stringify([...debtorsWeight]));
     if (selectedSplitMethod === 4) {
-      formData.append(
-        "debtorsAdjustment",
-        JSON.stringify([...debtorsAdjustment])
-      );
+      formData.append("debtorsAdjustment", JSON.stringify([...debtorsAdjustment]));
     }
     const localExpenseTime = expenseTime;
-    const utcExpenseTime = dayjs(localExpenseTime)
-      .utcOffset(0)
-      .format("YYYY-MM-DDTHH:mm");
+    const utcExpenseTime = dayjs(localExpenseTime).utcOffset(0).format("YYYY-MM-DDTHH:mm");
     // console.log(utcExpenseTime);
     formData.append("date", utcExpenseTime);
 
@@ -161,7 +141,7 @@ const Transaction = () => {
         didOpen: () => {
           // `MySwal` is a subclass of `Swal` with all the same instance & static methods
           MySwal.showLoading();
-        },
+        }
       });
       handleClose();
     } else if (response.status === 400) {
@@ -173,7 +153,7 @@ const Transaction = () => {
         didOpen: () => {
           // `MySwal` is a subclass of `Swal` with all the same instance & static methods
           MySwal.showLoading();
-        },
+        }
       });
     } else if (response.status === 500) {
       MySwal.fire({
@@ -184,7 +164,7 @@ const Transaction = () => {
         didOpen: () => {
           // `MySwal` is a subclass of `Swal` with all the same instance & static methods
           MySwal.showLoading();
-        },
+        }
       });
     }
   };
@@ -195,7 +175,7 @@ const Transaction = () => {
         style={{
           transition: "transform 0.5s ease-out, opacity 0.5s ease-out",
           transform: showFixedButton ? "translateY(0)" : "translateY(120%)",
-          opacity: showFixedButton ? 1 : 0,
+          opacity: showFixedButton ? 1 : 0
         }}
       >
         <Button
@@ -209,11 +189,11 @@ const Transaction = () => {
             bgcolor: DASHBOARD_BG_COLOR,
             "&:hover": {
               bgcolor: DASHBOARD_BG_COLOR,
-              opacity: 0.87,
+              opacity: 0.87
             },
             borderRadius: "100px",
             color: "white",
-            padding: "12px 26px",
+            padding: "12px 26px"
           }}
         >
           ADD EXPENSE
@@ -221,13 +201,7 @@ const Transaction = () => {
       </FixedButtonWrapper>
 
       {selectedCreditor !== "multi" ? (
-        <Modal
-          show={showTransaction}
-          onHide={handleClose}
-          backdrop="static"
-          keyboard={false}
-          centered
-        >
+        <Modal show={showTransaction} onHide={handleClose} backdrop="static" keyboard={false} centered>
           <Form onSubmit={handleExpenseSubmit}>
             <Modal.Header closeButton as={Row}>
               <Container className="transaction-method ml-0 pl-0">
@@ -250,8 +224,8 @@ const Transaction = () => {
                   sx={{
                     backgroundColor: HEADER_BG_COLOR,
                     "&:hover": {
-                      backgroundColor: "#cdae21",
-                    },
+                      backgroundColor: "#cdae21"
+                    }
                   }}
                 >
                   {hasError ? "Invalid Input" : "Save"}
@@ -261,14 +235,7 @@ const Transaction = () => {
           </Form>
         </Modal>
       ) : (
-        <Modal
-          show={showTransaction}
-          onHide={handleClose}
-          backdrop="static"
-          keyboard={false}
-          size="xl"
-          centered
-        >
+        <Modal show={showTransaction} onHide={handleClose} backdrop="static" keyboard={false} size="xl" centered>
           <Form onSubmit={handleExpenseSubmit}>
             <Modal.Header closeButton as={Row}>
               <Container className="transaction-method ml-0 pl-0">
@@ -291,8 +258,8 @@ const Transaction = () => {
                   sx={{
                     backgroundColor: HEADER_BG_COLOR,
                     "&:hover": {
-                      backgroundColor: "#cdae21",
-                    },
+                      backgroundColor: "#cdae21"
+                    }
                   }}
                 >
                   {hasError ? "Invalid Input" : "Save"}
