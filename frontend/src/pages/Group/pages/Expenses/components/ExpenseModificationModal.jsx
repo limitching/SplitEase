@@ -5,13 +5,7 @@ import { ExpenseContext } from "../../../../../contexts/ExpenseContext";
 import { ModalContent } from "./Modal";
 import { useContext, useState } from "react";
 import { Button } from "@mui/material";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { api } from "../../../../../utils/api";
@@ -29,7 +23,8 @@ const MySwal = withReactContent(Swal);
 const StyledModalBody = styled(Modal.Body)`
   // height: 57vh;
   max-height: 70vh;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 const ModalHeader = styled.h5`
@@ -37,8 +32,7 @@ const ModalHeader = styled.h5`
 `;
 
 const ExpenseModificationModal = () => {
-  const { memberMap, group_id, members, socket, setExpensesChanged } =
-    useContext(GroupContext);
+  const { memberMap, group_id, members, socket, setExpensesChanged } = useContext(GroupContext);
   const {
     checked,
     subValues,
@@ -49,7 +43,7 @@ const ExpenseModificationModal = () => {
     selectedExpense,
     showModification,
     expenseTime,
-    setShowModification,
+    setShowModification
   } = useContext(ExpenseContext);
   const { jwtToken } = useContext(AuthContext);
   const [alertOpen, setAlertOpen] = useState(false);
@@ -64,7 +58,7 @@ const ExpenseModificationModal = () => {
 
   const handleClose = () => setShowModification(false);
 
-  const handleExpenseUpdate = async (event) => {
+  const handleExpenseUpdate = async event => {
     event.preventDefault();
 
     const formData = new FormData(event.target);
@@ -81,12 +75,8 @@ const ExpenseModificationModal = () => {
     const debtorsAdjustment = new Map();
 
     if (selectedSplitMethod === 0) {
-      checked.forEach((debtor) => debtorsWeight.set(debtor.id, 1));
-    } else if (
-      selectedSplitMethod === 1 ||
-      selectedSplitMethod === 2 ||
-      selectedSplitMethod === 3
-    ) {
+      checked.forEach(debtor => debtorsWeight.set(debtor.id, 1));
+    } else if (selectedSplitMethod === 1 || selectedSplitMethod === 2 || selectedSplitMethod === 3) {
       subValues.forEach((debtorAmount, debtorIndex) => {
         if (debtorAmount !== 0) {
           // TODO: Error Client side error but mongodb error
@@ -104,25 +94,17 @@ const ExpenseModificationModal = () => {
     formData.append("expense_id", selectedExpense._id);
     formData.append("split_method", SPLIT_METHODS[selectedSplitMethod]);
     formData.append("attached_group_id", group_id);
-    formData.append(
-      "creditors",
-      JSON.stringify(memberMap.get(Number(selectedCreditor)))
-    );
+    formData.append("creditors", JSON.stringify(memberMap.get(Number(selectedCreditor))));
     formData.append("creditorsAmounts", JSON.stringify([...creditorsAmounts]));
     formData.append("debtorsWeight", JSON.stringify([...debtorsWeight]));
 
     const localExpenseTime = expenseTime;
-    const utcExpenseTime = dayjs(localExpenseTime)
-      .utcOffset(0)
-      .format("YYYY-MM-DDTHH:mm");
+    const utcExpenseTime = dayjs(localExpenseTime).utcOffset(0).format("YYYY-MM-DDTHH:mm");
     // console.log(utcExpenseTime);
 
     formData.append("date", utcExpenseTime);
     if (selectedSplitMethod === 4) {
-      formData.append(
-        "debtorsAdjustment",
-        JSON.stringify([...debtorsAdjustment])
-      );
+      formData.append("debtorsAdjustment", JSON.stringify([...debtorsAdjustment]));
     }
 
     //TODO: debug;
@@ -146,7 +128,7 @@ const ExpenseModificationModal = () => {
         didOpen: () => {
           // `MySwal` is a subclass of `Swal` with all the same instance & static methods
           MySwal.showLoading();
-        },
+        }
       });
       handleClose();
     } else if (response.status === 400) {
@@ -158,7 +140,7 @@ const ExpenseModificationModal = () => {
         didOpen: () => {
           // `MySwal` is a subclass of `Swal` with all the same instance & static methods
           MySwal.showLoading();
-        },
+        }
       });
     } else if (response.status === 500) {
       MySwal.fire({
@@ -169,7 +151,7 @@ const ExpenseModificationModal = () => {
         didOpen: () => {
           // `MySwal` is a subclass of `Swal` with all the same instance & static methods
           MySwal.showLoading();
-        },
+        }
       });
     }
   };
@@ -191,7 +173,7 @@ const ExpenseModificationModal = () => {
         didOpen: () => {
           // `MySwal` is a subclass of `Swal` with all the same instance & static methods
           MySwal.showLoading();
-        },
+        }
       });
       handleClose();
     } else if (response.status === 400) {
@@ -203,7 +185,7 @@ const ExpenseModificationModal = () => {
         didOpen: () => {
           // `MySwal` is a subclass of `Swal` with all the same instance & static methods
           MySwal.showLoading();
-        },
+        }
       });
     } else if (response.status === 500) {
       MySwal.fire({
@@ -214,7 +196,7 @@ const ExpenseModificationModal = () => {
         didOpen: () => {
           // `MySwal` is a subclass of `Swal` with all the same instance & static methods
           MySwal.showLoading();
-        },
+        }
       });
     }
   };
@@ -222,13 +204,7 @@ const ExpenseModificationModal = () => {
   if (selectedCreditor !== "multi") {
     return (
       <>
-        <Modal
-          show={showModification}
-          onHide={handleClose}
-          backdrop="static"
-          keyboard={false}
-          centered
-        >
+        <Modal show={showModification} onHide={handleClose} backdrop="static" keyboard={false} centered>
           <Form onSubmit={handleExpenseUpdate}>
             <Modal.Header closeButton as={Row}>
               <Container
@@ -238,7 +214,7 @@ const ExpenseModificationModal = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   flexWrap: "nowrap",
-                  width: "100%",
+                  width: "100%"
                 }}
               >
                 <Col lg="6" sm="6" xs="6">
@@ -251,22 +227,16 @@ const ExpenseModificationModal = () => {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    justifyContent: "center"
                   }}
                 >
                   <Button
                     variant="outlined"
                     onClick={handleAlertOpen}
-                    disabled={
-                      (selectedExpense?.status ?? "") === "settled"
-                        ? true
-                        : false
-                    }
+                    disabled={(selectedExpense?.status ?? "") === "settled" ? true : false}
                     disableElevation
                   >
-                    {(selectedExpense?.status ?? "") === "settled"
-                      ? "Already settled"
-                      : "Delete"}
+                    {(selectedExpense?.status ?? "") === "settled" ? "Already settled" : "Delete"}
                   </Button>
                 </Col>
               </Container>
@@ -279,17 +249,13 @@ const ExpenseModificationModal = () => {
                 <Button
                   variant="contained"
                   type="submit"
-                  disabled={
-                    amount === 0 ||
-                    (selectedExpense?.status ?? "") === "settled" ||
-                    hasError
-                  }
+                  disabled={amount === 0 || (selectedExpense?.status ?? "") === "settled" || hasError}
                   disableElevation
                   sx={{
                     backgroundColor: HEADER_BG_COLOR,
                     "&:hover": {
-                      backgroundColor: "#cdae21",
-                    },
+                      backgroundColor: "#cdae21"
+                    }
                   }}
                 >
                   {(selectedExpense?.status ?? "") === "settled"
@@ -310,18 +276,14 @@ const ExpenseModificationModal = () => {
         >
           <DialogTitle id="alert-dialog-title">{"Delete Expense"}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Do you wish to delete this expense?
-            </DialogContentText>
+            <DialogContentText id="alert-dialog-description">Do you wish to delete this expense?</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleAlertClose}>Keep</Button>
             <Button
               onClick={() => handleExpenseDelete(selectedExpense._id, group_id)}
               autoFocus
-              disabled={
-                (selectedExpense?.status ?? "") === "settled" ? true : false
-              }
+              disabled={(selectedExpense?.status ?? "") === "settled" ? true : false}
             >
               Delete
             </Button>
@@ -332,14 +294,7 @@ const ExpenseModificationModal = () => {
   } else {
     return (
       <>
-        <Modal
-          show={showModification}
-          onHide={handleClose}
-          backdrop="static"
-          keyboard={false}
-          size="xl"
-          centered
-        >
+        <Modal show={showModification} onHide={handleClose} backdrop="static" keyboard={false} size="xl" centered>
           <Form onSubmit={handleExpenseUpdate}>
             <Modal.Header closeButton as={Row}>
               <Container className="transaction-method ml-0 pl-0">
@@ -357,9 +312,7 @@ const ExpenseModificationModal = () => {
                   variant="outlined"
                   onClick={handleAlertOpen}
                   className="mb-3"
-                  disabled={
-                    (selectedExpense?.status ?? "") === "settled" ? true : false
-                  }
+                  disabled={(selectedExpense?.status ?? "") === "settled" ? true : false}
                   disableElevation
                 >
                   Delete
@@ -368,17 +321,13 @@ const ExpenseModificationModal = () => {
                   variant="contained"
                   type="submit"
                   className="mb-3"
-                  disabled={
-                    amount === 0 ||
-                    (selectedExpense?.status ?? "") === "settled" ||
-                    hasError
-                  }
+                  disabled={amount === 0 || (selectedExpense?.status ?? "") === "settled" || hasError}
                   disableElevation
                   sx={{
                     backgroundColor: HEADER_BG_COLOR,
                     "&:hover": {
-                      backgroundColor: "#cdae21",
-                    },
+                      backgroundColor: "#cdae21"
+                    }
                   }}
                 >
                   Update
@@ -395,18 +344,14 @@ const ExpenseModificationModal = () => {
         >
           <DialogTitle id="alert-dialog-title">{"Delete Expense"}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Do you wish to delete this expense?
-            </DialogContentText>
+            <DialogContentText id="alert-dialog-description">Do you wish to delete this expense?</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleAlertClose}>Keep</Button>
             <Button
               onClick={() => handleExpenseDelete(selectedExpense._id, group_id)}
               autoFocus
-              disabled={
-                (selectedExpense?.status ?? "") === "settled" ? true : false
-              }
+              disabled={(selectedExpense?.status ?? "") === "settled" ? true : false}
             >
               Delete
             </Button>
