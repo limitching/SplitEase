@@ -39,8 +39,7 @@ const corsOptions =
     ? {}
     : {
         origin: ["https://splitease.cc/", "https://www.splitease.cc/"],
-        methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-        allowedHeaders: ["Content-Type", "Authorization"]
+        methods: "GET,PUT,POST,DELETE,OPTIONS"
       };
 
 // CORS allow only our frontend to access our backend
