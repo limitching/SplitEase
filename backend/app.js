@@ -38,7 +38,7 @@ const corsOptions =
   NODE_ENV === "develop"
     ? {}
     : {
-        origin: ["https://splitease.cc/", "https://www.splitease.cc/"],
+        origin: ["https://splitease.cc", "https://www.splitease.cc"],
         methods: "GET,PUT,POST,DELETE,OPTIONS"
       };
 
