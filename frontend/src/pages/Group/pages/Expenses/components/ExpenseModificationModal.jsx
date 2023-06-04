@@ -23,7 +23,7 @@ const MySwal = withReactContent(Swal);
 const StyledModalBody = styled(Modal.Body)`
   // height: 57vh;
   max-height: 70vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 `;
 
