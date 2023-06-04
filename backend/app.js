@@ -9,7 +9,7 @@ import dotenv from "dotenv";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 dotenv.config({ path: __dirname + "/.env" });
 
-const { API_VERSION, PORT } = process.env;
+const { API_VERSION, PORT, NODE_ENV } = process.env;
 
 const app = express();
 const port = normalizePort(PORT || "3000");
@@ -34,8 +34,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-// CORS allow all
-app.use(cors());
+const corsOptions =
+  NODE_ENV === "develop"
+    ? {}
+    : {
+        origin: ["https://splitease.cc/", "https://www.splitease.cc/"],
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+        allowedHeaders: ["Content-Type", "Authorization"]
+      };
+
+// CORS allow only our frontend to access our backend
+app.use(cors(corsOptions));
 
 // API routes
 app.use("/api/" + API_VERSION, [indexRouter, userRouter, groupRouter, expenseRouter, debtsRouter]);
